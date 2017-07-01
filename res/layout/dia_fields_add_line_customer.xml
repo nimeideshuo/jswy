@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" android:baselineAligned="false"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:paddingTop="20.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="20.0dip">
+        <TextView android:textSize="16.0sp" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/visit_line" />
+        <Spinner android:id="@id/spVisitLine" android:background="@drawable/spinner_bg" android:layout_width="200.0dip" android:layout_height="40.0dip" android:dropDownWidth="190.0dip" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:paddingTop="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="30.0dip">
+        <TextView android:textSize="16.0sp" android:layout_gravity="center" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/visit_line_customer" />
+        <TextView android:textSize="18.0sp" android:layout_gravity="center" android:id="@id/tv_visit_line_customer" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0dip" />
+    </LinearLayout>
+</LinearLayout>

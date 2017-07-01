@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <include layout="@layout/biaotitou_button" />
+
+    <ListView
+        android:id="@+id/listView_caigou_ruku_bumen"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="40.0dip"
+        android:divider="@drawable/divider_1"
+        android:fastScrollEnabled="true"
+        android:focusable="true"
+        android:scrollbars="none" />
+
+</LinearLayout>

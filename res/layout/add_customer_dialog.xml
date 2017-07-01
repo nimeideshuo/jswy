@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="10.0dip"
+    android:baselineAligned="false"
+    android:gravity="center"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="客户编号"
+                android:textColor="@android:color/holo_red_dark" />
+
+            <EditText
+                android:id="@id/etCusId"
+                style="@style/m_add_customer_edit"
+                android:hint="@string/empty_hint"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLength="20" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="@string/customer_name"
+                android:textColor="@android:color/holo_red_dark" />
+
+            <EditText
+                android:id="@id/etCusName"
+                style="@style/m_add_customer_edit"
+                android:hint="@string/empty_hint"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLength="40" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="@string/customer_contact" />
+
+            <EditText
+                android:id="@id/etCusContactMobile"
+                style="@style/m_add_customer_edit"
+                android:hint="@string/empty_hint"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="20" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="@string/customer_telephone" />
+
+            <EditText
+                android:id="@id/etCusTelephone"
+                style="@style/m_add_customer_edit"
+                android:hint="@string/empty_hint"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="20" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="@string/customer_type" />
+
+            <Button
+                android:id="@id/btnCusType"
+                style="@style/m_add_customer_edit"
+                android:background="@drawable/btn_2_selector"
+                android:gravity="left|center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="@string/customer_region" />
+
+            <Button
+                android:id="@id/btnCusRegion"
+                style="@style/m_add_customer_edit"
+                android:background="@drawable/btn_2_selector" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="客户地址" />
+
+            <EditText
+                android:id="@id/etAddress"
+                style="@style/m_add_customer_edit"
+                android:hint="@string/empty_hint"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLength="20" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="@string/bank_name" />
+
+            <AutoCompleteTextView
+                android:id="@id/actvCusBank"
+                style="@style/m_add_customer_edit"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLength="20" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="@string/bank_account" />
+
+            <EditText
+                android:id="@id/etCusBankAccount"
+                style="@style/m_add_customer_edit"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="20" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dip" >
+
+            <TextView
+                style="@style/m_add_customer_text"
+                android:text="@string/customer_remark" />
+
+            <EditText
+                android:id="@id/etCusRemark"
+                style="@style/m_add_customer_edit"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="20" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

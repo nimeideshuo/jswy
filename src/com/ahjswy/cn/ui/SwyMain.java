@@ -328,7 +328,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	@Override
 	public void setActionBarText() {
 		getActionBar().setHomeButtonEnabled(false);
-		getActionBar().setTitle("光辉");
+		setTitle("光辉");
 	}
 
 }

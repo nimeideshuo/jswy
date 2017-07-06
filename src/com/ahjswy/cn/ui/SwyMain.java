@@ -17,6 +17,7 @@ import com.ahjswy.cn.ui.field.AllGoodsActivity;
 import com.ahjswy.cn.ui.field.NewCustomerAddAct;
 import com.ahjswy.cn.ui.ingoods.InDocOpenActivity;
 import com.ahjswy.cn.ui.inpurchase.InpurchaseOpenActivity;
+import com.ahjswy.cn.ui.inventory.InventoryDocOpenActivity;
 import com.ahjswy.cn.ui.out_in_goods.OutInDocOpen;
 import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
@@ -65,6 +66,8 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		findViewById(R.id.lin_outin).setOnClickListener(this);
 		findViewById(R.id.ll_addGoods).setOnClickListener(this);
 		findViewById(R.id.ll_stockgoods).setOnClickListener(this);
+		findViewById(R.id.ll_inventory).setOnClickListener(this);
+		findViewById(R.id.ll_my_inventory).setOnClickListener(this);
 		root = findViewById(R.id.root);
 		root.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View paramAnonymousView, MotionEvent paramAnonymousMotionEvent) {
@@ -215,6 +218,18 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			break;
 		// 新增商品
 		case R.id.ll_addGoods:
+			startActivity(new Intent(SwyMain.this, AddGoodSActivity.class));
+			break;
+		// 盘点
+		case R.id.ll_inventory:
+			if (SystemState.getWarehouse() == null) {
+				PDH.showMessage("请设置默认仓库");
+				return;
+			}
+			startActivity(new Intent(SwyMain.this, InventoryDocOpenActivity.class));
+			break;
+		// 我的盘点
+		case R.id.ll_my_inventory:
 			startActivity(new Intent(SwyMain.this, AddGoodSActivity.class));
 			break;
 		// 产品手册

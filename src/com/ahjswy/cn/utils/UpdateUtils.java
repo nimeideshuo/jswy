@@ -75,20 +75,6 @@ public class UpdateUtils {
 			}
 
 		}
-		// 所有客户 包括供应商 由于返回值 电话号码 返回值 NULL 放在前面防止客户 电话等信息被覆盖
-		int i6 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_allcustomer");
-		if (i6 > 0) {
-			for (int j = 1; j <= i6; j++) {
-				List<HashMap<String, String>> localList5 = localServiceSynchronize.syn_QueryAllCustomerRecords(j);
-				if (localList5 == null) {
-					return false;
-				}
-				saveToLocalDB(localList5);
-				i++;
-				paramHandler.sendEmptyMessage(i);
-			}
-		}
-
 		// 客户
 		int i5 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_customer");
 		if (i5 > 0) {
@@ -102,7 +88,20 @@ public class UpdateUtils {
 				paramHandler.sendEmptyMessage(i);
 			}
 		}
-
+		// TODO 所有客户 包括供应商 由于返回值 电话号码 返回值 NULL 放在前面防止客户 电话等信息被覆盖
+		int i6 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_allcustomer");
+		if (i6 > 0) {
+			for (int j = 1; j <= i6; j++) {
+				List<HashMap<String, String>> localList5 = localServiceSynchronize.syn_QueryAllCustomerRecords(j);
+				if (localList5 == null) {
+					return false;
+				}
+				setReplaceToUpdata(localList5);
+				saveToLocalDB(localList5);
+				i++;
+				paramHandler.sendEmptyMessage(i);
+			}
+		}
 		int i7 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_customertype");
 		if (i7 > 0) {
 			for (int j = 1; j <= i7; j++) {
@@ -251,6 +250,36 @@ public class UpdateUtils {
 
 		}
 
+	}
+
+	// TODO 修改
+	public void setReplaceToUpdata(List<HashMap<String, String>> paramList) {
+		StringBuffer sb = new StringBuffer();
+		String[] value = { "id", "name", "pinyin", "iscustomer", "issupplier", "isavailable" };
+		if ((paramList != null) && (paramList.size() > 0)) {
+			for (int j = 0; j < paramList.size(); j++) {
+
+				if (paramList.get(j).get("sql").trim().length() > 0) {
+					String sql = (paramList.get(j)).get("sql").trim();
+					String substring = sql.substring(sql.indexOf("values(") + "values(".length(), sql.lastIndexOf(")"));
+					substring = substring.replace("'", "");
+					String[] split = substring.split(",", 0);
+					sb.append("UPDATE 'cu_customer' SET ");
+					for (int i = 0; i < split.length; i++) {
+						if (i >= 3) {
+							sb.append(value[i] + "=").append("'").append(split[i].trim()).append("'");
+						}
+						if (i >= 3 && i < split.length - 1) {
+							sb.append(",");
+						}
+					}
+					sb.append(" WHERE id =").append("'").append(split[0]).append("'");
+					paramList.get(j).put("sql", sb.toString());
+					sb.setLength(0);
+				}
+
+			}
+		}
 	}
 
 }

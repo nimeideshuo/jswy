@@ -348,6 +348,21 @@
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.inventory.InventoryDocOpenActivity"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.inventory.InventoryEditActivity"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.inventory.InventoryAddMoreGoodsAct"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

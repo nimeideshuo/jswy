@@ -130,9 +130,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		listItemDelete = new ArrayList<Long>();
 		btnAdd.setOnClickListener(this);
 		listview_copy_dele.setOnItemClickListener(this);
-
 		dialog = new Dialog_listCheckBox(OutDocEditActivity.this);
-
 	}
 
 	private void intDate() {

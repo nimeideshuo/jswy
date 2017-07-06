@@ -166,8 +166,8 @@ public class SearchHelper implements View.OnClickListener, OnTextChangeListener 
 		this.autoTextView.setText("");
 	}
 
-	public void setActionDo(ActionDo paramActionDo) {
-		this.actionDo = paramActionDo;
+	public void setActionDo(ActionDo actionDo) {
+		this.actionDo = actionDo;
 	}
 
 	public void setOnAddListener(View.OnClickListener onClickListener) {

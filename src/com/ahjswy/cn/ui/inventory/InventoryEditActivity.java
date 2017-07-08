@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemPD;
@@ -12,23 +13,36 @@ import com.ahjswy.cn.model.DefDocPD;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
+import com.ahjswy.cn.request.ReqStrGetGoodsPricePD;
+import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
+import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchHelper;
+import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextView;
+import com.ahjswy.cn.views.Dialog_message;
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
@@ -76,7 +90,88 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		mListView = (SwipeMenuListView) findViewById(R.id.listView);
 		mListView.setOnTouchListener(this);
 		adapter = new InventoryItemAdapter(this);
+		SwipeMenuCreator local5 = new SwipeMenuCreator() {
+			public void create(SwipeMenu menu) {
+				SwipeMenuItem menuItem = new SwipeMenuItem(getApplicationContext());
+				menuItem.setTitle("删除");
+				menuItem.setTitleSize(14);
+				menuItem.setTitleColor(-16777216);
+				menuItem.setBackground(new ColorDrawable(Color.rgb(201, 201, 206)));
+				menuItem.setWidth(100);
+				menu.addMenuItem(menuItem);
+			}
+		};
+		mListView.setMenuCreator(local5);
+		mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+
+			@Override
+			public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+				switch (index) {
+				case 0:
+					long l = listItem.get(position).getItemid();
+					if (l > 0L) {
+						listItemDelete.add(Long.valueOf(l));
+					}
+					listItem.remove(position);
+					handler.postDelayed(new Runnable() {
+
+						@Override
+						public void run() {
+							adapter.setData(InventoryEditActivity.this.listItem);
+							refreshUI();
+							ishaschanged = true;
+							setActionBarText();
+						}
+					}, 180L);
+
+					break;
+				}
+				return false;
+			}
+		});
+
 	}
+
+	private Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			String message = msg.obj.toString();
+			if (RequestHelper.isSuccess(message)) {
+				if (msg.what == 2) {
+					PDH.showSuccess("删除成功");
+					setResult(Activity.RESULT_OK);
+					finish();
+					return;
+				}
+				DocContainerEntity localObject = (DocContainerEntity) JSONUtil.readValue(message,
+						DocContainerEntity.class);
+				doc = ((DefDocPD) JSONUtil.readValue(localObject.getDoc(), DefDocPD.class));
+				listItem = JSONUtil.str2list(localObject.getItem(), DefDocItemPD.class);
+				listItemDelete = new ArrayList<Long>();
+				switch (msg.what) {
+				case 0:
+					adapter.setData(listItem);
+					refreshUI();
+					PDH.showSuccess("保存成功");
+					ishaschanged = false;
+					setActionBarText();
+					return;
+				case 1:
+					if ((doc.isIsavailable()) && (doc.isIsposted())) {
+						PDH.showSuccess("审核成功");
+						setResult(Activity.RESULT_OK);
+						finish();
+						return;
+					}
+					adapter.setData(listItem);
+					refreshUI();
+					InfoDialog.showError(InventoryEditActivity.this, localObject.getInfo());
+					return;
+				}
+
+			}
+			InfoDialog.showError(InventoryEditActivity.this, message);
+		};
+	};
 
 	private void initData() {
 		docContainer = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
@@ -84,6 +179,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		this.listItem = JSONUtil.str2list(docContainer.getItem(), DefDocItemPD.class);
 		ishaschanged = getIntent().getBooleanExtra("ishaschanged", true);
 		adapter.setData(this.listItem);
+		mListView.setAdapter(adapter);
 	}
 
 	private View.OnClickListener addMoreListener = new View.OnClickListener() {
@@ -109,7 +205,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				ArrayList<DefDocItemPD> localArrayList = new ArrayList<DefDocItemPD>();
 				for (int i = 0; i < select.size(); i++) {
 					GoodsThin localGoodsThin = select.get(i);
-					localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D, 0.0D));
+					localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D, 1));
 				}
 				startActivityForResult(new Intent(InventoryEditActivity.this, InventoryAddMoreGoodsAct.class)
 						.putExtra("items", JSONUtil.object2Json(localArrayList))
@@ -118,6 +214,13 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		}
 
 	};
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, 0, 0, "单击显示菜单").setIcon(getResources().getDrawable(R.drawable.btn_submenu)).setShowAsAction(1);
+		return super.onCreateOptionsMenu(menu);
+	}
+
 	InventoryEditMenuPopup menuPopup;
 
 	@Override
@@ -133,79 +236,98 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			localLayoutParams.alpha = 0.8F;
 			getWindow().setAttributes(localLayoutParams);
 			break;
+		case android.R.id.home:
+			if (ishaschanged) {
+				final MAlertDialog dialog = new MAlertDialog(this);
+				dialog.setMessage("是否保存当前单据？");
+				dialog.setCancelListener(new OnClickListener() {
 
-		default:
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						save();
+					}
+				});
+				dialog.setComfirmListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						finish();
+					}
+				});
+				dialog.show();
+				return true;
+			}
 			break;
 		}
 		return super.onOptionsItemSelected(menu);
 	}
 
-	protected DefDocItemPD fillItem(GoodsThin paramGoodsThin, double paramDouble1, double paramDouble2,
-			double paramDouble3) {
-		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
-		DefDocItemPD localDefDocItemPD = new DefDocItemPD();
-		localDefDocItemPD.setItemid(0L);
-		localDefDocItemPD.setDocid(this.doc.getDocid());
-		localDefDocItemPD.setGoodsid(paramGoodsThin.getId());
-		localDefDocItemPD.setGoodsname(paramGoodsThin.getName());
-		localDefDocItemPD.setBarcode(paramGoodsThin.getBarcode());
-		localDefDocItemPD.setSpecification(paramGoodsThin.getSpecification());
-		localDefDocItemPD.setModel(paramGoodsThin.getModel());
+	protected DefDocItemPD fillItem(GoodsThin goodsThin, double stocknum, double costprice, double number) {
+		GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
+		DefDocItemPD defDocItemPD = new DefDocItemPD();
+		defDocItemPD.setItemid(0L);
+		defDocItemPD.setDocid(this.doc.getDocid());
+		defDocItemPD.setGoodsid(goodsThin.getId());
+		defDocItemPD.setGoodsname(goodsThin.getName());
+		defDocItemPD.setBarcode(goodsThin.getBarcode());
+		defDocItemPD.setSpecification(goodsThin.getSpecification());
+		defDocItemPD.setModel(goodsThin.getModel());
 		GoodsUnit localGoodsUnit;
 		if (Utils.DEFAULT_TransferDocUNIT == 0) {
-			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(paramGoodsThin.getId());
+			localGoodsUnit = goodsUnitDAO.queryBaseUnit(goodsThin.getId());
 		} else {
-			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(paramGoodsThin.getId());
+			localGoodsUnit = goodsUnitDAO.queryBigUnit(goodsThin.getId());
 		}
-		localDefDocItemPD.setUnitid(localGoodsUnit.getUnitid());
-		localDefDocItemPD.setUnitname(localGoodsUnit.getUnitname());
-		localDefDocItemPD.setStocknum(Utils.normalize(paramDouble1, 2));
-		localDefDocItemPD.setBigstocknum(localGoodsUnitDAO.getBigNum(localDefDocItemPD.getGoodsid(),
-				localDefDocItemPD.getUnitid(), localDefDocItemPD.getStocknum()));
-		localDefDocItemPD.setNum(paramDouble3);
-		localDefDocItemPD.setBignum(localGoodsUnitDAO.getBigNum(localDefDocItemPD.getGoodsid(),
-				localDefDocItemPD.getUnitid(), localDefDocItemPD.getNum()));
-		localDefDocItemPD.setNetnum(Utils.normalize(localDefDocItemPD.getNum() - localDefDocItemPD.getStocknum(), 2));
-		localDefDocItemPD.setBignetnum(localGoodsUnitDAO.getBigNum(localDefDocItemPD.getGoodsid(),
-				localDefDocItemPD.getUnitid(), localDefDocItemPD.getNetnum()));
-		localDefDocItemPD.setCostprice(paramDouble2);
-		localDefDocItemPD.setNetamount(
-				Utils.normalizeSubtotal(localDefDocItemPD.getNetnum() * localDefDocItemPD.getCostprice()));
-		localDefDocItemPD.setRemark("");
-		localDefDocItemPD.setRversion(0L);
-		localDefDocItemPD.setIsusebatch(paramGoodsThin.isIsusebatch());
-		return localDefDocItemPD;
+		defDocItemPD.setUnitid(localGoodsUnit.getUnitid());
+		defDocItemPD.setUnitname(localGoodsUnit.getUnitname());
+		defDocItemPD.setStocknum(Utils.normalize(stocknum, 2));
+		defDocItemPD.setBigstocknum(goodsUnitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(),
+				defDocItemPD.getStocknum()));
+		defDocItemPD.setNum(number);
+		defDocItemPD.setBignum(
+				goodsUnitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNum()));
+		defDocItemPD.setNetnum(Utils.normalize(defDocItemPD.getNum() - defDocItemPD.getStocknum(), 2));
+		defDocItemPD.setBignetnum(
+				goodsUnitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNetnum()));
+		defDocItemPD.setCostprice(costprice);
+		defDocItemPD.setNetamount(Utils.normalizeSubtotal(defDocItemPD.getNetnum() * defDocItemPD.getCostprice()));
+		defDocItemPD.setRemark("");
+		defDocItemPD.setRversion(0L);
+		defDocItemPD.setIsusebatch(goodsThin.isIsusebatch());
+		return defDocItemPD;
 
 	}
 
 	private String validateDoc() {
 
-		if (TextUtils.isEmptyS(this.doc.getBuildtime())) {
+		if (!TextUtils.isEmptyS(this.doc.getBuildtime())) {
 			this.doc.setBuildtime(Utils.formatDate(Utils.getCurrentTime(false), "yyyy-MM-dd HH:mm:ss"));
 		}
-		if (TextUtils.isEmptyS(this.doc.getBuilderid())) {
+		if (!TextUtils.isEmptyS(this.doc.getBuilderid())) {
 			this.doc.setBuilderid(SystemState.getUser().getId());
 		}
-		if (TextUtils.isEmptyS(this.doc.getDepartmentid())) {
+		if (!TextUtils.isEmptyS(this.doc.getDepartmentid())) {
 			return "部门不能为空";
 		}
-		if (TextUtils.isEmptyS(this.doc.getWarehouseid())) {
+		if (!TextUtils.isEmptyS(this.doc.getWarehouseid())) {
 			return "仓库不能为空";
 		}
-		if (TextUtils.isEmptyS(this.doc.getPrinttemplate())) {
+		if (!TextUtils.isEmptyS(this.doc.getPrinttemplate())) {
 			return "打印模板不能为空";
 		}
 		for (int i = 0; i < listItem.size(); i++) {
 			DefDocItemPD itemPD = listItem.get(i);
-			if (TextUtils.isEmptyS(itemPD.getUnitid())) {
-				return "【" + ((DefDocItemPD) itemPD).getGoodsname() + "】没有选择单位";
+			if (!TextUtils.isEmptyS(itemPD.getUnitid())) {
+				return "【" + itemPD.getGoodsname() + "】没有选择单位";
 			}
-			if ((TextUtils.isEmptyS(itemPD.getBatch())) && (itemPD.isIsusebatch())) {
+			if ((!TextUtils.isEmptyS(itemPD.getBatch())) && (itemPD.isIsusebatch())) {
 				return "【" + itemPD.getGoodsname() + "】没有选择批次";
 			}
 		}
 
-		return "";
+		return null;
 	}
 
 	public DefDocPD getDoc() {
@@ -214,12 +336,12 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		// if ((this.menuPopup != null) && (this.menuPopup.isShowing())) {
-		// this.menuPopup.dismiss();
-		// v = getWindow().getAttributes();
-		// v.alpha = 1.0F;
-		// getWindow().setAttributes(v);
-		// }
+		if ((this.menuPopup != null) && (this.menuPopup.isShowing())) {
+			this.menuPopup.dismiss();
+			LayoutParams attributes = this.getWindow().getAttributes();
+			attributes.alpha = 1.0f;
+			getWindow().setAttributes(attributes);
+		}
 		return false;
 	}
 
@@ -232,40 +354,234 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		if (resultCode == Activity.RESULT_OK) {
 			switch (requestCode) {
 			case 0:
+				this.doc = ((DefDocPD) data.getSerializableExtra("doc"));
+				break;
+			case 2:
 				this.newListItem = JSONUtil.str2list(data.getStringExtra("items"), DefDocItemPD.class);
+				ArrayList<ReqStrGetGoodsPricePD> listPricePD = new ArrayList<ReqStrGetGoodsPricePD>();
+				for (int i = 0; i < newListItem.size(); i++) {
+					DefDocItemPD defDocItemPD = newListItem.get(i);
+					ReqStrGetGoodsPricePD rp = new ReqStrGetGoodsPricePD();
+					rp.setWarehouseid(this.doc.getWarehouseid());
+					rp.setGoodsid(defDocItemPD.getGoodsid());
+					rp.setUnitid(defDocItemPD.getUnitid());
+					rp.setStocknum(0.0D);
+					rp.setCostprice(0.0D);
+					rp.setBatch(defDocItemPD.getBatch());
+					listPricePD.add(rp);
+				}
+				String respPricePD = new ServiceGoods().gds_GetMultiGoodsPricePD(listPricePD);
+				this.handlerGet.sendMessage(this.handlerGet.obtainMessage(0, respPricePD));
 				break;
 			}
 		}
+	}
+
+	public void check(final boolean print) {
+		String validateDoc = validateDoc();
+		if (validateDoc != null) {
+			InfoDialog.showError(this, validateDoc);
+			return;
+		}
+		if ((this.listItem == null) || (this.listItem.size() == 0)) {
+			InfoDialog.showError(this, "空单不能审核");
+			return;
+		}
+		final Dialog_message dialog = new Dialog_message(this);
+		dialog.setMessage("审核后的单据不能修改。\n确定审核？");
+		dialog.setCancelListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				PDH.show(InventoryEditActivity.this, new PDH.ProgressCallBack() {
+
+					@Override
+					public void action() {
+						String str = serviceStore.str_CheckPDDoc(doc, listItem, listItemDelete, print);
+						handler.sendMessage(handler.obtainMessage(1, str));
+					}
+
+				});
+
+			}
+		});
+		dialog.show();
+	}
+
+	// 属性
+	public void docProperty() {
+		Intent localIntent = new Intent();
+		localIntent.putExtra("doc", this.doc);
+		localIntent.putExtra("itemcount", this.listItem.size());
+		startActivityForResult(localIntent.setClass(this, InventoryDocOpenActivity.class), 0);
+	}
+
+	public void save() {
+		String str = validateDoc();
+		if (str != null) {
+			InfoDialog.showError(this, str);
+			return;
+		}
+		PDH.show(this, new PDH.ProgressCallBack() {
+
+			@Override
+			public void action() {
+				String str = serviceStore.str_SavePDDoc(doc, listItem, listItemDelete);
+				handler.sendMessage(handler.obtainMessage(0, str));
+			}
+
+		});
+	}
+
+	public void delete() {
+		if (this.doc.getDocid() > 0L) {
+			final Dialog_message dialog = new Dialog_message(this);
+			dialog.setMessage("确定删除?");
+			dialog.setCancelListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					PDH.show(InventoryEditActivity.this, new PDH.ProgressCallBack() {
+
+						@Override
+						public void action() {
+							String str = serviceStore.str_DeleteDoc(doc.getDoctypeid(), doc.getDocid());
+							handler.sendMessage(handler.obtainMessage(2, str));
+						}
+
+					});
+				}
+			});
+			dialog.show();
+		} else {
+			finish();
+		}
+	}
+
+	private Handler handlerGet = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			String message = msg.obj.toString();
+			if (RequestHelper.isSuccess(message)) {
+				if ((msg.what != 0) && (msg.what != 1)) {
+					return;
+				}
+				if (msg.what == 0) {
+					List<ReqStrGetGoodsPricePD> listNewItem = JSONUtil.str2list(message, ReqStrGetGoodsPricePD.class);
+					GoodsUnitDAO gd = new GoodsUnitDAO();
+					for (int i = 0; i < newListItem.size(); i++) {
+						DefDocItemPD itemPD = (DefDocItemPD) newListItem.get(i);
+						for (int j = 0; j < listNewItem.size(); j++) {
+							ReqStrGetGoodsPricePD goodsPricePD = listNewItem.get(j);
+							if ((!itemPD.getGoodsid().equals(goodsPricePD.getGoodsid()))
+									|| (!itemPD.getUnitid().equals(goodsPricePD.getUnitid()))) {
+								break;
+							}
+							itemPD.setStocknum(goodsPricePD.getStocknum());
+							itemPD.setBigstocknum(
+									gd.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getStocknum()));
+							itemPD.setNetnum(Utils.normalize(itemPD.getNum() - itemPD.getStocknum(), 2));
+							itemPD.setBignetnum(
+									gd.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getNetnum()));
+							itemPD.setCostprice(goodsPricePD.getCostprice());
+							itemPD.setNetamount(Utils.normalizeSubtotal(itemPD.getNetnum() * itemPD.getCostprice()));
+							itemPD.setBatch(goodsPricePD.getBatch());
+						}
+					}
+					listItem.addAll(newListItem);
+					adapter.setData(listItem);
+					refreshUI();
+					ishaschanged = true;
+					setActionBarText();
+				}
+				if (msg.what == 2) {
+
+				}
+			}
+		};
+	};
+
+	private void saveDoc() {
+		final MAlertDialog dialog = new MAlertDialog(this);
+		dialog.setMessage("是否保存当前单据？");
+		dialog.setCancelListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				save();
+			}
+		});
+		dialog.setComfirmListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				finish();
+			}
+		});
+		dialog.show();
+		return;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if ((this.menuPopup != null) && (this.menuPopup.isShowing())) {
+			this.menuPopup.dismiss();
+			LayoutParams attributes = getWindow().getAttributes();
+			attributes.alpha = 1.0F;
+			getWindow().setAttributes(attributes);
+			return true;
+		}
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (ishaschanged) {
+				saveDoc();
+				return true;
+			} else {
+				finish();
+			}
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public void onBackPressed() {
+		System.out.println("onBackPressed");
+		if (ishaschanged) {
+			final MAlertDialog dialog = new MAlertDialog(this);
+			dialog.setMessage("是否保存当前单据？");
+			dialog.setCancelListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					save();
+				}
+			});
+			dialog.setComfirmListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					finish();
+				}
+			});
+			dialog.show();
+			return;
+		}
+
+		// super.onBackPressed();
 	}
 
 	@Override
 	public void setActionBarText() {
 		super.setActionBarText();
 		if (this.ishaschanged) {
-			setTitle(doc.getShowid());
-		} else {
 			setTitle("*" + doc.getShowid());
+		} else {
+			setTitle(doc.getShowid());
+
 		}
-	}
-
-	// TODO 过账
-	public void check(boolean print) {
-
-	}
-
-	// 属性
-	public void docProperty() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void save() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void delete() {
-		// TODO Auto-generated method stub
-
 	}
 }

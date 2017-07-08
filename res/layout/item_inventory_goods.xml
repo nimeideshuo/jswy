@@ -27,6 +27,7 @@
 
             <TextView
                 android:id="@+id/tvGoodsName"
+                android:text="111"
                 style="@style/m_order_item"
                 android:gravity="center|left"
                 android:textSize="@dimen/list_item_inner_title" />

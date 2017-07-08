@@ -18,8 +18,6 @@ import android.widget.TextView;
 public class InventoryItemAdapter extends BaseAdapter {
 	private Context context;
 	private List<DefDocItemPD> items;
-	private View view;
-	private InventoryGoodsItem viewGroup;
 
 	public InventoryItemAdapter(Context context) {
 		this.context = context;
@@ -54,18 +52,18 @@ public class InventoryItemAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-
+		InventoryGoodsItem viewGroup;
 		if (convertView == null) {
-			view = LayoutInflater.from(this.context).inflate(R.layout.item_inventory_goods, null);
-			viewGroup = new InventoryGoodsItem(view);
-			view.setTag(viewGroup);
+			convertView = LayoutInflater.from(this.context).inflate(R.layout.item_inventory_goods, null);
+			viewGroup = new InventoryGoodsItem(convertView);
+			convertView.setTag(viewGroup);
 
 		} else {
-			viewGroup = (InventoryGoodsItem) view.getTag();
-			viewGroup.setValue((DefDocItemPD) this.items.get(position));
-			viewGroup.tvSerialid.setText(position + 1);
+			viewGroup = (InventoryGoodsItem) convertView.getTag();
 		}
-		return view;
+		viewGroup.setValue((DefDocItemPD) this.items.get(position));
+		viewGroup.tvSerialid.setText((position + 1) + "");
+		return convertView;
 	}
 
 	public class InventoryGoodsItem {
@@ -81,7 +79,7 @@ public class InventoryItemAdapter extends BaseAdapter {
 		// TODO
 		public InventoryGoodsItem(View view) {
 			this.tvSerialid = ((TextView) view.findViewById(R.id.tvSerialid));
-			this.tvName = ((TextView) view.findViewById(R.id.tvName));
+			this.tvName = ((TextView) view.findViewById(R.id.tvGoodsName));
 			this.tvBarcode = ((TextView) view.findViewById(R.id.tvBarcode));
 			this.tvStockNum = ((TextView) view.findViewById(R.id.tvStockNum));
 			this.tvNum = ((TextView) view.findViewById(R.id.tvNum));

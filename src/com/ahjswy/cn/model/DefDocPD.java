@@ -2,18 +2,14 @@ package com.ahjswy.cn.model;
 
 import java.io.Serializable;
 
-import com.ahjswy.cn.utils.TextUtils;
-
-public class DefDocPD
-  implements Serializable
-{
-  private static final long serialVersionUID = 1L;
-  private String builderid;
-  private String buildername;
-  private String buildtime;
-  private String departmentid;
-  private String departmentname;
-  private double discountratio;
+public class DefDocPD implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private String builderid;
+	private String buildername;
+	private String buildtime;
+	private String departmentid;
+	private String departmentname;
+	private double discountratio;
   private long docid;
   private String doctypeid;
   private String doctypename;

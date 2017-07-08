@@ -97,10 +97,8 @@ public class OutDocOpenActivity extends BaseActivity
 
 	private void initdate() {
 		this.doc = ((DefDocXS) getIntent().getSerializableExtra("doc"));
-		if ((this.doc != null) && (this.doc.isIsavailable())) {
-			if (doc.isIsposted()) {
-				this.isReadOnly = true;
-			}
+		this.isReadOnly = this.doc == null || !this.doc.isIsavailable() || !this.doc.isIsposted() ? false : true;
+		if (this.doc != null) {
 			this.btnDepartment.setTag(this.doc.getDepartmentid());
 			this.btnDepartment.setText(this.doc.getDepartmentname());
 			this.btnWarehouse.setTag(this.doc.getWarehouseid());

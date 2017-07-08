@@ -21,6 +21,8 @@ public class Dialog_message extends Dialog {
 	public Dialog_message(Context context) {
 		super(context, R.style.MyDialog_NoTitle);
 		this.context = context;
+		setContentView(R.layout.dialog_pay_money);
+		initView();
 	}
 
 	// /*
@@ -31,13 +33,13 @@ public class Dialog_message extends Dialog {
 	// this.context = context;
 	// }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_pay_money);
-		initView();
-
-	}
+	// @Override
+	// protected void onCreate(Bundle savedInstanceState) {
+	// super.onCreate(savedInstanceState);
+	// setContentView(R.layout.dialog_pay_money);
+	// initView();
+	//
+	// }
 
 	private void initView() {
 		tv_message = (TextView) findViewById(R.id.tv_message);

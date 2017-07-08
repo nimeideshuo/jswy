@@ -14,6 +14,7 @@ import com.ahjswy.cn.ui.WarehouseSearchAct;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
+import com.ahjswy.cn.utils.Utils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -51,17 +52,44 @@ public class InventoryDocOpenActivity extends BaseActivity implements OnClickLis
 		btnWarehouse.setOnClickListener(this);
 	}
 
+	private int itemcount;
+	private boolean isReadOnly;
+
 	private void initData() {
-		Department localDepartment = SystemState.getDepartment();
-		if (localDepartment != null) {
-			this.btnDepartment.setTag(localDepartment.getDid());
-			this.btnDepartment.setText(localDepartment.getDname());
+		this.doc = ((DefDocPD) getIntent().getSerializableExtra("doc"));
+		this.itemcount = getIntent().getIntExtra("itemcount", 0);
+		this.isReadOnly = this.doc == null || !this.doc.isIsavailable() || !this.doc.isIsposted() ? false : true;
+		if (this.doc != null) {
+			this.btnDepartment.setTag(this.doc.getDepartmentid());
+			this.btnWarehouse.setTag(this.doc.getWarehouseid());
+			this.btnDepartment.setText(this.doc.getDepartmentname());
+			this.btnWarehouse.setText(this.doc.getWarehousename());
+			this.etSummary.setText(this.doc.getSummary());
+			this.etRemark.setText(this.doc.getRemark());
+		} else {
+			Department localDepartment = SystemState.getDepartment();
+			if (localDepartment != null) {
+				this.btnDepartment.setTag(localDepartment.getDid());
+				this.btnDepartment.setText(localDepartment.getDname());
+			}
+			// 设置仓库
+			Warehouse localWarehouse = SystemState.getWarehouse();
+			if (localWarehouse != null) {
+				this.btnWarehouse.setTag(localWarehouse.getId().toString());
+				this.btnWarehouse.setText(localWarehouse.getName());
+			}
 		}
-		// 设置仓库
-		Warehouse localWarehouse = SystemState.getWarehouse();
-		if (localWarehouse != null) {
-			this.btnWarehouse.setTag(localWarehouse.getId().toString());
-			this.btnWarehouse.setText(localWarehouse.getName());
+		if (isReadOnly) {
+			this.btnDepartment.setBackground(this.etSummary.getBackground());
+			this.btnWarehouse.setBackground(this.etSummary.getBackground());
+			this.btnDepartment.setPadding(Utils.dp2px(this, 10), 0, 0, 0);
+			this.btnWarehouse.setPadding(Utils.dp2px(this, 10), 0, 0, 0);
+			this.etSummary.setCursorVisible(false);
+			this.etSummary.setFocusable(false);
+			this.etSummary.setFocusableInTouchMode(false);
+			this.etRemark.setCursorVisible(false);
+			this.etRemark.setFocusable(false);
+			this.etRemark.setFocusableInTouchMode(false);
 		}
 	}
 
@@ -136,6 +164,7 @@ public class InventoryDocOpenActivity extends BaseActivity implements OnClickLis
 				DocContainerEntity docent = (DocContainerEntity) JSONUtil.readValue(str, DocContainerEntity.class);
 				doc = ((DefDocPD) JSONUtil.readValue(docent.getDoc(), DefDocPD.class));
 				fillDoc();
+				docent.setDoc(JSONUtil.object2Json(doc));
 				Intent localIntent = new Intent();
 				localIntent.setClass(InventoryDocOpenActivity.this, InventoryEditActivity.class);
 				localIntent.putExtra("docContainer", docent);
@@ -155,7 +184,11 @@ public class InventoryDocOpenActivity extends BaseActivity implements OnClickLis
 			startActivityForResult(new Intent(this, DepartmentSearchAct.class), 1);
 			break;
 		case R.id.btnWarehouse:
-			startActivityForResult(new Intent(this, WarehouseSearchAct.class), 2);
+			if (this.itemcount == 0) {
+				startActivityForResult(new Intent(this, WarehouseSearchAct.class), 2);
+				return;
+			}
+			PDH.showMessage("单据中已存在盘点商品，不能更改仓库");
 			break;
 		}
 	}

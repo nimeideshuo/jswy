@@ -1,6 +1,7 @@
 package com.ahjswy.cn.ui;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.utils.TextUtils;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -44,8 +45,15 @@ public class MAlertDialog extends Dialog {
 	}
 
 	// 确认监听
-	public void setCancelListener(View.OnClickListener paramOnClickListener) {
-		btn_dialg_true.setOnClickListener(paramOnClickListener);
+	public void setCancelListener(View.OnClickListener onClickListener) {
+		btn_dialg_true.setOnClickListener(onClickListener);
+	}
+
+	public void setCancelListener(String buttonStr, View.OnClickListener onClickListener) {
+		btn_dialg_true.setOnClickListener(onClickListener);
+		if (!TextUtils.isEmpty(buttonStr)) {
+			btn_dialg_true.setText(buttonStr);
+		}
 	}
 
 	public void setCancelListener(String cancel) {

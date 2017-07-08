@@ -389,6 +389,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 			break;
 
 		case 0:
+			//popup_menu_outin
 			if (menuPopup == null) {
 				menuPopup = new MenuPayPopup(OutInDocEditActivity.this);
 			}

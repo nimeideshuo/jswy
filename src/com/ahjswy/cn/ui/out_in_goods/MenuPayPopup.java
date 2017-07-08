@@ -29,7 +29,7 @@ public class MenuPayPopup extends PopupWindow implements OnClickListener {
 
 	public MenuPayPopup(Activity activity) {
 		this.activity = activity;
-		root = LayoutInflater.from(activity).inflate(R.layout.popup_menu_inventoryedit, null);
+		root = LayoutInflater.from(activity).inflate(R.layout.popup_menu_outin, null);
 		setContentView(root);
 		initView();
 		setAnimationStyle(R.style.buttom_in_out);

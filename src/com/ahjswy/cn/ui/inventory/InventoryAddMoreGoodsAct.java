@@ -28,7 +28,7 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 		items = JSONUtil.str2list(stringExtra, DefDocItemPD.class);
 		listView = ((ListView) findViewById(R.id.listView));
 		adapter = new InventoryAddMoreAdapter(this);
-		this.adapter.setData(this.items);
+		this.adapter.setItem(items);
 		this.listView.setAdapter(this.adapter);
 
 	}

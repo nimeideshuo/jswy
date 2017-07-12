@@ -22,6 +22,8 @@ import com.ahjswy.cn.print.BTPrintHelper.PrintOverCall;
 import com.ahjswy.cn.print.PrintMode;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespServiceInfor;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
@@ -58,10 +60,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import mexxen.mx5010.barcode.BarcodeConfig;
-import mexxen.mx5010.barcode.BarcodeEvent;
-import mexxen.mx5010.barcode.BarcodeListener;
-import mexxen.mx5010.barcode.BarcodeManager;
 
 /**
  * 销售订单编辑
@@ -183,29 +181,36 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		listView.setOnItemClickListener(goodsItemListener);
 		listView.setOnTouchListener(this);
 		dialog = new Dialog_listCheckBox(this);
-		bc = new BarcodeConfig(this);
-		// 设置条码输出模式 不显示模式(复制到粘贴板)
-		bc.setOutputMode(2);
-		bm = new BarcodeManager(this);
-		bm.addListener(barcodeListener);
-
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
 	}
 
-	BarcodeListener barcodeListener = new BarcodeListener() {
+	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
 
 		@Override
-		public void barcodeEvent(BarcodeEvent event) {
-			// 当条码事件的命令为“SCANNER_READ”时，进行操作
-			if (event.getOrder().equals("SCANNER_READ")) {
-				atvSearch.setText("");
-				if (dialog != null) {
-					dialog.dismiss();
-				}
-				readBarcode(bm.getBarcode().toString().trim());
+		public void setBarcode(String barcode) {
+			atvSearch.setText("");
+			if (dialog != null) {
+				dialog.dismiss();
 			}
-
-		};
+			readBarcode(barcode);
+		}
 	};
+	// BarcodeListener barcodeListener = new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent event) {
+	// // 当条码事件的命令为“SCANNER_READ”时，进行操作
+	// if (event.getOrder().equals("SCANNER_READ")) {
+	// atvSearch.setText("");
+	// if (dialog != null) {
+	// dialog.dismiss();
+	// }
+	// readBarcode(bm.getBarcode().toString().trim());
+	// }
+	//
+	// };
+	// };
 
 	protected void readBarcode(String barcodeStr) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcodeStr);
@@ -243,7 +248,8 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	@Override
 	protected void onPause() {
 		super.onPause();
-		deleBm();
+		// deleBm();
+		scaner.removeListener();
 	}
 
 	@Override
@@ -283,18 +289,18 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	}
 
 	// 去除扫码枪
-	private void deleBm() {
-		if (bm != null) {
-			bm.removeListener(new BarcodeListener() {
-
-				@Override
-				public void barcodeEvent(BarcodeEvent arg0) {
-				}
-			});
-			bm.dismiss();
-			bm = null;
-		}
-	}
+	// private void deleBm() {
+	// if (bm != null) {
+	// bm.removeListener(new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent arg0) {
+	// }
+	// });
+	// bm.dismiss();
+	// bm = null;
+	// }
+	// }
 
 	/* 商品item点击 商品详细信息 */
 	OnItemClickListener goodsItemListener = new OnItemClickListener() {
@@ -389,7 +395,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 			break;
 
 		case 0:
-			//popup_menu_outin
+			// popup_menu_outin
 			if (menuPopup == null) {
 				menuPopup = new MenuPayPopup(OutInDocEditActivity.this);
 			}
@@ -882,9 +888,10 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	private boolean ishaschanged;
 	private ArrayList<DefDocItemDD> newListItem;
 	private List<DefDocItemDD> listItem;
-	private BarcodeConfig bc;
-	private BarcodeManager bm;
+	// private BarcodeConfig bc;
+	// private BarcodeManager bm;
 	private ArrayList<DefDocItemDD> localArrayList;
+	private Scaner scaner;
 
 	@Override
 	public boolean onTouch(View paramView, MotionEvent paramMotionEvent) {

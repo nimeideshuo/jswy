@@ -115,11 +115,6 @@ public class CTelephoneInfo {
 			return false;
 	}
 
-	// public boolean isDataConnected1() {
-	// return ((!(TextUtils.equals(this.iDataConnected1, "2"))) &&
-	// (!(TextUtils.equals(this.iDataConnected1, "1"))));
-	// }
-
 	public boolean isDataConnected2() {
 		return ((!(TextUtils.equals(this.iDataConnected2, "2"))) && (!(TextUtils.equals(this.iDataConnected2, "1"))));
 	}

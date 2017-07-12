@@ -19,6 +19,8 @@ import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.popupmenu.InDocEditMenuPopup;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
@@ -61,10 +63,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import mexxen.mx5010.barcode.BarcodeConfig;
-import mexxen.mx5010.barcode.BarcodeEvent;
-import mexxen.mx5010.barcode.BarcodeListener;
-import mexxen.mx5010.barcode.BarcodeManager;
 
 public class InDocEditActivity extends BaseActivity
 		implements OnClickListener, OnItemClickListener, OnTouchListener, Sum {
@@ -200,30 +198,45 @@ public class InDocEditActivity extends BaseActivity
 
 	}
 
+	Scaner scaner;
+
 	public void addListener() {
-		BarcodeConfig barcodeConfig = new BarcodeConfig(this);
-		// 设置条码输出模式 不显示
-		barcodeConfig.setOutputMode(2);
-		if (bm == null) {
-			bm = new BarcodeManager(this);
-		}
-		bm.addListener(bl);
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
+		// BarcodeConfig barcodeConfig = new BarcodeConfig(this);
+		// // 设置条码输出模式 不显示
+		// barcodeConfig.setOutputMode(2);
+		// if (bm == null) {
+		// bm = new BarcodeManager(this);
+		// }
+		// bm.addListener(bl);
 	}
 
-	private BarcodeListener bl = new BarcodeListener() {
+	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
 
 		@Override
-		public void barcodeEvent(BarcodeEvent event) {
-			if (event.getOrder().equals("SCANNER_READ")) {
-				atvSearch.setText("");
-				if (dialog != null) {
-					dialog.dismiss();
-				}
-				// 调用 getBarcode()方法读取条码信息
-				readBarcode(bm.getBarcode().toString().trim());
+		public void setBarcode(String barcode) {
+			atvSearch.setText("");
+			if (dialog != null) {
+				dialog.dismiss();
 			}
+			readBarcode(barcode);
 		}
 	};
+	// private BarcodeListener bl = new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent event) {
+	// if (event.getOrder().equals("SCANNER_READ")) {
+	// atvSearch.setText("");
+	// if (dialog != null) {
+	// dialog.dismiss();
+	// }
+	// // 调用 getBarcode()方法读取条码信息
+	// readBarcode(bm.getBarcode().toString().trim());
+	// }
+	// }
+	// };
 
 	private void readBarcode(String barcode) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
@@ -327,7 +340,8 @@ public class InDocEditActivity extends BaseActivity
 	@Override
 	protected void onPause() {
 		super.onPause();
-		deleBm();
+		// deleBm();
+		scaner.removeListener();
 	}
 
 	public DefDoc getDoc() {
@@ -405,6 +419,12 @@ public class InDocEditActivity extends BaseActivity
 			}
 			break;
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// TODO 这个地方可能有bug
 	}
 
 	public void closeInputMethod() {
@@ -568,19 +588,19 @@ public class InDocEditActivity extends BaseActivity
 		}
 	}
 
-	public void deleBm() {
-		if (bm != null) {
-			bm.removeListener(new BarcodeListener() {
-
-				@Override
-				public void barcodeEvent(BarcodeEvent arg0) {
-
-				}
-			});
-			bm.dismiss();
-			bm = null;
-		}
-	}
+	// public void deleBm() {
+	// if (bm != null) {
+	// bm.removeListener(new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent arg0) {
+	//
+	// }
+	// });
+	// bm.dismiss();
+	// bm = null;
+	// }
+	// }
 
 	private void intenToMain() {
 		if (ishaschanged) {
@@ -889,7 +909,7 @@ public class InDocEditActivity extends BaseActivity
 		}
 
 	};
-	private BarcodeManager bm;
+	// private BarcodeManager bm;
 	private Dialog_listCheckBox dialog;
 	private MAlertDialog maler;
 

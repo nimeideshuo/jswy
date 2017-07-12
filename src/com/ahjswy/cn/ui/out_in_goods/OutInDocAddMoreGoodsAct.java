@@ -13,6 +13,8 @@ import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespGoodsStock;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceSupport;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.DocUtils;
@@ -30,9 +32,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
-import mexxen.mx5010.barcode.BarcodeEvent;
-import mexxen.mx5010.barcode.BarcodeListener;
-import mexxen.mx5010.barcode.BarcodeManager;
 
 /**
  * 销售订单数量添加Activity
@@ -46,7 +45,7 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 	private Def_Doc doccg;
 	private OutInDocAddMoreAdapter adapter;
 	private Dialog_listCheckBox dialog;
-	private BarcodeManager bm;
+	// private BarcodeManager bm;
 	private ServiceSupport support;
 
 	@Override
@@ -148,27 +147,38 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 		finish();
 	}
 
-	private void deleBm() {
-		if (bm != null) {
-			bm.removeListener(new BarcodeListener() {
-
-				@Override
-				public void barcodeEvent(BarcodeEvent arg0) {
-
-				}
-			});
-			bm.dismiss();
-			bm = null;
-		}
-	}
+	// private void deleBm() {
+	// if (bm != null) {
+	// bm.removeListener(new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent arg0) {
+	//
+	// }
+	// });
+	// bm.dismiss();
+	// bm = null;
+	// }
+	// }
 
 	private void addListener() {
-		if (bm == null) {
-			bm = new BarcodeManager(this);
-		}
-		bm.addListener(bl);
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
+		// if (bm == null) {
+		// bm = new BarcodeManager(this);
+		// }
+		// bm.addListener(bl);
 
 	}
+
+	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
+
+		@Override
+		public void setBarcode(String barcode) {
+			readBarcode(barcode);
+		}
+	};
+	private Scaner scaner;
 
 	protected void readBarcode(String barcode) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
@@ -204,20 +214,21 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 		}
 	}
 
-	private BarcodeListener bl = new BarcodeListener() {
-
-		@Override
-		public void barcodeEvent(BarcodeEvent event) {
-			if (event.getOrder().equals("SCANNER_READ")) {
-				readBarcode(bm.getBarcode().toString().trim());
-			}
-		}
-	};
+	// private BarcodeListener bl = new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent event) {
+	// if (event.getOrder().equals("SCANNER_READ")) {
+	// readBarcode(bm.getBarcode().toString().trim());
+	// }
+	// }
+	// };
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		deleBm();
+		scaner.removeListener();
+		// deleBm();
 	}
 
 	private DefDocItemDD fillItem(GoodsThin localGoodsThin, double num, double price, long l) {

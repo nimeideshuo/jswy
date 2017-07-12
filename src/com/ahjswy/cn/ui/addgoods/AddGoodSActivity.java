@@ -4,13 +4,11 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.model.GoodsClass;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
-import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -74,7 +72,6 @@ public class AddGoodSActivity extends BaseActivity implements OnClickListener {
 		menu.add(0, 0, 0, "确定").setShowAsAction(1);
 		return super.onCreateOptionsMenu(menu);
 	}
-
 
 	private void startInto() {
 		// serviceStore.GetPriceSystem();
@@ -142,6 +139,7 @@ public class AddGoodSActivity extends BaseActivity implements OnClickListener {
 			}
 		}
 	}
+
 	public void setActionBarText() {
 		setTitle("新增商品");
 	}

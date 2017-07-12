@@ -10,6 +10,8 @@ import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
 import com.ahjswy.cn.ui.addgoods.AddGoodSActivity;
@@ -41,6 +43,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class SwyMain extends BaseActivity implements OnClickListener, BumenCall {
 	AccountPreference ap;

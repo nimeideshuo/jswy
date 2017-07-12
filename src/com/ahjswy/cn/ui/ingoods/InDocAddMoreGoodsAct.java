@@ -12,6 +12,8 @@ import com.ahjswy.cn.model.DefDocItem;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.response.RespGoodsWarehouse;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.JSONUtil;
@@ -58,31 +60,46 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 
 	}
 
-	private BarcodeListener bl = new BarcodeListener() {
-
-		@Override
-		public void barcodeEvent(BarcodeEvent event) {
-			if (event.getOrder().equals("SCANNER_READ")) {
-				if (dialog != null) {
-					dialog.dismiss();
-				}
-				readBarcode(bm.getBarcode().toString().trim());
-			}
-		}
-
-	};
+	// private BarcodeListener bl = new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent event) {
+	// if (event.getOrder().equals("SCANNER_READ")) {
+	// if (dialog != null) {
+	// dialog.dismiss();
+	// }
+	// readBarcode(bm.getBarcode().toString().trim());
+	// }
+	// }
+	//
+	// };
+	Scaner scaner;
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		bm = new BarcodeManager(this);
-		bm.addListener(bl);
+		// bm = new BarcodeManager(this);
+		// bm.addListener(bl);
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
 	}
+
+	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
+
+		@Override
+		public void setBarcode(String barcode) {
+			if (dialog != null) {
+				dialog.dismiss();
+			}
+			readBarcode(barcode);
+		}
+	};
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		deleBm();
+		// deleBm();
+		scaner.removeListener();
 	}
 
 	private void readBarcode(String barcode) {
@@ -153,20 +170,20 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		return true;
 	}
 
-	public void deleBm() {
-		if (bm != null) {
-			bm.removeListener(new BarcodeListener() {
-
-				@Override
-				public void barcodeEvent(BarcodeEvent arg0) {
-
-				}
-			});
-			bm.dismiss();
-			bm = null;
-		}
-
-	}
+	// public void deleBm() {
+	// if (bm != null) {
+	// bm.removeListener(new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent arg0) {
+	//
+	// }
+	// });
+	// bm.dismiss();
+	// bm = null;
+	// }
+	//
+	// }
 
 	// // 扫码枪结果添加
 	// Handler handlerItem = new Handler() {

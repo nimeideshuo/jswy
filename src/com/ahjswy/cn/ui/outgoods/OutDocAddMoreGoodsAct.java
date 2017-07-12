@@ -13,6 +13,8 @@ import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespGoodsWarehouse;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.DocUtils;
@@ -69,32 +71,46 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		if (Newitems == null) {
 			Newitems = new ArrayList<DefDocItemXS>();
 		}
-		if (bm == null) {
-			bm = new BarcodeManager(this);
-		}
-		bm.addListener(new BarcodeListener() {
-			@Override
-			public void barcodeEvent(BarcodeEvent event) {
-				if (event.getOrder().equals("SCANNER_READ")) {
-					if (dialog != null) {
-						dialog.dismiss();
-					}
-					readBarcode(bm.getBarcode().toString().trim());
-				}
-
-			}
-		});
-		// 扫码枪 功能调用 先new 对相 在调用
-		barcodeConfig = new BarcodeConfig(this);
-		// 设置条码输出模式 不显示模式(复制到粘贴板)
-		barcodeConfig.setOutputMode(2);
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
+		// if (bm == null) {
+		// bm = new BarcodeManager(this);
+		// }
+		// bm.addListener(new BarcodeListener() {
+		// @Override
+		// public void barcodeEvent(BarcodeEvent event) {
+		// if (event.getOrder().equals("SCANNER_READ")) {
+		// if (dialog != null) {
+		// dialog.dismiss();
+		// }
+		// readBarcode(bm.getBarcode().toString().trim());
+		// }
+		//
+		// }
+		// });
+		// // 扫码枪 功能调用 先new 对相 在调用
+		// barcodeConfig = new BarcodeConfig(this);
+		// // 设置条码输出模式 不显示模式(复制到粘贴板)
+		// barcodeConfig.setOutputMode(2);
 
 	}
+
+	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
+
+		@Override
+		public void setBarcode(String barcode) {
+			if (dialog != null) {
+				dialog.dismiss();
+			}
+			readBarcode(barcode);
+		}
+	};
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		deleBm();
+		// deleBm();
+		scaner.removeListener();
 	}
 
 	protected void readBarcode(String barcode) {
@@ -185,19 +201,19 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		return true;
 	}
 
-	public void deleBm() {
-		if (bm != null) {
-			bm.removeListener(new BarcodeListener() {
-
-				@Override
-				public void barcodeEvent(BarcodeEvent arg0) {
-
-				}
-			});
-			bm.dismiss();
-			bm = null;
-		}
-	}
+	// public void deleBm() {
+	// if (bm != null) {
+	// bm.removeListener(new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent arg0) {
+	//
+	// }
+	// });
+	// bm.dismiss();
+	// bm = null;
+	// }
+	// }
 
 	// 初始化 设置 库存 单位转换
 	protected void setInitItem() {
@@ -235,9 +251,10 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 
 	private List<DefDocItemXS> listDe;
 	private ListView lv_commodity_add;
-	private BarcodeManager bm;
-	private BarcodeConfig barcodeConfig;
+	// private BarcodeManager bm;
+	// private BarcodeConfig barcodeConfig;
 	private Dialog_listCheckBox dialog;
+	private Scaner scaner;
 
 	// 保存输入的值 必须有一个 大于0 的
 	private void tv_title_start() {

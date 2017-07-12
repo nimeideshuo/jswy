@@ -7,24 +7,31 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemPD;
+import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocPD;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPricePD;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchHelper;
+import com.ahjswy.cn.ui.outgoods.OutDocAddMoreGoodsAct;
+import com.ahjswy.cn.ui.outgoods.OutDocEditActivity;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextView;
+import com.ahjswy.cn.views.Dialog_listCheckBox;
 import com.ahjswy.cn.views.Dialog_message;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -60,10 +67,11 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 	private boolean ishaschanged;
 	private SearchHelper searchHelper;
 	private DocContainerEntity docContainer;
-	DefDocPD doc;
+	static DefDocPD doc;
 	List<DefDocItemPD> listItem;
 	private ArrayList<Long> listItemDelete;
 	private InventoryItemAdapter adapter;
+	private Scaner scaner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +81,8 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		initListView();
 		initView();
 		initData();
-
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
 	}
 
 	private void initView() {
@@ -84,6 +93,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		searchHelper = new SearchHelper(this, this.linearSearch);
 		listItemDelete = new ArrayList<Long>();
 		btnAdd.setOnClickListener(addMoreListener);
+		dialog = new Dialog_listCheckBox(this);
 	}
 
 	private void initListView() {
@@ -130,6 +140,53 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			}
 		});
 
+	}
+
+	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
+
+		@Override
+		public void setBarcode(String barcode) {
+			atvSearch.setText("");
+			if (dialog != null) {
+				dialog.dismiss();
+			}
+			readBarcode(barcode);
+		}
+	};
+
+	private void readBarcode(String barcode) {
+		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
+		localArrayList = new ArrayList<DefDocItemPD>();
+		if (goodsThinList.size() == 1) {
+			DefDocItemPD fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, 0);
+			localArrayList.add(fillItem);
+			Intent intent = new Intent(InventoryEditActivity.this, InventoryAddMoreGoodsAct.class);
+			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("doc", doc);
+			startActivityForResult(intent, 1);
+		} else if (goodsThinList.size() > 1) {
+
+			dialog.setGoods(goodsThinList);
+			dialog.setTempGoods(goodsThinList);
+			dialog.ShowMe();
+			dialog.ensure(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					List<GoodsThin> select = dialog.getSelect();
+					for (int i = 0; i < select.size(); i++) {
+						DefDocItemPD fillItem = fillItem(select.get(i), 0.0D, 0.0D, 0);
+						localArrayList.add(fillItem);
+					}
+					Intent intent = new Intent(InventoryEditActivity.this, InventoryAddMoreGoodsAct.class);
+					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+					intent.putExtra("doc", doc);
+					startActivityForResult(intent, 1);
+				}
+			});
+		} else {
+			PDH.showFail("没有查找到商品！可以尝试更新数据");
+		}
 	}
 
 	private Handler handler = new Handler() {
@@ -264,11 +321,11 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		return super.onOptionsItemSelected(menu);
 	}
 
-	protected DefDocItemPD fillItem(GoodsThin goodsThin, double stocknum, double costprice, double number) {
+	public static DefDocItemPD fillItem(GoodsThin goodsThin, double stocknum, double costprice, double number) {
 		GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
 		DefDocItemPD defDocItemPD = new DefDocItemPD();
 		defDocItemPD.setItemid(0L);
-		defDocItemPD.setDocid(this.doc.getDocid());
+		defDocItemPD.setDocid(doc.getDocid());
 		defDocItemPD.setGoodsid(goodsThin.getId());
 		defDocItemPD.setGoodsname(goodsThin.getName());
 		defDocItemPD.setBarcode(goodsThin.getBarcode());
@@ -501,6 +558,8 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			}
 		};
 	};
+	private Dialog_listCheckBox dialog;
+	private ArrayList<DefDocItemPD> localArrayList;
 
 	private void saveDoc() {
 		final MAlertDialog dialog = new MAlertDialog(this);

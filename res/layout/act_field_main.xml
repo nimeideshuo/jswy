@@ -393,6 +393,7 @@
                     android:background="@color/bg_main_divder" />
 
                 <LinearLayout
+                    android:id="@+id/test"
                     style="@style/style_function_menu"
                     android:layout_width="0.0dip"
                     android:layout_height="fill_parent"

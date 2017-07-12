@@ -28,6 +28,8 @@ import com.ahjswy.cn.print.PrintMode;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespPromotionRule;
 import com.ahjswy.cn.response.RespServiceInfor;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
@@ -69,10 +71,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import mexxen.mx5010.barcode.BarcodeConfig;
-import mexxen.mx5010.barcode.BarcodeEvent;
-import mexxen.mx5010.barcode.BarcodeListener;
-import mexxen.mx5010.barcode.BarcodeManager;
 
 public class OutDocEditActivity extends BaseActivity implements OnItemClickListener, OnClickListener, OnTouchListener {
 	private ServiceStore serviceStore;
@@ -198,28 +196,41 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	}
 
 	private void addListener() {
-		BarcodeConfig barcodeConfig = new BarcodeConfig(this);
-		// 设置条码输出模式 不显示模式(复制到粘贴板)
-		barcodeConfig.setOutputMode(2);
-		if (bm == null) {
-			bm = new BarcodeManager(this);
-		}
-		bm.addListener(bl);
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
+		// BarcodeConfig barcodeConfig = new BarcodeConfig(this);
+		// // 设置条码输出模式 不显示模式(复制到粘贴板)
+		// barcodeConfig.setOutputMode(2);
+		// if (bm == null) {
+		// bm = new BarcodeManager(this);
+		// }
+		// bm.addListener(bl);
 	}
 
-	private BarcodeListener bl = new BarcodeListener() {
+	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
 
 		@Override
-		public void barcodeEvent(BarcodeEvent event) {
-			if (event.getOrder().equals("SCANNER_READ")) {
-				atvSearch.setText("");
-				if (dialog != null) {
-					dialog.dismiss();
-				}
-				readBarcode(bm.getBarcode().toString().trim());
+		public void setBarcode(String barcode) {
+			atvSearch.setText("");
+			if (dialog != null) {
+				dialog.dismiss();
 			}
+			readBarcode(barcode);
 		}
 	};
+	// private BarcodeListener bl = new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent event) {
+	// if (event.getOrder().equals("SCANNER_READ")) {
+	// atvSearch.setText("");
+	// if (dialog != null) {
+	// dialog.dismiss();
+	// }
+	// readBarcode(bm.getBarcode().toString().trim());
+	// }
+	// }
+	// };
 
 	private void readBarcode(String barcode) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
@@ -228,7 +239,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			long l = getMaxTempItemId();
 			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, l + 1L);
 			localArrayList.add(fillItem);
-			// deleBm();
 			Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
 			intent.putExtra("doc", doc);
@@ -278,8 +288,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	@Override
 	protected void onPause() {
 		super.onPause();
-		deleBm();
-
+		scaner.removeListener();
 	}
 
 	@Override
@@ -296,18 +305,18 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		}
 	}
 
-	public void deleBm() {
-		if (bm != null) {
-			bm.removeListener(new BarcodeListener() {
-
-				@Override
-				public void barcodeEvent(BarcodeEvent arg0) {
-				}
-			});
-			bm.dismiss();
-			bm = null;
-		}
-	}
+	// public void deleBm() {
+	// if (bm != null) {
+	// bm.removeListener(new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent arg0) {
+	// }
+	// });
+	// bm.dismiss();
+	// bm = null;
+	// }
+	// }
 
 	public void closeInputMethod() {
 		// 获取当前输入法状态
@@ -571,7 +580,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				}
 
 			}
-			// deleBm();
 			startActivityForResult(new Intent().setClass(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class)
 					.putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc", doc), 1);
 		}
@@ -1052,11 +1060,12 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private List<DefDocItemXS> newListItem;
 	private Button bt_sumNumber;
 	private Button bt_totalSum;
-	private BarcodeManager bm;
+	// private BarcodeManager bm;
 	private Dialog_listCheckBox dialog;
 	private Button btnGoodClass;
 	private double preference;// 优惠
 	private double received;// 已收
+	private Scaner scaner;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

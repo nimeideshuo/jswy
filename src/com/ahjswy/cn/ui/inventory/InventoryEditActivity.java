@@ -1,5 +1,6 @@
 package com.ahjswy.cn.ui.inventory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,6 @@ import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemPD;
-import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocPD;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.model.GoodsThin;
@@ -23,8 +23,6 @@ import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchHelper;
-import com.ahjswy.cn.ui.outgoods.OutDocAddMoreGoodsAct;
-import com.ahjswy.cn.ui.outgoods.OutDocEditActivity;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
@@ -53,9 +51,12 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class InventoryEditActivity extends BaseActivity implements OnTouchListener {
 	private RelativeLayout root;
@@ -67,7 +68,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 	private boolean ishaschanged;
 	private SearchHelper searchHelper;
 	private DocContainerEntity docContainer;
-	static DefDocPD doc;
+	DefDocPD doc;
 	List<DefDocItemPD> listItem;
 	private ArrayList<Long> listItemDelete;
 	private InventoryItemAdapter adapter;
@@ -93,7 +94,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		searchHelper = new SearchHelper(this, this.linearSearch);
 		listItemDelete = new ArrayList<Long>();
 		btnAdd.setOnClickListener(addMoreListener);
-		dialog = new Dialog_listCheckBox(this);
+		atvSearch.setOnItemClickListener(atvSearchonItemClickListener);
 	}
 
 	private void initListView() {
@@ -139,7 +140,29 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				return false;
 			}
 		});
+		mListView.setOnItemClickListener(new OnItemClickListener() {
 
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if (doc.isIsavailable() && doc.isIsposted()) {
+					return;
+				}
+
+				if ((menuPopup != null) && (menuPopup.isShowing())) {
+					menuPopup.dismiss();
+					WindowManager.LayoutParams attributes = getWindow().getAttributes();
+					attributes.alpha = 1.0f;
+					getWindow().setAttributes(attributes);
+				}
+
+				Intent intent = new Intent(InventoryEditActivity.this, InventoryAddGoodAct.class);
+				intent.putExtra("warehouseid", doc.getWarehouseid());
+				intent.putExtra("position", position);
+				intent.putExtra("docitem", (Serializable) listItem.get(position));
+				startActivityForResult(intent, 3);
+
+			}
+		});
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
@@ -147,46 +170,106 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		@Override
 		public void setBarcode(String barcode) {
 			atvSearch.setText("");
-			if (dialog != null) {
-				dialog.dismiss();
-			}
+			// if (dialog != null) {
+			// dialog.dismiss();
+			// }
 			readBarcode(barcode);
 		}
 	};
+	public AdapterView.OnItemClickListener atvSearchonItemClickListener = new AdapterView.OnItemClickListener() {
 
-	private void readBarcode(String barcode) {
-		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
-		localArrayList = new ArrayList<DefDocItemPD>();
-		if (goodsThinList.size() == 1) {
-			DefDocItemPD fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, 0);
-			localArrayList.add(fillItem);
-			Intent intent = new Intent(InventoryEditActivity.this, InventoryAddMoreGoodsAct.class);
-			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
-			intent.putExtra("doc", doc);
-			startActivityForResult(intent, 1);
-		} else if (goodsThinList.size() > 1) {
-
-			dialog.setGoods(goodsThinList);
-			dialog.setTempGoods(goodsThinList);
-			dialog.ShowMe();
-			dialog.ensure(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dialog.dismiss();
-					List<GoodsThin> select = dialog.getSelect();
-					for (int i = 0; i < select.size(); i++) {
-						DefDocItemPD fillItem = fillItem(select.get(i), 0.0D, 0.0D, 0);
-						localArrayList.add(fillItem);
-					}
-					Intent intent = new Intent(InventoryEditActivity.this, InventoryAddMoreGoodsAct.class);
-					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
-					intent.putExtra("doc", doc);
-					startActivityForResult(intent, 1);
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			if ((menuPopup != null) && (menuPopup.isShowing())) {
+				menuPopup.dismiss();
+				WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
+				localLayoutParams.alpha = 1.0F;
+				getWindow().setAttributes(localLayoutParams);
+			}
+			if (!TextUtils.isEmptyS(doc.getWarehouseid())) {
+				PDH.showMessage("请先选择盘点仓库");
+				return;
+			}
+			// GoodsUnit localGoodsUnit;
+			// if (Utils.DEFAULT_TransferDocUNIT == 0) {
+			// localGoodsUnit = new
+			// GoodsUnitDAO().getBasicUnit(localGoodsThin.getId());
+			// } else {
+			// localGoodsUnit = new
+			// GoodsUnitDAO().getBigUnit(localGoodsThin.getId());
+			// }
+			// DefDocItemPD localDefDocItemPD = new DefDocItemPD();
+			// localDefDocItemPD.setGoodsid(localGoodsThin.getId());
+			// localDefDocItemPD.setGoodsname(localGoodsThin.getName());
+			// localDefDocItemPD.setBarcode(localGoodsThin.getBarcode());
+			// localDefDocItemPD.setSpecification(localGoodsThin.getSpecification());
+			// localDefDocItemPD.setUnitid(localGoodsUnit.getUnitid());
+			// localDefDocItemPD.setUnitname(localGoodsUnit.getUnitname());
+			// localDefDocItemPD.setIsusebatch(localGoodsThin.isIsusebatch());
+			// Intent localIntent = new Intent(InventoryEditActivity.this,
+			// InventoryAddGoodAct.class);
+			// localIntent.putExtra("warehouseid", doc.getWarehouseid());
+			// localIntent.putExtra("docitem", localDefDocItemPD);
+			// startActivityForResult(localIntent, 1);
+			final GoodsThin localGoodsThin = (GoodsThin) searchHelper.getAdapter().getTempGoods().get(position);
+			atvSearch.setText("");
+			PDH.show(InventoryEditActivity.this, new PDH.ProgressCallBack() {
+				public void action() {
+					DefDocItemPD localDefDocItemPD = fillItem(localGoodsThin, 0.0D, 0.0D, 0.0D);
+					newListItem = new ArrayList<DefDocItemPD>();
+					newListItem.add(localDefDocItemPD);
+					ArrayList<ReqStrGetGoodsPricePD> localArrayList = new ArrayList<ReqStrGetGoodsPricePD>();
+					ReqStrGetGoodsPricePD rp = new ReqStrGetGoodsPricePD();
+					rp.setGoodsid(localDefDocItemPD.getGoodsid());
+					rp.setUnitid(localDefDocItemPD.getUnitid());
+					rp.setWarehouseid(InventoryEditActivity.this.doc.getWarehouseid());
+					localArrayList.add(rp);
+					String localString = new ServiceGoods().gds_GetMultiGoodsPricePD(localArrayList);
+					handlerGet.sendMessage(handlerGet.obtainMessage(2, localString));
 				}
 			});
-		} else {
-			PDH.showFail("没有查找到商品！可以尝试更新数据");
 		}
+
+	};
+
+	private void readBarcode(String barcode) {
+		final ArrayList<GoodsThin> localGoodsThin = new GoodsDAO().getGoodsThinList(barcode);
+		if (localGoodsThin == null) {
+			return;
+		}
+		if (localGoodsThin.size() == 1) {
+			PDH.show(InventoryEditActivity.this, new PDH.ProgressCallBack() {
+				public void action() {
+					DefDocItemPD localDefDocItemPD = fillItem(localGoodsThin.get(0), 0.0D, 0.0D, 0.0D);
+					newListItem = new ArrayList<DefDocItemPD>();
+					newListItem.add(localDefDocItemPD);
+					ArrayList<ReqStrGetGoodsPricePD> localArrayList = new ArrayList<ReqStrGetGoodsPricePD>();
+					ReqStrGetGoodsPricePD rp = new ReqStrGetGoodsPricePD();
+					rp.setGoodsid(localDefDocItemPD.getGoodsid());
+					rp.setUnitid(localDefDocItemPD.getUnitid());
+					rp.setWarehouseid(InventoryEditActivity.this.doc.getWarehouseid());
+					localArrayList.add(rp);
+					String localString = new ServiceGoods().gds_GetMultiGoodsPricePD(localArrayList);
+					handlerGet.sendMessage(handlerGet.obtainMessage(2, localString));
+				}
+			});
+		} else if (localGoodsThin.size() > 1) {
+			atvSearch.setText(barcode);
+			// dialog.setGoods(localGoodsThin);
+			// dialog.setTempGoods(localGoodsThin);
+			// dialog.ShowMe();
+			// dialog.ensure(new OnClickListener() {
+			//
+			// @Override
+			// public void onClick(View v) {
+			// List<GoodsThin> select = dialog.getSelect();
+			//
+			//
+			//
+			// }
+			// });
+		}
+
 	}
 
 	private Handler handler = new Handler() {
@@ -251,13 +334,13 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			}
 			if (!TextUtils.isEmptyS(doc.getWarehouseid())) {
 				PDH.showMessage("请先选择盘点仓库");
-				atvSearch.setText("");
 				return;
 			}
 			List<GoodsThin> select = searchHelper.getAdapter().getSelect();
 			if (select.isEmpty()) {
-				atvSearch.setText("");
+				return;
 			}
+			atvSearch.setText("");
 			if (!"1".equals(new AccountPreference().getValue("goods_select_more"))) {
 				ArrayList<DefDocItemPD> localArrayList = new ArrayList<DefDocItemPD>();
 				for (int i = 0; i < select.size(); i++) {
@@ -321,7 +404,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		return super.onOptionsItemSelected(menu);
 	}
 
-	public static DefDocItemPD fillItem(GoodsThin goodsThin, double stocknum, double costprice, double number) {
+	public DefDocItemPD fillItem(GoodsThin goodsThin, double stocknum, double costprice, double number) {
 		GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
 		DefDocItemPD defDocItemPD = new DefDocItemPD();
 		defDocItemPD.setItemid(0L);
@@ -413,6 +496,11 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			case 0:
 				this.doc = ((DefDocPD) data.getSerializableExtra("doc"));
 				break;
+			case 1:// TODO
+				this.listItem.add((DefDocItemPD) data.getSerializableExtra("docitem"));
+				this.adapter.setData(this.listItem);
+				refreshUI();
+				break;
 			case 2:
 				this.newListItem = JSONUtil.str2list(data.getStringExtra("items"), DefDocItemPD.class);
 				ArrayList<ReqStrGetGoodsPricePD> listPricePD = new ArrayList<ReqStrGetGoodsPricePD>();
@@ -430,8 +518,30 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				String respPricePD = new ServiceGoods().gds_GetMultiGoodsPricePD(listPricePD);
 				this.handlerGet.sendMessage(this.handlerGet.obtainMessage(0, respPricePD));
 				break;
+			case 3:
+				int i = data.getIntExtra("position", 0);
+				DefDocItemPD localDefDocItemPD1 = (DefDocItemPD) data.getSerializableExtra("docitem");
+				this.listItem.set(i, localDefDocItemPD1);
+				this.adapter.setData(this.listItem);
+				refreshUI();
+				break;
 			}
+
 		}
+	}
+
+	// TODO refreshUI
+	public void refreshUI() {
+		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
+			// findViewById(2131296403).setVisibility(8);
+			// findViewById(2131296289).setVisibility(8);
+			mListView.setItemSwipe(false);
+		} else {
+			// findViewById(2131296403).setVisibility(0);
+			// findViewById(2131296289).setVisibility(0);
+			mListView.setItemSwipe(true);
+		}
+
 	}
 
 	public void check(final boolean print) {
@@ -521,12 +631,9 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		public void handleMessage(android.os.Message msg) {
 			String message = msg.obj.toString();
 			if (RequestHelper.isSuccess(message)) {
-				if ((msg.what != 0) && (msg.what != 1)) {
-					return;
-				}
+				GoodsUnitDAO gd = new GoodsUnitDAO();
+				List<ReqStrGetGoodsPricePD> listNewItem = JSONUtil.str2list(message, ReqStrGetGoodsPricePD.class);
 				if (msg.what == 0) {
-					List<ReqStrGetGoodsPricePD> listNewItem = JSONUtil.str2list(message, ReqStrGetGoodsPricePD.class);
-					GoodsUnitDAO gd = new GoodsUnitDAO();
 					for (int i = 0; i < newListItem.size(); i++) {
 						DefDocItemPD itemPD = (DefDocItemPD) newListItem.get(i);
 						for (int j = 0; j < listNewItem.size(); j++) {
@@ -551,14 +658,28 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 					refreshUI();
 					ishaschanged = true;
 					setActionBarText();
+					return;
 				}
 				if (msg.what == 2) {
+					DefDocItemPD itemPD = (DefDocItemPD) newListItem.get(0);
+					ReqStrGetGoodsPricePD goodsPrice = (ReqStrGetGoodsPricePD) listNewItem.get(0);
+					itemPD.setStocknum(goodsPrice.getStocknum());
+					itemPD.setBigstocknum(gd.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getStocknum()));
+					itemPD.setNum(itemPD.getStocknum());
+					itemPD.setBignum(itemPD.getBigstocknum());
+					itemPD.setNetnum(0.0D);
+					itemPD.setBignetnum("");
+					itemPD.setCostprice(goodsPrice.getCostprice());
+					itemPD.setNetamount(0.0D);
+					Intent localIntent = new Intent(InventoryEditActivity.this, InventoryAddGoodAct.class);
+					localIntent.putExtra("warehouseid", doc.getWarehouseid());
+					localIntent.putExtra("docitem", itemPD);
+					startActivityForResult(localIntent, 1);
 
 				}
 			}
 		};
 	};
-	private Dialog_listCheckBox dialog;
 	private ArrayList<DefDocItemPD> localArrayList;
 
 	private void saveDoc() {

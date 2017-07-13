@@ -63,6 +63,7 @@ public class BaseActivity extends Activity {
 	}
 
 	public void refreshUI() {
+		
 	}
 
 	public void setActionBarText() {

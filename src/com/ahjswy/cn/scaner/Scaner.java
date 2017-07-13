@@ -2,9 +2,9 @@ package com.ahjswy.cn.scaner;
 
 import android.content.Context;
 
-public abstract class Scaner {
-	public Scaner() {
+public class Scaner {
 
+	public Scaner() {
 	}
 
 	public static Scaner factory(Context context) {
@@ -20,7 +20,7 @@ public abstract class Scaner {
 		default:
 			break;
 		}
-		return null;
+		return new DefaultScan();
 	}
 
 	/**
@@ -30,7 +30,9 @@ public abstract class Scaner {
 		return false;
 	}
 
-	public abstract void defaultSetting();
+	public void defaultSetting() {
+
+	}
 
 	ScanerBarcodeListener barcodeListener;
 
@@ -41,4 +43,5 @@ public abstract class Scaner {
 	public interface ScanerBarcodeListener {
 		public void setBarcode(String barcode);
 	}
+
 }

@@ -363,6 +363,11 @@
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.inventory.InventoryAddGoodAct"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

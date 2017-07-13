@@ -21,7 +21,7 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 	private List<DefDocItemPD> items;
 	private ListView listView;
 	private InventoryAddMoreAdapter adapter;
-	private Scaner scaner;
+	// private Scaner scaner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +33,8 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 		adapter = new InventoryAddMoreAdapter(this);
 		this.adapter.setItem(items);
 		this.listView.setAdapter(this.adapter);
-		scaner = Scaner.factory(this);
-		scaner.setBarcodeListener(barcodeListener);
+		// scaner = Scaner.factory(this);
+		// scaner.setBarcodeListener(barcodeListener);
 	}
 
 	@Override
@@ -58,15 +58,18 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 		return super.onOptionsItemSelected(menu);
 	}
 
-	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
-
-		@Override
-		public void setBarcode(String barcode) {
-			// 代码 等待不全
-			// InventoryEditActivity.fillItem(goodsThin, stocknum, costprice,
-			// number);
-		}
-	};
+	// ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
+	//
+	// @Override
+	// public void setBarcode(String barcode) {
+	//
+	//
+	//
+	// // 代码 等待不全
+	// // InventoryEditActivity.fillItem(goodsThin, stocknum, costprice,
+	// // number);
+	// }
+	// };
 
 	public void setActionBarText() {
 		setTitle("商品添加");

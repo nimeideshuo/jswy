@@ -29,7 +29,6 @@ import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextView;
-import com.ahjswy.cn.views.Dialog_listCheckBox;
 import com.ahjswy.cn.views.Dialog_message;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -56,7 +55,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class InventoryEditActivity extends BaseActivity implements OnTouchListener {
 	private RelativeLayout root;
@@ -345,7 +343,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				ArrayList<DefDocItemPD> localArrayList = new ArrayList<DefDocItemPD>();
 				for (int i = 0; i < select.size(); i++) {
 					GoodsThin localGoodsThin = select.get(i);
-					localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D, 1));
+					localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D, 0));
 				}
 				startActivityForResult(new Intent(InventoryEditActivity.this, InventoryAddMoreGoodsAct.class)
 						.putExtra("items", JSONUtil.object2Json(localArrayList))
@@ -640,7 +638,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 							ReqStrGetGoodsPricePD goodsPricePD = listNewItem.get(j);
 							if ((!itemPD.getGoodsid().equals(goodsPricePD.getGoodsid()))
 									|| (!itemPD.getUnitid().equals(goodsPricePD.getUnitid()))) {
-								break;
+								continue;
 							}
 							itemPD.setStocknum(goodsPricePD.getStocknum());
 							itemPD.setBigstocknum(

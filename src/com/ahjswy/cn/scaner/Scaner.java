@@ -16,7 +16,6 @@ public class Scaner {
 			return new ScanerMX5060(context);
 		case "i6200S":
 			return new ScanerI6200S(context);
-
 		default:
 			break;
 		}

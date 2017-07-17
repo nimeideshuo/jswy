@@ -27,6 +27,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * 盘点开单
+ * 
+ * @author Administrator
+ *
+ */
 public class InventoryDocOpenActivity extends BaseActivity implements OnClickListener {
 
 	private EditText etRemark;

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ahjswy.cn"
     android:versionCode="1"
-    android:versionName="5.0.41" >
+    android:versionName="5.0.42" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -365,6 +365,16 @@
         </activity>
         <activity
             android:name="com.ahjswy.cn.ui.inventory.InventoryAddGoodAct"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.inventory.InventoryRecordActivity"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.inventory.InventoryDocSearchAct"
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>

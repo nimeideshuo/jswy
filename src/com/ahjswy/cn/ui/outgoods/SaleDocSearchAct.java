@@ -209,20 +209,20 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 		private DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
 			@Override
 			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-				SaleDocSearchAct.this.calendar.set(1, year);
-				SaleDocSearchAct.this.calendar.set(2, monthOfYear);
-				SaleDocSearchAct.this.calendar.set(5, dayOfMonth);
+				calendar.set(1, year);
+				calendar.set(2, monthOfYear);
+				calendar.set(5, dayOfMonth);
 				SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
-				btn.setText(localSimpleDateFormat.format(SaleDocSearchAct.this.calendar.getTime()));
+				btn.setText(localSimpleDateFormat.format(calendar.getTime()));
 			}
 		};
 
-		public void onClick(View paramAnonymousView) {
-			this.btn = ((Button) paramAnonymousView);
+		public void onClick(View v) {
+			this.btn = ((Button) v);
 			try {
 				calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).parse((String) this.btn.getText()));
 				new DatePickerDialog(SaleDocSearchAct.this, this.listener, SaleDocSearchAct.this.calendar.get(1),
-						SaleDocSearchAct.this.calendar.get(2), SaleDocSearchAct.this.calendar.get(5)).show();
+						SaleDocSearchAct.this.calendar.get(2), calendar.get(5)).show();
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}

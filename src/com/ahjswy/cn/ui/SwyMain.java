@@ -18,6 +18,7 @@ import com.ahjswy.cn.ui.field.NewCustomerAddAct;
 import com.ahjswy.cn.ui.ingoods.InDocOpenActivity;
 import com.ahjswy.cn.ui.inpurchase.InpurchaseOpenActivity;
 import com.ahjswy.cn.ui.inventory.InventoryDocOpenActivity;
+import com.ahjswy.cn.ui.inventory.InventoryRecordActivity;
 import com.ahjswy.cn.ui.out_in_goods.OutInDocOpen;
 import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
@@ -230,7 +231,8 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			break;
 		// 我的盘点
 		case R.id.ll_my_inventory:
-			startActivity(new Intent(SwyMain.this, AddGoodSActivity.class));
+			// startActivity(new Intent(SwyMain.this, AddGoodSActivity.class));
+			startActivity(new Intent(SwyMain.this, InventoryRecordActivity.class));
 			break;
 		// 产品手册
 		case R.id.ll_stockgoods:

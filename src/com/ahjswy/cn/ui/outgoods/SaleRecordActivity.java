@@ -192,27 +192,56 @@ public class SaleRecordActivity extends BaseActivity {
 		private List<RespStrDocThinEntity> str2list;
 
 		public void handleMessage(Message message) {
+
+			// String sMessage = message.obj.toString();
+			// if (RequestHelper.isSuccess(sMessage)) {
+			// str2list = JSONUtil.str2list(sMessage,
+			// RespStrDocThinEntity.class);
+			// if ((str2list.size() == 0) || (str2list.size() < 20)) {
+			// listView.setFootViewVisible(false);
+			// }
+			// if (message.what == 0) {
+			// listDoc.clear();
+			// }
+			// listDoc.addAll(str2list);
+			// adapter.setData(listDoc);
+			// if (message.what == 1) {
+			// int i = listView.getFirstVisiblePosition();
+			// listView.setAdapter(adapter);
+			// listView.setSelection(i);
+			// listView.setFootViewVisible(true);
+			// }
+			// listView.setAdapter(adapter);
+			// return;
+			// }
+			// PDH.showMessage(sMessage);
+
+			List<RespStrDocThinEntity> str2list = null;
 			String sMessage = message.obj.toString();
+			listView.stopLoadMore();
 			if (RequestHelper.isSuccess(sMessage)) {
-				str2list = JSONUtil.str2list(sMessage, RespStrDocThinEntity.class);
-				if ((str2list.size() == 0) || (str2list.size() < 20)) {
-					listView.setFootViewVisible(false);
-				}
 				if (message.what == 0) {
 					listDoc.clear();
 				}
+				str2list = JSONUtil.str2list(sMessage, RespStrDocThinEntity.class);
+				if (str2list == null) {
+					return;
+				}
+				if ((str2list.size() == 0) || (str2list.size() < 20)) {
+					listView.setPullLoadEnable(false);
+				} else {
+					listView.setPullLoadEnable(true);
+				}
 				listDoc.addAll(str2list);
 				adapter.setData(listDoc);
-				if (message.what == 1) {
-					int i = listView.getFirstVisiblePosition();
-					listView.setAdapter(adapter);
-					listView.setSelection(i);
-					listView.setFootViewVisible(true);
-				}
 				listView.setAdapter(adapter);
-				return;
+				int pageindex = condition.getPageindex();
+				if (pageindex > 1) {// 第2页开始跳
+					listView.setSelection((pageindex - 1) * 20);// 跳到上次单据的结尾
+				}
+			} else {
+				PDH.showMessage(sMessage);
 			}
-			PDH.showMessage(sMessage);
 		}
 	};
 	private Handler handlerEdit = new Handler() {

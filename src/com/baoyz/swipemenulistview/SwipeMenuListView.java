@@ -1,5 +1,7 @@
 package com.baoyz.swipemenulistview;
 
+import com.ahjswy.cn.utils.MLog;
+
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
@@ -90,8 +92,8 @@ public class SwipeMenuListView extends ListView {
 		mOpenInterpolator = interpolator;
 	}
 
-	public void setItemSwipe(boolean paramBoolean) {
-		this.isitemswiped = paramBoolean;
+	public void setItemSwipe(boolean isitemswiped) {
+		this.isitemswiped = isitemswiped;
 	}
 
 	public Interpolator getOpenInterpolator() {
@@ -208,7 +210,7 @@ public class SwipeMenuListView extends ListView {
 			}
 			float dy = Math.abs((ev.getY() - mDownY));
 			float dx = Math.abs((ev.getX() - mDownX));
-			if (mTouchState == TOUCH_STATE_X) {
+			if (mTouchState == TOUCH_STATE_X && isitemswiped) {
 				if (mTouchView != null) {
 					mTouchView.onSwipe(ev);
 				}
@@ -229,7 +231,7 @@ public class SwipeMenuListView extends ListView {
 			break;
 		case MotionEvent.ACTION_UP:
 			if (mTouchState == TOUCH_STATE_X) {
-				if (mTouchView != null) {
+				if (mTouchView != null && isitemswiped) {
 					boolean isBeforeOpen = mTouchView.isOpen();
 					mTouchView.onSwipe(ev);
 					boolean isAfterOpen = mTouchView.isOpen();

@@ -83,18 +83,24 @@ public class XListViewFooter extends LinearLayout {
 	}
 
 	public void setState(int state) {
-		System.out.println("XListViewFooter>>>setState");
 		mHintView.setVisibility(View.INVISIBLE);
 		mProgressBar.setVisibility(View.INVISIBLE);
 		mHintView.setVisibility(View.INVISIBLE);
 		if (state == STATE_READY) {
 			mHintView.setVisibility(View.VISIBLE);
 			mHintView.setText(R.string.xlistview_footer_hint_ready);
+			mArrowImageView.clearAnimation();
+			mArrowImageView.startAnimation(this.mRotateDownAnim);
 		} else if (state == STATE_LOADING) {
 			mProgressBar.setVisibility(View.VISIBLE);
+			mArrowImageView.clearAnimation();
+			mArrowImageView.setVisibility(4);
+			mProgressBar.setVisibility(0);
 		} else {
 			mHintView.setVisibility(View.VISIBLE);
 			mHintView.setText(R.string.xlistview_footer_hint_normal);
+			mArrowImageView.clearAnimation();
+			mArrowImageView.startAnimation(mRotateUpAnim);
 		}
 
 	}

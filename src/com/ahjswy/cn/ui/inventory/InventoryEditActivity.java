@@ -82,6 +82,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		initData();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
+		refreshUI();
 	}
 
 	private void initView() {
@@ -168,9 +169,6 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		@Override
 		public void setBarcode(String barcode) {
 			atvSearch.setText("");
-			// if (dialog != null) {
-			// dialog.dismiss();
-			// }
 			readBarcode(barcode);
 		}
 	};
@@ -188,27 +186,6 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				PDH.showMessage("请先选择盘点仓库");
 				return;
 			}
-			// GoodsUnit localGoodsUnit;
-			// if (Utils.DEFAULT_TransferDocUNIT == 0) {
-			// localGoodsUnit = new
-			// GoodsUnitDAO().getBasicUnit(localGoodsThin.getId());
-			// } else {
-			// localGoodsUnit = new
-			// GoodsUnitDAO().getBigUnit(localGoodsThin.getId());
-			// }
-			// DefDocItemPD localDefDocItemPD = new DefDocItemPD();
-			// localDefDocItemPD.setGoodsid(localGoodsThin.getId());
-			// localDefDocItemPD.setGoodsname(localGoodsThin.getName());
-			// localDefDocItemPD.setBarcode(localGoodsThin.getBarcode());
-			// localDefDocItemPD.setSpecification(localGoodsThin.getSpecification());
-			// localDefDocItemPD.setUnitid(localGoodsUnit.getUnitid());
-			// localDefDocItemPD.setUnitname(localGoodsUnit.getUnitname());
-			// localDefDocItemPD.setIsusebatch(localGoodsThin.isIsusebatch());
-			// Intent localIntent = new Intent(InventoryEditActivity.this,
-			// InventoryAddGoodAct.class);
-			// localIntent.putExtra("warehouseid", doc.getWarehouseid());
-			// localIntent.putExtra("docitem", localDefDocItemPD);
-			// startActivityForResult(localIntent, 1);
 			final GoodsThin localGoodsThin = (GoodsThin) searchHelper.getAdapter().getTempGoods().get(position);
 			atvSearch.setText("");
 			PDH.show(InventoryEditActivity.this, new PDH.ProgressCallBack() {
@@ -253,19 +230,6 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			});
 		} else if (localGoodsThin.size() > 1) {
 			atvSearch.setText(barcode);
-			// dialog.setGoods(localGoodsThin);
-			// dialog.setTempGoods(localGoodsThin);
-			// dialog.ShowMe();
-			// dialog.ensure(new OnClickListener() {
-			//
-			// @Override
-			// public void onClick(View v) {
-			// List<GoodsThin> select = dialog.getSelect();
-			//
-			//
-			//
-			// }
-			// });
 		}
 
 	}
@@ -313,10 +277,10 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 
 	private void initData() {
 		docContainer = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
-		this.doc = ((DefDocPD) JSONUtil.readValue(docContainer.getDoc(), DefDocPD.class));
-		this.listItem = JSONUtil.str2list(docContainer.getItem(), DefDocItemPD.class);
+		doc = ((DefDocPD) JSONUtil.readValue(docContainer.getDoc(), DefDocPD.class));
+		listItem = JSONUtil.str2list(docContainer.getItem(), DefDocItemPD.class);
 		ishaschanged = getIntent().getBooleanExtra("ishaschanged", true);
-		adapter.setData(this.listItem);
+		adapter.setData(listItem);
 		mListView.setAdapter(adapter);
 	}
 
@@ -531,13 +495,15 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 	// TODO refreshUI
 	public void refreshUI() {
 		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
-			// findViewById(2131296403).setVisibility(8);
-			// findViewById(2131296289).setVisibility(8);
+			findViewById(R.id.lieSearch).setVisibility(View.GONE);
+			findViewById(R.id.top).setVisibility(View.GONE);
 			mListView.setItemSwipe(false);
+			scaner.setScanner(false);
 		} else {
-			// findViewById(2131296403).setVisibility(0);
-			// findViewById(2131296289).setVisibility(0);
+			findViewById(R.id.lieSearch).setVisibility(View.VISIBLE);
+			findViewById(R.id.top).setVisibility(View.VISIBLE);
 			mListView.setItemSwipe(true);
+			scaner.setScanner(true);
 		}
 
 	}

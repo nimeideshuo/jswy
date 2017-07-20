@@ -1,5 +1,7 @@
 package com.ahjswy.cn.scaner;
 
+import com.ahjswy.cn.utils.MLog;
+
 import android.content.Context;
 import mexxen.mx5010.barcode.BarcodeConfig;
 import mexxen.mx5010.barcode.BarcodeEvent;
@@ -69,6 +71,7 @@ public class ScanerMX5020 extends Scaner {
 	@Override
 	public boolean removeListener() {
 		try {
+			bm.dismiss();
 			bm.removeListener(bl);
 			bm = null;
 			return true;
@@ -78,4 +81,50 @@ public class ScanerMX5020 extends Scaner {
 		return false;
 
 	}
+
+	/**
+	 * 设置扫描引擎打开或关闭
+	 * 
+	 * @param enable
+	 */
+	public void setScanner(boolean enable) {
+		bc.setScanner(enable);
+	}
+
+	/**
+	 * 获取扫码枪状态 是否打开
+	 * 
+	 * @return
+	 */
+	public boolean isScannerOn() {
+		return bc.isScannerOn();
+	}
+
+	/**
+	 * 获取扫码枪 后外扫描线是否 打开
+	 * 
+	 * @return
+	 */
+	public boolean isDecodeAimIlluminiation() {
+		return bc.isDecodeAimIlluminiation();
+	}
+
+	/**
+	 * 设置十字光标灯状态 state值: 0 关闭 1 打开
+	 * 
+	 * @param state
+	 */
+	public void setDecodeAimIlluminiation(boolean state) {
+		bc.setDecodeAimIlluminiation(state);
+	}
+
+	/**
+	 * 设置条码读取成功时的音量 vol值(0~10):音量大小
+	 * 
+	 * @param vol
+	 */
+	public void setVolume(int vol) {
+		bc.setVolume(vol);
+	}
+
 }

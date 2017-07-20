@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.adapter.OutInDocAddMoreAdapter;
 import com.ahjswy.cn.bean.DefDocItemDD;
 import com.ahjswy.cn.bean.Def_Doc;
 import com.ahjswy.cn.dao.GoodsDAO;

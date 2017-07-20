@@ -38,6 +38,7 @@ import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -93,11 +94,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_out_doc_edit_activity);
 		intView();
+		intDate();
+		addListener();
 		refreshUI();
-		if (!(doc.isIsavailable() && doc.isIsposted())) {
-			addListener();
-			intDate();
-		}
 	}
 
 	private void intView() {
@@ -198,13 +197,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private void addListener() {
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		// BarcodeConfig barcodeConfig = new BarcodeConfig(this);
-		// // 设置条码输出模式 不显示模式(复制到粘贴板)
-		// barcodeConfig.setOutputMode(2);
-		// if (bm == null) {
-		// bm = new BarcodeManager(this);
-		// }
-		// bm.addListener(bl);
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
@@ -218,19 +210,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			readBarcode(barcode);
 		}
 	};
-	// private BarcodeListener bl = new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent event) {
-	// if (event.getOrder().equals("SCANNER_READ")) {
-	// atvSearch.setText("");
-	// if (dialog != null) {
-	// dialog.dismiss();
-	// }
-	// readBarcode(bm.getBarcode().toString().trim());
-	// }
-	// }
-	// };
 
 	private void readBarcode(String barcode) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
@@ -270,6 +249,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		}
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		scaner.removeListener();
+		MLog.d("OutDocEditActivity>>>onPause");
+	}
+
 	// 获取最大的 TempItemId
 	public long getMaxTempItemId() {
 		long l1 = 0L;
@@ -286,12 +272,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
-		scaner.removeListener();
-	}
-
-	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btnAdd:
@@ -304,19 +284,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			break;
 		}
 	}
-
-	// public void deleBm() {
-	// if (bm != null) {
-	// bm.removeListener(new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent arg0) {
-	// }
-	// });
-	// bm.dismiss();
-	// bm = null;
-	// }
-	// }
 
 	public void closeInputMethod() {
 		// 获取当前输入法状态
@@ -336,11 +303,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			findViewById(R.id.top).setVisibility(View.GONE);
 			findViewById(R.id.linNumber).setVisibility(View.GONE);
 			listview_copy_dele.setItemSwipe(false);
+			scaner.setScanner(false);
 		} else {
 			findViewById(R.id.linearSearch).setVisibility(View.VISIBLE);
 			findViewById(R.id.top).setVisibility(View.VISIBLE);
 			findViewById(R.id.linNumber).setVisibility(View.VISIBLE);
 			listview_copy_dele.setItemSwipe(true);
+			scaner.setScanner(true);
 		}
 	}
 
@@ -354,7 +323,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		if ((doc.isIsavailable()) && (doc.isIsposted())) {
 			return;
 		}
-		// deleBm();
 		int i = -1;
 		Intent localIntent = new Intent();
 		localIntent.putExtra("customerid", doc.getCustomerid());

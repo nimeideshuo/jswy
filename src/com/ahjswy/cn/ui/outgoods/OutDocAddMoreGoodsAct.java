@@ -60,9 +60,9 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		items = JSONUtil.str2list(getIntent().getStringExtra("items"), DefDocItemXS.class);
 		doc = (DefDocXS) getIntent().getSerializableExtra("doc");
 		adapter = new OutDocAddMoreAdapter(this);
-		dialog = new Dialog_listCheckBox(this);
 		adapter.setDoc(doc);
 		setInitItem();
+		dialog = new Dialog_listCheckBox(this);
 	}
 
 	ArrayList<DefDocItemXS> Newitems;
@@ -73,25 +73,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		}
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		// if (bm == null) {
-		// bm = new BarcodeManager(this);
-		// }
-		// bm.addListener(new BarcodeListener() {
-		// @Override
-		// public void barcodeEvent(BarcodeEvent event) {
-		// if (event.getOrder().equals("SCANNER_READ")) {
-		// if (dialog != null) {
-		// dialog.dismiss();
-		// }
-		// readBarcode(bm.getBarcode().toString().trim());
-		// }
-		//
-		// }
-		// });
-		// // 扫码枪 功能调用 先new 对相 在调用
-		// barcodeConfig = new BarcodeConfig(this);
-		// // 设置条码输出模式 不显示模式(复制到粘贴板)
-		// barcodeConfig.setOutputMode(2);
 
 	}
 
@@ -109,7 +90,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// deleBm();
 		scaner.removeListener();
 	}
 

@@ -5,11 +5,9 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ahjswy.cn.adapter.SortMode;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.model.FieldSaleForPrint;
 import com.ahjswy.cn.model.FieldSaleItemForPrint;
-import com.ahjswy.cn.utils.PrintUtils;
 import com.ahjswy.cn.utils.SortUtils;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;

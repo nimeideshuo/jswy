@@ -80,4 +80,45 @@ public class ScanerI6200S extends Scaner {
 		}
 		return false;
 	}
+
+	@Override
+	public void setBarcodeListener(ScanerBarcodeListener barcodeListener) {
+		// TODO Auto-generated method stub
+		super.setBarcodeListener(barcodeListener);
+	}
+
+	@Override
+	public void setScanner(boolean enable) {
+		if (enable) {
+			if (!isScannerOn()) {
+				mScanManager.openScanner();
+			}
+		} else {
+			if (isScannerOn()) {
+				mScanManager.closeScanner();
+			}
+		}
+	}
+
+	@Override
+	public boolean isScannerOn() {
+		return mScanManager.getScannerState();
+	}
+
+	@Override
+	public boolean isDecodeAimIlluminiation() {
+		return super.isDecodeAimIlluminiation();
+	}
+
+	@Override
+	public void setDecodeAimIlluminiation(boolean state) {
+		// TODO Auto-generated method stub
+		super.setDecodeAimIlluminiation(state);
+	}
+
+	@Override
+	public void setVolume(int vol) {
+
+	}
+
 }

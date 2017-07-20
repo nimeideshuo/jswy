@@ -28,10 +28,12 @@ public class InventoryEditMenuPopup extends PopupWindow implements OnClickListen
 		setWidth(width);
 		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
 			setHeight(height / 11);
-		} else {
 			show();
+		} else {
 			setHeight(height / 6);
+			show();
 		}
+
 	}
 
 	Button btnCheck, btnDocProperty;
@@ -78,11 +80,11 @@ public class InventoryEditMenuPopup extends PopupWindow implements OnClickListen
 
 	private void show() {
 		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
-			// this.root.findViewById(2131296632).setVisibility(8);
+			this.root.findViewById(R.id.linear_top).setVisibility(8);
 			this.btnSave.setVisibility(8);
 			this.btnDelete.setVisibility(8);
 		} else {
-			// this.root.findViewById(2131296632).setVisibility(0);
+			this.root.findViewById(R.id.linear_top).setVisibility(0);
 			this.btnSave.setVisibility(0);
 			this.btnDelete.setVisibility(0);
 		}

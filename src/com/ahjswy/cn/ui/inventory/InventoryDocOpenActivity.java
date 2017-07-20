@@ -64,7 +64,7 @@ public class InventoryDocOpenActivity extends BaseActivity implements OnClickLis
 	private void initData() {
 		this.doc = ((DefDocPD) getIntent().getSerializableExtra("doc"));
 		this.itemcount = getIntent().getIntExtra("itemcount", 0);
-		this.isReadOnly = this.doc == null || !this.doc.isIsavailable() || !this.doc.isIsposted() ? false : true;
+		this.isReadOnly = (this.doc == null || !this.doc.isIsavailable() || !this.doc.isIsposted() ? false : true);
 		if (this.doc != null) {
 			this.btnDepartment.setTag(this.doc.getDepartmentid());
 			this.btnWarehouse.setTag(this.doc.getWarehouseid());
@@ -96,6 +96,10 @@ public class InventoryDocOpenActivity extends BaseActivity implements OnClickLis
 			this.etRemark.setCursorVisible(false);
 			this.etRemark.setFocusable(false);
 			this.etRemark.setFocusableInTouchMode(false);
+			btnWarehouse.setClickable(false);
+			btnWarehouse.setEnabled(false);
+			btnDepartment.setClickable(false);
+			btnDepartment.setEnabled(false);
 		}
 	}
 

@@ -42,6 +42,7 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 	private EditText etRemarkSummary;
 	private EditText etShowID;
 
+	
 	@Override
 	protected void onCreate(Bundle paramBundle) {
 		super.onCreate(paramBundle);

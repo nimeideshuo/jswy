@@ -8,8 +8,11 @@ import com.ahjswy.cn.response.RespStrDocThinEntity;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
+import com.ahjswy.cn.views.XListView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,13 +22,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
 public class SaleCustomerHistoryActivity extends BaseActivity implements OnItemClickListener {
 	private String customerid;
 	private String customername;
 	protected SaleCustomerHistoryAdapter adapter;
-	protected ListView listView;
+	protected XListView listView;
 	List<RespStrDocThinEntity> listDoc;
 
 	@Override
@@ -38,12 +40,13 @@ public class SaleCustomerHistoryActivity extends BaseActivity implements OnItemC
 
 	private void initView() {
 
-		listView = (ListView) findViewById(R.id.listView);
+		listView = (XListView) findViewById(R.id.listView);
 		this.customerid = getIntent().getStringExtra("customerid");
 		this.customername = getIntent().getStringExtra("customername");
 		adapter = new SaleCustomerHistoryAdapter(this);
 		listView.setOnItemClickListener(this);
-
+		listView.setXListViewListener(listener);
+		listView.setFootViewVisible(false);
 	}
 
 	public void loadData() {
@@ -73,8 +76,7 @@ public class SaleCustomerHistoryActivity extends BaseActivity implements OnItemC
 		public void handleMessage(android.os.Message msg) {
 			String message = msg.obj.toString();
 			if (RequestHelper.isSuccess(message)) {
-				Intent intent = new Intent().setClass(SaleCustomerHistoryActivity.this,
-						SaleCustomerHistoryItemActivity.class);
+				Intent intent = new Intent(SaleCustomerHistoryActivity.this, SaleCustomerHistoryItemActivity.class);
 				intent.putExtra("listitem", message);
 				startActivityForResult(intent, 0);
 				return;
@@ -101,38 +103,45 @@ public class SaleCustomerHistoryActivity extends BaseActivity implements OnItemC
 		default:
 			break;
 		}
-
 		return true;
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		switch (resultCode) {
-		case 1:
-			// setResult(-1, data);
-			// finish();
-			break;
+		if (resultCode == Activity.RESULT_OK) {
+			if (requestCode == 0) {
+				setResult(Activity.RESULT_OK, data);
+				finish();
+			}
 
-		default:
-			break;
 		}
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		if (position < listDoc.size()) {
-			final RespStrDocThinEntity localRespStrDocThinEntity = listDoc.get(position);
-			PDH.show(SaleCustomerHistoryActivity.this, new PDH.ProgressCallBack() {
-				public void action() {
-					String localString = new ServiceStore().str_GetDocItemXS(localRespStrDocThinEntity.getDocid());
-					handlerGetItem.sendMessage(handlerGetItem.obtainMessage(0, localString));
-				}
-			});
-		} else {
-			// TODO 加载更多数据
-		}
+		final RespStrDocThinEntity thinEntity = listDoc.get(position);
+		PDH.show(SaleCustomerHistoryActivity.this, new PDH.ProgressCallBack() {
+			public void action() {
+				String result = new ServiceStore().str_GetDocItemXS(thinEntity.getDocid());
+				handlerGetItem.sendMessage(handlerGetItem.obtainMessage(0, result));
+			}
+		});
+
 	}
+
+	XListView.IXListViewListener listener = new XListView.IXListViewListener() {
+
+		@Override
+		public void onRefresh() {
+			MLog.d("onRefresh");
+		}
+
+		@Override
+		public void onLoadMore() {
+			MLog.d("onLoadMore");
+		}
+	};
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

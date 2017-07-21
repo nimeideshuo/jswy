@@ -283,21 +283,6 @@ public class InpurchaseEditActivity extends BaseActivity
 		}
 
 	};
-	// Handler handlerItem = new Handler() {
-	// public void handleMessage(android.os.Message msg) {
-	// switch (msg.what) {
-	// case 1:
-	// @SuppressWarnings("unchecked")
-	// ArrayList<DefDocItemCG> defdocitem = (ArrayList<DefDocItemCG>) msg.obj;
-	// Intent intent = new Intent(InpurchaseEditActivity.this,
-	// InpurDocAddMoreGoodsAct.class);
-	// intent.putExtra("items", JSONUtil.object2Json(defdocitem));
-	// intent.putExtra("doc", doccg);
-	// startActivityForResult(intent, 1);
-	// break;
-	// }
-	// };
-	// };
 
 	/**
 	 * 获取每个商品的 价格并设置给当前商品

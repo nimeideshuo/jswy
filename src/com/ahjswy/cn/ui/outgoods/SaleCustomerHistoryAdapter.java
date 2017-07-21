@@ -53,14 +53,16 @@ public class SaleCustomerHistoryAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		RemoteLocalItem localRemoteLocalItem;
+		RemoteLocalItem localItem;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(this.context).inflate(R.layout.item_salecustomerhistory_record, null);
-			localRemoteLocalItem = new RemoteLocalItem(convertView);
-			convertView.setTag(localRemoteLocalItem);
+			localItem = new RemoteLocalItem(convertView);
+			convertView.setTag(localItem);
+		} else {
+			localItem = (RemoteLocalItem) convertView.getTag();
 		}
-		localRemoteLocalItem = (RemoteLocalItem) convertView.getTag();
-		localRemoteLocalItem.setValue(listItems.get(position));
+		localItem.tvId.setText(String.valueOf(position + 1));
+		localItem.setValue(listItems.get(position));
 		return convertView;
 	}
 
@@ -76,6 +78,7 @@ public class SaleCustomerHistoryAdapter extends BaseAdapter {
 			this.tvBuilder = ((TextView) view.findViewById(R.id.tvBuilder));
 			this.tvDate = ((TextView) view.findViewById(R.id.tvDate));
 		}
+
 		public void setValue(RespStrDocThinEntity respstrdocthinentity) {
 			this.tvShowId.setText(respstrdocthinentity.getShowid());
 			this.tvBuilder.setText(respstrdocthinentity.getBuildername());

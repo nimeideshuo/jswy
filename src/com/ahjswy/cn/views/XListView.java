@@ -229,14 +229,6 @@ public class XListView extends SwipeMenuListView implements AbsListView.OnScroll
 		super.setAdapter(paramListAdapter);
 	}
 
-	public void setFootViewVisible(boolean paramBoolean) {
-		if (paramBoolean) {
-			this.mFooterView.setVisibility(0);
-			return;
-		}
-		this.mFooterView.setVisibility(8);
-	}
-
 	public void setOnScrollListener(AbsListView.OnScrollListener paramOnScrollListener) {
 		this.mScrollListener = paramOnScrollListener;
 	}
@@ -266,6 +258,15 @@ public class XListView extends SwipeMenuListView implements AbsListView.OnScroll
 		} else {
 			mHeaderViewContent.setVisibility(View.VISIBLE);
 		}
+	}
+
+	public void setFootViewVisible(boolean visible) {
+		if (visible) {
+			this.mFooterView.setVisibility(View.VISIBLE);
+		} else {
+			this.mFooterView.setVisibility(View.GONE);
+		}
+
 	}
 
 	public void setXListViewListener(IXListViewListener paramIXListViewListener) {

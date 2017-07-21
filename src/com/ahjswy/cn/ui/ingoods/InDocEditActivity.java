@@ -29,6 +29,7 @@ import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.ui.ingoods.InDocItemAdapter.Sum;
 import com.ahjswy.cn.ui.outgoods.OutDocPayAct;
+import com.ahjswy.cn.ui.outgoods.SaleCustomerHistoryActivity;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
@@ -424,7 +425,6 @@ public class InDocEditActivity extends BaseActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// TODO 这个地方可能有bug
 	}
 
 	public void closeInputMethod() {
@@ -473,18 +473,16 @@ public class InDocEditActivity extends BaseActivity
 	}
 
 	// 客史
-	// public void getCustomerHistory() {
-	// if (TextUtils.isEmptyS(doc.getCustomerid())) {
-	// deleBm();
-	// Intent localIntent = new Intent();
-	// localIntent.putExtra("customerid", this.doc.getCustomerid());
-	// localIntent.putExtra("customername", this.doc.getCustomername());
-	// startActivityForResult(localIntent.setClass(this,
-	// SaleCustomerHistoryActivity.class), 7);
-	// return;
-	// }
-	// PDH.showMessage("单据未指定客户");
-	// }
+	public void getCustomerHistory() {
+		if (TextUtils.isEmptyS(doc.getCustomerid())) {
+			Intent localIntent = new Intent();
+			localIntent.putExtra("customerid", this.doc.getCustomerid());
+			localIntent.putExtra("customername", this.doc.getCustomername());
+			startActivityForResult(localIntent.setClass(this, SaleCustomerHistoryActivity.class), 7);
+			return;
+		}
+		PDH.showMessage("单据未指定客户");
+	}
 
 	// 属性
 	public void docProperty() {
@@ -757,7 +755,9 @@ public class InDocEditActivity extends BaseActivity
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_FIRST_USER) {
 			addListener();
-		} else if (resultCode == RESULT_OK) {
+			return;
+		}
+		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case 0:
 				addListener();
@@ -809,6 +809,19 @@ public class InDocEditActivity extends BaseActivity
 				adapter.addItem(localDefDocItem4);
 				listView.setAdapter(adapter);
 				refreshUI();
+				break;
+
+			case 7:
+				List<DefDocItem> itemXSList = JSONUtil.str2list(data.getStringExtra("selecteditem"), DefDocItem.class);
+				for (int i = 0; i < itemXSList.size(); i++) {
+					DefDocItem item = new DefDocItem(itemXSList.get(i));
+					item.setDocid(this.doc.getDocid());
+					item.setItemid(0);
+					listItem.add(item);
+				}
+				this.adapter.setData(this.listItem);
+				listView.setAdapter(adapter);
+				this.refreshUI();
 				break;
 			case 8:
 				// 支付

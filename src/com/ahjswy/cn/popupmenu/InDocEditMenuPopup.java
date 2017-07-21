@@ -46,15 +46,14 @@ public class InDocEditMenuPopup extends PopupWindow implements OnClickListener {
 	private void initView() {
 		Button btnCheck = (Button) root.findViewById(R.id.btnCheck);
 		LinearLayout btnCheckPrint = (LinearLayout) root.findViewById(R.id.btnCheckPrint);
-		// LinearLayout btnCustomerHistory = (LinearLayout)
-		// root.findViewById(R.id.btnCustomerHistory);
+		LinearLayout btnCustomerHistory = (LinearLayout) root.findViewById(R.id.btnCustomerHistory);
 		Button btnDocProperty = (Button) root.findViewById(R.id.btnDocProperty);
 		btnDelete = (LinearLayout) root.findViewById(R.id.btnDelete);
 		btnPay = (LinearLayout) root.findViewById(R.id.btnPay);
 		btnSave = (LinearLayout) root.findViewById(R.id.btnSave);
 		btnCheck.setOnClickListener(this);
 		btnCheckPrint.setOnClickListener(this);
-		// btnCustomerHistory.setOnClickListener(this);
+		btnCustomerHistory.setOnClickListener(this);
 		btnDocProperty.setOnClickListener(this);
 		btnDelete.setOnClickListener(this);
 		btnPay.setOnClickListener(this);
@@ -76,10 +75,10 @@ public class InDocEditMenuPopup extends PopupWindow implements OnClickListener {
 			// 过账打印
 			this.activity.check(true);
 			break;
-		// case R.id.btnCustomerHistory:
-		// // 客史
-		// this.activity.getCustomerHistory();
-		// break;
+		case R.id.btnCustomerHistory:
+			// 客史
+			this.activity.getCustomerHistory();
+			break;
 		case R.id.btnDocProperty:
 			// 属性
 			this.activity.docProperty();

@@ -21,7 +21,7 @@ public class SaleCustomerHistoryItemAdapter extends BaseAdapter {
 	Context context;
 	private List<DefDocItemXS> items;
 	private boolean multichoice = false;
-	private HashMap statusMap = new HashMap();
+	private HashMap<Integer, Boolean> statusMap = new HashMap<Integer, Boolean>();
 
 	public SaleCustomerHistoryItemAdapter(Context context) {
 		this.context = context;
@@ -48,65 +48,55 @@ public class SaleCustomerHistoryItemAdapter extends BaseAdapter {
 		return items.get(paramInt).getItemid();
 	}
 
-	// public List<DefDocItemXS> getSelectList() {
-	// ArrayList localArrayList = new ArrayList();
-	// if (items.size() <= 0) {
-	// return localArrayList;
-	// }
-	//
-	// for (int i = 0; i <= items.size(); i++) {
-	//
-	// if ((this.statusMap.get(Integer.valueOf(i)) != null)
-	// && (((Boolean) this.statusMap.get(Integer.valueOf(i))).booleanValue())) {
-	// localArrayList.add((DefDocItemXS) this.items.get(i));
-	// }
-	//
-	// }
-	// return localArrayList;
-	// }
+	public List<DefDocItemXS> getSelectList() {
+		ArrayList<DefDocItemXS> itemXS = new ArrayList<DefDocItemXS>();
+		for (int i = 0; i < this.items.size(); ++i) {
+			if (this.statusMap.get(i) != null && (this.statusMap.get(i))) {
+				itemXS.add(items.get(i));
+			}
+		}
+		return itemXS;
+	}
 
-	public void setData(List<DefDocItemXS> paramList) {
-		this.items = paramList;
+	public void setData(List<DefDocItemXS> items) {
+		this.items = items;
 		notifyDataSetChanged();
 	}
 
-	public void setMultiChoice(boolean paramBoolean) {
-		this.multichoice = paramBoolean;
+	public void setMultiChoice(boolean multichoice) {
+		this.multichoice = multichoice;
 		notifyDataSetChanged();
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		TransferGoodsItem localTransferGoodsItem = null;
+		TransferGoodsItem goodsItem = null;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(this.context).inflate(R.layout.item_salecustomerhistory_goods, null);
-			localTransferGoodsItem = new TransferGoodsItem(convertView);
-			if (this.statusMap.get(Integer.valueOf(position)) != null) {
-				localTransferGoodsItem.cbTV.setChecked(false);
-			}
-			convertView.setTag(localTransferGoodsItem);
+			goodsItem = new TransferGoodsItem(convertView);
+			convertView.setTag(goodsItem);
+		} else {
+			goodsItem = (TransferGoodsItem) convertView.getTag();
 		}
-		localTransferGoodsItem = (TransferGoodsItem) convertView.getTag();
-		localTransferGoodsItem.setValue(items.get(position));
-		localTransferGoodsItem.tvSerialid.setText(position + 1 + "");
-		// localTransferGoodsItem.cbTV
-		// .setChecked(((Boolean)
-		// this.statusMap.get(Integer.valueOf(position))).booleanValue());
+		if (statusMap.get(position) == null) {
+			goodsItem.cbTV.setChecked(false);
+		} else {
+			goodsItem.cbTV.setChecked(statusMap.get(position));
+		}
+		goodsItem.setValue(items.get(position));
+		goodsItem.tvSerialid.setText(position + 1 + "");
+
 		return convertView;
 	}
 
-	// public void setCheckePosition(int paramInt) {
-	// if (this.statusMap.get(Integer.valueOf(paramInt)) == null) {
-	// this.statusMap.put(Integer.valueOf(paramInt), Boolean.valueOf(true));
-	// notifyDataSetChanged();
-	// return;
-	// }
-	// HashMap localHashMap = this.statusMap;
-	// Integer localInteger = Integer.valueOf(paramInt);
-	// boolean booleanValue = ((Boolean)
-	// this.statusMap.get(Integer.valueOf(paramInt))).booleanValue();
-	// localHashMap.put(localInteger, Boolean.valueOf(booleanValue));
-	// }
+	public void setCheckePosition(int position) {
+		if (this.statusMap.get(position) == null) {
+			this.statusMap.put(position, true);
+		} else {
+			statusMap.put(position, !statusMap.get(position));
+		}
+		this.notifyDataSetChanged();
+	}
 
 	public class TransferGoodsItem {
 		private CheckedTextView cbTV;
@@ -129,21 +119,22 @@ public class SaleCustomerHistoryItemAdapter extends BaseAdapter {
 			this.cbTV = ((CheckedTextView) view.findViewById(R.id.cbTV));
 		}
 
-		public void setValue(DefDocItemXS paramDefDocItemXS) {
-			this.tvName.setText(paramDefDocItemXS.getGoodsname());
-			if (TextUtils.isEmptyS(paramDefDocItemXS.getBarcode())) {
-				this.tvBarcode.setText(paramDefDocItemXS.getBarcode());
+		public void setValue(DefDocItemXS itemXS) {
+			this.tvName.setText(itemXS.getGoodsname());
+			if (TextUtils.isEmptyS(itemXS.getBarcode())) {
+				this.tvBarcode.setText(itemXS.getBarcode());
 			}
-			this.tvNum.setText(Utils.getNumber(paramDefDocItemXS.getNum()) + paramDefDocItemXS.getUnitname());
-			this.tvPrice.setText(Utils.getPrice(paramDefDocItemXS.getPrice()) + "元/" + paramDefDocItemXS.getUnitname());
-			this.tvDiscountRatio.setText(Utils.getNumber(paramDefDocItemXS.getDiscountratio()));
-			this.tvDiscountSubtotal.setText(Utils.getSubtotalMoney(paramDefDocItemXS.getDiscountsubtotal()) + "元");
-			if (SaleCustomerHistoryItemAdapter.this.multichoice) {
-				this.cbTV.setVisibility(0);
-				return;
+			this.tvNum.setText(Utils.getNumber(itemXS.getNum()) + itemXS.getUnitname());
+			this.tvPrice.setText(Utils.getPrice(itemXS.getPrice()) + "元/" + itemXS.getUnitname());
+			this.tvDiscountRatio.setText(Utils.getNumber(itemXS.getDiscountratio()));
+			this.tvDiscountSubtotal.setText(Utils.getSubtotalMoney(itemXS.getDiscountsubtotal()) + "元");
+			if (multichoice) {
+				this.cbTV.setVisibility(View.VISIBLE);
+			} else {
+				this.cbTV.setVisibility(View.GONE);
+				statusMap.clear();
 			}
-			SaleCustomerHistoryItemAdapter.this.statusMap.clear();
-			this.cbTV.setVisibility(8);
+
 		}
 	}
 }

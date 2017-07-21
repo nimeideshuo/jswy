@@ -7,10 +7,13 @@ import java.util.List;
 import org.codehaus.jackson.JsonProcessingException;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.A;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,80 +42,80 @@ public class SaleCustomerHistoryItemActivity extends BaseActivity {
 		this.adapter = new SaleCustomerHistoryItemAdapter(this);
 		this.adapter.setData(listItem);
 		this.listView.setAdapter(adapter);
-		// refreshUI();
-		// this.listView.setChoiceMode(3);
-		// this.listView.setMultiChoiceModeListener(muliChoiceModeLisener);
+		refreshUI();
+		this.listView.setChoiceMode(3);
+		;
+		this.listView.setMultiChoiceModeListener(muliChoiceModeLisener);
 	}
 
 	MultiChoiceModeListener muliChoiceModeLisener = new MultiChoiceModeListener() {
 
 		@Override
-		public boolean onPrepareActionMode(ActionMode arg0, Menu arg1) {
-			return false;
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return true;
 		}
 
 		@Override
-		public void onDestroyActionMode(ActionMode arg0) {
-
+		public void onDestroyActionMode(ActionMode mode) {
+			adapter.setMultiChoice(false);
 		}
 
-		// title 选择菜单
 		@Override
-		public boolean onCreateActionMode(ActionMode arg0, Menu arg1) {
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			adapter.setMultiChoice(true);
-			arg0.setTitle("选择");
-			arg0.getMenuInflater().inflate(2131623941, arg1);
-
-			return false;
+			mode.setTitle("选择");
+			mode.getMenuInflater().inflate(R.menu.menu_selectitem, menu);
+			return true;
 		}
 
 		@Override
-		public boolean onActionItemClicked(ActionMode arg0, MenuItem arg1) {
-			switch (arg1.getItemId()) {
-			case 0:
-				for (int j = 0; j < adapter.getCount(); j++) {
-					if (!listView.isItemChecked(j))
-						listView.setItemChecked(j, true);
-				}
-
-				break;
-			case 1:
-				ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
-				for (int i = 0; i <= adapter.getCount(); i++) {
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			switch (item.getItemId()) {
+			case R.id.btnAdd:
+				ArrayList<DefDocItemXS> itemxs = new ArrayList<DefDocItemXS>();
+				for (int i = 0; i < adapter.getCount(); i++) {
 					if (listView.isItemChecked(i)) {
-						localArrayList.add(listItem.get(i));
+						itemxs.add(listItem.get(i));
 					}
 				}
-				Intent localIntent = new Intent();
-				localIntent.putExtra("selecteditem", JSONUtil.object2Json(localArrayList));
-				setResult(-1, localIntent);
+				Intent intent = new Intent();
+				intent.putExtra("selecteditem", JSONUtil.object2Json(itemxs));
+				setResult(Activity.RESULT_OK, intent);
 				finish();
-				arg0.finish();
+				mode.finish();
 				break;
-
+			case R.id.btnSelectAll:
+				for (int j = 0; j < adapter.getCount(); j++) {
+					if (!listView.isItemChecked(j)) {
+						listView.setItemChecked(j, true);
+					}
+				}
+				break;
 			default:
-				arg0.finish();
+
 				break;
 			}
-			return false;
+			return true;
 		}
 
 		@Override
-		public void onItemCheckedStateChanged(ActionMode arg0, int arg1, long arg2, boolean arg3) {
-
+		public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+			adapter.setCheckePosition(position);
+			mode.setSubtitle("选中" + listView.getCheckedItemCount() + "条");
 		}
 	};
+
 	Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			case 0:
-				setResult(-1, new Intent());
+				setResult(Activity.RESULT_OK);
 				finish();
 				break;
 			case 1:
-				Intent localIntent = new Intent();
-				localIntent.putExtra("selecteditem", JSONUtil.object2Json(listItem));
-				setResult(-1, localIntent);
+				Intent intent = new Intent();
+				intent.putExtra("selecteditem", JSONUtil.object2Json(listItem));
+				setResult(Activity.RESULT_OK, intent);
 				finish();
 				break;
 			default:
@@ -128,41 +131,34 @@ public class SaleCustomerHistoryItemActivity extends BaseActivity {
 		return super.onCreateOptionsMenu(paramMenu);
 	}
 
-	public boolean onOptionsItemSelected(MenuItem paramMenuItem) {
-		switch (paramMenuItem.getItemId()) {
-		case android.R.id.home:
-			setResult(RESULT_FIRST_USER, new Intent());
-			finish();
-			break;
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
 		case 0:
-			// TODO 功能待添加
-			// Intent localIntent = new Intent();
-			// localIntent.putExtra("selecteditem",
-			// JSONUtil.object2Json(listItem));
-			// setResult(-1, localIntent);
-			// finish();
+			Intent intent = new Intent();
+			intent.putExtra("selecteditem", JSONUtil.object2Json(this.listItem));
+			this.setResult(Activity.RESULT_OK, intent);
+			this.finish();
 			break;
 
 		default:
 			break;
 		}
-
-		return true;
-	}
-
-	@Override
-	public void setActionBarText() {
-		getActionBar().setTitle("客史明细");
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			setResult(-1, new Intent());
+			setResult(Activity.RESULT_OK);
 			finish();
 			return false;
 		} else {
 			return super.onKeyDown(keyCode, event);
 		}
+	}
+
+	@Override
+	public void setActionBarText() {
+		setTitle("客史明细");
 	}
 }

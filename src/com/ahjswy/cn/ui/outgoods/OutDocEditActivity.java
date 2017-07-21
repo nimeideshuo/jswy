@@ -711,7 +711,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 	public void getCustomerHistory() {
 		if (TextUtils.isEmptyS(this.doc.getCustomerid())) {
-			// deleBm();
 			Intent localIntent = new Intent();
 			localIntent.putExtra("customerid", doc.getCustomerid());
 			localIntent.putExtra("customername", doc.getCustomername());
@@ -1110,7 +1109,19 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				break;
 			case 7:
 				// 客史
-
+				List<DefDocItemXS> itemXSList = JSONUtil.str2list(data.getStringExtra("selecteditem"),
+						DefDocItemXS.class);
+				long itemId = this.getMaxTempItemId();
+				for (int i = 0; i < itemXSList.size(); i++) {
+					DefDocItemXS item = new DefDocItemXS(itemXSList.get(i));
+					item.setDocid(this.doc.getDocid());
+					item.setItemid(0);
+					item.setTempitemid(itemId);
+					listItem.add(item);
+				}
+				this.adapter.setData(this.listItem);
+				listview_copy_dele.setAdapter(adapter);
+				this.refreshUI();
 				break;
 			case 8:
 				// 收款

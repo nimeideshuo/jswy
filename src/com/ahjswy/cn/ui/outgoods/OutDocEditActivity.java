@@ -38,7 +38,6 @@ import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -53,7 +52,6 @@ import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.baoyz.swipemenulistview.SwipeMenuListView.OnMenuItemClickListener;
 
 import android.app.ActionBar;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -67,7 +65,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -95,7 +92,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		setContentView(R.layout.act_out_doc_edit_activity);
 		intView();
 		intDate();
-		addListener();
 		refreshUI();
 	}
 
@@ -194,9 +190,16 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		});
 	}
 
-	private void addListener() {
+	@Override
+	protected void onResume() {
+		super.onResume();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
+		if (doc.isIsavailable() && doc.isIsposted()) {
+			scaner.setScanner(false);
+		} else {
+			scaner.setScanner(true);
+		}
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
@@ -237,7 +240,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						DefDocItemXS fillItem = fillItem(select.get(i), 0.0D, 0.0D, l);
 						localArrayList.add(fillItem);
 					}
-					// deleBm();
+					if (localArrayList.size() == 0) {
+						return;
+					}
 					Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
 					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
 					intent.putExtra("doc", doc);
@@ -253,7 +258,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	protected void onPause() {
 		super.onPause();
 		scaner.removeListener();
-		MLog.d("OutDocEditActivity>>>onPause");
 	}
 
 	// 获取最大的 TempItemId
@@ -285,31 +289,17 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		}
 	}
 
-	public void closeInputMethod() {
-		// 获取当前输入法状态
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		boolean isOpen = imm.isActive();
-		// true 显示
-		if (isOpen) {
-			// 关闭输入法
-			((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
-					this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-		}
-	}
-
 	public void refreshUI() {
 		if (doc.isIsavailable() && doc.isIsposted()) {
 			findViewById(R.id.linearSearch).setVisibility(View.GONE);
 			findViewById(R.id.top).setVisibility(View.GONE);
 			findViewById(R.id.linNumber).setVisibility(View.GONE);
 			listview_copy_dele.setItemSwipe(false);
-			scaner.setScanner(false);
 		} else {
 			findViewById(R.id.linearSearch).setVisibility(View.VISIBLE);
 			findViewById(R.id.top).setVisibility(View.VISIBLE);
 			findViewById(R.id.linNumber).setVisibility(View.VISIBLE);
 			listview_copy_dele.setItemSwipe(true);
-			scaner.setScanner(true);
 		}
 	}
 
@@ -323,10 +313,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		if ((doc.isIsavailable()) && (doc.isIsposted())) {
 			return;
 		}
-		int i = -1;
 		Intent localIntent = new Intent();
 		localIntent.putExtra("customerid", doc.getCustomerid());
-		localIntent.putExtra("positiongive", i);
+		localIntent.putExtra("positiongive", -1);
 		localIntent.putExtra("docitemgive", "");
 		localIntent.putExtra("position", position);
 		localIntent.putExtra("docitem", defdocitemxs);
@@ -410,7 +399,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						listItem.addAll(0, newListItem);
 						adapter.setData(listItem);
 						listview_copy_dele.setAdapter(adapter);
-						addListener();
+						// addListener();
 						ishaschanged = true;
 						setActionBarText();
 						bottomCount();
@@ -1037,12 +1026,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_FIRST_USER) {
-			addListener();
-		} else if (resultCode == RESULT_OK) {
+		// if (resultCode == RESULT_FIRST_USER) {
+		// // addListener();
+		// }
+		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case 0:
-				addListener();
+				// addListener();
 				doc = (DefDocXS) data.getSerializableExtra("doc");
 				ishaschanged = true;
 				setActionBarText();
@@ -1074,7 +1064,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				});
 				break;
 			case 2:
-				addListener();
+				// addListener();
 				int j = data.getIntExtra("position", 0);
 				DefDocItemXS localDefDocItemXS3 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				listItem = adapter.getData();
@@ -1099,7 +1089,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				doc = (DefDocXS) data.getSerializableExtra("doc");
 				break;
 			case 4:
-				addListener();
+				// addListener();
 				DefDocItemXS defDocItemXS4 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				adapter.addItem(0, defDocItemXS4);
 				listview_copy_dele.setAdapter(adapter);

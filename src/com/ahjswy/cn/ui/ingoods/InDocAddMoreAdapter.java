@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
-import com.ahjswy.cn.model.DefDocItem;
+import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.utils.Utils;
 
@@ -32,12 +32,12 @@ import android.widget.TextView;
 public class InDocAddMoreAdapter extends BaseAdapter {
 	private Calendar cal;
 	private Context context;
-	private List<DefDocItem> listItems;
+	private List<DefDocItemXS> listItems;
 	private int selectPosition = -1;// 记住选中的edtitext
 
 	public InDocAddMoreAdapter(Context paramContext) {
 		this.context = paramContext;
-		this.listItems = new ArrayList<DefDocItem>();
+		this.listItems = new ArrayList<DefDocItemXS>();
 		cal = Calendar.getInstance();
 	}
 
@@ -51,17 +51,17 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 		return this.listItems.get(position);
 	}
 
-	public List<DefDocItem> getData() {
+	public List<DefDocItemXS> getData() {
 		return this.listItems;
 	}
 
 	// 添加一个
-	public void addData(DefDocItem listItem) {
+	public void addData(DefDocItemXS listItem) {
 		listItems.add(listItem);
 		notifyDataSetChanged();
 	}
 
-	public void addItemDate(ArrayList<DefDocItem> listItem) {
+	public void addItemDate(ArrayList<DefDocItemXS> listItem) {
 		listItems.addAll(listItem);
 		notifyDataSetChanged();
 	}
@@ -182,7 +182,7 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	public void setData(List<DefDocItem> paramList) {
+	public void setData(List<DefDocItemXS> paramList) {
 		this.listItems.clear();
 		this.listItems.addAll(paramList);
 		notifyDataSetChanged();
@@ -264,7 +264,7 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 			localBuilder.setItems(arrayOfString, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface paramAnonymous2DialogInterface, int paramAnonymous2Int) {
 					((Button) paramAnonymousView).setText(arrayOfString[paramAnonymous2Int]);
-					DefDocItem localDefDocItem = (DefDocItem) InDocAddMoreAdapter.this.listItems.get(i);
+					DefDocItemXS localDefDocItem = (DefDocItemXS) InDocAddMoreAdapter.this.listItems.get(i);
 					localDefDocItem.setUnitid(((GoodsUnit) localList.get(paramAnonymous2Int)).getUnitid());
 					localDefDocItem.setUnitname(((GoodsUnit) localList.get(paramAnonymous2Int)).getUnitname());
 				}

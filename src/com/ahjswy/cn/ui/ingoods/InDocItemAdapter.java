@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.model.DefDocItem;
+import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
@@ -18,13 +18,13 @@ import android.widget.TextView;
 
 public class InDocItemAdapter extends BaseAdapter {
 	private Context context;
-	private ArrayList<DefDocItem> items;
+	private ArrayList<DefDocItemXS> items;
 	ArrayList<Long> listItemDelete;
 
 	public InDocItemAdapter(Context context) {
 		this.context = context;
 		if (items == null) {
-			this.items = new ArrayList<DefDocItem>();
+			this.items = new ArrayList<DefDocItemXS>();
 		}
 		if (listItemDelete == null) {
 			listItemDelete = new ArrayList<Long>();
@@ -39,28 +39,28 @@ public class InDocItemAdapter extends BaseAdapter {
 		return this.items.size();
 	}
 
-	public List<DefDocItem> getData() {
+	public List<DefDocItemXS> getData() {
 		return this.items;
 	}
 
-	public void setData(ArrayList<DefDocItem> items) {
+	public void setData(ArrayList<DefDocItemXS> items) {
 		this.items = items;
 		notifyDataSetChanged();
 	}
 
-	public void addData(List<DefDocItem> docItem) {
+	public void addData(List<DefDocItemXS> docItem) {
 		for (int i = 0; i < docItem.size(); i++) {
 			this.items.add(docItem.get(i));
 		}
 		notifyDataSetChanged();
 	}
 
-	public void remove(DefDocItem DefDocItem) {
+	public void remove(DefDocItemXS DefDocItem) {
 		this.items.remove(DefDocItem);
 		notifyDataSetChanged();
 	}
 
-	public void addItem(DefDocItem DefDocItem) {
+	public void addItem(DefDocItemXS DefDocItem) {
 		this.items.add(DefDocItem);
 		notifyDataSetChanged();
 	}
@@ -132,7 +132,7 @@ public class InDocItemAdapter extends BaseAdapter {
 			tvDiscountSubtotal = ((TextView) view.findViewById(R.id.tvDiscountSubtotal));
 		}
 
-		public void setValue(DefDocItem paramDefDocItem) {
+		public void setValue(DefDocItemXS paramDefDocItem) {
 			this.tvName.setText(paramDefDocItem.getGoodsname());
 			if (TextUtils.isEmptyS(paramDefDocItem.getBarcode())) {
 				this.tvBarcode.setText(paramDefDocItem.getBarcode());
@@ -141,7 +141,7 @@ public class InDocItemAdapter extends BaseAdapter {
 			}
 			// 代码待补全
 			this.tvNum.setText(Utils.getNumber(paramDefDocItem.getNum()) + paramDefDocItem.getUnitname());
-			//TODO  bigNum
+			// TODO bigNum
 			// paramDefDocItem.setBignum(paramDefDocItem.getNum() +
 			// paramDefDocItem.getUnitname());
 			// paramDefDocItem.setBignum(Utils.cutLastZero(paramDefDocItem.getNum()

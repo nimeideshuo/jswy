@@ -65,6 +65,7 @@ public class ScanerI6200S extends Scaner {
 		}
 		mScanManager.switchOutputMode(0);
 		soundid = soundpool.load("/etc/Scan_new.ogg", 1);
+		setScanner(true);
 	}
 
 	@Override

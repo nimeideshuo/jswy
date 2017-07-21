@@ -12,7 +12,7 @@ import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.dao.WarehouseDAO;
 import com.ahjswy.cn.model.DefDoc;
-import com.ahjswy.cn.model.DefDocItem;
+import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocPayType;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.model.GoodsThin;
@@ -32,6 +32,7 @@ import com.ahjswy.cn.ui.outgoods.OutDocPayAct;
 import com.ahjswy.cn.ui.outgoods.SaleCustomerHistoryActivity;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -78,23 +79,21 @@ public class InDocEditActivity extends BaseActivity
 	private DefDoc doc;
 	private List<DefDocPayType> listPayType;
 	private List<Long> listItemDelete;
-	private ArrayList<DefDocItem> listItem;
+	private ArrayList<DefDocItemXS> listItem;
 	private SearchHelper searchHelper;
 	private AutoTextView atvSearch;
 	InDocItemAdapter adapter;
 	private InDocEditMenuPopup menuPopup;
-	private ArrayList<DefDocItem> newListItem;
+	private ArrayList<DefDocItemXS> newListItem;
+	Scaner scaner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_indocedit_activity);
 		intView();
+		intDate();
 		refreshUI();
-		if (!(doc.isIsavailable() && doc.isIsposted())) {
-			addListener();
-			intDate();
-		}
 	}
 
 	private void intView() {
@@ -104,7 +103,6 @@ public class InDocEditActivity extends BaseActivity
 		searchHelper = new SearchHelper(this, linearSearch);
 		atvSearch.setOnItemClickListener(this.onItemClickListeners);
 		// 添加按钮监听
-		// searchHelper.setOnAddListener(this);
 		btnAdd = (Button) findViewById(R.id.btnAdd);
 		// 底部 总数量
 		bt_sumNumber = (Button) findViewById(R.id.bt_sumNumber);
@@ -122,7 +120,7 @@ public class InDocEditActivity extends BaseActivity
 		// 获取数据
 		DocContainerEntity docContainerEntity = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
 		this.doc = JSONUtil.readValue(docContainerEntity.getDoc(), DefDoc.class);
-		listItem = (ArrayList<DefDocItem>) JSONUtil.str2list(docContainerEntity.getItem(), DefDocItem.class);
+		listItem = (ArrayList<DefDocItemXS>) JSONUtil.str2list(docContainerEntity.getItem(), DefDocItemXS.class);
 		listPayType = JSONUtil.str2list(docContainerEntity.getPaytype(), DefDocPayType.class);
 		if (listItem != null) {
 			adapter.setData(listItem);
@@ -159,7 +157,7 @@ public class InDocEditActivity extends BaseActivity
 			public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
 				switch (index) {
 				case 0:
-					DefDocItem defdocitem = listItem.get(position);
+					DefDocItemXS defdocitem = listItem.get(position);
 					defdocitem.setItemid(0L);
 					listItem.add(defdocitem);
 
@@ -199,20 +197,6 @@ public class InDocEditActivity extends BaseActivity
 
 	}
 
-	Scaner scaner;
-
-	public void addListener() {
-		scaner = Scaner.factory(this);
-		scaner.setBarcodeListener(barcodeListener);
-		// BarcodeConfig barcodeConfig = new BarcodeConfig(this);
-		// // 设置条码输出模式 不显示
-		// barcodeConfig.setOutputMode(2);
-		// if (bm == null) {
-		// bm = new BarcodeManager(this);
-		// }
-		// bm.addListener(bl);
-	}
-
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
 
 		@Override
@@ -224,26 +208,12 @@ public class InDocEditActivity extends BaseActivity
 			readBarcode(barcode);
 		}
 	};
-	// private BarcodeListener bl = new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent event) {
-	// if (event.getOrder().equals("SCANNER_READ")) {
-	// atvSearch.setText("");
-	// if (dialog != null) {
-	// dialog.dismiss();
-	// }
-	// // 调用 getBarcode()方法读取条码信息
-	// readBarcode(bm.getBarcode().toString().trim());
-	// }
-	// }
-	// };
 
 	private void readBarcode(String barcode) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
-		final ArrayList<DefDocItem> localArrayList = new ArrayList<DefDocItem>();
+		final ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
 		if (goodsThinList.size() == 1) {
-			DefDocItem defdocitem = fillItem(goodsThinList.get(0), 0.0D, 0.0D);
+			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), 0.0D, 0.0D);
 			localArrayList.add(defdocitem);
 			Intent intent = new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
@@ -259,8 +229,11 @@ public class InDocEditActivity extends BaseActivity
 					dialog.dismiss();
 					List<GoodsThin> select = dialog.getSelect();
 					for (int i = 0; i < select.size(); i++) {
-						DefDocItem defdocitem = fillItem(select.get(i), 0.0D, 0.0D);
+						DefDocItemXS defdocitem = fillItem(select.get(i), 0.0D, 0.0D);
 						localArrayList.add(defdocitem);
+					}
+					if (localArrayList.size() == 0) {
+						return;
 					}
 					Intent intent = new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
 					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
@@ -291,8 +264,8 @@ public class InDocEditActivity extends BaseActivity
 
 				@Override
 				public void action() {
-					DefDocItem localDefDocItem = InDocEditActivity.this.fillItem(localGoodsThin, 0.0D, 0.0D);
-					newListItem = new ArrayList<DefDocItem>();
+					DefDocItemXS localDefDocItem = InDocEditActivity.this.fillItem(localGoodsThin, 0.0D, 0.0D);
+					newListItem = new ArrayList<DefDocItemXS>();
 					newListItem.add(localDefDocItem);
 					ArrayList<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
 					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
@@ -341,7 +314,6 @@ public class InDocEditActivity extends BaseActivity
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// deleBm();
 		scaner.removeListener();
 	}
 
@@ -389,7 +361,7 @@ public class InDocEditActivity extends BaseActivity
 			message = "打印模板不能为空";
 		}
 		for (int k = 0; k < listItem.size(); k++) {
-			DefDocItem localDefDocItem = (DefDocItem) this.listItem.get(k);
+			DefDocItemXS localDefDocItem = (DefDocItemXS) this.listItem.get(k);
 			if (localDefDocItem.getNum() == 0.0D) {
 				message = "【" + localDefDocItem.getGoodsname() + "】数量为0";
 			}
@@ -425,6 +397,13 @@ public class InDocEditActivity extends BaseActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
+		if (doc.isIsavailable() && doc.isIsposted()) {
+			scaner.setScanner(false);
+		} else {
+			scaner.setScanner(true);
+		}
 	}
 
 	public void closeInputMethod() {
@@ -556,7 +535,7 @@ public class InDocEditActivity extends BaseActivity
 
 	// sum 总价
 	public void sum() {
-		List<DefDocItem> data = adapter.getData();
+		List<DefDocItemXS> data = adapter.getData();
 		listItemDelete = adapter.getListItemDelete();
 		bt_sumNumber.setText("数量:" + data.size() + "个");
 		double totalSum = 0D;
@@ -575,7 +554,7 @@ public class InDocEditActivity extends BaseActivity
 		}
 		atvSearch.setText("");
 		if (!"1".equals(new AccountPreference().getValue("goods_select_more"))) {
-			ArrayList<DefDocItem> localArrayList = new ArrayList<DefDocItem>();
+			ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
 			for (int i = 0; i < localList.size(); i++) {
 				GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
 				localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D));
@@ -585,20 +564,6 @@ public class InDocEditActivity extends BaseActivity
 					.putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc", doc), 2);
 		}
 	}
-
-	// public void deleBm() {
-	// if (bm != null) {
-	// bm.removeListener(new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent arg0) {
-	//
-	// }
-	// });
-	// bm.dismiss();
-	// bm = null;
-	// }
-	// }
 
 	private void intenToMain() {
 		if (ishaschanged) {
@@ -666,8 +631,8 @@ public class InDocEditActivity extends BaseActivity
 				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.readValue(localString,
 						DocContainerEntity.class);
 				doc = ((DefDoc) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDoc.class));
-				listItem = (ArrayList<DefDocItem>) JSONUtil.str2list(localDocContainerEntity.getItem(),
-						DefDocItem.class);
+				listItem = (ArrayList<DefDocItemXS>) JSONUtil.str2list(localDocContainerEntity.getItem(),
+						DefDocItemXS.class);
 				listPayType = JSONUtil.str2list(localDocContainerEntity.getPaytype(), DefDocPayType.class);
 				listItemDelete = new ArrayList<Long>();
 				switch (msg.what) {
@@ -706,9 +671,9 @@ public class InDocEditActivity extends BaseActivity
 		startActivityForResult(localIntent.setClass(InDocEditActivity.this, InDocAddGoodAct.class), 3);
 	}
 
-	private DefDocItem fillItem(GoodsThin paramGoodsThin, double paramDouble1, double paramDouble2) {
+	private DefDocItemXS fillItem(GoodsThin paramGoodsThin, double paramDouble1, double paramDouble2) {
 		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
-		DefDocItem localDefDocItem = new DefDocItem();
+		DefDocItemXS localDefDocItem = new DefDocItemXS();
 		localDefDocItem.setItemid(0L);
 		localDefDocItem.setDocid(this.doc.getDocid());
 		localDefDocItem.setGoodsid(paramGoodsThin.getId());
@@ -753,14 +718,14 @@ public class InDocEditActivity extends BaseActivity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_FIRST_USER) {
-			addListener();
-			return;
-		}
+		// if (resultCode == RESULT_FIRST_USER) {
+		// addListener();
+		// return;
+		// }
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case 0:
-				addListener();
+				// addListener();
 				doc = (DefDoc) data.getSerializableExtra("doc");
 				ishaschanged = true;
 				setActionBarText();
@@ -769,11 +734,12 @@ public class InDocEditActivity extends BaseActivity
 				doc = (DefDoc) data.getSerializableExtra("doc");
 				break;
 			case 2:
-				addListener();
-				newListItem = (ArrayList<DefDocItem>) JSONUtil.str2list(data.getStringExtra("items"), DefDocItem.class);
+				// addListener();
+				newListItem = (ArrayList<DefDocItemXS>) JSONUtil.str2list(data.getStringExtra("items"),
+						DefDocItemXS.class);
 				final ArrayList<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
 				for (int k = 0; k < newListItem.size(); k++) {
-					DefDocItem localDefDocItem3 = (DefDocItem) this.newListItem.get(k);
+					DefDocItemXS localDefDocItem3 = (DefDocItemXS) this.newListItem.get(k);
 					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
 					localReqStrGetGoodsPrice.setType(2);
 					localReqStrGetGoodsPrice.setCustomerid(this.doc.getCustomerid());
@@ -796,25 +762,26 @@ public class InDocEditActivity extends BaseActivity
 				setActionBarText();
 				break;
 			case 3:
-				addListener();
+				// addListener();
 				int j = data.getIntExtra("position", 0);
-				DefDocItem localDefDocItem2 = (DefDocItem) data.getSerializableExtra("docitem");
+				DefDocItemXS localDefDocItem2 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				this.listItem.set(j, localDefDocItem2);
 				this.adapter.setData(this.listItem);
 				refreshUI();
 				break;
 			case 4:
-				addListener();
-				DefDocItem localDefDocItem4 = (DefDocItem) data.getSerializableExtra("docitem");
+				// addListener();
+				DefDocItemXS localDefDocItem4 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				adapter.addItem(localDefDocItem4);
 				listView.setAdapter(adapter);
 				refreshUI();
 				break;
 
 			case 7:
-				List<DefDocItem> itemXSList = JSONUtil.str2list(data.getStringExtra("selecteditem"), DefDocItem.class);
+				List<DefDocItemXS> itemXSList = JSONUtil.str2list(data.getStringExtra("selecteditem"),
+						DefDocItemXS.class);
 				for (int i = 0; i < itemXSList.size(); i++) {
-					DefDocItem item = new DefDocItem(itemXSList.get(i));
+					DefDocItemXS item = new DefDocItemXS(itemXSList.get(i));
 					item.setDocid(this.doc.getDocid());
 					item.setItemid(0);
 					listItem.add(item);
@@ -850,7 +817,7 @@ public class InDocEditActivity extends BaseActivity
 
 					localList = JSONUtil.str2list(localString1, ReqStrGetGoodsPrice.class);
 					for (int j = 0; j < newListItem.size(); j++) {
-						DefDocItem defDocItem = (DefDocItem) newListItem.get(j);
+						DefDocItemXS defDocItem = (DefDocItemXS) newListItem.get(j);
 						ReqStrGetGoodsPrice getGoodsPrice = (ReqStrGetGoodsPrice) localList.get(j);
 						if ((defDocItem.getGoodsid().equals(getGoodsPrice.getGoodsid()))
 								&& (defDocItem.getUnitid().equals(getGoodsPrice.getUnitid()))) {
@@ -887,7 +854,7 @@ public class InDocEditActivity extends BaseActivity
 					refreshUI();
 				}
 				if (msg.what == 2) {
-					DefDocItem localDefDocItem2 = (DefDocItem) InDocEditActivity.this.newListItem.get(0);
+					DefDocItemXS localDefDocItem2 = (DefDocItemXS) InDocEditActivity.this.newListItem.get(0);
 					localList = JSONUtil.str2list(localString1, ReqStrGetGoodsPrice.class);
 					ReqStrGetGoodsPrice localReqStrGetGoodsPrice2 = (ReqStrGetGoodsPrice) localList.get(0);
 					String localString3 = localReqStrGetGoodsPrice2.getWarehouseid();

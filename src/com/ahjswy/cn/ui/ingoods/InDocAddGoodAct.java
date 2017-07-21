@@ -12,7 +12,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
-import com.ahjswy.cn.model.DefDocItem;
+import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespGoodsWarehouse;
@@ -68,7 +68,7 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 	// 折后小计
 	private EditText etDiscountSubtotal;
 	private String customerid;
-	private DefDocItem docitem;
+	private DefDocItemXS docitem;
 	private EditText etRemark;
 	private Calendar cal;
 	private int position;
@@ -109,7 +109,7 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 		this.etDiscountSubtotal.setOnFocusChangeListener(this);
 		customerid = getIntent().getStringExtra("customerid");
 		position = getIntent().getIntExtra("position", 0);
-		docitem = ((DefDocItem) getIntent().getSerializableExtra("docitem"));
+		docitem = ((DefDocItemXS) getIntent().getSerializableExtra("docitem"));
 		// 是否显示批次时间
 		if ((this.docitem != null) && (this.docitem.isIsusebatch())) {
 			findViewById(R.id.linearDate).setVisibility(View.VISIBLE);
@@ -218,7 +218,7 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 	}
 
 	private void fillItem() {
-		DefDocItem localDefDocItem;
+		DefDocItemXS localDefDocItem;
 		if (TextUtils.isEmptyS(this.btnWarehouse.getTag().toString())) {
 			this.docitem.setWarehouseid(this.btnWarehouse.getTag().toString());
 			this.docitem.setWarehousename(this.btnWarehouse.getText().toString());

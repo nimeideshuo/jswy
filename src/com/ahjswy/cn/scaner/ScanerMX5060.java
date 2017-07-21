@@ -1,5 +1,7 @@
 package com.ahjswy.cn.scaner;
 
+import com.ahjswy.cn.utils.MLog;
+
 import android.content.Context;
 import mexxen.mx5010.barcode.BarcodeConfig;
 import mexxen.mx5010.barcode.BarcodeEvent;
@@ -63,14 +65,20 @@ public class ScanerMX5060 extends Scaner {
 
 	@Override
 	public boolean removeListener() {
+
 		try {
+			if (bm == null) {
+				return false;
+			}
 			bm.dismiss();
 			bm.removeListener(bl);
 			bm = null;
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+
 		}
+		MLog.d("ScanerMX5060  removeListener");
 		return false;
 
 	}

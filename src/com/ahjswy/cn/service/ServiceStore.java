@@ -14,7 +14,6 @@ import com.ahjswy.cn.bean.SaleEntity;
 import com.ahjswy.cn.model.DefDoc;
 import com.ahjswy.cn.model.DefDocCG;
 import com.ahjswy.cn.model.DefDocExchange;
-import com.ahjswy.cn.model.DefDocItem;
 import com.ahjswy.cn.model.DefDocItemCG;
 import com.ahjswy.cn.model.DefDocItemPD;
 import com.ahjswy.cn.model.DefDocItemTH;
@@ -43,7 +42,7 @@ public class ServiceStore {
 	private String baseNewAddress = "LoginService/";
 	LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
 
-	public String str_CheckDBDoc(DefDocTransfer paramDefDocTransfer, List<DefDocItem> paramList, List<Long> paramList1,
+	public String str_CheckDBDoc(DefDocTransfer paramDefDocTransfer, List<DefDocItemXS> paramList, List<Long> paramList1,
 			boolean paramBoolean) {
 		String url = Utils.getServiceAddress(this.baseAddress, "checkdbdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
@@ -71,8 +70,8 @@ public class ServiceStore {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
-	public String str_CheckXHDoc(DefDocExchange paramDefDocExchange, List<DefDocItem> paramList1,
-			List<DefDocItem> paramList2, List<DefDocPayType> paramList, List<Long> paramList3, List<Long> paramList4,
+	public String str_CheckXHDoc(DefDocExchange paramDefDocExchange, List<DefDocItemXS> paramList1,
+			List<DefDocItemXS> paramList2, List<DefDocPayType> paramList, List<Long> paramList3, List<Long> paramList4,
 			boolean paramBoolean) {
 		String url = Utils.getServiceAddress(this.baseAddress, "checkxhdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
@@ -299,7 +298,7 @@ public class ServiceStore {
 		return new HttpRequestUtils().Post(url, "true");
 	}
 
-	public String str_CheckXTDoc(DefDoc paramDefDoc, List<DefDocItem> paramList, List<DefDocPayType> paramList1,
+	public String str_CheckXTDoc(DefDoc paramDefDoc, List<DefDocItemXS> paramList, List<DefDocPayType> paramList1,
 			List<Long> paramList2, boolean paramBoolean) {
 		String url = Utils.getServiceAddress(this.baseAddress, "checkxtdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
@@ -485,7 +484,8 @@ public class ServiceStore {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
-	public String str_SaveDBDoc(DefDocTransfer paramDefDocTransfer, List<DefDocItem> paramList, List<Long> paramList1) {
+	public String str_SaveDBDoc(DefDocTransfer paramDefDocTransfer, List<DefDocItemXS> paramList,
+			List<Long> paramList1) {
 		String url = Utils.getServiceAddress(this.baseAddress, "savedbdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("43");
@@ -509,8 +509,9 @@ public class ServiceStore {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
-	public String str_SaveXHDoc(DefDocExchange paramDefDocExchange, List<DefDocItem> paramList1,
-			List<DefDocItem> paramList2, List<DefDocPayType> paramList, List<Long> paramList3, List<Long> paramList4) {
+	public String str_SaveXHDoc(DefDocExchange paramDefDocExchange, List<DefDocItemXS> paramList1,
+			List<DefDocItemXS> paramList2, List<DefDocPayType> paramList, List<Long> paramList3,
+			List<Long> paramList4) {
 		String url = Utils.getServiceAddress(this.baseAddress, "savexhdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("15");
@@ -572,7 +573,7 @@ public class ServiceStore {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
-	public String str_SaveXTDoc(DefDoc paramDefDoc, List<DefDocItem> paramList, List<DefDocPayType> paramList1,
+	public String str_SaveXTDoc(DefDoc paramDefDoc, List<DefDocItemXS> paramList, List<DefDocPayType> paramList1,
 			List<Long> paramList2) {
 		String url = Utils.getServiceAddress(this.baseAddress, "savextdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();

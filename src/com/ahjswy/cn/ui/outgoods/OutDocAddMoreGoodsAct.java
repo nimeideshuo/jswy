@@ -31,10 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
-import mexxen.mx5010.barcode.BarcodeConfig;
-import mexxen.mx5010.barcode.BarcodeEvent;
-import mexxen.mx5010.barcode.BarcodeListener;
-import mexxen.mx5010.barcode.BarcodeManager;
 
 /**
  * 销售单数量添加Activity
@@ -46,13 +42,13 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	private List<DefDocItemXS> items;
 	private OutDocAddMoreAdapter adapter;
 	private DefDocXS doc;
+	ArrayList<DefDocItemXS> Newitems;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_out_doc_add_moregoods);
 		intView();
-		addListener();
 	}
 
 	private void intView() {
@@ -63,17 +59,14 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		adapter.setDoc(doc);
 		setInitItem();
 		dialog = new Dialog_listCheckBox(this);
+		Newitems = new ArrayList<DefDocItemXS>();
 	}
 
-	ArrayList<DefDocItemXS> Newitems;
-
-	public void addListener() {
-		if (Newitems == null) {
-			Newitems = new ArrayList<DefDocItemXS>();
-		}
+	@Override
+	protected void onResume() {
+		super.onResume();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {

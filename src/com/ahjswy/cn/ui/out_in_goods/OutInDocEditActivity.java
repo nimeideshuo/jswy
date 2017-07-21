@@ -33,6 +33,7 @@ import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.ui.out_in_goods.MenuPayPopup.EditMenuPopupListener;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -85,7 +86,6 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		setContentView(R.layout.act_outindoc);
 		initView();
 		initData();
-		initListener();
 	}
 
 	private void initView() {
@@ -96,30 +96,20 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		// 加载查找 添加
 		btnAdd = (Button) findViewById(R.id.btnAdd);
 		listView = (SwipeMenuListView) findViewById(R.id.listView_addShop);
-		Button btnPrint = (Button) findViewById(R.id.btnPrint);
-		btnPrint.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-			}
-		});
 		serviceStore = new ServiceStore();
+		btnAdd.setOnClickListener(this);
+		listView.setOnItemClickListener(goodsItemListener);
+		listView.setOnTouchListener(this);
+		dialog = new Dialog_listCheckBox(this);
 	}
 
 	private void initData() {
 		ishaschanged = getIntent().getBooleanExtra("ishaschanged", true);
 		SaleEntity entity = (SaleEntity) getIntent().getSerializableExtra("entity");
 		doccg = ((Def_Doc) JSONUtil.readValue(entity.getDocjson(), Def_Doc.class));
-		if (listItem == null) {
-			listItem = new ArrayList<DefDocItemDD>();
-		}
-		if (adapter == null) {
-			adapter = new OutInDocAdaprer();
-		}
-		if (mGoodsUnitDAO == null) {
-			mGoodsUnitDAO = new GoodsUnitDAO();
-		}
+		listItem = new ArrayList<DefDocItemDD>();
+		adapter = new OutInDocAdaprer();
+		mGoodsUnitDAO = new GoodsUnitDAO();
 		SwipeMenuCreator local5 = new SwipeMenuCreator() {
 			@Override
 			public void create(SwipeMenu menu) {
@@ -176,15 +166,6 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 
 	}
 
-	private void initListener() {
-		btnAdd.setOnClickListener(this);
-		listView.setOnItemClickListener(goodsItemListener);
-		listView.setOnTouchListener(this);
-		dialog = new Dialog_listCheckBox(this);
-		scaner = Scaner.factory(this);
-		scaner.setBarcodeListener(barcodeListener);
-	}
-
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
 
 		@Override
@@ -196,21 +177,6 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 			readBarcode(barcode);
 		}
 	};
-	// BarcodeListener barcodeListener = new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent event) {
-	// // 当条码事件的命令为“SCANNER_READ”时，进行操作
-	// if (event.getOrder().equals("SCANNER_READ")) {
-	// atvSearch.setText("");
-	// if (dialog != null) {
-	// dialog.dismiss();
-	// }
-	// readBarcode(bm.getBarcode().toString().trim());
-	// }
-	//
-	// };
-	// };
 
 	protected void readBarcode(String barcodeStr) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcodeStr);
@@ -222,7 +188,13 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		if (goodsThinList.size() == 1) {
 			DefDocItemDD itemDD = fillItem(goodsThinList.get(0), 0.0D, 0.0D, 0);
 			localArrayList.add(itemDD);
+			Intent intent = new Intent(OutInDocEditActivity.this, OutInDocAddMoreGoodsAct.class);
+			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("doc", doccg);
+			startActivityForResult(intent, 1);
+			MLog.d("readBarcode  1");
 		} else if (goodsThinList.size() > 1) {
+			MLog.d("readBarcode  >1");
 			dialog.setGoods(goodsThinList);
 			dialog.setTempGoods(goodsThinList);
 			dialog.ShowMe();
@@ -235,21 +207,30 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 						DefDocItemDD fillItem = fillItem(select.get(i), 0.0D, 0.0D, 0);
 						localArrayList.add(fillItem);
 					}
+					Intent intent = new Intent(OutInDocEditActivity.this, OutInDocAddMoreGoodsAct.class);
+					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+					intent.putExtra("doc", doccg);
+					startActivityForResult(intent, 1);
 				}
 			});
 
 		}
-		Intent intent = new Intent(OutInDocEditActivity.this, OutInDocAddMoreGoodsAct.class);
-		intent.putExtra("items", JSONUtil.object2Json(localArrayList));
-		intent.putExtra("doc", doccg);
-		startActivityForResult(intent, 1);
+
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// deleBm();
 		scaner.removeListener();
+		MLog.d("onPause");
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
+		MLog.d("onResume");
 	}
 
 	@Override
@@ -281,26 +262,11 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 				GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
 				localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D, 0));
 			}
-			// deleBm();
 			startActivityForResult(new Intent().setClass(this, OutInDocAddMoreGoodsAct.class)
 					.putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc", doccg), 1);
 		}
 
 	}
-
-	// 去除扫码枪
-	// private void deleBm() {
-	// if (bm != null) {
-	// bm.removeListener(new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent arg0) {
-	// }
-	// });
-	// bm.dismiss();
-	// bm = null;
-	// }
-	// }
 
 	/* 商品item点击 商品详细信息 */
 	OnItemClickListener goodsItemListener = new OnItemClickListener() {
@@ -475,9 +441,8 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_FIRST_USER) {
-			initListener();
-		} else if (resultCode == RESULT_OK) {
+
+		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case 0:
 				doccg = (Def_Doc) data.getExtras().get("doc");
@@ -516,7 +481,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 					}
 				});
 				ishaschanged = true;
-				initListener();
+				// initListener();
 				setActionBarText();
 				break;
 			case 3:
@@ -526,7 +491,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 				listView.setAdapter(adapter);
 				adapter.notifyDataSetChanged();
 				ishaschanged = true;
-				initListener();
+				// initListener();
 				itemCount();
 				break;
 			case 4:

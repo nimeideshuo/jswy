@@ -8,7 +8,7 @@ import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDoc;
-import com.ahjswy.cn.model.DefDocItem;
+import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.response.RespGoodsWarehouse;
@@ -28,19 +28,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
-import mexxen.mx5010.barcode.BarcodeEvent;
-import mexxen.mx5010.barcode.BarcodeListener;
-import mexxen.mx5010.barcode.BarcodeManager;
 
 /*
  * 销售退货==商品添加
  */
 public class InDocAddMoreGoodsAct extends BaseActivity {
-	private List<DefDocItem> items;
+	private List<DefDocItemXS> items;
 	private ListView listView;
 	private InDocAddMoreAdapter adapter;
 	private DefDoc doc;
-	private BarcodeManager bm;
+	Scaner scaner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +47,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 	}
 
 	private void initView() {
-		items = JSONUtil.str2list(getIntent().getStringExtra("items"), DefDocItem.class);
+		items = JSONUtil.str2list(getIntent().getStringExtra("items"), DefDocItemXS.class);
 		doc = (DefDoc) getIntent().getSerializableExtra("doc");
 		listView = ((ListView) findViewById(R.id.listView));
 		adapter = new InDocAddMoreAdapter(this);
@@ -60,28 +57,17 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 
 	}
 
-	// private BarcodeListener bl = new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent event) {
-	// if (event.getOrder().equals("SCANNER_READ")) {
-	// if (dialog != null) {
-	// dialog.dismiss();
-	// }
-	// readBarcode(bm.getBarcode().toString().trim());
-	// }
-	// }
-	//
-	// };
-	Scaner scaner;
-
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// bm = new BarcodeManager(this);
-		// bm.addListener(bl);
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		scaner.removeListener();
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
@@ -95,18 +81,11 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		}
 	};
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		// deleBm();
-		scaner.removeListener();
-	}
-
 	private void readBarcode(String barcode) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
-		final ArrayList<DefDocItem> localArrayList = new ArrayList<DefDocItem>();
+		final ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
 		if (goodsThinList.size() == 1) {
-			DefDocItem defdocitem = fillItem(goodsThinList.get(0), 0.0D, 0.0D);
+			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), 0.0D, 0.0D);
 			adapter.addData(defdocitem);
 		} else if (goodsThinList.size() > 1) {
 			dialog.setGoods(goodsThinList);
@@ -119,7 +98,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 					dialog.dismiss();
 					List<GoodsThin> select = dialog.getSelect();
 					for (int i = 0; i < select.size(); i++) {
-						DefDocItem defdocitem = fillItem(select.get(i), 0.0D, 0.0D);
+						DefDocItemXS defdocitem = fillItem(select.get(i), 0.0D, 0.0D);
 						localArrayList.add(defdocitem);
 					}
 					adapter.addItemDate(localArrayList);
@@ -131,7 +110,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		adapter.notifyDataSetInvalidated();
 	}
 
-	protected void setInitItem(DefDocItem item) {
+	protected void setInitItem(DefDocItemXS item) {
 		String localString = new ServiceGoods().gds_GetGoodsWarehouses(item.getGoodsid(), item.isIsusebatch());
 		if (RequestHelper.isSuccess(localString)) {
 			List<RespGoodsWarehouse> goodsWarehouses = JSONUtil.str2list(localString, RespGoodsWarehouse.class);
@@ -195,10 +174,10 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 	private void tv_title_start() {
 		PDH.show(this, new PDH.ProgressCallBack() {
 			public void action() {
-				ArrayList<DefDocItem> localArrayList = new ArrayList<DefDocItem>();
-				List<DefDocItem> data = adapter.getData();
+				ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
+				List<DefDocItemXS> data = adapter.getData();
 				for (int i = 0; i < data.size(); i++) {
-					DefDocItem localDefDocItem = (DefDocItem) data.get(i);
+					DefDocItemXS localDefDocItem = (DefDocItemXS) data.get(i);
 					if (localDefDocItem.getNum() > 0.0D) {
 						localArrayList.add(localDefDocItem);
 					}
@@ -225,9 +204,9 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 	// };
 	private Dialog_listCheckBox dialog;
 
-	private DefDocItem fillItem(GoodsThin paramGoodsThin, double paramDouble1, double paramDouble2) {
+	private DefDocItemXS fillItem(GoodsThin paramGoodsThin, double paramDouble1, double paramDouble2) {
 		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
-		DefDocItem localDefDocItem = new DefDocItem();
+		DefDocItemXS localDefDocItem = new DefDocItemXS();
 		localDefDocItem.setItemid(0L);
 		localDefDocItem.setDocid(this.doc.getDocid());
 		localDefDocItem.setGoodsid(paramGoodsThin.getId());

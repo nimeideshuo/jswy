@@ -56,11 +56,4 @@
         android:layout_height="match_parent" >
     </com.baoyz.swipemenulistview.SwipeMenuListView>
 
-    <Button
-        android:id="@+id/btnPrint"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:text="打印" >
-    </Button>
-
 </LinearLayout>

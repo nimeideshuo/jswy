@@ -54,6 +54,7 @@ public class ScanerMX5020 extends Scaner {
 			return;
 		}
 		bc.setOutputMode(BarcodeConfig.PLAYTONE_MODE_SOUND_AND_VIBRATE);
+		setScanner(true);
 	}
 
 	BarcodeListener bl = new BarcodeListener() {
@@ -71,6 +72,9 @@ public class ScanerMX5020 extends Scaner {
 	@Override
 	public boolean removeListener() {
 		try {
+			if (bm == null) {
+				return false;
+			}
 			bm.dismiss();
 			bm.removeListener(bl);
 			bm = null;

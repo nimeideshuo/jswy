@@ -58,12 +58,13 @@
     <RelativeLayout
         android:id="@+id/auto_reLayou"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <com.baoyz.swipemenulistview.SwipeMenuListView
+        android:layout_height="match_parent" >
+
+        <com.baoyz.swipemenulistview.SwipeMenuListView
             android:id="@+id/listView_addShop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="60dip" >
+            android:layout_above="@+id/linNumber" >
         </com.baoyz.swipemenulistview.SwipeMenuListView>
 
         <LinearLayout

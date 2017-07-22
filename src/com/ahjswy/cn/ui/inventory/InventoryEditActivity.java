@@ -8,11 +8,13 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.dao.FieldSaleItemDAO;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemPD;
 import com.ahjswy.cn.model.DefDocPD;
 import com.ahjswy.cn.model.DocContainerEntity;
+import com.ahjswy.cn.model.FieldSaleItem;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPricePD;
@@ -25,6 +27,7 @@ import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -94,6 +97,8 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		listItemDelete = new ArrayList<Long>();
 		btnAdd.setOnClickListener(addMoreListener);
 		atvSearch.setOnItemClickListener(atvSearchonItemClickListener);
+		fileDao = new FieldSaleItemDAO();
+		fileDao.deleteAll();
 	}
 
 	private void initListView() {
@@ -122,6 +127,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 					if (l > 0L) {
 						listItemDelete.add(Long.valueOf(l));
 					}
+					fileDao.deleteGoods(listItem.get(position).getGoodsid());
 					listItem.remove(position);
 					handler.postDelayed(new Runnable() {
 
@@ -187,6 +193,10 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				return;
 			}
 			final GoodsThin localGoodsThin = (GoodsThin) searchHelper.getAdapter().getTempGoods().get(position);
+			if (fileDao.isGood(localGoodsThin.getId())) {
+				showSuccess("此商品已经添加过!");
+				return;
+			}
 			atvSearch.setText("");
 			PDH.show(InventoryEditActivity.this, new PDH.ProgressCallBack() {
 				public void action() {
@@ -209,13 +219,17 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 
 	private void readBarcode(String barcode) {
 		final ArrayList<GoodsThin> localGoodsThin = new GoodsDAO().getGoodsThinList(barcode);
-		if (localGoodsThin == null) {
+		if (localGoodsThin.isEmpty()) {
 			return;
 		}
 		if (localGoodsThin.size() == 1) {
 			PDH.show(InventoryEditActivity.this, new PDH.ProgressCallBack() {
 				public void action() {
 					DefDocItemPD localDefDocItemPD = fillItem(localGoodsThin.get(0), 0.0D, 0.0D, 0.0D);
+					if (fileDao.isGood(localDefDocItemPD.getGoodsid())) {
+						showError("你已经添加过此商品!");
+						return;
+					}
 					newListItem = new ArrayList<DefDocItemPD>();
 					newListItem.add(localDefDocItemPD);
 					ArrayList<ReqStrGetGoodsPricePD> localArrayList = new ArrayList<ReqStrGetGoodsPricePD>();
@@ -307,6 +321,11 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				ArrayList<DefDocItemPD> localArrayList = new ArrayList<DefDocItemPD>();
 				for (int i = 0; i < select.size(); i++) {
 					GoodsThin localGoodsThin = select.get(i);
+
+					if (fileDao.isGood(localGoodsThin.getId())) {
+						showSuccess("已经添加过此商品!");
+						return;
+					}
 					localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D, 0));
 				}
 				startActivityForResult(new Intent(InventoryEditActivity.this, InventoryAddMoreGoodsAct.class)
@@ -458,9 +477,11 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			case 0:
 				this.doc = ((DefDocPD) data.getSerializableExtra("doc"));
 				break;
-			case 1:// TODO
-				this.listItem.add((DefDocItemPD) data.getSerializableExtra("docitem"));
+			case 1:
+				DefDocItemPD defItem = (DefDocItemPD) data.getSerializableExtra("docitem");
+				this.listItem.add(defItem);
 				this.adapter.setData(this.listItem);
+				saveFieldSaleItem(defItem);
 				refreshUI();
 				break;
 			case 2:
@@ -492,7 +513,6 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		}
 	}
 
-	// TODO refreshUI
 	public void refreshUI() {
 		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
 			findViewById(R.id.lieSearch).setVisibility(View.GONE);
@@ -615,6 +635,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 							itemPD.setCostprice(goodsPricePD.getCostprice());
 							itemPD.setNetamount(Utils.normalizeSubtotal(itemPD.getNetnum() * itemPD.getCostprice()));
 							itemPD.setBatch(goodsPricePD.getBatch());
+							saveFieldSaleItem(itemPD);
 						}
 					}
 					listItem.addAll(newListItem);
@@ -644,7 +665,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			}
 		};
 	};
-	private ArrayList<DefDocItemPD> localArrayList;
+	private FieldSaleItemDAO fileDao;
 
 	private void saveDoc() {
 		final MAlertDialog dialog = new MAlertDialog(this);
@@ -667,6 +688,20 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		});
 		dialog.show();
 		return;
+	}
+
+	/**
+	 * 保存商品
+	 * 
+	 * @param itemPD
+	 */
+	protected void saveFieldSaleItem(DefDocItemPD itemPD) {
+		int count = fileDao.getCount();
+		FieldSaleItem item = new FieldSaleItem();
+		item.goodsid = itemPD.getGoodsid();
+		item.serialid = count;
+		item.setFieldsaleid(count);
+		fileDao.saveFieldSaleItem(item);
 	}
 
 	@Override

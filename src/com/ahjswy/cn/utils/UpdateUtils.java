@@ -265,6 +265,9 @@ public class UpdateUtils {
 					substring = substring.replace("'", "");
 					String[] split = substring.split(",", 0);
 					sb.append("UPDATE 'cu_customer' SET ");
+					if (split.length >= 6) {
+						continue;
+					}
 					for (int i = 0; i < split.length; i++) {
 						if (i >= 3) {
 							sb.append(value[i] + "=").append("'").append(split[i].trim()).append("'");

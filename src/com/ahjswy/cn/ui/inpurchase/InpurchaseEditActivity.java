@@ -294,13 +294,9 @@ public class InpurchaseEditActivity extends BaseActivity
 		itemCGs.add(defdocitemcg);
 		String goodsPrice = new ServiceStore().GetGoodsPrice(doccg, JSONUtil.object2Json(itemCGs));
 		if (TextUtils.isEmptyS(goodsPrice)) {
-			JSONUtil.readValue2(goodsPrice);
-			double price = Double.parseDouble(JSONUtil.Data);
-			if (price > 0) {
-				defdocitemcg.setIsgift(false);
-			} else {
-				defdocitemcg.setIsgift(true);
-			}
+			RespServiceInfor infor = JSONUtil.readValue3(goodsPrice);
+			double price = Double.parseDouble(TextUtils.isEmptyS(infor.Json.Data) == true ? infor.Json.Data : "0");
+			defdocitemcg.setIsgift(price > 0 ? false : true);
 			defdocitemcg.setPrice(price);// 单价
 			defdocitemcg.setDiscountprice(Utils.normalize(price * defdocitemcg.getDiscountratio(), 3));// 折后单价
 			defdocitemcg.setDiscountsubtotal(

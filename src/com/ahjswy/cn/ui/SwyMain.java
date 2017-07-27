@@ -12,7 +12,6 @@ import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
-import com.ahjswy.cn.ui.addgoods.AddGoodSActivity;
 import com.ahjswy.cn.ui.field.AllGoodsActivity;
 import com.ahjswy.cn.ui.field.NewCustomerAddAct;
 import com.ahjswy.cn.ui.ingoods.InDocOpenActivity;
@@ -69,6 +68,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		findViewById(R.id.ll_stockgoods).setOnClickListener(this);
 		findViewById(R.id.ll_inventory).setOnClickListener(this);
 		findViewById(R.id.ll_my_inventory).setOnClickListener(this);
+		findViewById(R.id.addNewGoods).setOnClickListener(this);
 		root = findViewById(R.id.root);
 		root.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View paramAnonymousView, MotionEvent paramAnonymousMotionEvent) {
@@ -218,8 +218,8 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			startActivity(new Intent(SwyMain.this, OutInDocOpen.class));
 			break;
 		// 新增商品
-		case R.id.ll_addGoods:
-			startActivity(new Intent(SwyMain.this, AddGoodSActivity.class));
+		case R.id.addNewGoods:
+			startActivity(new Intent(SwyMain.this, AddNewGoodSAct.class));
 			break;
 		// 盘点
 		case R.id.ll_inventory:
@@ -309,7 +309,6 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			});
 			return false;
 		}
-
 		return super.onKeyDown(keyCode, event);
 	}
 

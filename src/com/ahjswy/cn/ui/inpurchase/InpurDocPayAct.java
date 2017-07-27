@@ -107,7 +107,7 @@ public class InpurDocPayAct extends BaseActivity implements Clean, OnClickListen
 	}
 
 	private void initListener() {
-		etPreference.setCleanDrawable(false);
+//		etPreference.setCleanDrawable(false);
 		etPreference.setClean(this);
 		btnSave.setOnClickListener(this);
 	}

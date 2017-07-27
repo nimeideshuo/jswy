@@ -843,11 +843,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	// 属性
 	public void docProperty() {
 		int k = 0;
-		// if (this.doc.isIsavailable()) {
-		// if (doc.isIsposted()) {
-		//
-		// }
-		// }
 		for (int i = 0; i < listItem.size(); i++) {
 			DefDocItemXS localDefDocItemXS = (DefDocItemXS) this.listItem.get(i);
 			if (localDefDocItemXS.isIspromotion()) {
@@ -858,7 +853,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				}
 			}
 		}
-		// deleBm();
 		Intent localIntent = new Intent(this, OutDocOpenActivity.class);
 		localIntent.putExtra("typechangecustomer", k);// typechangecustomer表示单据返回信息
 		localIntent.putExtra("doc", doc);

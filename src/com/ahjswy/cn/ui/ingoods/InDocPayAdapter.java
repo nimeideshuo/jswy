@@ -82,7 +82,7 @@ public class InDocPayAdapter extends BaseAdapter {
 			}
 		});
 		// 右边的图标隐藏
-		holder.etPayAmount.setCleanDrawable(false);
+		// holder.etPayAmount.setCleanDrawable(false);
 		holder.etPayAmount.addTextChangedListener(new TextWatcher() {
 
 			@Override

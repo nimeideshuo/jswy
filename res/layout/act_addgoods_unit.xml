@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:background="@drawable/btn_select_white_nor"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/m_text"
+            android:text="@string/unit"
+            android:textColor="@color/red" />
+
+        <Spinner
+            android:id="@+id/spUnit"
+            style="@style/m_edtext"
+            android:background="@drawable/btn_2_selector" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="80dp"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/rbBaseUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="基本单位" />
+
+        <RadioButton
+            android:id="@+id/rbBigUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="计件单位" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/m_text"
+            android:text="@string/conversionRatio"
+            android:textColor="@color/red" />
+
+        <EditText
+            android:id="@+id/ratio"
+            style="@style/m_edtext"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/m_text"
+            android:text="零售价" />
+
+        <com.ahjswy.cn.views.EditTextWithDel
+            style="@style/m_edtext"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/m_text"
+            android:text="批发价" />
+
+        <com.ahjswy.cn.views.EditTextWithDel
+            style="@style/m_edtext"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/m_text"
+            android:text="经销价" />
+
+        <com.ahjswy.cn.views.EditTextWithDel
+            style="@style/m_edtext"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/m_text"
+            android:text="成本价" />
+
+        <com.ahjswy.cn.views.EditTextWithDel
+            style="@style/m_edtext"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/m_text"
+            android:text="最低售价" />
+
+        <com.ahjswy.cn.views.EditTextWithDel
+            style="@style/m_edtext"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+</LinearLayout>

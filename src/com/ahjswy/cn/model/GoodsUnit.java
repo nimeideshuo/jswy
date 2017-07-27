@@ -6,22 +6,16 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class GoodsUnit implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@JsonProperty("goodsid")
 	private String goodsid;
 
-	@JsonProperty("isbasic")
 	private boolean isbasic;
 
-	@JsonProperty("isshow")
 	private boolean isshow;
 
-	@JsonProperty("ratio")
 	private double ratio;
 
-	@JsonProperty("unitid")
 	private String unitid;
 
-	@JsonProperty("unitname")
 	private String unitname;
 
 	public String getGoodsid() {
@@ -49,28 +43,28 @@ public class GoodsUnit implements Serializable {
 		return this.isshow;
 	}
 
-	public void setGoodsid(String paramString) {
-		this.goodsid = paramString;
+	public void setGoodsid(String goodsid) {
+		this.goodsid = goodsid;
 	}
 
-	public void setIsbasic(boolean paramBoolean) {
-		this.isbasic = paramBoolean;
+	public void setIsbasic(boolean isbasic) {
+		this.isbasic = isbasic;
 	}
 
-	public void setIsshow(boolean paramBoolean) {
-		this.isshow = paramBoolean;
+	public void setIsshow(boolean isshow) {
+		this.isshow = isshow;
 	}
 
-	public void setRatio(double paramDouble) {
-		this.ratio = paramDouble;
+	public void setRatio(double ratio) {
+		this.ratio = ratio;
 	}
 
-	public void setUnitid(String paramString) {
-		this.unitid = paramString;
+	public void setUnitid(String unitid) {
+		this.unitid = unitid;
 	}
 
-	public void setUnitname(String paramString) {
-		this.unitname = paramString;
+	public void setUnitname(String unitname) {
+		this.unitname = unitname;
 	}
 
 	@Override
@@ -78,5 +72,5 @@ public class GoodsUnit implements Serializable {
 		return "GoodsUnit [goodsid=" + goodsid + ", isbasic=" + isbasic + ", isshow=" + isshow + ", ratio=" + ratio
 				+ ", unitid=" + unitid + ", unitname=" + unitname + "]";
 	}
-	
+
 }

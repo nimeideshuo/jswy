@@ -71,7 +71,6 @@ public class CustomerSearchAct extends BaseActivity implements OnTextChangeListe
 		if (paramString.length() == 0) {
 			loadData();
 		}
-		String[] arrayOfString2 = null;
 		if (TextUtils.isEmptyS(paramString)) {
 			this.temp.addAll(customers);
 			for (int k = 0; k < temp.size(); k++) {
@@ -97,7 +96,7 @@ public class CustomerSearchAct extends BaseActivity implements OnTextChangeListe
 					}
 				}
 			}
-			arrayOfString2 = new String[list.size()];
+			String[] arrayOfString2 = new String[list.size()];
 			if (list.size() > 0) {
 
 				for (int i = 0; i < list.size(); i++) {

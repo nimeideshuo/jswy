@@ -96,6 +96,15 @@
     <string name="browse">查看</string>
     <string name="edit">编辑</string>
     <string name="_pifa">批发</string>
+    <string name="batchPrice">批发单价</string>
+    <string name="salePrice">经销单价</string>
+    <string name="averagePrice">最低售价</string>
+    <string name="conversionRatio">换算比例</string>
+    <string name="extraSalePrice1">价格体系一</string>
+    <string name="extraSalePrice2">价格体系二</string>
+    <string name="extraSalePrice3">价格体系三</string>
+    <string name="extraSalePrice4">价格体系四</string>
+    <string name="salecue">销售提示</string>
     <string name="_linshou">零售</string>
     <string name="add_customer">新增客户</string>
     <string name="storefront">门店</string>
@@ -231,6 +240,7 @@
     <string name="xlistview_footer_hint_ready">松开载入更多</string>
     <string name="business">业务</string>
     <string name="sale">销售</string>
+    <string name="model">型号</string>
     <string name="return_goods">退货</string>
     <string name="exchange_goods">换货</string>
     <string name="transfer">调拨</string>

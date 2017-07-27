@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginRight="10.0dip"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/goods_call_name"
+                android:textColor="@color/red" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@id/etName"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/barcode" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@id/etBarcode"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/specification" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@id/etSpecification"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/model" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@id/etModel"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/salecue" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@+id/etSalecue"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/goods_remark_m" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@+id/etRemark"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="0.0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.65"
+                android:text="所属类别"
+                android:textColor="@color/red"
+                android:textSize="16.0sp" />
+
+            <Spinner
+                android:id="@+id/spFirstClassId"
+                style="@style/m_spinner_stytle"
+                android:layout_width="0.0dip"
+                android:layout_margin="8.0dip"
+                android:layout_weight="2.0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:orientation="horizontal" >
+
+            <CheckBox
+                android:id="@+id/cbIsDiscount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="允许打折" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="批次管理" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/unitRoot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/extraSalePrice1" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@+id/etExtraSalePrice1"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/extraSalePrice2" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@+id/etExtraSalePrice2"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/extraSalePrice3" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@+id/etExtraSalePrice3"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/extraSalePrice4" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@+id/etExtraSalePrice4"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dish_line_top" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btnAddUnit"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_1_selector"
+                android:text="添加单位" />
+
+            <Button
+                android:id="@id/btnSubmit"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_1_selector"
+                android:text="@string/submit" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

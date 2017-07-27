@@ -122,12 +122,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">10dip</item>
     </style>
-	<!-- 商品items集合 -->
+    <!-- 商品items集合 -->
     <style name="m_order_item">
         <item name="android:textSize">@dimen/list_item_inner_info</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_width">0.0dip</item>
-          <item name="android:textColor">@color/heise</item>
+        <item name="android:textColor">@color/heise</item>
         <item name="android:layout_height">fill_parent</item>
         <item name="android:layout_weight">1.0</item>
     </style>
@@ -161,6 +161,31 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">10.0dip</item>
+    </style>
+
+    <style name="m_text">
+        <item name="android:layout_width">0.0dip</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1.0</item>
+        <item name="android:textColor">@color/yanse</item>
+        <item name="android:textSize">@dimen/dialog_label</item>
+    </style>
+
+    <style name="m_edtext">
+        <item name="android:layout_width">0.0dip</item>
+        <item name="android:layout_height">40.0dip</item>
+        <item name="android:layout_marginLeft">2.0dip</item>
+        <item name="android:layout_marginRight">2.0dip</item>
+        <item name="android:layout_weight">3.0</item>
+        <item name="android:background">@drawable/login_panel_edit_bg</item>
+        <item name="android:textSize">@dimen/dialog_edit</item>
+    </style>
+
+    <style name="m_spinner_stytle">
+        <item name="android:background">@drawable/spinner_bg</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40.0dip</item>
+        <item name="android:popupBackground">@drawable/spiner_popup_bg</item>
     </style>
 
 </resources>

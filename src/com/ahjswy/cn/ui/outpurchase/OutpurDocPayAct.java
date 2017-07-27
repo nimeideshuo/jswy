@@ -69,7 +69,7 @@ public class OutpurDocPayAct extends BaseActivity implements Clean, OnClickListe
 		// 优惠
 		preference = getIntent().getDoubleExtra("preference", 0.0D);
 		listPayType = JSONUtil.str2list(getIntent().getStringExtra("listpaytype"), DefDocPayType.class);
-		etPreference.setCleanDrawable(false);
+//		etPreference.setCleanDrawable(false);
 		etPreference.setClean(this);
 		btnSave.setOnClickListener(this);
 

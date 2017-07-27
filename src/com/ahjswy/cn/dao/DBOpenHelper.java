@@ -13,7 +13,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 	public static final int VERSION = 1;
 
 	public DBOpenHelper() {
-		super(MyApplication.getInstance(), "fields.db", null, 1);
+		super(MyApplication.getInstance(), DBNAME, null, 1);
 		// 如果 sz_goods 不存在 null createTable()创建表
 		if (!isTableExsit("sz_goods")) {
 			createTable();
@@ -84,7 +84,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		
+
 	}
 
 	@Override

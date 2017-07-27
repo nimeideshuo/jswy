@@ -24,6 +24,7 @@ import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
+import com.ahjswy.cn.views.EditTextWithDel;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,7 +55,7 @@ public class OutDocOpenActivity extends BaseActivity
 	// 客户车辆
 	private EditText etTruckNumber;
 	// 整单折扣
-	private EditText etDiscountRatio;
+	private EditTextWithDel etDiscountRatio;
 	// 交货日期
 	private Button btnSettleTime;
 	// 结算日期
@@ -85,7 +86,7 @@ public class OutDocOpenActivity extends BaseActivity
 		btnPromotion = (Button) findViewById(R.id.btnPromotion);
 		etMobile = (EditText) findViewById(R.id.etMobile);
 		etTruckNumber = (EditText) findViewById(R.id.etTruckNumber);
-		etDiscountRatio = (EditText) findViewById(R.id.etDiscountRatio);
+		etDiscountRatio = (EditTextWithDel) findViewById(R.id.etDiscountRatio);
 		btnSettleTime = (Button) findViewById(R.id.btnSettleTime);
 		btnDeliveryTime = (Button) findViewById(R.id.btnDeliveryTime);
 		etRemark = (EditText) findViewById(R.id.etRemark);

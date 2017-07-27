@@ -274,12 +274,6 @@
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>
-        <!-- 新增商品 -->
-        <activity
-            android:name="com.ahjswy.cn.ui.addgoods.AddGoodSActivity"
-            android:icon="@drawable/menu_btn_back"
-            android:screenOrientation="portrait" >
-        </activity>
         <activity
             android:name="com.ahjswy.cn.ui.out_in_goods.OutInDocOpen"
             android:icon="@drawable/menu_btn_back"
@@ -297,11 +291,6 @@
         </activity>
         <activity
             android:name="com.ahjswy.cn.ui.out_in_goods.OutInDocAddGoodAct"
-            android:icon="@drawable/menu_btn_back"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.ahjswy.cn.ui.addgoods.GoodSUnitActivity"
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>
@@ -372,6 +361,16 @@
         </activity>
         <activity
             android:name="com.ahjswy.cn.ui.inventory.InventoryDocSearchAct"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.AddNewGoodSAct"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.UnitSearchAct"
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>

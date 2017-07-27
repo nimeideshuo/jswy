@@ -5,8 +5,6 @@
     android:background="@color/main_bg"
     android:orientation="vertical" >
 
-    <include layout="@layout/biaotitou_button" />
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -338,4 +336,5 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-</TableLayout>
+
+</TableLayout>

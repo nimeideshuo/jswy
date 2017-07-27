@@ -20,17 +20,16 @@ public class GoodsDAO {
 
 	public int getCount() {
 		this.db = this.helper.getReadableDatabase();
-		Cursor localCursor = this.db.rawQuery("select count(*) from sz_goods", null);
+		Cursor cursor = this.db.rawQuery("select count(*) from sz_goods", null);
 		try {
-			boolean bool = localCursor.moveToNext();
-			if (bool) {
-				int j = localCursor.getInt(0);
+			if (cursor.moveToNext()) {
+				return cursor.getInt(0);
 			}
 		} catch (Exception localException) {
 			localException.printStackTrace();
 		} finally {
-			if (localCursor != null)
-				localCursor.close();
+			if (cursor != null)
+				cursor.close();
 			if (this.db != null)
 				this.db.close();
 		}
@@ -47,13 +46,6 @@ public class GoodsDAO {
 		cursor = this.db.rawQuery(localString1, array);
 		try {
 			while (cursor.moveToNext()) {
-				// goods.setId(cursor.getString(0));
-				// goods.setName(cursor.getString(1));
-				// goods.setPinyin(cursor.getString(2));
-				// goods.setBarcode(cursor.getString(3));
-				// goods.setSpecification(cursor.getString(4));
-				// goods.setModel(cursor.getString(5));
-				// goods.setStocknumber(cursor.getString(6));
 				goods.setId(cursor.getString(0));
 				goods.setName(cursor.getString(1));
 				goods.setPinyin(cursor.getString(2));

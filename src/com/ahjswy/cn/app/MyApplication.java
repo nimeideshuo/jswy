@@ -74,12 +74,6 @@ public class MyApplication extends Application {
 		return new Bean().put("key", "mmendianban");
 	}
 
-	// public static void exit() {
-	// activityManager.popAllActivityExceptOne(null);
-	// Process.killProcess(Process.myPid());
-	// System.exit(0);
-	// }
-
 	// 得到本机Mac地址
 	public String getMac() {
 		// 获取wifi管理器

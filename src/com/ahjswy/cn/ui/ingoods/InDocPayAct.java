@@ -71,7 +71,7 @@ public class InDocPayAct extends BaseActivity implements OnFocusChangeListener, 
 		tvDiscountSubtotal.setText(discountsubtotal + "");
 		// 优惠
 		preference = getIntent().getDoubleExtra("preference", 0.0D);
-		etPreference.setCleanDrawable(false);
+		etPreference.setFocusable(false);
 		etPreference.setClean(this);
 		etPreference.setText(preference + "");
 		etPreference.setTag(etPreference.getText());

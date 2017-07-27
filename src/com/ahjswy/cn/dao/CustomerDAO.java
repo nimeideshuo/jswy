@@ -13,7 +13,6 @@ public class CustomerDAO {
 	private SQLiteDatabase db;
 	private DBOpenHelper helper = new DBOpenHelper();
 
-	// TODO 代码带补全
 	public CustomerThin getCustomer(String paramString) {
 		List<CustomerThin> queryAllCustomer = queryAllCustomer();
 		for (int i = 0; i < queryAllCustomer.size(); i++) {

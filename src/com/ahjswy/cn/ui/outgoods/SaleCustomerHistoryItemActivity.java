@@ -42,9 +42,7 @@ public class SaleCustomerHistoryItemActivity extends BaseActivity {
 		this.adapter = new SaleCustomerHistoryItemAdapter(this);
 		this.adapter.setData(listItem);
 		this.listView.setAdapter(adapter);
-		refreshUI();
-		this.listView.setChoiceMode(3);
-		;
+		this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		this.listView.setMultiChoiceModeListener(muliChoiceModeLisener);
 	}
 

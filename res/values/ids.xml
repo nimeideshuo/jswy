@@ -414,8 +414,12 @@
     <item name="et_goods_barcode" type="id"/>
     <item name="ed_specification" type="id"/>
     <item name="ed_model" type="id"/>
-    <item name="cbDiscount" type="id" />
-    <item name="btnCategory" type="id" />
-    <item name="etRemarks" type="id" />
+    <item name="cbDiscount" type="id"/>
+    <item name="btnCategory" type="id"/>
+    <item name="etRemarks" type="id"/>
+    <item name="etName" type="id"/>
+    <item name="etBarcode" type="id"/>
+    <item name="etSpecification" type="id"/>
+    <item name="etModel" type="id"/>
 
 </resources>

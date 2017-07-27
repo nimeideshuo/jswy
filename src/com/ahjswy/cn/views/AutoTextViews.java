@@ -84,6 +84,6 @@ public class AutoTextViews extends AutoCompleteTextView {
 	}
 
 	public abstract interface OnTextChangeListener {
-		public abstract void onChanged(View paramView, String paramString);
+		public abstract void onChanged(View v, String str);
 	}
 }

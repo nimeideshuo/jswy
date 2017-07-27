@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <include layout="@layout/biaotitou_button" />
-
     <EditText
         android:id="@+id/ed_gongYingShang"
         android:layout_width="match_parent"

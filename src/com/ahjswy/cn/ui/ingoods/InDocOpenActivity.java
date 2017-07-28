@@ -14,10 +14,12 @@ import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.model.Warehouse;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
+import com.ahjswy.cn.ui.CustomerAddressSearchAct;
 import com.ahjswy.cn.ui.CustomerSearchAct;
 import com.ahjswy.cn.ui.DepartmentSearchAct;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.ui.WarehouseSearchAct;
+import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.utils.DateTimePickDialogUtil;
 import com.ahjswy.cn.utils.DateTimePickDialogUtil.Time_callback;
 import com.ahjswy.cn.utils.GetTime;
@@ -313,19 +315,34 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 	};
 	Handler handlerGet = new Handler() {
 		public void handleMessage(android.os.Message msg) {
-			String localString1 = msg.obj.toString();
-			if (RequestHelper.isSuccess(localString1)) {
-				List<HashMap<String, String>> localList = JSONUtil.parse2ListMap(localString1);
-				if (localList.size() > 0) {
+			String message = msg.obj.toString();
+			if (RequestHelper.isSuccess(message)) {
+				// List<HashMap<String, String>> localList =
+				// JSONUtil.parse2ListMap(localString1);
+				// if (localList.size() > 0) {
+				// etCustomerAddress
+				// .setText((CharSequence) ((HashMap<String, String>)
+				// localList.get(0)).get("address"));
+				// return;
+				// }
+				// PDH.showFail("无可用地址");
+				// return;
+				List<HashMap<String, String>> localList = JSONUtil.parse2ListMap(message);
+				if (localList.size() == 1) {
 					etCustomerAddress
 							.setText((CharSequence) ((HashMap<String, String>) localList.get(0)).get("address"));
-					return;
+				} else if (localList.size() > 1) {
+					Intent localIntent = new Intent(InDocOpenActivity.this, CustomerAddressSearchAct.class);
+					localIntent.putExtra("customername", btnCustomer.getText().toString());
+					localIntent.putExtra("listaddress", message);
+					startActivityForResult(localIntent, 0);
+
+				} else {
+					PDH.showFail("无可用地址");
 				}
-				PDH.showFail("无可用地址");
-				return;
+			} else {
+				PDH.showFail(message);
 			}
-			PDH.showFail(localString1);
-			return;
 		};
 	};
 

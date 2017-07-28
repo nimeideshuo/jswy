@@ -1,14 +1,17 @@
 package com.ahjswy.cn.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.ahjswy.cn.dao.DBOpenHelper;
 import com.ahjswy.cn.dao.GoodsImageDAO;
 import com.ahjswy.cn.model.GoodsImage;
+import com.ahjswy.cn.model.SupplierThin;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
 import com.ahjswy.cn.service.ServiceSynchronize;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
@@ -96,8 +99,9 @@ public class UpdateUtils {
 				if (localList5 == null) {
 					return false;
 				}
-				setReplaceToUpdata(localList5);
-				saveToLocalDB(localList5);
+				// setReplaceToUpdata(localList5);
+				updataToLocalDB(localList5);
+				// saveToLocalDB(localList5);
 				i++;
 				paramHandler.sendEmptyMessage(i);
 			}
@@ -252,7 +256,7 @@ public class UpdateUtils {
 
 	}
 
-	// TODO 修改
+	// 已经废弃 TODO 修改
 	public void setReplaceToUpdata(List<HashMap<String, String>> paramList) {
 		StringBuffer sb = new StringBuffer();
 		String[] value = { "id", "name", "pinyin", "iscustomer", "issupplier", "isavailable" };
@@ -264,25 +268,81 @@ public class UpdateUtils {
 					String substring = sql.substring(sql.indexOf("values(") + "values(".length(), sql.lastIndexOf(")"));
 					substring = substring.replace("'", "");
 					String[] split = substring.split(",", 0);
-					sb.append("UPDATE 'cu_customer' SET ");
-					if (split.length >= 6) {
+					sb.append("update 'cu_customer' set ");
+					if (split.length > 6) {
 						continue;
 					}
-					for (int i = 0; i < split.length; i++) {
-						if (i >= 3) {
-							sb.append(value[i] + "=").append("'").append(split[i].trim()).append("'");
-						}
-						if (i >= 3 && i < split.length - 1) {
-							sb.append(",");
-						}
+					if (!(split[4].contains("1"))) {
+						MLog.d("不是供应商》》" + split[0] + ">>>" + split[4]);
+						paramList.remove(j);
+						continue;
 					}
-					sb.append(" WHERE id =").append("'").append(split[0]).append("'");
+					MLog.d("供应商》》" + split[0] + ">>>" + split[4]);
+					// for (int i = 0; i < split.length; i++) {
+					// if (i >= 3) {
+					sb.append(value[3] + "=").append("'").append(split[3].trim()).append("',");
+					sb.append(value[4] + "=").append("'").append(split[4].trim()).append("'");
+					// }
+					// if (i >= 3 && i < split.length - 1) {
+					// sb.append(",");
+					// }
+					// }
+					sb.append(" WHERE id =").append("'").append(split[0]).append("';");
+					MLog.d(paramList.get(j).get("sql"));
 					paramList.get(j).put("sql", sb.toString());
+					MLog.d(split[0] + ">>" + sb.toString());
 					sb.setLength(0);
 				}
 
 			}
 		}
+	}
+
+	private void updataToLocalDB(List<HashMap<String, String>> paramList) {
+
+		SQLiteDatabase database = new DBOpenHelper().getWritableDatabase();
+		List<SupplierThin> listSupplier = new ArrayList<SupplierThin>();
+		try {
+
+			for (int i = 0; i < paramList.size(); i++) {
+				if (paramList.get(i).get("sql").trim().length() > 0) {
+					String sql = (paramList.get(i)).get("sql").trim();
+					String substring = sql.substring(sql.indexOf("values(") + "values(".length(), sql.lastIndexOf(")"));
+					substring = substring.replace("'", "");
+					String[] split = substring.split(",", 0);
+					if (split.length > 6) {
+						continue;
+					}
+					if (!(split[4].contains("1"))) {
+						continue;
+					}
+					SupplierThin supplierThin = new SupplierThin();
+					supplierThin.setId(split[0]);
+					supplierThin.setName(split[1]);
+					supplierThin.setPinyin(split[2]);
+					supplierThin.setIscustomer(split[3]);
+					supplierThin.setIssupplier(split[4]);
+					supplierThin.setIsavailable(split[5]);
+					listSupplier.add(supplierThin);
+
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		for (int i = 0; i < listSupplier.size(); i++) {
+			SupplierThin supplier = listSupplier.get(i);
+			ContentValues values = new ContentValues();
+			values.put("id", supplier.getId().trim());
+			values.put("name", supplier.getName().trim());
+			values.put("pinyin", supplier.getPinyin().trim());
+			values.put("iscustomer", supplier.getIscustomer().trim());
+			values.put("issupplier", supplier.getIssupplier().trim());
+			values.put("isavailable", supplier.getIsavailable().trim());
+			database.insert("cu_customer", null, values);
+		}
+
 	}
 
 }

@@ -437,7 +437,7 @@ public class OutDocOpenActivity extends BaseActivity
 							.setText((CharSequence) ((HashMap<String, String>) localList.get(0)).get("address"));
 				} else if (localList.size() > 1) {
 					Intent localIntent = new Intent(OutDocOpenActivity.this, CustomerAddressSearchAct.class);
-					localIntent.putExtra("customername", OutDocOpenActivity.this.btnCustomer.getText());
+					localIntent.putExtra("customername", btnCustomer.getText().toString());
 					localIntent.putExtra("listaddress", localString1);
 					startActivityForResult(localIntent, 0);
 

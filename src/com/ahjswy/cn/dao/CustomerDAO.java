@@ -27,7 +27,7 @@ public class CustomerDAO {
 	public List<CustomerThin> queryAllCustomer() {
 		this.db = this.helper.getWritableDatabase();
 		Cursor cursor = this.db.rawQuery(
-				"select id, name, pinyin, contactmoblie, address, settleterm, discountratio, promotionid, promotionname, pricesystemid from cu_customer where isavailable='1' and iscustomer='1' order by name",
+				"select id, name, pinyin, contactmoblie, address, settleterm, discountratio, promotionid, promotionname, pricesystemid from cu_customer where isavailable='1' and issupplier is  null order by name",
 				null);
 		ArrayList<CustomerThin> localArrayList = new ArrayList<CustomerThin>();
 		try {

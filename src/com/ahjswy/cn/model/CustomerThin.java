@@ -2,15 +2,13 @@ package com.ahjswy.cn.model;
 
 import java.io.Serializable;
 
-public class CustomerThin
-  implements Serializable
-{
-  private static final long serialVersionUID = 1L;
-  private String address;
-  private String contactmoblie;
-  private double discountratio;
-  private String id;
-  private String name;
+public class CustomerThin implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private String address;
+	private String contactmoblie;
+	private double discountratio;
+	private String id;
+	private String name;
   private String pinyin;
   private String pricesystemid;
   private String promotionid;

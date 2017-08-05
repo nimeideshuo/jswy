@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -464,23 +463,23 @@ public class OutDocOpenActivity extends BaseActivity
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *
 	 * 
 	 */
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			if (doc != null) {
-				Intent intent = new Intent();
-				intent.putExtra("doc", this.doc);
-				setResult(3, intent);
-				finish();
-				return true;
-			}
-			startActivity(new Intent(this, SwyMain.class));
-			finish();
-			return true;
-		} else {
-			return super.onKeyDown(keyCode, event);
-		}
-	}
+	// @Override
+	// public boolean onKeyDown(int keyCode, KeyEvent event) {
+	// if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+	// if (doc != null) {
+	// Intent intent = new Intent();
+	// intent.putExtra("doc", this.doc);
+	// setResult(3, intent);
+	// finish();
+	// return true;
+	// }
+	// startActivity(new Intent(this, SwyMain.class));
+	// finish();
+	// return true;
+	// } else {
+	// return super.onKeyDown(keyCode, event);
+	// }
+	// }
 
 	@Override
 	public void dateTime(int id, String time) {

@@ -5,9 +5,15 @@ import java.util.List;
 import java.util.Locale;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.model.GoodsThin;
+import com.ahjswy.cn.response.RespGoodsPriceEntity;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
+import com.ahjswy.cn.service.ServiceSupport;
 import com.ahjswy.cn.ui.BaseActivity;
+import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
@@ -19,6 +25,7 @@ import com.ahjswy.cn.views.BounceListView;
 import com.ahjswy.cn.views.MyLetterListView;
 import com.ahjswy.cn.views.MyLetterListView.OnTouchingLetterChangedListener;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -66,8 +73,8 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 			}
 
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				AllGoodsActivity.this.myLetterListView.setChooseChar(new StringBuilder(String
-						.valueOf(((GoodsThin) listGoodsThin.get(bounceListView.getFirstVisiblePosition())).getPinyin()))
+				myLetterListView.setChooseChar(new StringBuilder(
+						String.valueOf((listGoodsThin.get(bounceListView.getFirstVisiblePosition())).getPinyin()))
 								.toString().substring(0, 1).toUpperCase(Locale.CHINA));
 			}
 		});
@@ -87,9 +94,12 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 							} else if (goods_check[i].equals("name")) {
 								v4 = listGoodsThin.get(j).getName();
 							} else if (goods_check[i].equals("barcode")) {
-								v4 = listGoodsThin.get(j).getPinyin();
+								v4 = listGoodsThin.get(j).getBarcode();
 							} else if (goods_check[i].equals("id")) {
 								v4 = listGoodsThin.get(j).getId();
+							}
+							if (v4 == null) {
+								continue;
 							}
 							if (v4.contains(text) && (v4.toLowerCase()).contains(text)) {
 								listThin.add(listGoodsThin.get(j));
@@ -102,8 +112,64 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 
 			}
 		};
-		this.atvSearch.setOnTextChangeListener(changeListener);
+		atvSearch.setOnTextChangeListener(changeListener);
+		Scaner scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
+		dialogPrice = new AlertDialog.Builder(AllGoodsActivity.this);
 	}
+
+	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
+
+		@Override
+		public void setBarcode(String barcode) {
+			showPriceDialog(barcode);
+		}
+
+	};
+
+	private void showPriceDialog(String barcode) {
+		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
+		if (goodsThinList.isEmpty()) {
+			showError("没有找到商品！");
+			return;
+		}
+		GoodsThin goodsThin = goodsThinList.get(0);
+		dialogPrice.setTitle(goodsThin.getName());
+		handlerPrice.sendMessage(
+				handlerPrice.obtainMessage(1, new ServiceSupport().sup_QueryGoodsPrice(goodsThin.getId())));
+	}
+
+	private Handler handlerPrice = new Handler() {
+		private AlertDialog show;
+
+		public void handleMessage(android.os.Message msg) {
+			String message = (String) msg.obj;
+			if (RequestHelper.isSuccess(message)) {
+				if (show != null) {
+					show.dismiss();
+				}
+				List<RespGoodsPriceEntity> listGoodPrice = JSONUtil.str2list(message, RespGoodsPriceEntity.class);
+				if (listGoodPrice.size() > 0) {
+					String dialogMessage = "\n";
+					for (int i = 0; i < listGoodPrice.size(); ++i) {
+						RespGoodsPriceEntity rp = listGoodPrice.get(i);
+						dialogMessage = dialogMessage + rp.getPricesystemname() + "：" + rp.getPrice() + "元/"
+								+ rp.getUnitname() + "\n";
+					}
+					TextView tv = new TextView(AllGoodsActivity.this);
+					tv.setText(dialogMessage);
+					tv.setTextSize(16f);
+					tv.setPadding(50, 0, 0, 0);
+					dialogPrice.setView(tv);
+					show = dialogPrice.show();
+				} else {
+					PDH.showMessage("无价格信息");
+				}
+			} else {
+				PDH.showFail(message);
+			}
+		};
+	};
 
 	private void initOverLay() {
 		this.toast = new Toast(this);
@@ -140,6 +206,7 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 			}
 		};
 	};
+	private AlertDialog.Builder dialogPrice;
 
 	private void refresh() {
 		MLog.d("refresh:" + listGoodsThin.toString());

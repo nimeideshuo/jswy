@@ -2,8 +2,6 @@ package com.ahjswy.cn.views;
 
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 public class ClearListener implements View.OnTouchListener {
 	private int width;

@@ -7,10 +7,6 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
-import com.ahjswy.cn.cldb.CL_sz_goodsclass;
-import com.ahjswy.cn.cldb.CL_sz_pricesystem;
-import com.ahjswy.cn.cldb.bean.sz_goodsclass;
-import com.ahjswy.cn.cldb.bean.sz_pricesystem;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
@@ -27,7 +23,6 @@ import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.outpurchase.OutpurchaseOpenActivity;
 import com.ahjswy.cn.utils.InfoDialog;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -59,23 +54,6 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		setContentView(R.layout.act_field_main);
 		initView();
 		initDate();
-		findViewById(R.id.test).setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// CL_sz_goodsclass goodsclass = new CL_sz_goodsclass();
-				// List<sz_goodsclass> queryAll = goodsclass.queryAll();
-				// for (sz_goodsclass goods : queryAll) {
-				// MLog.d("id:" + goods.getId() + " name:" + goods.getName());
-				// }
-				CL_sz_pricesystem pricesystem = new CL_sz_pricesystem();
-				List<sz_pricesystem> listprice = pricesystem.queryAll();
-				for (sz_pricesystem sz_pricesystem : listprice) {
-					MLog.d("id:" + sz_pricesystem.getPsid() + " name:" + sz_pricesystem.getPsname() + "  ");
-				}
-			}
-		});
-
 	}
 
 	private void initView() {
@@ -86,7 +64,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		findViewById(R.id.ll_my_doc).setOnClickListener(this);
 		findViewById(R.id.ll_newcustomer).setOnClickListener(this);
 		findViewById(R.id.lin_outin).setOnClickListener(this);
-		findViewById(R.id.ll_addGoods).setOnClickListener(this);
+		// findViewById(R.id.ll_addGoods).setOnClickListener(this);
 		findViewById(R.id.ll_stockgoods).setOnClickListener(this);
 		findViewById(R.id.ll_inventory).setOnClickListener(this);
 		findViewById(R.id.ll_my_inventory).setOnClickListener(this);

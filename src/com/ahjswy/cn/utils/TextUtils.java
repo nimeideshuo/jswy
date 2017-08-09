@@ -4,18 +4,17 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 
 public class TextUtils {
-	public static boolean isEmptyS(String paramString) {
-		return ((paramString != null) && (paramString.length() != 0) && (!("null".equals(paramString))));
+	public static boolean isEmptyS(String str) {
+		return ((str != null) && (str.length() != 0) && (!("null".equals(str))));
 	}
 
-	public static boolean isEmpty(String paramString) {
-		return (paramString == null) || (paramString.length() == 0);
+	public static boolean isEmpty(String str) {
+		return (str == null) || (str.length() == 0);
 	}
 
-	public static CharSequence setTextStyle(String paramString1, String paramString2) {
-		SpannableString spannable = new SpannableString(paramString1 + paramString2);
-		spannable.setSpan(new ForegroundColorSpan(-65536), spannable.length() - paramString2.length(),
-				spannable.length(), 33);
+	public static CharSequence setTextStyle(String str1, String str2) {
+		SpannableString spannable = new SpannableString(str1 + str2);
+		spannable.setSpan(new ForegroundColorSpan(-65536), spannable.length() - str2.length(), spannable.length(), 33);
 		return spannable;
 	}
 

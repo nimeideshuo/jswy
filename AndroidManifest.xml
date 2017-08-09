@@ -379,6 +379,26 @@
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.transfer.TransferDocOpenActivity"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.transfer.TransferEditActivity"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.transfer.TransferAddMoreGoodsAct"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.transfer.TransferAddGoodAct"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

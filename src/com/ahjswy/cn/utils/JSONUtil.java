@@ -132,12 +132,12 @@ public class JSONUtil {
 	}
 
 	// String json to list
-	public static <T> List<T> str2list(String paramString, Class<T> paramClass) {
+	public static <T> List<T> str2list(String content, Class<T> paramClass) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		org.codehaus.jackson.JsonParser parser;
 		List<T> list = new ArrayList<T>();
 		try {
-			parser = objectMapper.getJsonFactory().createJsonParser(paramString);
+			parser = objectMapper.getJsonFactory().createJsonParser(content);
 			JsonNode nodes = parser.readValueAsTree();
 			// list = new ArrayList<T>(nodes.size());
 			for (JsonNode node : nodes) {

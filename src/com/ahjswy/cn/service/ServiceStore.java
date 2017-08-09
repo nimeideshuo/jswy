@@ -14,6 +14,7 @@ import com.ahjswy.cn.bean.SaleEntity;
 import com.ahjswy.cn.model.DefDoc;
 import com.ahjswy.cn.model.DefDocCG;
 import com.ahjswy.cn.model.DefDocExchange;
+import com.ahjswy.cn.model.DefDocItem;
 import com.ahjswy.cn.model.DefDocItemCG;
 import com.ahjswy.cn.model.DefDocItemPD;
 import com.ahjswy.cn.model.DefDocItemTH;
@@ -42,17 +43,16 @@ public class ServiceStore {
 	private String baseNewAddress = "LoginService/";
 	LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
 
-	public String str_CheckDBDoc(DefDocTransfer paramDefDocTransfer, List<DefDocItemXS> paramList, List<Long> paramList1,
-			boolean paramBoolean) {
+	public String str_CheckDBDoc(DefDocTransfer doc, List<DefDocItem> item, List<Long> deleteitem, boolean isprint) {
 		String url = Utils.getServiceAddress(this.baseAddress, "checkdbdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("43");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(paramDefDocTransfer));
-		localDocContainerEntity.setItem(JSONUtil.object2Json(paramList));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(paramList1));
+		localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
+		localDocContainerEntity.setItem(JSONUtil.object2Json(item));
+		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(deleteitem));
 		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
 		map.put("proposerid", SystemState.getUser().getId());
-		map.put("isprint", paramBoolean + "");
+		map.put("isprint", isprint + "");
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -400,16 +400,16 @@ public class ServiceStore {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
-	public String str_InitDBDoc(String paramString1, String paramString2, String paramString3) {
+	public String str_InitDBDoc(String departmentid, String warehouseid, String warehouseid2) {
 		String url = Utils.getServiceAddress(this.baseAddress, "initdbdoc");
-		ReqStrInitDoc localReqStrInitDoc = new ReqStrInitDoc();
-		localReqStrInitDoc.setDepartmentID(paramString1);
-		localReqStrInitDoc.setWarehouseID(paramString2);
-		localReqStrInitDoc.setWarehouseID2(paramString3);
-		User localUser = SystemState.getUser();
-		localReqStrInitDoc.setMakerID(localUser.getId());
-		localReqStrInitDoc.setMakerName(localUser.getName());
-		map.put("parameter", JSONUtil.object2Json(localReqStrInitDoc));
+		ReqStrInitDoc initDoc = new ReqStrInitDoc();
+		initDoc.setDepartmentID(departmentid);
+		initDoc.setWarehouseID(warehouseid);
+		initDoc.setWarehouseID2(warehouseid2);
+		User user = SystemState.getUser();
+		initDoc.setMakerID(user.getId());
+		initDoc.setMakerName(user.getName());
+		map.put("parameter", JSONUtil.object2Json(initDoc));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -484,14 +484,13 @@ public class ServiceStore {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
-	public String str_SaveDBDoc(DefDocTransfer paramDefDocTransfer, List<DefDocItemXS> paramList,
-			List<Long> paramList1) {
+	public String str_SaveDBDoc(DefDocTransfer doc, List<DefDocItem> item, List<Long> deleteitem) {
 		String url = Utils.getServiceAddress(this.baseAddress, "savedbdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("43");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(paramDefDocTransfer));
-		localDocContainerEntity.setItem(JSONUtil.object2Json(paramList));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(paramList1));
+		localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
+		localDocContainerEntity.setItem(JSONUtil.object2Json(item));
+		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(deleteitem));
 		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
 		map.put("proposerid", SystemState.getUser().getId());
 		return new Utils_help().getServiceInfor(url, map);

@@ -22,6 +22,7 @@ import com.ahjswy.cn.ui.out_in_goods.OutInDocOpen;
 import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.outpurchase.OutpurchaseOpenActivity;
+import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
@@ -69,6 +70,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		findViewById(R.id.ll_inventory).setOnClickListener(this);
 		findViewById(R.id.ll_my_inventory).setOnClickListener(this);
 		findViewById(R.id.addNewGoods).setOnClickListener(this);
+		findViewById(R.id.ll_transfer).setOnClickListener(this);
 		root = findViewById(R.id.root);
 		root.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View paramAnonymousView, MotionEvent paramAnonymousMotionEvent) {
@@ -237,6 +239,10 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		// 产品手册
 		case R.id.ll_stockgoods:
 			startActivity(new Intent(this, AllGoodsActivity.class));
+			break;
+		// 调拨
+		case R.id.ll_transfer:
+			startActivity(new Intent(this, TransferDocOpenActivity.class));
 			break;
 		}
 	}

@@ -380,11 +380,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 											localDefDocItemXS1.getPrice() * localDefDocItemXS1.getDiscountratio()));
 									localDefDocItemXS1.setDiscountsubtotal(Utils.normalizeSubtotal(
 											localDefDocItemXS1.getNum() * localDefDocItemXS1.getDiscountprice()));
-									boolean isgift = false;
-									if (localDefDocItemXS1.getPrice() == 0.0D) {
-										isgift = true;
-									}
-									localDefDocItemXS1.setIsgift(isgift);
+									localDefDocItemXS1.setIsgift(localDefDocItemXS1.getPrice() == 0.0D ? true : false);
 									String bigNum = localGoodsUnitDAO.getBigNum(localDefDocItemXS1.getGoodsid(),
 											localDefDocItemXS1.getUnitid(), localDefDocItemXS1.getNum());
 									localDefDocItemXS1.setBignum(bigNum);

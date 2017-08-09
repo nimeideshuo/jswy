@@ -16,8 +16,8 @@ public class RequestHelper {
 		}
 	}
 
-	public static boolean isSuccess(String paramString) {
-		return (A.isFail(paramString));
+	public static boolean isSuccess(String str) {
+		return (A.isFail(str));
 	}
 
 	public static void showError(String paramString) {

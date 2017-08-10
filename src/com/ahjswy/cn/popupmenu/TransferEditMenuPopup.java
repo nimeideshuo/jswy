@@ -17,9 +17,9 @@ public class TransferEditMenuPopup extends PopupWindow implements OnClickListene
 	private TransferEditActivity activity;
 	private Button btnCheck;
 	private Button btnCheckPrint;
-	private Button btnDelete;
+	private LinearLayout btnDelete;
 	private Button btnDocProperty;
-	private Button btnSave;
+	private LinearLayout btnSave;
 	private DefDocTransfer doc;
 	private View root;
 
@@ -42,25 +42,12 @@ public class TransferEditMenuPopup extends PopupWindow implements OnClickListene
 		show();
 	}
 
-	private void show() {
-		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
-			this.root.findViewById(R.id.linear_top).setVisibility(View.GONE);
-			this.btnSave.setVisibility(View.GONE);
-			this.btnDelete.setVisibility(View.GONE);
-		} else {
-			this.root.findViewById(R.id.linear_top).setVisibility(View.VISIBLE);
-			this.btnSave.setVisibility(View.VISIBLE);
-			this.btnDelete.setVisibility(View.VISIBLE);
-		}
-
-	}
-
 	private void init() {
 		btnCheck = (Button) root.findViewById(R.id.btnCheck);
 		btnCheckPrint = (Button) root.findViewById(R.id.btnCheckPrint);
 		btnDocProperty = (Button) root.findViewById(R.id.btnDocProperty);
-		btnDelete = (Button) root.findViewById(R.id.btnDelete);
-		btnSave = (Button) root.findViewById(R.id.btnSave);
+		btnDelete = (LinearLayout) root.findViewById(R.id.btnDelete);
+		btnSave = (LinearLayout) root.findViewById(R.id.btnSave);
 		btnCheck.setOnClickListener(this);
 		btnCheckPrint.setOnClickListener(this);
 		btnDocProperty.setOnClickListener(this);
@@ -96,4 +83,16 @@ public class TransferEditMenuPopup extends PopupWindow implements OnClickListene
 		}
 	}
 
+	private void show() {
+		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
+			this.root.findViewById(R.id.linear_top).setVisibility(View.GONE);
+			this.btnSave.setVisibility(View.GONE);
+			this.btnDelete.setVisibility(View.GONE);
+		} else {
+			this.root.findViewById(R.id.linear_top).setVisibility(View.VISIBLE);
+			this.btnSave.setVisibility(View.VISIBLE);
+			this.btnDelete.setVisibility(View.VISIBLE);
+		}
+
+	}
 }

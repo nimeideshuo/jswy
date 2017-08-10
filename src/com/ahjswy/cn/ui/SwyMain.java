@@ -23,6 +23,7 @@ import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.outpurchase.OutpurchaseOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
+import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
@@ -59,7 +60,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 
 	private void initView() {
 		findViewById(R.id.ll_return_goods).setOnClickListener(this);
-		findViewById(R.id.outpurchase).setOnClickListener(this);
+		// findViewById(R.id.outpurchase).setOnClickListener(this);
 		findViewById(R.id.ll_sale).setOnClickListener(this);
 		findViewById(R.id.lin_Inpurchase).setOnClickListener(this);
 		findViewById(R.id.ll_my_doc).setOnClickListener(this);
@@ -71,6 +72,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		findViewById(R.id.ll_my_inventory).setOnClickListener(this);
 		findViewById(R.id.addNewGoods).setOnClickListener(this);
 		findViewById(R.id.ll_transfer).setOnClickListener(this);
+		findViewById(R.id.ll_my_transfer).setOnClickListener(this);
 		root = findViewById(R.id.root);
 		root.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View paramAnonymousView, MotionEvent paramAnonymousMotionEvent) {
@@ -198,15 +200,16 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			startActivity(in_Inpurchase);
 			break;
 		// 采购退货
-		case R.id.outpurchase:
-			if (SystemState.getWarehouse() == null) {
-				PDH.showMessage("请设置默认仓库");
-				return;
-			}
-			Intent outpurchase = new Intent(SwyMain.this, OutpurchaseOpenActivity.class);
-			startActivity(outpurchase);
-			finish();
-			break;
+		// case R.id.outpurchase:
+		// if (SystemState.getWarehouse() == null) {
+		// PDH.showMessage("请设置默认仓库");
+		// return;
+		// }
+		// Intent outpurchase = new Intent(SwyMain.this,
+		// OutpurchaseOpenActivity.class);
+		// startActivity(outpurchase);
+		// finish();
+		// break;
 		// 我的销售
 		case R.id.ll_my_doc:
 			startActivity(new Intent(SwyMain.this, SaleRecordActivity.class));
@@ -243,6 +246,10 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		// 调拨
 		case R.id.ll_transfer:
 			startActivity(new Intent(this, TransferDocOpenActivity.class));
+			break;
+		// 我的调拨
+		case R.id.ll_my_transfer:
+			startActivity(new Intent(this, TransferRecordActivity.class));
 			break;
 		}
 	}

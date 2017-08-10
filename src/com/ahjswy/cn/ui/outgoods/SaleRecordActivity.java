@@ -189,7 +189,6 @@ public class SaleRecordActivity extends BaseActivity {
 	};
 	// 返回值 来进行判断 view的显示
 	private Handler handler = new Handler() {
-		private List<RespStrDocThinEntity> str2list;
 
 		public void handleMessage(Message message) {
 

@@ -78,6 +78,10 @@ public class TransferDocOpenActivity extends BaseActivity implements OnClickList
 			this.etRemark.setCursorVisible(false);
 			this.etRemark.setFocusable(false);
 			this.etRemark.setFocusableInTouchMode(false);
+		} else {
+			btnDepartment.setOnClickListener(this);
+			btnInWarehouse.setOnClickListener(this);
+			btnOutWarehouse.setOnClickListener(this);
 		}
 
 	}
@@ -88,9 +92,6 @@ public class TransferDocOpenActivity extends BaseActivity implements OnClickList
 		btnOutWarehouse = (Button) findViewById(R.id.btnOutWarehouse);
 		etRemark = (EditText) findViewById(R.id.etRemark);
 		etSummary = (EditText) findViewById(R.id.etSummary);
-		btnDepartment.setOnClickListener(this);
-		btnInWarehouse.setOnClickListener(this);
-		btnOutWarehouse.setOnClickListener(this);
 	}
 
 	@Override

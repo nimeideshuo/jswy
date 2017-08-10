@@ -69,9 +69,14 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_transfer);
-		serviceStore = new ServiceStore();
-		root = (RelativeLayout) findViewById(R.id.root);
 		initListView();
+		initView();
+		refreshUI();
+		factory = Scaner.factory(this);
+		factory.setBarcodeListener(this);
+	}
+
+	private void initView() {
 		LinearLayout linearSearch = ((LinearLayout) findViewById(R.id.lieSearch));
 		atvSearch = ((AutoTextView) findViewById(R.id.atvSearch));
 		searchHelper = new SearchHelper(this, linearSearch);
@@ -79,19 +84,21 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		btnAdd = ((Button) findViewById(R.id.btnAdd));
 		this.root.setOnTouchListener(this);
 		this.btnAdd.setOnClickListener(this.addMoreListener);
+		this.listItemDelete = new ArrayList<Long>();
+	}
+
+	private void initListView() {
+		serviceStore = new ServiceStore();
+		root = (RelativeLayout) findViewById(R.id.root);
 		this.ishaschanged = getIntent().getBooleanExtra("ishaschanged", true);
 		doccontainer = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
 		this.doc = ((DefDocTransfer) JSONUtil.readValue(doccontainer.getDoc(), DefDocTransfer.class));
 		this.listItem = JSONUtil.str2list(doccontainer.getItem(), DefDocItem.class);
-		this.listItemDelete = new ArrayList<Long>();
-		factory = Scaner.factory(this);
-		factory.setBarcodeListener(this);
-	}
 
-	private void initListView() {
 		listView = ((SwipeMenuListView) findViewById(R.id.listView));
 		listView.setOnTouchListener(this);
 		adapter = new TransferItemAdapter(this);
+		adapter.setData(listItem);
 		listView.setAdapter(adapter);
 		SwipeMenuCreator local5 = new SwipeMenuCreator() {
 
@@ -289,6 +296,18 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		return null;
 	}
 
+	public void refreshUI() {
+		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
+			findViewById(R.id.lieSearch).setVisibility(View.GONE);
+			findViewById(R.id.top).setVisibility(View.GONE);
+			this.listView.setItemSwipe(false);
+		} else {
+			findViewById(R.id.lieSearch).setVisibility(View.VISIBLE);
+			findViewById(R.id.top).setVisibility(View.VISIBLE);
+			this.listView.setItemSwipe(true);
+		}
+	}
+
 	protected DefDocItem fillItem(GoodsThin goodsthin, double num, double price) {
 		GoodsUnitDAO goodsDao = new GoodsUnitDAO();
 		DefDocItem item = new DefDocItem();
@@ -414,25 +433,30 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 			menuPopup.showAtLocation(listView, 80, 0, 0);
 		}
 		if (menu.getItemId() == android.R.id.home) {
-			final MAlertDialog localMAlertDialog = new MAlertDialog(this);
-			localMAlertDialog.setMessage("是否保存当前单据？");
-			localMAlertDialog.setCancelListener(new OnClickListener() {
+			if (ishaschanged) {
+				final MAlertDialog dialog = new MAlertDialog(this);
+				dialog.setMessage("是否保存当前单据？");
+				dialog.setCancelListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					localMAlertDialog.dismiss();
-					save();
-				}
-			});
-			localMAlertDialog.setComfirmListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						save();
+					}
+				});
+				dialog.setComfirmListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					localMAlertDialog.dismiss();
-					finish();
-				}
-			});
-			localMAlertDialog.show();
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						finish();
+					}
+				});
+				dialog.show();
+			} else {
+				setResult(RESULT_FIRST_USER);
+				finish();
+			}
 		}
 		return true;
 	}
@@ -608,15 +632,6 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 	private Scaner factory;
 
 	@Override
-	public void setActionBarText() {
-		if (this.ishaschanged) {
-			setTitle(doc.getShowid() + "*");
-		} else {
-			setTitle(doc.getShowid());
-		}
-	}
-
-	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		if ((this.menuPopup != null) && (this.menuPopup.isShowing())) {
 			this.menuPopup.dismiss();
@@ -636,7 +651,6 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		readBarcode(barcode);
 	}
 
-	// TODO
 	private void readBarcode(String barcode) {
 		atvSearch.setText("");
 		final ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
@@ -676,4 +690,12 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		factory.removeListener();
 	}
 
+	@Override
+	public void setActionBarText() {
+		if (this.ishaschanged) {
+			setTitle(doc.getShowid() + "*");
+		} else {
+			setTitle(doc.getShowid());
+		}
+	}
 }

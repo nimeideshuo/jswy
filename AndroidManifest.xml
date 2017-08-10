@@ -399,6 +399,16 @@
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.transfer.TransferRecordActivity"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.transfer.TransferDocSearchAct"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

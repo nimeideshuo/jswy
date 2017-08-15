@@ -250,7 +250,8 @@
                     android:layout_width="0.0dip"
                     android:layout_height="match_parent"
                     android:layout_weight="1.0"
-                    android:background="@null" >
+                    android:background="@null"
+                    android:visibility="gone" >
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -263,6 +264,27 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5.0dip"
                         android:text="新增商品" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@id/ll_stockgoods"
+                    style="@style/style_function_menu"
+                    android:layout_width="0.0dip"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0"
+                    android:background="@null" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5.0dip"
+                        android:background="@drawable/ic_menu_stockgoods" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5.0dip"
+                        android:text="@string/goods_detail_info" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -340,7 +362,30 @@
                     style="@style/style_function_menu"
                     android:layout_width="0.0dip"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.0" >
+                    android:layout_weight="1.0"
+                    android:background="@null"
+                    android:visibility="invisible" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5.0dip"
+                        android:background="@drawable/ic_menu_stockgoods" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5.0dip"
+                        android:text="@string/goods_detail_info" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@id/ll_stockgoods"
+                    style="@style/style_function_menu"
+                    android:layout_width="0.0dip"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0"
+                    android:visibility="gone" >
 
                     <ImageView
                         android:layout_width="wrap_content"

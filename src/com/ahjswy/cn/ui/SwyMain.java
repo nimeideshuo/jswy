@@ -21,7 +21,6 @@ import com.ahjswy.cn.ui.inventory.InventoryRecordActivity;
 import com.ahjswy.cn.ui.out_in_goods.OutInDocOpen;
 import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
-import com.ahjswy.cn.ui.outpurchase.OutpurchaseOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.InfoDialog;
@@ -245,6 +244,10 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			break;
 		// 调拨
 		case R.id.ll_transfer:
+			if (SystemState.getWarehouse() == null) {
+				PDH.showMessage("请设置默认仓库");
+				return;
+			}
 			startActivity(new Intent(this, TransferDocOpenActivity.class));
 			break;
 		// 我的调拨

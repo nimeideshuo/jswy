@@ -16,6 +16,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -51,22 +52,73 @@ public class TransferAddMoreAdapter extends BaseAdapter {
 		return 0;
 	}
 
+	int selectPosition;
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		Item item = null;
-		if (convertView == null) {
-			convertView = LayoutInflater.from(this.context).inflate(R.layout.item_inventory_add_more_goods, null);
-			item = new Item(convertView);
-			convertView.setTag(item);
+	public View getView(final int position, View convertView, ViewGroup parent) {
+		// Item item = null;
+		// if (convertView == null) {
+		// convertView =
+		// LayoutInflater.from(this.context).inflate(R.layout.item_inventory_add_more_goods,
+		// null);
+		// item = new Item(convertView);
+		// convertView.setTag(item);
+		// } else {
+		// item = (Item) convertView.getTag();
+		// }
+		// item.btnUnit.setTag(Integer.valueOf(position));
+		// item.etNum.setTag(Integer.valueOf(position));
+		// item.btnUnit.setOnClickListener(this.onClickListener);
+		// item.etNum.addTextChangedListener(new NumWatcher(item));
+		// item.setValue(this.listItems.get(position));
+		View view = View.inflate(context, R.layout.item_inventory_add_more_goods, null);
+		TextView tvName = ((TextView) view.findViewById(R.id.tvName));
+		TextView tvBarcode = ((TextView) view.findViewById(R.id.tvBarcode));
+		Button btnUnit = ((Button) view.findViewById(R.id.btnUnit));
+		EditText etNum = ((EditText) view.findViewById(R.id.etNum));
+		btnUnit.setTag(Integer.valueOf(position));
+		etNum.setTag(Integer.valueOf(position));
+		DefDocItem item = listItems.get(position);
+		btnUnit.setOnClickListener(this.onClickListener);
+		tvName.setText(item.getGoodsname());
+		tvBarcode.setText(item.getBarcode());
+		btnUnit.setText(item.getUnitname());
+		if (item.getNum() == 0.0D) {
+			etNum.setText("");
 		} else {
-			item = (Item) convertView.getTag();
+			etNum.setText(String.valueOf(item.getNum()));
 		}
-		item.btnUnit.setTag(Integer.valueOf(position));
-		item.etNum.setTag(Integer.valueOf(position));
-		item.btnUnit.setOnClickListener(this.onClickListener);
-		item.etNum.addTextChangedListener(new NumWatcher(item));
-		item.setValue(this.listItems.get(position));
-		return convertView;
+		if (selectPosition == position) {
+			etNum.requestFocus();
+		}
+		etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				selectPosition = position;
+			}
+		});
+		etNum.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				(listItems.get(position)).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
+			}
+		});
+
+		return view;
 	}
 
 	public void setData(List<DefDocItem> items) {
@@ -128,31 +180,34 @@ public class TransferAddMoreAdapter extends BaseAdapter {
 		}
 	};
 
-	private class NumWatcher implements TextWatcher {
-		private TransferAddMoreAdapter.Item item;
-
-		public NumWatcher(Item item) {
-			this.item = item;
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void afterTextChanged(Editable s) {
-			int i = ((Integer) item.etNum.getTag()).intValue();
-			(listItems.get(i)).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
-		}
-
-	}
+	// private class NumWatcher implements TextWatcher {
+	// private TransferAddMoreAdapter.Item item;
+	//
+	// public NumWatcher(Item item) {
+	// this.item = item;
+	// }
+	//
+	// @Override
+	// public void beforeTextChanged(CharSequence s, int start, int count, int
+	// after) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// @Override
+	// public void onTextChanged(CharSequence s, int start, int before, int
+	// count) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// @Override
+	// public void afterTextChanged(Editable s) {
+	// int i = ((Integer) item.etNum.getTag()).intValue();
+	// (listItems.get(i)).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(),
+	// 2));
+	// }
+	//
+	// }
 
 }

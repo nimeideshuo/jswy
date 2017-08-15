@@ -37,7 +37,6 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -346,7 +345,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 
 	public void check(final boolean isPrint) {
 		String validateDoc = validateDoc();
-		if (!validateDoc.isEmpty()) {
+		if (validateDoc != null) {
 			InfoDialog.showError(this, validateDoc);
 			return;
 		}

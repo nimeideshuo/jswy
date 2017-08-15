@@ -87,6 +87,10 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	}
 
 	protected void readBarcode(String barcode) {
+		if (items.size() >= 20) {
+			showError("已经开的够多了！请确认一下");
+			return;
+		}
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
 		if (goodsThinList.size() == 1) {
 			long maxTempItemId = getMaxTempItemId();

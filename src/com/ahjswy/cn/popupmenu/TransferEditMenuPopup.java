@@ -10,16 +10,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 public class TransferEditMenuPopup extends PopupWindow implements OnClickListener {
 	private TransferEditActivity activity;
 	private Button btnCheck;
 	private Button btnCheckPrint;
-	private LinearLayout btnDelete;
+	private Button btnDelete;
 	private Button btnDocProperty;
-	private LinearLayout btnSave;
+	private Button btnSave;
 	private DefDocTransfer doc;
 	private View root;
 
@@ -46,8 +45,8 @@ public class TransferEditMenuPopup extends PopupWindow implements OnClickListene
 		btnCheck = (Button) root.findViewById(R.id.btnCheck);
 		btnCheckPrint = (Button) root.findViewById(R.id.btnCheckPrint);
 		btnDocProperty = (Button) root.findViewById(R.id.btnDocProperty);
-		btnDelete = (LinearLayout) root.findViewById(R.id.btnDelete);
-		btnSave = (LinearLayout) root.findViewById(R.id.btnSave);
+		btnDelete = (Button) root.findViewById(R.id.btnDelete);
+		btnSave = (Button) root.findViewById(R.id.btnSave);
 		btnCheck.setOnClickListener(this);
 		btnCheckPrint.setOnClickListener(this);
 		btnDocProperty.setOnClickListener(this);

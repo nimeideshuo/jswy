@@ -222,6 +222,10 @@ public class InpurchaseEditActivity extends BaseActivity
 			long maxTempItemId = getMaxTempItemId();
 			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, maxTempItemId + 1L);
 			localArrayList.add(fillItem);
+			Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
+			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("doc", doccg);
+			startActivityForResult(intent, 1);
 		} else if (goodsThinList.size() > 1) {
 			dialog.setGoods(goodsThinList);
 			dialog.setTempGoods(goodsThinList);
@@ -236,16 +240,17 @@ public class InpurchaseEditActivity extends BaseActivity
 						maxTempItemId += 1L;
 						DefDocItemCG fillItem = fillItem(select.get(i), 0.0D, 0.0D, maxTempItemId);
 						localArrayList.add(fillItem);
+
 					}
+					Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
+					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+					intent.putExtra("doc", doccg);
+					startActivityForResult(intent, 1);
 				}
 			});
 		} else {
 			PDH.showFail("没有查找到商品！可以尝试更新数据");
 		}
-		Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
-		intent.putExtra("items", JSONUtil.object2Json(localArrayList));
-		intent.putExtra("doc", doccg);
-		startActivityForResult(intent, 1);
 	}
 
 	@Override

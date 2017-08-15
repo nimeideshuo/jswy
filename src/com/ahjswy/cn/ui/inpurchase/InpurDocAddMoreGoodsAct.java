@@ -86,6 +86,10 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 	}
 
 	protected void readBarcode(String barcode) {
+		if (items.size() >= 20) {
+			showError("已经够多了请确认下!");
+			return;
+		}
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
 		if (goodsThinList.size() == 1) {
 			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, 0L);// 0

@@ -12,6 +12,8 @@ import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.response.RespGoodsStock;
 import com.ahjswy.cn.response.RespServiceInfor;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.service.ServiceSupport;
 import com.ahjswy.cn.ui.BaseActivity;
@@ -28,12 +30,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
-import mexxen.mx5010.barcode.BarcodeConfig;
-import mexxen.mx5010.barcode.BarcodeEvent;
-import mexxen.mx5010.barcode.BarcodeListener;
-import mexxen.mx5010.barcode.BarcodeManager;
 
-public class InpurDocAddMoreGoodsAct extends BaseActivity {
+public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarcodeListener {
 	private ListView lv_commodity_add;
 	private ArrayList<DefDocItemCG> items;
 	private InpurDocAddMoreAdapter adapter;
@@ -44,7 +42,8 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 		super.onCreate(paramBundle);
 		setContentView(R.layout.act_out_doc_add_moregoods);
 		intView();
-		addListener();
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(this);
 	}
 
 	private void intView() {
@@ -54,36 +53,12 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 		adapter = new InpurDocAddMoreAdapter(this);
 		dialog = new Dialog_listCheckBox(this);
 		support = new ServiceSupport();
+		Newitems = new ArrayList<DefDocItemCG>();
 		setInitItem();
 	}
 
 	ArrayList<DefDocItemCG> Newitems;
 	private Dialog_listCheckBox dialog;
-
-	public void addListener() {
-		if (bm == null) {
-			bm = new BarcodeManager(this);
-		}
-		if (Newitems == null) {
-			Newitems = new ArrayList<DefDocItemCG>();
-		}
-		bm.addListener(new BarcodeListener() {
-			@Override
-			public void barcodeEvent(BarcodeEvent event) {
-				if (event.getOrder().equals("SCANNER_READ")) {
-					if (dialog != null) {
-						dialog.dismiss();
-					}
-					readBarcode(bm.getBarcode().toString().trim());
-				}
-			}
-		});
-		// 扫码枪 功能调用 先new 对相 在调用
-		BarcodeConfig barcodeConfig = new BarcodeConfig(this);
-		// 设置条码输出模式 不显示模式(复制到粘贴板)
-		barcodeConfig.setOutputMode(2);
-
-	}
 
 	protected void readBarcode(String barcode) {
 		if (items.size() >= 20) {
@@ -93,8 +68,10 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
 		if (goodsThinList.size() == 1) {
 			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, 0L);// 0
-			Newitems.add(fillItem);
-			addItems();
+			if (fillItem != null) {
+				Newitems.add(fillItem);
+				addItems();
+			}
 		} else if (goodsThinList.size() > 1) {
 			dialog.setGoods(goodsThinList);
 			dialog.setTempGoods(goodsThinList);
@@ -107,6 +84,9 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 					List<GoodsThin> select = dialog.getSelect();
 					for (int i = 0; i < select.size(); i++) {
 						DefDocItemCG fillItem = fillItem(select.get(i), 0.0D, 0.0D, 0L);
+						if (fillItem == null) {
+							continue;
+						}
 						Newitems.add(fillItem);
 					}
 					addItems();
@@ -118,9 +98,10 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
-		deleBm();
+	protected void onDestroy() {
+		super.onDestroy();
+		scaner.removeListener();
+		scaner = null;
 	}
 
 	protected void addItems() {
@@ -227,6 +208,9 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 		} else {
 			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(localGoodsThin.getId());
 		}
+		if (localGoodsUnit == null) {
+			return null;
+		}
 		defDocItemCG.setUnitid(localGoodsUnit.getUnitid());
 		defDocItemCG.setUnitname(localGoodsUnit.getUnitname());
 		defDocItemCG.setNum(Utils.normalize(paramDouble1, 2));
@@ -307,23 +291,8 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 		finish();
 	}
 
-	public void deleBm() {
-		if (bm != null) {
-			bm.removeListener(new BarcodeListener() {
-
-				@Override
-				public void barcodeEvent(BarcodeEvent arg0) {
-
-				}
-			});
-			bm.dismiss();
-			bm = null;
-		}
-
-	}
-
-	private BarcodeManager bm;
 	private ServiceSupport support;
+	private Scaner scaner;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -381,5 +350,10 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 	@Override
 	public void setActionBarText() {
 		getActionBar().setTitle("添加商品");
+	}
+
+	@Override
+	public void setBarcode(String barcode) {
+		readBarcode(barcode);
 	}
 }

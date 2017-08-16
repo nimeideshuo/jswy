@@ -74,7 +74,7 @@ public class Utils_help {
 			// 获取URLConnection对象对应的输出流
 			out = new PrintWriter(conn.getOutputStream());
 			// 发送请求参数
-			Log.d("TEXT", ">>>do post url :" + Service.getIpUrl(ip) + url + "->params:" + sb.toString());
+			MLog.d(">>>do post url :" + Service.getIpUrl(ip) + url + "->params:" + sb.toString());
 			out.print(sb.toString());
 			// flush输出流的缓冲
 			out.flush();
@@ -84,7 +84,7 @@ public class Utils_help {
 			while ((line = in.readLine()) != null) {
 				result += line;
 			}
-			Log.d("TEXT", ">>>do post res :" + result.toString());
+			MLog.d("TEXT", ">>>do post res :" + result.toString());
 		} catch (Exception e) {
 			System.out.println("发送 POST 请求出现异常！" + e);
 			e.printStackTrace();

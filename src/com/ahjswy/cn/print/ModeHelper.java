@@ -77,8 +77,7 @@ public class ModeHelper {
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				switch (eventType) {
 				case XmlPullParser.START_DOCUMENT:
-					Log.d("tag", "START_DOCUMENT  eventType  " + eventType);
-
+					MLog.d("START_DOCUMENT  eventType  " + eventType);
 					break;
 				case XmlPullParser.START_TAG:
 
@@ -110,14 +109,14 @@ public class ModeHelper {
 					}
 					break;
 				case XmlPullParser.END_TAG:
-					Log.d("tag", "END_TAG  eventType  " + eventType);
+					MLog.d("END_TAG  eventType  " + eventType);
 					if (hashMap != null && hashMap.size() > 0) {
 						textViews.add(hashMap);
 					}
 					hashMap = new HashMap<String, String>();
 					break;
 				case XmlPullParser.END_DOCUMENT:
-					Log.d("tag", "END_DOCUMENT  eventType  " + eventType);
+					MLog.d("END_DOCUMENT  eventType  " + eventType);
 					break;
 				}
 				eventType = parser.next();

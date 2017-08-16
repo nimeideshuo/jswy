@@ -17,6 +17,8 @@ import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.popupmenu.InpurchaseEditMenuPopup;
 import com.ahjswy.cn.response.RespServiceInfor;
+import com.ahjswy.cn.scaner.Scaner;
+import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.MAlertDialog;
@@ -25,6 +27,7 @@ import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.ui.inpurchase.InpurDocItemAdapter.Sum;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -64,7 +67,7 @@ import mexxen.mx5010.barcode.BarcodeManager;
  * 采购单开单
  */
 public class InpurchaseEditActivity extends BaseActivity
-		implements OnClickListener, OnTouchListener, OnItemClickListener, Sum {
+		implements OnClickListener, OnTouchListener, OnItemClickListener, Sum, ScanerBarcodeListener {
 	private SearchHelper searchHelper;
 	private AutoTextView atvSearch;
 	private InpurchaseEditMenuPopup menuPopup;
@@ -85,6 +88,8 @@ public class InpurchaseEditActivity extends BaseActivity
 		initView();
 		initDate();
 		addListener();
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(this);
 	}
 
 	private void initView() {
@@ -110,10 +115,6 @@ public class InpurchaseEditActivity extends BaseActivity
 		}
 		adapter = new InpurDocItemAdapter(this);
 		adapter.setSum(this);
-		// 代码废弃
-		// if (newListItem == null) {
-		// newListItem = new ArrayList<DefDocItemCG>();
-		// }
 		dialog = new Dialog_listCheckBox(InpurchaseEditActivity.this);
 
 		SwipeMenuCreator local5 = new SwipeMenuCreator() {
@@ -153,7 +154,6 @@ public class InpurchaseEditActivity extends BaseActivity
 							adapter.setData(listItem);
 							ishaschanged = true;
 							setActionBarText();
-
 						}
 					}, 180L);
 					break;
@@ -186,32 +186,33 @@ public class InpurchaseEditActivity extends BaseActivity
 		listview_copy_dele.setOnItemClickListener(this);
 		listview_copy_dele.setOnTouchListener(this);
 		atvSearch.setOnItemClickListener(onItemClickListeners);
-		if (bm == null) {
-			bm = new BarcodeManager(this);
-		}
-		// onTouch(null, null);
-		BarcodeConfig barcodeConfig = new BarcodeConfig(this);
-		// 设置条码输出模式 不显示模式(复制到粘贴板)
-		barcodeConfig.setOutputMode(2);
-
-		bm.addListener(bl);
+		// if (bm == null) {
+		// bm = new BarcodeManager(this);
+		// }
+		// // onTouch(null, null);
+		// BarcodeConfig barcodeConfig = new BarcodeConfig(this);
+		// // 设置条码输出模式 不显示模式(复制到粘贴板)
+		// barcodeConfig.setOutputMode(2);
+		//
+		// bm.addListener(bl);
 
 	}
 
-	private BarcodeListener bl = new BarcodeListener() {
-
-		@Override
-		public void barcodeEvent(BarcodeEvent event) {
-			atvSearch.setText("");
-			if (dialog != null) {
-				dialog.dismiss();
-			}
-			// 当条码事件的命令为“SCANNER_READ”时，进行操作
-			if (event.getOrder().equals("SCANNER_READ")) {
-				readBarcode(bm.getBarcode().toString().trim());
-			}
-		}
-	};
+	// private BarcodeListener bl = new BarcodeListener() {
+	//
+	// @Override
+	// public void barcodeEvent(BarcodeEvent event) {
+	// // TODO
+	// atvSearch.setText("");
+	// if (dialog != null) {
+	// dialog.dismiss();
+	// }
+	// // 当条码事件的命令为“SCANNER_READ”时，进行操作
+	// if (event.getOrder().equals("SCANNER_READ")) {
+	// readBarcode(bm.getBarcode().toString().trim());
+	// }
+	// }
+	// };
 
 	private void readBarcode(String barcodeStr) {
 
@@ -256,7 +257,17 @@ public class InpurchaseEditActivity extends BaseActivity
 	@Override
 	protected void onPause() {
 		super.onPause();
-		deleBm();
+		scaner.removeListener();
+		scaner = null;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (scaner == null) {
+			scaner = Scaner.factory(this);
+			scaner.setBarcodeListener(this);
+		}
 	}
 
 	private AdapterView.OnItemClickListener onItemClickListeners = new AdapterView.OnItemClickListener() {
@@ -276,7 +287,6 @@ public class InpurchaseEditActivity extends BaseActivity
 							return;
 						}
 					}
-					// deleBm();
 					Intent localIntent = new Intent(InpurchaseEditActivity.this, InPurchaseDocAddGoodAct.class);
 					localIntent.putExtra("customerid", doccg.getCustomerid());
 					localIntent.putExtra("docitem", onitemdefdoc);
@@ -316,20 +326,6 @@ public class InpurchaseEditActivity extends BaseActivity
 			defdocitemcg.setIsgift(true);
 		}
 		return false;
-	}
-
-	public void deleBm() {
-		if (bm != null) {
-			bm.removeListener(new BarcodeListener() {
-
-				@Override
-				public void barcodeEvent(BarcodeEvent arg0) {
-
-				}
-			});
-			bm.dismiss();
-			bm = null;
-		}
 	}
 
 	@Override
@@ -382,9 +378,12 @@ public class InpurchaseEditActivity extends BaseActivity
 		ArrayList<DefDocItemCG> localArrayList = new ArrayList<DefDocItemCG>();
 		for (int i = 0; i < localList.size(); i++) {
 			GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
-			localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D, 0));
+			DefDocItemCG fillItem = fillItem(localGoodsThin, 0.0D, 0.0D, 0);
+			if (fillItem == null) {
+				continue;
+			}
+			localArrayList.add(fillItem);
 		}
-		// deleBm();
 		Intent intent = new Intent(this, InpurDocAddMoreGoodsAct.class);
 		intent.putExtra("items", JSONUtil.object2Json(localArrayList));
 		intent.putExtra("doc", doccg);
@@ -408,6 +407,9 @@ public class InpurchaseEditActivity extends BaseActivity
 			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(localGoodsThin.getId());
 		} else {
 			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(localGoodsThin.getId());
+		}
+		if (localGoodsUnit == null) {
+			return null;
 		}
 		defDocItemCG.setUnitid(localGoodsUnit.getUnitid());
 		defDocItemCG.setUnitname(localGoodsUnit.getUnitname());
@@ -560,8 +562,6 @@ public class InpurchaseEditActivity extends BaseActivity
 
 	// 属性
 	public void docProperty() {
-
-		// deleBm();
 		Intent localIntent = new Intent();
 		localIntent.putExtra("doc", doccg);
 		startActivityForResult(localIntent.setClass(this, InpurchaseOpenActivity.class), 0);
@@ -761,11 +761,12 @@ public class InpurchaseEditActivity extends BaseActivity
 	private Button bt_totalSum;
 	private ServiceStore serviceStore;
 	private List<Long> listItemDelete;
-	private BarcodeManager bm;
+	// private BarcodeManager bm;
 	private double received;// 已付金额
 	private double preference;// 优惠金额
 	private double receiveable;// 优惠后应收
 	private ArrayList<DefDocItemCG> localArrayList;
+	private Scaner scaner;
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
@@ -829,7 +830,6 @@ public class InpurchaseEditActivity extends BaseActivity
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		DefDocItemCG defdocitemCG = (DefDocItemCG) parent.getItemAtPosition(position);
 		atvSearch.setText("");
-		// deleBm();
 		int i = -1;
 		Intent localIntent = new Intent(this, InPurchaseDocAddGoodAct.class);
 		localIntent.putExtra("customerid", doccg.getCustomerid());
@@ -872,5 +872,13 @@ public class InpurchaseEditActivity extends BaseActivity
 		} else {
 			localActionBar.setTitle("");
 		}
+	}
+
+	@Override
+	public void setBarcode(String barcode) {
+		atvSearch.setText("");
+		MLog.d(getLocalClassName() + ">>>readBarcode");
+		readBarcode(barcode);
+
 	}
 }

@@ -184,6 +184,7 @@
                 android:background="@drawable/login_panel_edit_bg"
                 android:gravity="center|left"
                 android:imeOptions="actionNext"
+                android:inputType="numberSigned"
                 android:textSize="@dimen/dialog_edit" />
         </LinearLayout>
 

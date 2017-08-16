@@ -1,9 +1,9 @@
 package com.ahjswy.cn.scaner;
 
-import android.util.Log;
+import com.ahjswy.cn.utils.MLog;
 
 public class DefaultScan extends Scaner {
 	public DefaultScan() {
-		Log.d("tag", "DefaultScan");
+		MLog.d("DefaultScan");
 	}
 }

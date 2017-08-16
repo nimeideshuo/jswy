@@ -8,6 +8,7 @@ import java.util.List;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.model.FieldSaleForPrint;
 import com.ahjswy.cn.model.FieldSaleItemForPrint;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.SortUtils;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -118,7 +119,7 @@ public abstract class PrintMode {
 				return;
 			}
 			int postion = Integer.parseInt(index + "");
-			Log.d("ok", postion + "");
+			MLog.d(postion);
 			HashMap<String, String> mapTextview = this.pageinfo.get(postion);
 			if (Integer.parseInt(mapTextview.get("margintop")) / LineGirdView.CELL_HEIGHT > i) {
 				--this.index;

@@ -1,5 +1,6 @@
 package com.ahjswy.cn.ui.transfer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -521,6 +522,14 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 			case 0:
 				this.doc = (DefDocTransfer) data.getSerializableExtra("doc");
 				break;
+			case 1:
+				DefDocItem defitem = (DefDocItem) data.getSerializableExtra("docitem");
+				listItem.add(defitem);
+				adapter.setData(listItem);
+				refreshUI();
+				ishaschanged = true;
+				setActionBarText();
+				break;
 			case 2:
 				newListItem = JSONUtil.str2list(data.getStringExtra("items"), DefDocItem.class);
 				ArrayList<ReqStrGetGoodsPrice> listPrice = new ArrayList<ReqStrGetGoodsPrice>();
@@ -647,11 +656,11 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 
 	@Override
 	public void setBarcode(String barcode) {
+		atvSearch.setText("");
 		readBarcode(barcode);
 	}
 
 	private void readBarcode(String barcode) {
-		atvSearch.setText("");
 		final ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
 		if (goodsThinList.size() == 1) {
 			PDH.show(TransferEditActivity.this, new PDH.ProgressCallBack() {
@@ -674,7 +683,6 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 					String result = new ServiceGoods().gds_GetMultiGoodsPriceDB(localArrayList, doc.getInwarehouseid(),
 							true, localObject.isIsusebatch());
 					handlerGet.sendMessage(handlerGet.obtainMessage(2, result));
-
 				}
 
 			});

@@ -4,16 +4,22 @@ import android.util.Log;
 
 public class MLog {
 	public static final String TAG = "TEST";
+	public static boolean isPrintLog = false;
 
 	public MLog() {
 		super();
 	}
 
 	public static void d(Object value) {
-		Log.d("TEST", value + "");
+		if (isPrintLog) {
+			Log.d("TEST", value + "");
+		}
+
 	}
 
 	public static void d(Object o, Object value) {
-		Log.d("" + o.getClass().getSimpleName(), "" + value);
+		if (isPrintLog) {
+			Log.d("" + o.getClass().getSimpleName(), "" + value);
+		}
 	}
 }

@@ -69,7 +69,7 @@ public class HttpRequestUtils {
 			result = "Post调用网络失败，网络有问题！";
 			return result;
 		}
-		Log.d("TEXT", ">>>do post url :" + url + "->params:" + urls + ">>>>" + json);
+		MLog.d(">>>do post url :" + url + "->params:" + urls + ">>>>" + json);
 		try {
 			HttpResponse response = new DefaultHttpClient().execute(request);
 			if (response.getStatusLine().getStatusCode() == 200) {
@@ -77,7 +77,7 @@ public class HttpRequestUtils {
 			} else {
 				result = "网络Post异常！请求失败！";
 			}
-			Log.d("TEXT", ">>>do post res :" + result.toString());
+			MLog.d(">>>do post res :" + result.toString());
 		} catch (ClientProtocolException e) {
 			result = "网络Post异常！ClientProtocolException错误！";
 
@@ -152,15 +152,14 @@ public class HttpRequestUtils {
 			out = new PrintWriter(conn.getOutputStream());
 			// 发送请求参数
 			out.print(json);
-			Log.d("TEXT", ">>>do post url :" + url + "->params:" + json);
+			MLog.d(">>>do post url :" + url + "->params:" + json);
 			out.flush();
 			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line;
 			while ((line = br.readLine()) != null) {
 				result += line;
 			}
-			Log.d("TEXT", ">>>do post res :" + result.toString());
-
+			MLog.d(">>>do post res :" + result.toString());
 		} catch (IOException e) {
 			System.out.println("发送 POST 请求出现异常！" + e);
 			if (!startOpen) {

@@ -14,6 +14,7 @@ import com.ahjswy.cn.service.ServiceSynchronize;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
+import android.util.Log;
 
 public class UpdateUtils {
 
@@ -194,16 +195,6 @@ public class UpdateUtils {
 				}
 			}
 		}
-
-		// if (i ==
-		// Integer.valueOf(localSwyUtils.getSumPagesFromUpdateInfo(paramList)))
-		// {
-		// // 同步成功
-		// paramHandler.sendEmptyMessage(0);
-		// return true;
-		// } else {
-		// paramHandler.sendEmptyMessage(-4);
-		// }
 		return true;
 	}
 
@@ -242,7 +233,7 @@ public class UpdateUtils {
 					}
 				}
 			} catch (Exception e) {
-
+				e.printStackTrace();
 			} finally {
 				// 必须写词句， 否则，查询不到插入的信息
 				localSQLiteDatabase.setTransactionSuccessful();
@@ -254,48 +245,6 @@ public class UpdateUtils {
 
 		}
 
-	}
-
-	// 已经废弃 TODO 修改
-	public void setReplaceToUpdata(List<HashMap<String, String>> paramList) {
-		StringBuffer sb = new StringBuffer();
-		String[] value = { "id", "name", "pinyin", "iscustomer", "issupplier", "isavailable" };
-		if ((paramList != null) && (paramList.size() > 0)) {
-			for (int j = 0; j < paramList.size(); j++) {
-
-				if (paramList.get(j).get("sql").trim().length() > 0) {
-					String sql = (paramList.get(j)).get("sql").trim();
-					String substring = sql.substring(sql.indexOf("values(") + "values(".length(), sql.lastIndexOf(")"));
-					substring = substring.replace("'", "");
-					String[] split = substring.split(",", 0);
-					sb.append("update 'cu_customer' set ");
-					if (split.length > 6) {
-						continue;
-					}
-					if (!(split[4].contains("1"))) {
-						MLog.d("不是供应商》》" + split[0] + ">>>" + split[4]);
-						paramList.remove(j);
-						continue;
-					}
-					MLog.d("供应商》》" + split[0] + ">>>" + split[4]);
-					// for (int i = 0; i < split.length; i++) {
-					// if (i >= 3) {
-					sb.append(value[3] + "=").append("'").append(split[3].trim()).append("',");
-					sb.append(value[4] + "=").append("'").append(split[4].trim()).append("'");
-					// }
-					// if (i >= 3 && i < split.length - 1) {
-					// sb.append(",");
-					// }
-					// }
-					sb.append(" WHERE id =").append("'").append(split[0]).append("';");
-					MLog.d(paramList.get(j).get("sql"));
-					paramList.get(j).put("sql", sb.toString());
-					MLog.d(split[0] + ">>" + sb.toString());
-					sb.setLength(0);
-				}
-
-			}
-		}
 	}
 
 	private void updataToLocalDB(List<HashMap<String, String>> paramList) {

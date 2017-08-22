@@ -147,7 +147,7 @@ public class SaleCustomerHistoryItemActivity extends BaseActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			setResult(Activity.RESULT_OK);
+			setResult(Activity.RESULT_FIRST_USER);
 			finish();
 			return false;
 		} else {

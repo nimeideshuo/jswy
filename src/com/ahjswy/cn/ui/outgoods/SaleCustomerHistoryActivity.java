@@ -114,7 +114,6 @@ public class SaleCustomerHistoryActivity extends BaseActivity implements OnItemC
 				setResult(Activity.RESULT_OK, data);
 				finish();
 			}
-
 		}
 	}
 

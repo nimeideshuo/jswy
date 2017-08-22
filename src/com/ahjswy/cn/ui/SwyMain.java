@@ -24,7 +24,6 @@ import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.InfoDialog;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -36,7 +35,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -143,9 +141,9 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	};
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu paramMenu) {
-		paramMenu.add(0, 0, 0, "单击显示菜单").setIcon(getResources().getDrawable(R.drawable.btn_submenu)).setShowAsAction(1);
-		return super.onCreateOptionsMenu(paramMenu);
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, 0, 0, "单击显示菜单").setIcon(getResources().getDrawable(R.drawable.btn_submenu)).setShowAsAction(1);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	private MainMenuPopup menuPopup;

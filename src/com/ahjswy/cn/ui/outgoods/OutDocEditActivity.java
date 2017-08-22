@@ -38,6 +38,7 @@ import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -1088,7 +1089,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				bottomCount();
 				break;
 			case 7:
-				// 客史
+				// TODO 客史
 				List<DefDocItemXS> itemXSList = JSONUtil.str2list(data.getStringExtra("selecteditem"),
 						DefDocItemXS.class);
 				long itemId = this.getMaxTempItemId();

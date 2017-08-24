@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class MLog {
 	public static final String TAG = "TEST";
-	public static boolean isPrintLog = false;
+	public static boolean isPrintLog = true;
 
 	public MLog() {
 		super();

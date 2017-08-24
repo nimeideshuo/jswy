@@ -2,43 +2,44 @@ package com.ahjswy.cn.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+/*
+ * 作废  不能使用
+ * *
+ */
 
 public class Goods implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String bigstocknumber;
-	private Timestamp getstocktime;
-
-	private String goodsclassname;
-	private String id;
-
-	private String model;
-
-	private String name;// 商品名称
-	private String pinyin;// 商品拼音
-	private String barcode;// 条码
-	private String specification;
-	private int guaranteeperiod;
-	private int guaranteeearlier;
-	private String goodsclassid;
-	private int costpricetype;
-	private int property;
-	private boolean isdiscount;
-	private String salecue;
-	private boolean isusebatch;
-	private String info1;
-	private String info2;
-	private String info3;
-	private String imagepath;
-	private String remark;// 备注
-	private boolean isavailable;// 是否可用
-	private boolean isselected;
-	private String builderid;// 创建人id
-	private String buildtime;// 创建时间
-	private String modifierid;
-	private String modifytime;
-	private String rversion;
-	private String stocknumber;
+	public String bigstocknumber;
+	public Timestamp getstocktime;
+	public String goodsclassname;
+	public String id;
+	public String model;
+	public String name;// 商品名称
+	public String pinyin;// 商品拼音
+	public String barcode;// 条码
+	public String specification;
+	public int guaranteeperiod;
+	public int guaranteeearlier;
+	public String goodsclassid;
+	public int costpricetype;
+	public int property;
+	public boolean isdiscount;
+	public String salecue;
+	public boolean isusebatch;
+	public String info1;
+	public String info2;
+	public String info3;
+	public String imagepath;
+	public String remark;// 备注
+	public boolean isavailable;// 是否可用
+	public boolean isselected;
+	public String builderid;// 创建人id
+	public String buildtime;// 创建时间
+	public String modifierid;
+	public String modifytime;
+	public String rversion;
+	public String stocknumber;
 
 	public String getBigstocknumber() {
 		return bigstocknumber;

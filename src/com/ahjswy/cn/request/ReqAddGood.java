@@ -23,8 +23,4 @@ public class ReqAddGood {
 	public String goodsclassid;
 	public String goodclassname;
 
-	public class UnitItem {
-		public String unitName;
-		
-	}
 }

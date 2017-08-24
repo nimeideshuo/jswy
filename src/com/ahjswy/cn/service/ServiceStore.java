@@ -8,8 +8,8 @@ import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.DefDocItemDD;
 import com.ahjswy.cn.bean.Def_Doc;
 import com.ahjswy.cn.bean.Def_DocDraft;
+import com.ahjswy.cn.bean.GoodEntity;
 import com.ahjswy.cn.bean.PurchaseEntity;
-import com.ahjswy.cn.bean.QueryEntity;
 import com.ahjswy.cn.bean.SaleEntity;
 import com.ahjswy.cn.model.DefDoc;
 import com.ahjswy.cn.model.DefDocCG;
@@ -24,6 +24,9 @@ import com.ahjswy.cn.model.DefDocPayType;
 import com.ahjswy.cn.model.DefDocTransfer;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.DocContainerEntity;
+import com.ahjswy.cn.model.Goods;
+import com.ahjswy.cn.model.GoodsUnit;
+import com.ahjswy.cn.model.Pricesystem;
 import com.ahjswy.cn.model.User;
 import com.ahjswy.cn.request.ReqStrGetDocDetail;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
@@ -187,6 +190,20 @@ public class ServiceStore {
 		return new HttpRequestUtils().Post(url, JSONUtil.object2Json(pur));
 	}
 
+	// TODO 添加商品
+	public String AddGood(Goods goods, List<Pricesystem> listPrice, List<GoodsUnit> listGoodUnit) {
+		String url = baseNewAddress + "AddGood";
+		if (goods == null) {
+			throw new RuntimeException("ReqAddGoods is null");
+		}
+		GoodEntity goodEntity = new GoodEntity();
+		goodEntity.setGoods(JSONUtil.object2Json(goods));
+		goodEntity.setGoodsPrice(JSONUtil.object2Json(listPrice));
+		goodEntity.setGoodsunit(JSONUtil.object2Json(listGoodUnit));
+		map.put("parameter", JSONUtil.object2Json(goodEntity));
+		return new Utils_help().getServiceInfor(url, map);
+	}
+
 	/**
 	 * New 获取客户商品客史价格，每次只能查询一条记录 customerid goodsid unitid
 	 * 
@@ -266,13 +283,14 @@ public class ServiceStore {
 	 * 
 	 * @return
 	 */
-	public String GoodsClass(int index, int length) {
-		String url = baseNewAddress + "GoodsClass";
-		QueryEntity queryentity = new QueryEntity();
-		queryentity.setIndex(index);
-		queryentity.setLength(length);
-		return new HttpRequestUtils().Post(url, JSONUtil.object2Json(queryentity));
-	}
+	// public String GoodsClass(int index, int length) {
+	// String url = baseNewAddress + "GoodsClass";
+	// QueryEntity queryentity = new QueryEntity();
+	// queryentity.setIndex(index);
+	// queryentity.setLength(length);
+	// return new HttpRequestUtils().Post(url,
+	// JSONUtil.object2Json(queryentity));
+	// }
 
 	/**
 	 * 获取商品单位

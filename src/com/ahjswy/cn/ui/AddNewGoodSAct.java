@@ -1,30 +1,33 @@
 package com.ahjswy.cn.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.cldb.CL_sz_pricesystem;
-import com.ahjswy.cn.cldb.bean.sz_goodsclass;
-import com.ahjswy.cn.cldb.bean.sz_pricesystem;
+import com.ahjswy.cn.dao.PricesystemDAO;
 import com.ahjswy.cn.dao.UnitDAO;
+import com.ahjswy.cn.model.Good;
+import com.ahjswy.cn.model.Goods;
+import com.ahjswy.cn.model.GoodsClass;
 import com.ahjswy.cn.model.GoodsUnit;
+import com.ahjswy.cn.model.Pricesystem;
+import com.ahjswy.cn.model.Unit;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
-import com.ahjswy.cn.utils.MLog;
+import com.ahjswy.cn.service.ServiceStore;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -38,6 +41,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * 增加 商品
+ * 
+ * @author Administrator
+ *
+ */
 public class AddNewGoodSAct extends BaseActivity implements OnClickListener, ScanerBarcodeListener {
 	private LinearLayout unitRoot;
 	private Button btnAddUnit;
@@ -47,22 +56,24 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private CheckBox cbBaseUnit2;
 	private CheckBox cbBigUnit2;
 	private LinearLayout linUnit2;
-	private List<String> liUnit;
+	// private List<String> liUnit;
 	private CheckBox cbIsDiscount;
 	private CheckBox cbIsusebatch;
 	LinearLayout linUnit3;
 	private LinearLayout linUnit1;
 	private Button btnGoodsClass;
-	private EditText etBarcode;
+
 	private ListView lvPrices;
-	private List<sz_pricesystem> listPrice;
+	private List<Pricesystem> listPrice;
 	private ScrollView svRoot;
 	private PriceAdapter priceAdapter;
 	private EditText etName;
+	private EditText etBarcode;
 	private EditText etSpecification;
 	private EditText etModel;
 	private EditText etSalecue;
 	private EditText etRemark;
+	Good good;// 商品类
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +103,9 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		lvPrices = (ListView) findViewById(R.id.lvPrices);
 		btnAddUnit.setOnClickListener(this);
 		btnSubmit.setOnClickListener(this);
+		dao = new PricesystemDAO();
+		listGoodUnit = new ArrayList<GoodsUnit>();
+		unit1 = new GoodsUnit();
 	}
 
 	private void initUnit1() {
@@ -99,8 +113,8 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		unitRoot.addView(linUnit1);
 		cbBaseUnit1 = (CheckBox) linUnit1.findViewById(R.id.cbBaseUnit);
 		cbBigUnit1 = (CheckBox) linUnit1.findViewById(R.id.cbBigUnit);
-		EditText ratio1 = (EditText) linUnit1.findViewById(R.id.ratio);
-		Spinner spUnit = (Spinner) linUnit1.findViewById(R.id.spUnit);
+		ratio1 = (EditText) linUnit1.findViewById(R.id.ratio);
+		spUnit = (Spinner) linUnit1.findViewById(R.id.spUnit);
 		cbIsDiscount.setChecked(true);
 		cbBaseUnit1.setChecked(true);
 		cbBigUnit1.setChecked(true);
@@ -108,28 +122,36 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		ratio1.setEnabled(false);
 
 		priceAdapter = new PriceAdapter();
-		CL_sz_pricesystem pricesystem = new CL_sz_pricesystem();
-		listPrice = pricesystem.queryAll();
-		for (sz_pricesystem sz : listPrice) {
-			MLog.d(sz.getPsname());
-		}
-		sz_pricesystem sz5 = listPrice.get(5);
-		sz_pricesystem sz6 = listPrice.get(6);
-		sz_pricesystem sz7 = listPrice.get(7);
-		sz_pricesystem sz9 = listPrice.get(9);
-		listPrice.remove(sz5);
-		listPrice.remove(sz6);
-		listPrice.remove(sz7);
-		listPrice.remove(sz9);
-
+		listPrice = dao.queryAll();
 		lvPrices.setAdapter(priceAdapter);
 		// 请求 ScrollView 不要拦截 滑动事件
 		// listView1.setOnTouchListener(onTouchListener);
 		// 单位查询展示
 		// =========单位示例 展示
-		initUnit(spUnit);
+		// initUnit(spUnit);
 		setHeight(lvPrices, priceAdapter);
 		svRoot.setOnTouchListener(svTouchListener);
+		listUnit = new UnitDAO().queryAll();
+		arrayUnits = new String[listUnit.size()];
+		for (int i = 0; i < listUnit.size(); i++) {
+			arrayUnits[i] = listUnit.get(i).getName();
+		}
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayUnits);
+		spUnit.setAdapter(adapter);
+		spUnit.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				Unit unit = listUnit.get(position);
+				unit1.setUnitid(unit.getId());
+				unit1.setUnitname(unit.getName());
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+
+			}
+		});
 	}
 
 	// 重新绘制 item高度
@@ -145,22 +167,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		params.width = LayoutParams.MATCH_PARENT;
 		params.height = height;
 		listView.setLayoutParams(params);
-	}
-
-	private void initUnit(Spinner spUnit) {
-		List<GoodsUnit> listUnit = new UnitDAO().queryAll();
-		HashSet<String> haunit = new HashSet<String>();
-		for (int i = 0; i < listUnit.size(); i++) {
-			haunit.add(listUnit.get(i).getUnitname());
-		}
-		liUnit = new ArrayList<String>();
-		Iterator<String> iterator = haunit.iterator();
-		while (iterator.hasNext()) {
-			String string = (String) iterator.next();
-			liUnit.add(string);
-		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, liUnit);
-		spUnit.setAdapter(adapter);
 	}
 
 	// ScrollView 触摸事件处理
@@ -179,6 +185,15 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	};
 	private CheckBox cbBaseUnit3;
 	private CheckBox cbBigUnit3;
+	private PricesystemDAO dao;
+	private List<GoodsUnit> listGoodUnit;
+	private GoodsUnit unit1;
+	private GoodsUnit unit2;
+	private EditText ratio1;
+	private Spinner spUnit;
+	private String[] arrayUnits;
+	private List<Unit> listUnit;
+	private GoodsUnit unit3;
 
 	@Override
 	public void onClick(View v) {
@@ -189,26 +204,57 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		case R.id.btnAddUnit:
 			// TODO 二级单位
 			if (linUnit2 == null) {
+				unit2 = new GoodsUnit();
 				linUnit2 = (LinearLayout) View.inflate(this, R.layout.act_addgoods_unit, null);
 				unitRoot.addView(linUnit2);
 				cbBaseUnit2 = (CheckBox) linUnit2.findViewById(R.id.cbBaseUnit);
 				cbBigUnit2 = (CheckBox) linUnit2.findViewById(R.id.cbBigUnit);
 				Spinner spUnit2 = (Spinner) linUnit2.findViewById(R.id.spUnit);
 				ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(AddNewGoodSAct.this,
-						android.R.layout.simple_list_item_1, liUnit);
+						android.R.layout.simple_list_item_1, arrayUnits);
 				spUnit2.setAdapter(adapter2);
+
+				spUnit2.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+					@Override
+					public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+						Unit unit = listUnit.get(position);
+						unit2.setUnitid(unit.getId());
+						unit2.setUnitname(unit.getName());
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> parent) {
+						// TODO Auto-generated method stub
+
+					}
+				});
 				return;
 			}
-			// TODO 三级单位
 			if (linUnit3 == null) {
+				unit3 = new GoodsUnit();
 				linUnit3 = (LinearLayout) View.inflate(this, R.layout.act_addgoods_unit, null);
 				unitRoot.addView(linUnit3);
 				cbBaseUnit3 = (CheckBox) linUnit3.findViewById(R.id.cbBaseUnit);
 				cbBigUnit3 = (CheckBox) linUnit3.findViewById(R.id.cbBigUnit);
 				Spinner spUnit3 = (Spinner) linUnit3.findViewById(R.id.spUnit);
 				ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(AddNewGoodSAct.this,
-						android.R.layout.simple_list_item_1, liUnit);
+						android.R.layout.simple_list_item_1, arrayUnits);
 				spUnit3.setAdapter(adapter2);
+				spUnit3.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+					@Override
+					public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+						Unit unit = listUnit.get(position);
+						unit3.setUnitid(unit.getId());
+						unit3.setUnitname(unit.getName());
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> parent) {
+
+					}
+				});
 				btnAddUnit.setVisibility(View.GONE);
 				return;
 			}
@@ -223,53 +269,111 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	}
 
 	private void submit() {
-		List<Test> listBase = new ArrayList<Test>();
-		List<Test> listBig = new ArrayList<Test>();
-		int count = 0;
-		listBase.add(new Test("01", null, cbBaseUnit1.isChecked()));
-		listBig.add(new Test("02", null, cbBigUnit1.isChecked()));
+		// List<Test> listBase = new ArrayList<Test>();
+		// List<Test> listBig = new ArrayList<Test>();
+		// int count = 0;
+		// listBase.add(new Test("01", null, cbBaseUnit1.isChecked()));
+		// listBig.add(new Test("02", null, cbBigUnit1.isChecked()));
+		// if (linUnit2 != null) {
+		// listBase.add(new Test("11", null, cbBaseUnit2.isChecked()));
+		// listBig.add(new Test("12", null, cbBigUnit2.isChecked()));
+		// }
+		// if (linUnit3 != null) {
+		// listBase.add(new Test("21", null, cbBaseUnit3.isChecked()));
+		// listBig.add(new Test("22", null, cbBigUnit3.isChecked()));
+		// }
+		// if (listBase.size() == 0) {
+		// showError("必须选择一个基本单位");
+		// return;
+		// }
+		// for (int i = 0; i < listBase.size(); i++) {
+		// if (listBase.get(i).isCheck == false && listBig.get(i).isCheck ==
+		// false) {
+		// showError("单位没有选择!");
+		// return;
+		// }
+		// if (listBase.get(i).isCheck) {
+		// count++;
+		// }
+		// }
+		// if (count > 1) {
+		// showError("只能有一个基本单位");
+		// return;
+		// }
+		// if (listBig.size() == 0) {
+		// showError("必须选择一个计件单位");
+		// return;
+		// }
+		// count = 0;
+		// for (int i = 0; i < listBig.size(); i++) {
+		// if (listBig.get(i).isCheck) {
+		// count++;
+		// }
+		// }
+		// if (count > 1) {
+		// showError("只能有一个计件单位");
+		// return;
+		// }
+		// unit2.setUnitid(unitid);
+		unit1.setIsbasic(cbBaseUnit1.isChecked());
+		unit1.setIsshow(cbBigUnit1.isChecked());
+		listGoodUnit.add(unit1);
 		if (linUnit2 != null) {
-			listBase.add(new Test("11", null, cbBaseUnit2.isChecked()));
-			listBig.add(new Test("12", null, cbBigUnit2.isChecked()));
+			unit2.setIsbasic(cbBaseUnit2.isChecked());
+			unit2.setIsshow(cbBigUnit2.isChecked());
+			listGoodUnit.add(unit2);
 		}
 		if (linUnit3 != null) {
-			listBase.add(new Test("21", null, cbBaseUnit3.isChecked()));
-			listBig.add(new Test("22", null, cbBigUnit3.isChecked()));
+			unit3.setIsbasic(cbBaseUnit3.isChecked());
+			unit3.setIsshow(cbBigUnit3.isChecked());
+			listGoodUnit.add(unit3);
 		}
-		if (listBase.size() == 0) {
-			showError("必须选择一个基本单位");
-			return;
-		}
-		for (int i = 0; i < listBase.size(); i++) {
-			if (listBase.get(i).isCheck == false && listBig.get(i).isCheck == false) {
-				showError("单位没有选择!");
-				return;
+		boolean isOneBasic = false;
+		boolean isOneBig = false;
+		for (int i = 0; i < listGoodUnit.size(); i++) {
+			GoodsUnit goodsUnit = listGoodUnit.get(i);
+			if (goodsUnit.isIsbasic()) {
+				isOneBasic = true;
 			}
-			if (listBase.get(i).isCheck) {
-				count++;
+			if (goodsUnit.isIsshow()) {
+				isOneBig = true;
 			}
-		}
-		if (count > 1) {
-			showError("只能有一个基本单位");
-			return;
-		}
-		if (listBig.size() == 0) {
-			showError("必须选择一个计件单位");
-			return;
-		}
-		count = 0;
-		for (int i = 0; i < listBig.size(); i++) {
-			if (listBig.get(i).isCheck) {
-				count++;
+			for (int j = 0; j < listGoodUnit.size(); j++) {
+				if (i != j && goodsUnit.isIsbasic() && listGoodUnit.get(j).isIsbasic()) {
+					showError("只能有一个基本单位");
+					return;
+				}
+				if (i != j && goodsUnit.isIsshow() && listGoodUnit.get(j).isIsshow()) {
+					showError("只能有一个计件单位");
+					return;
+				}
 			}
 		}
-		if (count > 1) {
-			showError("只能有一个计件单位");
+		if (!isOneBasic) {
+			showError("请选择基本单位");
 			return;
 		}
-		Toast.makeText(this, "添加成功!", Toast.LENGTH_SHORT).show();
-		startActivity(new Intent(this, SwyMain.class));
-		finish();
+		if (!isOneBig) {
+			showError("请选择基计件单位");
+			return;
+		}
+		// TODO 提交
+		Goods goods = new Goods();
+		goods.name = etName.getText().toString();
+		goods.pinyin = "pinyin";
+		goods.barcode = etBarcode.getText().toString();
+		goods.model = etModel.getText().toString();
+		goods.remark = etRemark.getText().toString();
+		goods.salecue = etSalecue.getText().toString();
+		goods.specification = etSpecification.getText().toString();
+		goods.isdiscount = cbIsDiscount.isChecked();
+		goods.isusebatch = cbIsusebatch.isChecked();
+		String addGood = new ServiceStore().AddGood(goods, listPrice, listGoodUnit);
+		if (addGood.isEmpty()) {
+			Toast.makeText(this, "添加成功!", Toast.LENGTH_SHORT).show();
+		}
+		// startActivity(new Intent(this, SwyMain.class));
+		// finish();
 	}
 
 	// OnClickListener unitListener1 = new OnClickListener() {
@@ -334,7 +438,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			switch (requestCode) {
 			case 1:
 				// 商品类别检索 返回
-				sz_goodsclass goodsClass = (sz_goodsclass) data.getSerializableExtra("goodclass");
+				GoodsClass goodsClass = (GoodsClass) data.getSerializableExtra("goodclass");
 				btnGoodsClass.setText(goodsClass.getName());
 				btnGoodsClass.setTag(goodsClass);
 				break;
@@ -358,7 +462,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		}
 
 		@Override
-		public sz_pricesystem getItem(int position) {
+		public Pricesystem getItem(int position) {
 			return listPrice.get(position);
 		}
 
@@ -367,16 +471,43 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			return 0;
 		}
 
-		int selectPosition;
-
 		@Override
-		public View getView(final int position, View convertView, ViewGroup parent) {
+		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = View.inflate(AddNewGoodSAct.this, R.layout.item_addgoods, null);
 			TextView tvName = (TextView) view.findViewById(R.id.tvName);
 			EditText edNumber = (EditText) view.findViewById(R.id.edNumber);
-			String psname = listPrice.get(position).getPsname();
+			Pricesystem pricesystem = listPrice.get(position);
+			String psname = pricesystem.getPsname();
 			tvName.setText(psname);
+			edNumber.setText(pricesystem == null ? "" : pricesystem.getPrice());
+			edNumber.setTag(Integer.valueOf(position));
+			edNumber.addTextChangedListener(new MyWatcher(edNumber));
 			return view;
+		}
+
+		public class MyWatcher implements TextWatcher {
+			View v;
+
+			public MyWatcher(View v) {
+				this.v = v;
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				int i = ((Integer) v.getTag()).intValue();
+				listPrice.get(i).setPrice(s.toString().isEmpty() ? "" : s.toString());
+			}
+
 		}
 
 	}

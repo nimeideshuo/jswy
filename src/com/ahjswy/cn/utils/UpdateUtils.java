@@ -18,9 +18,9 @@ import android.util.Log;
 
 public class UpdateUtils {
 
-	public boolean executeUpdate(Handler paramHandler, List<ReqSynUpdateInfo> paramList, long paramLong) {
+	public boolean executeUpdate(Handler paramHandler, List<ReqSynUpdateInfo> paramList, long rversion) {
 		// SQL http 接口
-		ServiceSynchronize localServiceSynchronize = new ServiceSynchronize(paramLong);
+		ServiceSynchronize ssy = new ServiceSynchronize(rversion);
 		SwyUtils localSwyUtils = new SwyUtils();
 		paramHandler.sendMessage(
 				paramHandler.obtainMessage(-1, Integer.valueOf(localSwyUtils.getSumPagesFromUpdateInfo(paramList))));
@@ -28,7 +28,7 @@ public class UpdateUtils {
 		int log_deleterecord = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "log_deleterecord");
 		if (log_deleterecord > 0) {
 			for (int j = 1; j <= log_deleterecord; j++) {
-				List<HashMap<String, String>> localList2 = localServiceSynchronize.syn_QueryDeleteRecordRecords(j);
+				List<HashMap<String, String>> localList2 = ssy.syn_QueryDeleteRecordRecords(j);
 				if (localList2 == null) {
 					return false;
 				}
@@ -41,7 +41,7 @@ public class UpdateUtils {
 		int m = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_department");
 		if (m > 0) {
 			for (int j = 1; j <= m; j++) {
-				List<HashMap<String, String>> localList2 = localServiceSynchronize.syn_QueryDepartmentRecords(j);
+				List<HashMap<String, String>> localList2 = ssy.syn_QueryDepartmentRecords(j);
 				if (localList2 == null) {
 					return false;
 				}
@@ -55,7 +55,7 @@ public class UpdateUtils {
 		int i1 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_warehouse");
 		if (i1 > 0) {
 			for (int j = 1; j <= i1; j++) {
-				List<HashMap<String, String>> localList3 = localServiceSynchronize.syn_QueryWarehouseRecords(j);
+				List<HashMap<String, String>> localList3 = ssy.syn_QueryWarehouseRecords(j);
 				if (localList3 == null) {
 					return false;
 				}
@@ -69,7 +69,7 @@ public class UpdateUtils {
 		int i3 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_paytype");
 		if (i3 > 0) {
 			for (int j = 1; j <= i3; j++) {
-				List<HashMap<String, String>> localList4 = localServiceSynchronize.syn_QueryPayTypeRecords(j);
+				List<HashMap<String, String>> localList4 = ssy.syn_QueryPayTypeRecords(j);
 				if (localList4 == null) {
 					return false;
 				}
@@ -83,7 +83,7 @@ public class UpdateUtils {
 		int i5 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_customer");
 		if (i5 > 0) {
 			for (int j = 1; j <= i5; j++) {
-				List<HashMap<String, String>> localList5 = localServiceSynchronize.syn_QueryCustomerRecords(j);
+				List<HashMap<String, String>> localList5 = ssy.syn_QueryCustomerRecords(j);
 				if (localList5 == null) {
 					return false;
 				}
@@ -92,11 +92,11 @@ public class UpdateUtils {
 				paramHandler.sendEmptyMessage(i);
 			}
 		}
-		// TODO 所有客户 包括供应商 由于返回值 电话号码 返回值 NULL 放在前面防止客户 电话等信息被覆盖
+		// 所有客户 包括供应商 由于返回值 电话号码 返回值 NULL 放在前面防止客户 电话等信息被覆盖
 		int i6 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_allcustomer");
 		if (i6 > 0) {
 			for (int j = 1; j <= i6; j++) {
-				List<HashMap<String, String>> localList5 = localServiceSynchronize.syn_QueryAllCustomerRecords(j);
+				List<HashMap<String, String>> localList5 = ssy.syn_QueryAllCustomerRecords(j);
 				if (localList5 == null) {
 					return false;
 				}
@@ -110,7 +110,7 @@ public class UpdateUtils {
 		int i7 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_customertype");
 		if (i7 > 0) {
 			for (int j = 1; j <= i7; j++) {
-				List<HashMap<String, String>> localList6 = localServiceSynchronize.syn_QueryCustomerTypeRecords(j);
+				List<HashMap<String, String>> localList6 = ssy.syn_QueryCustomerTypeRecords(j);
 				if (localList6 == null) {
 					return false;
 				}
@@ -122,7 +122,7 @@ public class UpdateUtils {
 		int i9 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_region");
 		if (i9 > 0) {
 			for (int j = 1; j <= i9; j++) {
-				List<HashMap<String, String>> localList7 = localServiceSynchronize.syn_QueryRegionRecords(j);
+				List<HashMap<String, String>> localList7 = ssy.syn_QueryRegionRecords(j);
 				if (localList7 == null) {
 					return false;
 				}
@@ -134,7 +134,7 @@ public class UpdateUtils {
 		int i11 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_visitline");
 		if (i11 > 0) {
 			for (int j = 1; j <= i11; j++) {
-				List<HashMap<String, String>> localList8 = localServiceSynchronize.syn_QueryVisitLineRecords(j);
+				List<HashMap<String, String>> localList8 = ssy.syn_QueryVisitLineRecords(j);
 				if (localList8 == null) {
 
 				}
@@ -147,7 +147,7 @@ public class UpdateUtils {
 		int i13 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_goods");
 		if (i13 > 0) {
 			for (int j = 1; j <= i13; j++) {
-				List<HashMap<String, String>> localList9 = localServiceSynchronize.syn_QueryGoodsRecords(j);
+				List<HashMap<String, String>> localList9 = ssy.syn_QueryGoodsRecords(j);
 				if (localList9 == null) {
 					return false;
 				}
@@ -160,7 +160,7 @@ public class UpdateUtils {
 		int i15 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_goodsunit");
 		if (i15 > 0) {
 			for (int j = 1; j <= i15; j++) {
-				List<HashMap<String, String>> localList10 = localServiceSynchronize.syn_QueryGoodsUnitRecords(j);
+				List<HashMap<String, String>> localList10 = ssy.syn_QueryGoodsUnitRecords(j);
 				if (localList10 == null) {
 					return false;
 				}
@@ -170,10 +170,50 @@ public class UpdateUtils {
 
 			}
 		}
+
+		// 查询商品类别
+		int goodsclassPages = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_goodsclass");
+		if (goodsclassPages > 0) {
+			for (int j = 1; j <= goodsclassPages; j++) {
+				List<HashMap<String, String>> listClass = ssy.syn_QueryGoodsClassrecords(j);
+				if (listClass == null) {
+					return false;
+				}
+				saveToLocalDB(listClass);
+				i++;
+				paramHandler.sendEmptyMessage(i);
+
+			}
+		}
+		int pricesystemPages = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_pricesystem");
+		if (pricesystemPages > 0) {
+			for (int j = 1; j <= pricesystemPages; j++) {
+				List<HashMap<String, String>> listClass = ssy.syn_QueryPricesystem(j);
+				if (listClass == null) {
+					return false;
+				}
+				saveToLocalDB(listClass);
+				i++;
+				paramHandler.sendEmptyMessage(i);
+
+			}
+		}
+		int unitPages = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_unit");
+		if (unitPages > 0) {
+			for (int j = 1; j <= unitPages; j++) {
+				List<HashMap<String, String>> listunit = ssy.syn_QueryUnitrecords(j);
+				if (listunit == null) {
+					return false;
+				}
+				saveToLocalDB(listunit);
+				i++;
+				paramHandler.sendEmptyMessage(i);
+			}
+		}
 		int v8 = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_goodsimage");
 		int v5 = 1;
 		if (v5 <= v8) {
-			List<HashMap<String, String>> records = localServiceSynchronize.syn_QueryGoodsImageRecords(v5);
+			List<HashMap<String, String>> records = ssy.syn_QueryGoodsImageRecords(v5);
 			if (records == null) {
 				return false;
 			}
@@ -188,13 +228,13 @@ public class UpdateUtils {
 				paramHandler.sendMessage(paramHandler.obtainMessage(-2, listNoImage.size()));
 				for (v5 = 0; v5 < listNoImage.size(); ++v5) {
 					GoodsImage goodsImage = listNoImage.get(v5);
-					v3.saveImage(goodsImage.getSerialid(),
-							localServiceSynchronize.syn_QueryGoodsImage(goodsImage.getImagePath()),
+					v3.saveImage(goodsImage.getSerialid(), ssy.syn_QueryGoodsImage(goodsImage.getImagePath()),
 							goodsImage.getImagePath());
 					paramHandler.sendEmptyMessage(v5 + 1);
 				}
 			}
 		}
+
 		return true;
 	}
 

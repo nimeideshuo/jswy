@@ -59,4 +59,15 @@ public class ServiceGoods {
 		map.put("parameter", JSONUtil.object2Json(paramList));
 		return new Utils_help().getServiceInfor(url, map);
 	}
+
+	/**
+	 * 添加商品
+	 * 
+	 * @return
+	 */
+	public String gds_AddGood() {
+		String url = Utils.getServiceAddress(this.baseAddress, "addgood");
+		map.put("parameter", JSONUtil.object2Json(null));
+		return new Utils_help().getServiceInfor(url, map);
+	}
 }

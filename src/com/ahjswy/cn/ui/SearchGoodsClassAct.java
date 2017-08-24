@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.cldb.CL_sz_goodsclass;
-import com.ahjswy.cn.cldb.bean.sz_goodsclass;
+import com.ahjswy.cn.dao.GoodsClassDAO;
+import com.ahjswy.cn.model.GoodsClass;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextViews;
@@ -28,9 +28,10 @@ import android.widget.ListView;
 public class SearchGoodsClassAct extends BaseActivity implements OnTextChangeListener, OnItemClickListener {
 	private AutoTextViews etSearch;
 	private ListView listview;
-	private List<sz_goodsclass> list;
-	private List<sz_goodsclass> temp;
-	private List<sz_goodsclass> listGoodsClass;
+	private List<GoodsClass> list;
+	private List<GoodsClass> temp;
+	private List<GoodsClass> listGoodsClass;
+	private GoodsClassDAO dao;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +46,13 @@ public class SearchGoodsClassAct extends BaseActivity implements OnTextChangeLis
 		listview = ((ListView) findViewById(R.id.listview));
 		this.etSearch.setOnTextChangeListener(this);
 		this.listview.setOnItemClickListener(this);
+		dao = new GoodsClassDAO();
 	}
 
 	private void loadData() {
-		list = new ArrayList<sz_goodsclass>();
-		temp = new ArrayList<sz_goodsclass>();
-		listGoodsClass = new CL_sz_goodsclass().queryAll();
+		list = new ArrayList<GoodsClass>();
+		temp = new ArrayList<GoodsClass>();
+		listGoodsClass = dao.queryAll();
 		if (listGoodsClass.isEmpty()) {
 			return;
 		}
@@ -113,7 +115,7 @@ public class SearchGoodsClassAct extends BaseActivity implements OnTextChangeLis
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		sz_goodsclass goodsClassThin = null;
+		GoodsClass goodsClassThin = null;
 		if (list.size() == 0) {
 			goodsClassThin = temp.get(position);
 		} else {

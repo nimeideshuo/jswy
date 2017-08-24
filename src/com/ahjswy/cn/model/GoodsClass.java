@@ -2,7 +2,7 @@ package com.ahjswy.cn.model;
 
 import java.io.Serializable;
 
-public class GoodsClass implements Serializable{
+public class GoodsClass implements Serializable {
 	/**
 	 * 
 	 */
@@ -10,7 +10,7 @@ public class GoodsClass implements Serializable{
 	private String id;
 	private String name;
 	private String pinyin;
-	private String parentgoodsclassid;
+	// private String parentgoodsclassid;
 	private String remark;
 	private boolean isavailable;
 	private boolean isselected;
@@ -23,12 +23,11 @@ public class GoodsClass implements Serializable{
 	public GoodsClass() {
 	}
 
-	public GoodsClass(String id, String name, String pinyin, String parentgoodsclassid) {
+	public GoodsClass(String id, String name, String pinyin) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.pinyin = pinyin;
-		this.parentgoodsclassid = parentgoodsclassid;
 	}
 
 	public String getId() {
@@ -55,13 +54,13 @@ public class GoodsClass implements Serializable{
 		this.pinyin = pinyin;
 	}
 
-	public String getParentgoodsclassid() {
-		return parentgoodsclassid;
-	}
-
-	public void setParentgoodsclassid(String parentgoodsclassid) {
-		this.parentgoodsclassid = parentgoodsclassid;
-	}
+	// public String getParentgoodsclassid() {
+	// return parentgoodsclassid;
+	// }
+	//
+	// public void setParentgoodsclassid(String parentgoodsclassid) {
+	// this.parentgoodsclassid = parentgoodsclassid;
+	// }
 
 	public String getRemark() {
 		return remark;
@@ -129,10 +128,9 @@ public class GoodsClass implements Serializable{
 
 	@Override
 	public String toString() {
-		return "GoodsClass [name=" + name + ", pinyin=" + pinyin + ", parentgoodsclassid=" + parentgoodsclassid
-				+ ", remark=" + remark + ", isavailable=" + isavailable + ", isselected=" + isselected + ", builderid="
-				+ builderid + ", buildtime=" + buildtime + ", modifierid=" + modifierid + ", rversion=" + rversion
-				+ ", modifytime=" + modifytime + "]";
+		return "GoodsClass [name=" + name + ", pinyin=" + pinyin + ", remark=" + remark + ", isavailable=" + isavailable
+				+ ", isselected=" + isselected + ", builderid=" + builderid + ", buildtime=" + buildtime
+				+ ", modifierid=" + modifierid + ", rversion=" + rversion + ", modifytime=" + modifytime + "]";
 	}
 
 }

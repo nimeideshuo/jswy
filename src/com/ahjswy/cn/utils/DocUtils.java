@@ -73,6 +73,9 @@ public class DocUtils {
 	 * @return
 	 */
 	public static String Stocknum(RespGoodsWarehouse res, GoodsUnit goodsUnit) {
+		if (res == null || goodsUnit == null) {
+			return "";
+		}
 		GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(), goodsUnit.getUnitid());
 		GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
 		int zs = (int) (res.getStocknum() / goodsRatio.getRatio());
@@ -91,6 +94,9 @@ public class DocUtils {
 	}
 
 	public static String Stocknum(int stocknumber, GoodsUnit goodsUnit) {
+		if (goodsUnit == null) {
+			return "";
+		}
 		GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(), goodsUnit.getUnitid());
 		GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
 		int zs = (int) (stocknumber / goodsRatio.getRatio());
@@ -107,8 +113,12 @@ public class DocUtils {
 		}
 		return stocknum;
 	}
-	//库存数量测试可用
+
+	// 库存数量测试可用
 	public static String setItemStockUnit(int stockNum, GoodsUnit unit) {
+		if (unit == null) {
+			return "";
+		}
 		String stocknum = "";
 		GoodsUnit goodsRatio = dao.queryBigUnitRatio(unit.getGoodsid(), unit.getUnitid());
 		GoodsUnit queryBaseUnit = dao.queryBaseUnit(unit.getGoodsid());

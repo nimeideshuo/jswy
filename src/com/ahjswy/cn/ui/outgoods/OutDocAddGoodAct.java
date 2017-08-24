@@ -428,10 +428,9 @@ public class OutDocAddGoodAct extends BaseActivity
 					public void onClick(DialogInterface dialogInterface, int paramAnonymousInt) {
 						dialogInterface.dismiss();
 						goodsUnit = ((GoodsUnit) localList.get(paramAnonymousInt));
-						if (!OutDocAddGoodAct.this.goodsUnit.getUnitid()
-								.equals(OutDocAddGoodAct.this.btnUnitGive.getTag())) {
-							OutDocAddGoodAct.this.btnUnitGive.setText(OutDocAddGoodAct.this.goodsUnit.getUnitname());
-							OutDocAddGoodAct.this.btnUnitGive.setTag(OutDocAddGoodAct.this.goodsUnit.getUnitid());
+						if (!goodsUnit.getUnitid().equals(btnUnitGive.getTag())) {
+							btnUnitGive.setText(goodsUnit.getUnitname());
+							btnUnitGive.setTag(goodsUnit.getUnitid());
 						}
 
 					}
@@ -474,18 +473,14 @@ public class OutDocAddGoodAct extends BaseActivity
 						btnWarehouseGive.setTag(goodsprice.getWarehouseid());
 						btnProBatch.setText(goodsprice.getBatch());
 						try {
-							btnPromotionProDate
-									.setText(
-											Utils.formatDate(
-													new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-															.parse(goodsprice.getProductiondate()).getTime(),
-													"yyyy-MM-dd"));
+							btnPromotionProDate.setText(Utils.formatDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+									.parse(goodsprice.getProductiondate()).getTime(), "yyyy-MM-dd"));
 						} catch (Exception localException) {
 							localException.printStackTrace();
 						}
 					} else {
-						OutDocAddGoodAct.this.btnWarehouseGive.setText(null);
-						OutDocAddGoodAct.this.btnWarehouseGive.setTag(null);
+						btnWarehouseGive.setText(null);
+						btnWarehouseGive.setTag(null);
 						PDH.showFail(message);
 					}
 					break;
@@ -499,6 +494,9 @@ public class OutDocAddGoodAct extends BaseActivity
 	private GoodsUnitDAO dao;
 
 	private String setItemStock(RespGoodsWarehouse res, String arrayOfString) {
+		if (res == null) {
+			return "";
+		}
 		String stocknum = "";
 		GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(), goodsUnit.getUnitid());
 		GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
@@ -576,11 +574,8 @@ public class OutDocAddGoodAct extends BaseActivity
 				this.btnWarehouse.setText(localRespGoodsBatchEntity2.getWarehouseName());
 				this.btnBatch.setText(localRespGoodsBatchEntity2.getBatch());
 				try {
-					this.btnProDate
-							.setText(Utils.formatDate(
-									new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-											.parse(localRespGoodsBatchEntity2.getProductiondate()).getTime(),
-									"yyyy-MM-dd"));
+					this.btnProDate.setText(Utils.formatDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+							.parse(localRespGoodsBatchEntity2.getProductiondate()).getTime(), "yyyy-MM-dd"));
 				} catch (ParseException e1) {
 					btnProDate.setText("");
 					e1.printStackTrace();
@@ -594,11 +589,8 @@ public class OutDocAddGoodAct extends BaseActivity
 				this.btnWarehouseGive.setText(localRespGoodsBatchEntity1.getWarehouseName());
 				this.btnProBatch.setText(localRespGoodsBatchEntity1.getBatch());
 				try {
-					this.btnPromotionProDate
-							.setText(Utils.formatDate(
-									new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-											.parse(localRespGoodsBatchEntity1.getProductiondate()).getTime(),
-									"yyyy-MM-dd"));
+					this.btnPromotionProDate.setText(Utils.formatDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+							.parse(localRespGoodsBatchEntity1.getProductiondate()).getTime(), "yyyy-MM-dd"));
 				} catch (ParseException e1) {
 					btnPromotionProDate.setText("");
 					e1.printStackTrace();
@@ -625,11 +617,8 @@ public class OutDocAddGoodAct extends BaseActivity
 				this.btnWarehouseGive.setText(localRespGoodsWarehouse1.getWarehousename());
 				this.btnProBatch.setText(localRespGoodsWarehouse1.getBatch());
 				try {
-					this.btnPromotionProDate
-							.setText(Utils.formatDate(
-									new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-											.parse(localRespGoodsWarehouse1.getProductiondate()).getTime(),
-									"yyyy-MM-dd"));
+					this.btnPromotionProDate.setText(Utils.formatDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+							.parse(localRespGoodsWarehouse1.getProductiondate()).getTime(), "yyyy-MM-dd"));
 				} catch (ParseException e) {
 					btnPromotionProDate.setText("");
 					e.printStackTrace();

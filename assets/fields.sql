@@ -126,7 +126,20 @@ CREATE TABLE IF NOT EXISTS "sz_goodsclass" (
 "id" TEXT(50) NOT NULL,
 "name"  TEXT(50),
 "pinyin" TEXT(50),
-"parentgoodsclassid"  TEXT(50),
+"isavailable" 		TEXT(1),
+PRIMARY KEY("id")
+);
+CREATE TABLE IF NOT EXISTS "sz_pricesystem" (
+"psid" TEXT(50) NOT NULL,
+"psname"  TEXT(50),
+"pinyin" TEXT(50),
+"isavailable" 		TEXT(1),
+PRIMARY KEY("psid")
+);
+CREATE TABLE IF NOT EXISTS "sz_unit" (
+"id" TEXT(50) NOT NULL,
+"name"  TEXT(50),
+"isavailable" 		TEXT(1),
 PRIMARY KEY("id")
 );
 

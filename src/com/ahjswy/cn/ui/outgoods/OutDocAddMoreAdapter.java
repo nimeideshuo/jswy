@@ -16,7 +16,6 @@ import com.ahjswy.cn.utils.Utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -74,7 +73,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
+	public View getView(int position, View convertView, ViewGroup parent) {
 		convertView = LayoutInflater.from(context).inflate(R.layout.act_out_doc_add_moreadapter_item, null);
 		// 商品 name
 		TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
@@ -146,16 +145,16 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 			String num = Utils.removeZero(itemXS.getNum() + "");
 			etNum.setText(num);
 		}
-		if (selectPosition == position) {
-			etNum.requestFocus();
-		}
-		etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				selectPosition = position;
-			}
-		});
+		// if (selectPosition == position) {
+		// etNum.requestFocus();
+		// }
+		// etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
+		//
+		// @Override
+		// public void onFocusChange(View v, boolean hasFocus) {
+		// selectPosition = position;
+		// }
+		// });
 		etNum.setTag(Integer.valueOf(position));
 		btnUnit.setTag(Integer.valueOf(position));
 		etNum.setFocusable(true);

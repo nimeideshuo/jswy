@@ -3,20 +3,11 @@ package com.ahjswy.cn.ui.addgoods;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.dao.GoodsClassDAO;
 import com.ahjswy.cn.model.GoodsClass;
-import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
-import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.PDH;
-import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
-import com.ahjswy.cn.utils.ToastUtils;
-import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextViews;
 import com.ahjswy.cn.views.AutoTextViews.OnTextChangeListener;
 
@@ -29,15 +20,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class GoodsClassActivity extends BaseActivity implements OnTextChangeListener, OnItemClickListener {
 	private AutoTextViews etSearch;
 	private ListView listview;
 	private List<GoodsClass> list;
 	private List<GoodsClass> temp;
-	private ServiceStore serviceStore;
 	private List<GoodsClass> listGoodsClass;
+	private GoodsClassDAO dao;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,58 +42,13 @@ public class GoodsClassActivity extends BaseActivity implements OnTextChangeList
 		listview = ((ListView) findViewById(R.id.listview));
 		this.etSearch.setOnTextChangeListener(this);
 		this.listview.setOnItemClickListener(this);
+		dao = new GoodsClassDAO();
 	}
 
 	private void initData() {
 		list = new ArrayList<GoodsClass>();
 		temp = new ArrayList<GoodsClass>();
-		serviceStore = new ServiceStore();
-		listGoodsClass = new ArrayList<GoodsClass>();
-		PDH.show(this, "获取商品类别", new ProgressCallBack() {
-
-			@Override
-			public void action() {
-				final String goodsClass = serviceStore.GoodsClass(0, 0);
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						if (TextUtils.isEmpty(goodsClass)) {
-							ToastUtils.show("没有获取到商品类别!");
-							return;
-						} else {
-							JSONUtil.readValue2(goodsClass);
-							parseInFor();
-							showGoodsClass();
-						}
-
-					}
-				});
-			}
-		});
-
-	}
-
-	// 解析 获取需要的数据
-	protected void parseInFor() {
-		try {
-			JSONArray jsonArray = new JSONArray(JSONUtil.Data);
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject object = new JSONObject(jsonArray.getString(i));
-				String id = object.getString("id");
-				String name = object.getString("name");
-				String pinyin = object.getString("pinyin");
-				String parentgoodsclassid = object.getString("parentgoodsclassid");
-				GoodsClass goods = new GoodsClass(id, name, pinyin, parentgoodsclassid);
-				listGoodsClass.add(goods);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	// 显示到listview 上
-	protected void showGoodsClass() {
+		listGoodsClass = dao.queryAll();
 		if ((listGoodsClass == null) || (listGoodsClass.size() == 0)) {
 			return;
 		}
@@ -115,6 +60,7 @@ public class GoodsClassActivity extends BaseActivity implements OnTextChangeList
 		ArrayAdapter<String> localArrayAdapter = new ArrayAdapter<String>(GoodsClassActivity.this,
 				android.R.layout.simple_list_item_1, arrayOfString);
 		listview.setAdapter(localArrayAdapter);
+
 	}
 
 	@Override
@@ -197,6 +143,6 @@ public class GoodsClassActivity extends BaseActivity implements OnTextChangeList
 
 	@Override
 	public void setActionBarText() {
-		getActionBar().setTitle("商品类别");
+		setTitle("商品类别");
 	}
 }

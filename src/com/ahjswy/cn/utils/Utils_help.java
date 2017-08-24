@@ -84,7 +84,7 @@ public class Utils_help {
 			while ((line = in.readLine()) != null) {
 				result += line;
 			}
-			MLog.d("TEXT", ">>>do post res :" + result.toString());
+			MLog.d(">>>do post res :" + result.toString());
 		} catch (Exception e) {
 			System.out.println("发送 POST 请求出现异常！" + e);
 			e.printStackTrace();

@@ -246,7 +246,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 			PDH.showError("必需至少有一条商品数量大于0");
 			return;
 		}
-		// deleBm();
 		Intent intent = new Intent();
 		intent.putExtra("items", JSONUtil.object2Json(listDe));
 		setResult(RESULT_OK, intent);
@@ -255,7 +254,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 
 	public long getMaxTempItemId() {
 		long l1 = 0L;
-		if (items.size() <= 0) {
+		if (items.isEmpty()) {
 			return l1;
 		}
 		for (int i = 0; i < items.size(); i++) {

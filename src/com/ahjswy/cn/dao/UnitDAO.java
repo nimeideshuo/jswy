@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.model.GoodsUnit;
+import com.ahjswy.cn.model.Unit;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,22 +13,18 @@ public class UnitDAO {
 	private SQLiteDatabase db;
 	private DBOpenHelper helper = new DBOpenHelper();
 
-	public List<GoodsUnit> queryAll() {
+	public List<Unit> queryAll() {
 		db = helper.getReadableDatabase();
-		List<GoodsUnit> listUnit = new ArrayList<GoodsUnit>();
+		List<Unit> listUnit = new ArrayList<Unit>();
 		Cursor cursor = null;
 		try {
 
-			String sql = "select goodsid,unitid,unitname,isbasic,isshow,ratio from sz_goodsunit";
+			String sql = "select id,name from sz_unit where isavailable = '1'";
 			cursor = db.rawQuery(sql, null);
 			while (cursor.moveToNext()) {
-				GoodsUnit unit = new GoodsUnit();
-				unit.setGoodsid(cursor.getString(0));
-				unit.setUnitid(cursor.getString(1));
-				unit.setUnitname(cursor.getString(2));
-				unit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
-				unit.setIsshow(cursor.getInt(4) == 1 ? true : false);
-				unit.setRatio(cursor.getDouble(5));
+				Unit unit = new Unit();
+				unit.setId(cursor.getString(0));
+				unit.setName(cursor.getString(1));
 				listUnit.add(unit);
 			}
 		} catch (Exception e) {

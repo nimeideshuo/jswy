@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.dao.UnitDAO;
-import com.ahjswy.cn.model.CustomerThin;
-import com.ahjswy.cn.model.GoodsUnit;
+import com.ahjswy.cn.model.Unit;
+import com.ahjswy.cn.model.Unit;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextViews;
@@ -28,9 +28,9 @@ import android.widget.ListView;
  */
 public class UnitSearchAct extends BaseActivity implements OnTextChangeListener, OnItemClickListener {
 	private AutoTextViews etSearch;
-	private List<GoodsUnit> list;
-	private List<GoodsUnit> temp;
-	private List<GoodsUnit> listUnit;
+	private List<Unit> list;
+	private List<Unit> temp;
+	private List<Unit> listUnit;
 	private ListView listview;
 
 	@Override
@@ -50,9 +50,10 @@ public class UnitSearchAct extends BaseActivity implements OnTextChangeListener,
 	}
 
 	private void loadData() {
-		list = new ArrayList<GoodsUnit>();
-		temp = new ArrayList<GoodsUnit>();
+		list = new ArrayList<Unit>();
+		temp = new ArrayList<Unit>();
 		listUnit = new UnitDAO().queryAll();
+
 		temp.addAll(listUnit);
 
 		if (listUnit.isEmpty()) {
@@ -60,7 +61,7 @@ public class UnitSearchAct extends BaseActivity implements OnTextChangeListener,
 		}
 		String[] arrayUnit = new String[listUnit.size()];
 		for (int i = 0; i < listUnit.size(); i++) {
-			arrayUnit[i] = listUnit.get(i).getUnitname();
+			arrayUnit[i] = listUnit.get(i).getName();
 		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayUnit);
 		listview.setAdapter(adapter);
@@ -85,9 +86,9 @@ public class UnitSearchAct extends BaseActivity implements OnTextChangeListener,
 				}
 				for (int j = 0; j < arrayOfString1.length; j++) {
 					if (arrayOfString1[j].equals("id")) {
-						localString = (listUnit.get(k)).getGoodsid();
+						localString = (listUnit.get(k)).getId();
 					} else if (arrayOfString1[j].equals("name")) {
-						localString = (listUnit.get(k)).getUnitname();
+						localString = (listUnit.get(k)).getName();
 					}
 					boolean contains = localString.contains(str);
 					boolean contains2 = (localString.toLowerCase()).contains(str);
@@ -100,7 +101,7 @@ public class UnitSearchAct extends BaseActivity implements OnTextChangeListener,
 			String[] arrayOfString2 = new String[list.size()];
 			if (!list.isEmpty()) {
 				for (int i = 0; i < list.size(); i++) {
-					arrayOfString2[i] = list.get(i).getUnitname();
+					arrayOfString2[i] = list.get(i).getName();
 				}
 			}
 			ArrayAdapter<String> localArrayAdapter = new ArrayAdapter<String>(UnitSearchAct.this,
@@ -113,14 +114,14 @@ public class UnitSearchAct extends BaseActivity implements OnTextChangeListener,
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		GoodsUnit goodsunit = null;
+		Unit Unit = null;
 		if (list.size() == 0) {
-			goodsunit = temp.get(position);
+			Unit = temp.get(position);
 		} else {
-			goodsunit = list.get(position);
+			Unit = list.get(position);
 		}
 		Intent localIntent = new Intent();
-		localIntent.putExtra("customer", goodsunit);
+		localIntent.putExtra("customer", Unit);
 		setResult(RESULT_OK, localIntent);
 		finish();
 	}

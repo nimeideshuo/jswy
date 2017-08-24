@@ -1,12 +1,9 @@
 package com.ahjswy.cn.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import org.codehaus.jackson.JsonProcessingException;
 
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.request.ReqCommonPara;
@@ -17,10 +14,11 @@ import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.utils.Utils_help;
 
 public class ServiceSynchronize {
-	public static String tables = "log_deleterecord,sz_department,sz_warehouse,sz_paytype,cu_customer,cu_customertype,sz_region,sz_visitline,sz_goods,sz_goodsunit,sz_goodsimage";
+	// public static String tables =
+	// "log_deleterecord,sz_department,sz_warehouse,sz_paytype,cu_customer,cu_customertype,sz_region,sz_visitline,sz_goods,sz_goodsunit,sz_goodsimage";
 	private String baseAddress = "synchronize";
 	private final int pagesize = 1000;
-	private final int pagesizeForID = 2000;
+	// private final int pagesizeForID = 2000;
 	private long rversion = 0L;
 
 	public ServiceSynchronize() {
@@ -108,16 +106,53 @@ public class ServiceSynchronize {
 	}
 
 	// 查询 部门记录
-	public List<HashMap<String, String>> syn_QueryDepartmentRecords(int paramInt) {
+	public List<HashMap<String, String>> syn_QueryDepartmentRecords(int pageindex) {
 		String url = Utils.getServiceAddress(this.baseAddress, "querydepartmentrecords");
 		ReqSynQueryRecords localReqSynQueryRecords = new ReqSynQueryRecords();
-		localReqSynQueryRecords.setPageIndex(paramInt);
+		localReqSynQueryRecords.setPageIndex(pageindex);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
 		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor))
 			return JSONUtil.parse2ListMap(infor);
+		return null;
+	}
+
+	/**
+	 * 查询商品类别
+	 * 
+	 * @param pageindex
+	 */
+	public List<HashMap<String, String>> syn_QueryGoodsClassrecords(int pageindex) {
+		String url = Utils.getServiceAddress(this.baseAddress, "querygoodsclassrecords");
+		ReqSynQueryRecords queryRecords = new ReqSynQueryRecords();
+		queryRecords.setPageSize(pagesize);
+		queryRecords.setRVersion(rversion);
+		queryRecords.setPageIndex(pageindex);
+		map.put("parameter", JSONUtil.object2Json(queryRecords));
+		String serviceInfor = new Utils_help().getServiceInfor(url, map);
+		if (RequestHelper.isSuccess(serviceInfor))
+			return JSONUtil.parse2ListMap(serviceInfor);
+		return null;
+	}
+
+	/**
+	 * 查询系统单价
+	 * 
+	 * @param pageindex
+	 * @return
+	 */
+	public List<HashMap<String, String>> syn_QueryPricesystem(int pageindex) {
+		String url = Utils.getServiceAddress(this.baseAddress, "querypricesystemrecords");
+		ReqSynQueryRecords queryRecords = new ReqSynQueryRecords();
+		queryRecords.setPageSize(pagesize);
+		queryRecords.setRVersion(rversion);
+		queryRecords.setPageIndex(pageindex);
+		map.put("parameter", JSONUtil.object2Json(queryRecords));
+		String serviceInfor = new Utils_help().getServiceInfor(url, map);
+		if (RequestHelper.isSuccess(serviceInfor))
+			return JSONUtil.parse2ListMap(serviceInfor);
 		return null;
 	}
 
@@ -212,6 +247,9 @@ public class ServiceSynchronize {
 		localArrayList.add(new ReqSynUpdateInfo("sz_visitline", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_goods", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_goodsunit", 0L));
+		localArrayList.add(new ReqSynUpdateInfo("sz_goodsclass", 0L));
+		localArrayList.add(new ReqSynUpdateInfo("sz_pricesystem", 0L));
+		localArrayList.add(new ReqSynUpdateInfo("sz_unit", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_goodsimage", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("rversion", paramLong));
 		localArrayList.add(new ReqSynUpdateInfo("pagesize", pagesize));
@@ -237,10 +275,24 @@ public class ServiceSynchronize {
 		return null;
 	}
 
-	public List<HashMap<String, String>> syn_QueryWarehouseRecords(int paramInt) {
+	public List<HashMap<String, String>> syn_QueryWarehouseRecords(int pageindex) {
 		String url = Utils.getServiceAddress(this.baseAddress, "querywarehouserecords");
 		ReqSynQueryRecords localReqSynQueryRecords = new ReqSynQueryRecords();
-		localReqSynQueryRecords.setPageIndex(paramInt);
+		localReqSynQueryRecords.setPageIndex(pageindex);
+		localReqSynQueryRecords.setPageSize(pagesize);
+		localReqSynQueryRecords.setRVersion(rversion);
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
+		String infor = new Utils_help().getServiceInfor(url, map);
+		if (RequestHelper.isSuccess(infor)) {
+			return JSONUtil.parse2ListMap(infor);
+		}
+		return null;
+	}
+
+	public List<HashMap<String, String>> syn_QueryUnitrecords(int pageindex) {
+		String url = Utils.getServiceAddress(this.baseAddress, "queryunitrecords");
+		ReqSynQueryRecords localReqSynQueryRecords = new ReqSynQueryRecords();
+		localReqSynQueryRecords.setPageIndex(pageindex);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(rversion);
 		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));

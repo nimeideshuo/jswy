@@ -12,6 +12,7 @@ import com.ahjswy.cn.utils.AnimationUtil;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
+import com.ahjswy.cn.utils.TextUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -93,11 +94,11 @@ public class Jswy_logUser extends BaseActivity implements OnClickListener {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("userid", userid);
 		map.put("password", password);
-		if (userid.isEmpty()) {
+		if (TextUtils.isEmpty(userid)) {
 			PDH.showError("请输入用户名");
 			return;
 		}
-		if (password.isEmpty()) {
+		if (TextUtils.isEmpty(password)) {
 			PDH.showError("请输入密码");
 			return;
 		}

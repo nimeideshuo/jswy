@@ -9,7 +9,6 @@ import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
-import com.ahjswy.cn.response.RespGoodsWarehouse;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.Utils;
@@ -22,7 +21,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -32,7 +30,7 @@ import android.widget.TextView;
 public class OutDocAddMoreAdapter extends BaseAdapter {
 	private Activity context;
 	private List<DefDocItemXS> listItems;
-	private int selectPosition = -1;// 记住选中的edtitext
+	// private int selectPosition = -1;// 记住选中的edtitext
 
 	public OutDocAddMoreAdapter(Activity context) {
 		this.context = context;
@@ -87,12 +85,11 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		final TextView tv_Bfci = (TextView) convertView.findViewById(R.id.tv_Bfci);
 		final TextView tv_dicPrice = (TextView) convertView.findViewById(R.id.tv_dicPrice);
 		final DefDocItemXS itemXS = listItems.get(position);
-		final RespGoodsWarehouse res = itemXS.getStocknum();
 		// 显示上次 采购
 		btnUnit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(final View v) {
-				final GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
+				GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
 				final List<GoodsUnit> listGoodsunit = goodsUnitDAO.queryGoodsUnits(itemXS.getGoodsid());
 				final String[] arrayOfString = new String[listGoodsunit.size()];
 				for (int i = 0; i < arrayOfString.length; i++) {
@@ -109,7 +106,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 						itemXS.setUnitid(goodsUnit.getUnitid());
 						itemXS.setUnitname(goodsUnit.getUnitname());
 						// 设置当前库存
-						String stocknum = DocUtils.Stocknum(res, goodsUnit);
+						String stocknum = DocUtils.Stocknum(itemXS.getStocknum(), goodsUnit);
 						itemXS.goodStock = stocknum;
 						tv_Bfci.setText(stocknum);
 						PDH.show(context, new PDH.ProgressCallBack() {
@@ -119,6 +116,9 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 								// 查询商品价格
 								final ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(),
 										itemXS);
+								if (goodsPrice == null) {
+									return;
+								}
 								itemXS.setPrice(goodsPrice.getPrice());
 								context.runOnUiThread(new Runnable() {
 

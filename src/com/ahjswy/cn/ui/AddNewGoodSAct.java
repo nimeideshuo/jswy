@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.PricesystemDAO;
 import com.ahjswy.cn.dao.UnitDAO;
 import com.ahjswy.cn.model.Good;
@@ -14,7 +15,11 @@ import com.ahjswy.cn.model.Pricesystem;
 import com.ahjswy.cn.model.Unit;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
-import com.ahjswy.cn.service.ServiceStore;
+import com.ahjswy.cn.service.ServiceGoods;
+import com.ahjswy.cn.utils.InfoDialog;
+import com.ahjswy.cn.utils.PinYin4j;
+import com.ahjswy.cn.utils.TextUtils;
+import com.ahjswy.cn.utils.Utils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -39,7 +44,6 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * 增加 商品
@@ -56,13 +60,11 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private CheckBox cbBaseUnit2;
 	private CheckBox cbBigUnit2;
 	private LinearLayout linUnit2;
-	// private List<String> liUnit;
 	private CheckBox cbIsDiscount;
 	private CheckBox cbIsusebatch;
 	LinearLayout linUnit3;
 	private LinearLayout linUnit1;
 	private Button btnGoodsClass;
-
 	private ListView lvPrices;
 	private List<Pricesystem> listPrice;
 	private ScrollView svRoot;
@@ -74,6 +76,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private EditText etSalecue;
 	private EditText etRemark;
 	Good good;// 商品类
+	// private EditText etPinYin;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 
 	private void initView() {
 		etName = (EditText) findViewById(R.id.etName);
+		// etPinYin = (EditText) findViewById(R.id.etPinYin);
 		etBarcode = (EditText) findViewById(R.id.etBarcode);
 		etSpecification = (EditText) findViewById(R.id.etSpecification);
 		etModel = (EditText) findViewById(R.id.etModel);
@@ -105,7 +109,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		btnSubmit.setOnClickListener(this);
 		dao = new PricesystemDAO();
 		listGoodUnit = new ArrayList<GoodsUnit>();
-		unit1 = new GoodsUnit();
 	}
 
 	private void initUnit1() {
@@ -115,12 +118,18 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		cbBigUnit1 = (CheckBox) linUnit1.findViewById(R.id.cbBigUnit);
 		ratio1 = (EditText) linUnit1.findViewById(R.id.ratio);
 		spUnit = (Spinner) linUnit1.findViewById(R.id.spUnit);
+
 		cbIsDiscount.setChecked(true);
 		cbBaseUnit1.setChecked(true);
 		cbBigUnit1.setChecked(true);
+		cbBaseUnit1.setFocusable(false);
+		cbBigUnit1.setFocusable(false);
 		ratio1.setText(String.valueOf(1.0));
 		ratio1.setEnabled(false);
-
+		cbBigUnit1.setClickable(false);
+		cbBaseUnit1.setClickable(false);
+		// cbBaseUnit1.setOnCheckedChangeListener(this);
+		// cbBigUnit1.setOnCheckedChangeListener(this);
 		priceAdapter = new PriceAdapter();
 		listPrice = dao.queryAll();
 		lvPrices.setAdapter(priceAdapter);
@@ -132,6 +141,13 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		setHeight(lvPrices, priceAdapter);
 		svRoot.setOnTouchListener(svTouchListener);
 		listUnit = new UnitDAO().queryAll();
+		if (listUnit.isEmpty()) {
+			showError("没有查询到单位! 请重试!");
+			return;
+		}
+		unit1 = new GoodsUnit();
+		unit1.setUnitid(listUnit.get(0).getId());
+		unit1.setUnitname(listUnit.get(0).getName());
 		arrayUnits = new String[listUnit.size()];
 		for (int i = 0; i < listUnit.size(); i++) {
 			arrayUnits[i] = listUnit.get(i).getName();
@@ -165,7 +181,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		}
 		LayoutParams params = (LayoutParams) listView.getLayoutParams();
 		params.width = LayoutParams.MATCH_PARENT;
-		params.height = height;
+		params.height = height + 20;
 		listView.setLayoutParams(params);
 	}
 
@@ -183,8 +199,8 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			return false;
 		}
 	};
-	private CheckBox cbBaseUnit3;
-	private CheckBox cbBigUnit3;
+	// private CheckBox cbBaseUnit3;
+	// private CheckBox cbBigUnit3;
 	private PricesystemDAO dao;
 	private List<GoodsUnit> listGoodUnit;
 	private GoodsUnit unit1;
@@ -194,6 +210,8 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private String[] arrayUnits;
 	private List<Unit> listUnit;
 	private GoodsUnit unit3;
+	private Button btnDelete2;
+	private Button btnDelete3;
 
 	@Override
 	public void onClick(View v) {
@@ -202,18 +220,27 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			startActivityForResult(new Intent(this, SearchGoodsClassAct.class), 1);
 			break;
 		case R.id.btnAddUnit:
-			// TODO 二级单位
 			if (linUnit2 == null) {
 				unit2 = new GoodsUnit();
+				unit2.setUnitid(listUnit.get(0).getId());
+				unit2.setUnitname(listUnit.get(0).getName());
+				cbBigUnit1.setChecked(false);
+				cbBigUnit1.setVisibility(View.INVISIBLE);
 				linUnit2 = (LinearLayout) View.inflate(this, R.layout.act_addgoods_unit, null);
 				unitRoot.addView(linUnit2);
+				btnDelete2 = (Button) linUnit2.findViewById(R.id.btnDelete);
 				cbBaseUnit2 = (CheckBox) linUnit2.findViewById(R.id.cbBaseUnit);
 				cbBigUnit2 = (CheckBox) linUnit2.findViewById(R.id.cbBigUnit);
+				ratio2 = (EditText) linUnit2.findViewById(R.id.ratio);
+				btnDelete2.setVisibility(View.VISIBLE);
+				cbBigUnit2.setChecked(true);
+				cbBigUnit2.setClickable(false);
+				btnDelete2.setOnClickListener(deleteItem2);
 				Spinner spUnit2 = (Spinner) linUnit2.findViewById(R.id.spUnit);
+				cbBaseUnit2.setVisibility(View.INVISIBLE);
 				ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(AddNewGoodSAct.this,
 						android.R.layout.simple_list_item_1, arrayUnits);
 				spUnit2.setAdapter(adapter2);
-
 				spUnit2.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 					@Override
@@ -225,7 +252,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 
 					@Override
 					public void onNothingSelected(AdapterView<?> parent) {
-						// TODO Auto-generated method stub
 
 					}
 				});
@@ -233,10 +259,22 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			}
 			if (linUnit3 == null) {
 				unit3 = new GoodsUnit();
+				unit3.setUnitid(listUnit.get(0).getId());
+				unit3.setUnitname(listUnit.get(0).getName());
 				linUnit3 = (LinearLayout) View.inflate(this, R.layout.act_addgoods_unit, null);
 				unitRoot.addView(linUnit3);
-				cbBaseUnit3 = (CheckBox) linUnit3.findViewById(R.id.cbBaseUnit);
-				cbBigUnit3 = (CheckBox) linUnit3.findViewById(R.id.cbBigUnit);
+				linUnit3.findViewById(R.id.rgRoot).setVisibility(View.GONE);
+				ratio3 = (EditText) linUnit3.findViewById(R.id.ratio);
+				btnDelete3 = (Button) linUnit3.findViewById(R.id.btnDelete);
+				// cbBaseUnit3 = (CheckBox)
+				// linUnit3.findViewById(R.id.cbBaseUnit);
+				// cbBigUnit3 = (CheckBox)
+				// linUnit3.findViewById(R.id.cbBigUnit);
+				btnDelete3.setVisibility(View.VISIBLE);
+				btnDelete3.setOnClickListener(deleteItem3);
+				btnDelete3.setTag(linUnit3);
+				// cbBigUnit3.setOnCheckedChangeListener(this);
+				// cbBaseUnit3.setOnCheckedChangeListener(this);
 				Spinner spUnit3 = (Spinner) linUnit3.findViewById(R.id.spUnit);
 				ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(AddNewGoodSAct.this,
 						android.R.layout.simple_list_item_1, arrayUnits);
@@ -268,99 +306,67 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		}
 	}
 
+	View.OnClickListener deleteItem2 = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			cbBigUnit1.setChecked(true);
+			cbBigUnit1.setVisibility(View.VISIBLE);
+			unitRoot.removeView(linUnit2);
+			linUnit2 = null;
+			btnAddUnit.setVisibility(View.VISIBLE);
+		}
+	};
+	View.OnClickListener deleteItem3 = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			unitRoot.removeView(linUnit3);
+			linUnit3 = null;
+			btnAddUnit.setVisibility(View.VISIBLE);
+		}
+	};
+	private EditText ratio2;
+	private EditText ratio3;
+
 	private void submit() {
-		// List<Test> listBase = new ArrayList<Test>();
-		// List<Test> listBig = new ArrayList<Test>();
-		// int count = 0;
-		// listBase.add(new Test("01", null, cbBaseUnit1.isChecked()));
-		// listBig.add(new Test("02", null, cbBigUnit1.isChecked()));
-		// if (linUnit2 != null) {
-		// listBase.add(new Test("11", null, cbBaseUnit2.isChecked()));
-		// listBig.add(new Test("12", null, cbBigUnit2.isChecked()));
-		// }
-		// if (linUnit3 != null) {
-		// listBase.add(new Test("21", null, cbBaseUnit3.isChecked()));
-		// listBig.add(new Test("22", null, cbBigUnit3.isChecked()));
-		// }
-		// if (listBase.size() == 0) {
-		// showError("必须选择一个基本单位");
-		// return;
-		// }
-		// for (int i = 0; i < listBase.size(); i++) {
-		// if (listBase.get(i).isCheck == false && listBig.get(i).isCheck ==
-		// false) {
-		// showError("单位没有选择!");
-		// return;
-		// }
-		// if (listBase.get(i).isCheck) {
-		// count++;
-		// }
-		// }
-		// if (count > 1) {
-		// showError("只能有一个基本单位");
-		// return;
-		// }
-		// if (listBig.size() == 0) {
-		// showError("必须选择一个计件单位");
-		// return;
-		// }
-		// count = 0;
-		// for (int i = 0; i < listBig.size(); i++) {
-		// if (listBig.get(i).isCheck) {
-		// count++;
-		// }
-		// }
-		// if (count > 1) {
-		// showError("只能有一个计件单位");
-		// return;
-		// }
-		// unit2.setUnitid(unitid);
+		// TODO submit()
+		String validateDoc = validateDoc();
+		if (validateDoc != null) {
+			InfoDialog.showError(this, validateDoc);
+			return;
+		}
+		for (Pricesystem price : listPrice) {
+			price.setUnitid(unit1.getUnitid());
+			price.setPricesystemid(price.getPsid());
+		}
 		unit1.setIsbasic(cbBaseUnit1.isChecked());
 		unit1.setIsshow(cbBigUnit1.isChecked());
+		unit1.setRatio(Utils.getDouble(ratio1.getText().toString()));
 		listGoodUnit.add(unit1);
 		if (linUnit2 != null) {
+			List<Pricesystem> queryAll = dao.queryAll();
+			for (Pricesystem pricesystem : queryAll) {
+				pricesystem.setUnitid(unit2.getUnitid());
+				// 本身不需要 系统 那边需要添加
+				pricesystem.setPricesystemid(pricesystem.getPsid());
+				listPrice.add(pricesystem);
+			}
 			unit2.setIsbasic(cbBaseUnit2.isChecked());
 			unit2.setIsshow(cbBigUnit2.isChecked());
+			unit2.setRatio(Utils.getDouble(ratio2.getText().toString()));
 			listGoodUnit.add(unit2);
 		}
 		if (linUnit3 != null) {
-			unit3.setIsbasic(cbBaseUnit3.isChecked());
-			unit3.setIsshow(cbBigUnit3.isChecked());
+			unit3.setIsbasic(false);
+			unit3.setIsshow(false);
+			unit3.setRatio(Utils.getDouble(ratio3.getText().toString()));
 			listGoodUnit.add(unit3);
 		}
-		boolean isOneBasic = false;
-		boolean isOneBig = false;
-		for (int i = 0; i < listGoodUnit.size(); i++) {
-			GoodsUnit goodsUnit = listGoodUnit.get(i);
-			if (goodsUnit.isIsbasic()) {
-				isOneBasic = true;
-			}
-			if (goodsUnit.isIsshow()) {
-				isOneBig = true;
-			}
-			for (int j = 0; j < listGoodUnit.size(); j++) {
-				if (i != j && goodsUnit.isIsbasic() && listGoodUnit.get(j).isIsbasic()) {
-					showError("只能有一个基本单位");
-					return;
-				}
-				if (i != j && goodsUnit.isIsshow() && listGoodUnit.get(j).isIsshow()) {
-					showError("只能有一个计件单位");
-					return;
-				}
-			}
-		}
-		if (!isOneBasic) {
-			showError("请选择基本单位");
-			return;
-		}
-		if (!isOneBig) {
-			showError("请选择基计件单位");
-			return;
-		}
-		// TODO 提交
+
 		Goods goods = new Goods();
 		goods.name = etName.getText().toString();
-		goods.pinyin = "pinyin";
+		goods.pinyin = new PinYin4j().getPinyin(goods.name).iterator().next();
 		goods.barcode = etBarcode.getText().toString();
 		goods.model = etModel.getText().toString();
 		goods.remark = etRemark.getText().toString();
@@ -368,67 +374,51 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		goods.specification = etSpecification.getText().toString();
 		goods.isdiscount = cbIsDiscount.isChecked();
 		goods.isusebatch = cbIsusebatch.isChecked();
-		String addGood = new ServiceStore().AddGood(goods, listPrice, listGoodUnit);
-		if (addGood.isEmpty()) {
-			Toast.makeText(this, "添加成功!", Toast.LENGTH_SHORT).show();
+		goods.goodsclassid = btnGoodsClass.getTag().toString();
+		String addGood = new ServiceGoods().gds_AddGood(goods, listPrice, listGoodUnit);
+		if (RequestHelper.isSuccess(addGood)) {
+			showSuccess("添加成功!");
+			startActivity(new Intent(this, SwyMain.class));
+			finish();
+		} else {
+			showError(addGood);
 		}
-		// startActivity(new Intent(this, SwyMain.class));
-		// finish();
+
 	}
 
-	// OnClickListener unitListener1 = new OnClickListener() {
-	//
-	// @Override
-	// public void onClick(View v) {
-	// switch (v.getId()) {
-	// case R.id.rbBaseUnit:
-	// Toast.makeText(AddNewGoodSAct.this, "rbBaseUnit",
-	// Toast.LENGTH_SHORT).show();
-	// break;
-	// case R.id.rbBigUnit:
-	// Toast.makeText(AddNewGoodSAct.this, "rbBigUnit",
-	// Toast.LENGTH_SHORT).show();
-	//
-	// break;
-	// }
-	// }
-	// };
-	// View.OnClickListener unitListener2 = new View.OnClickListener() {
-	//
-	// @Override
-	// public void onClick(View v) {
-	// switch (v.getId()) {
-	// case R.id.rbBaseUnit:
-	// Toast.makeText(AddNewGoodSAct.this, "rbBaseUnit2",
-	// Toast.LENGTH_SHORT).show();
-	// break;
-	// case R.id.rbBigUnit:
-	// Toast.makeText(AddNewGoodSAct.this, "rbBigUnit2",
-	// Toast.LENGTH_SHORT).show();
-	// break;
-	// }
-	// }
-	// };
-
-	// OnCheckedChangeListener checkedlistener = new OnCheckedChangeListener() {
-	//
-	// @Override
-	// public void onCheckedChanged(CompoundButton buttonView, boolean
-	// isChecked) {
-	// }
-	// };
-	public class Test {
-		String id;
-		String name;
-		boolean isCheck;
-
-		public Test(String id, String name, boolean isCheck) {
-			super();
-			this.id = id;
-			this.name = name;
-			this.isCheck = isCheck;
+	private String validateDoc() {
+		if (TextUtils.isEmpty(etName.getText().toString())) {
+			return "请输入商品名称";
 		}
+		if (unit2 != null) {
+			if (unit1.getUnitid().equals(unit2.getUnitid())) {
+				return "该计量单位已经选择";
+			}
+			if (TextUtils.isEmpty(ratio2.getText().toString())
+					|| Utils.getDouble(ratio2.getText().toString()).doubleValue() <= 0) {
+				return "换算比例必须大于0";
+			}
 
+		}
+		if (unit3 != null) {
+			if (unit1.getUnitid().equals(unit3.getUnitid())) {
+				return "该计量单位已经选择";
+			}
+			if (TextUtils.isEmpty(ratio3.getText().toString())
+					|| Utils.getDouble(ratio3.getText().toString()).doubleValue() <= 0) {
+				return "换算比例必须大于0";
+			}
+
+		}
+		if (unit2 != null && unit3 != null) {
+			if (unit2.getUnitid().equals(unit3.getUnitid())) {
+				return "该计量单位已经选择";
+			}
+		}
+		if (btnGoodsClass.getTag() == null) {
+			return "所属类别没有选择!";
+		}
+		return null;
 	}
 
 	@Override
@@ -440,7 +430,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 				// 商品类别检索 返回
 				GoodsClass goodsClass = (GoodsClass) data.getSerializableExtra("goodclass");
 				btnGoodsClass.setText(goodsClass.getName());
-				btnGoodsClass.setTag(goodsClass);
+				btnGoodsClass.setTag(goodsClass.getId());
 				break;
 
 			default:
@@ -479,7 +469,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			Pricesystem pricesystem = listPrice.get(position);
 			String psname = pricesystem.getPsname();
 			tvName.setText(psname);
-			edNumber.setText(pricesystem == null ? "" : pricesystem.getPrice());
+			edNumber.setText(pricesystem == null ? "0" : pricesystem.getPrice() + "");
 			edNumber.setTag(Integer.valueOf(position));
 			edNumber.addTextChangedListener(new MyWatcher(edNumber));
 			return view;
@@ -505,7 +495,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			@Override
 			public void afterTextChanged(Editable s) {
 				int i = ((Integer) v.getTag()).intValue();
-				listPrice.get(i).setPrice(s.toString().isEmpty() ? "" : s.toString());
+				listPrice.get(i).setPrice(Utils.getDouble(s.toString()));
 			}
 
 		}
@@ -516,4 +506,5 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	public void setActionBarText() {
 		setTitle("新增商品");
 	}
+
 }

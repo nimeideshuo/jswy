@@ -47,15 +47,13 @@ public class PinYin4j {
 			char c = srcChar[i];
 			// 是中文或者a-z或者A-Z转换拼音(我的需求，是保留中文或者a-z或者A-Z)
 			if (String.valueOf(c).matches("[\\u4E00-\\u9FA5]+")) {// 中文
-				String[] t = PinyinHelper
-						.getUnformattedHanyuPinyinStringArray(c);
+				String[] t = PinyinHelper.getUnformattedHanyuPinyinStringArray(c);
 				temp[i] = new String[t.length];
 				for (int j = 0; j < t.length; j++) {
 					// temp[i][j]=t[j].substring(0,1);//获取首字母
 					temp[i][j] = t[j];// //获取首字母，不需要再截取了
 				}
-			} else if (((int) c >= 65 && (int) c <= 90)
-					|| ((int) c >= 97 && (int) c <= 122) || c >= 48 && c <= 57
+			} else if (((int) c >= 65 && (int) c <= 90) || ((int) c >= 97 && (int) c <= 122) || c >= 48 && c <= 57
 					|| c == 42) {// a-zA-Z0-9*
 				temp[i] = new String[] { String.valueOf(srcChar[i]) };
 			} else {
@@ -63,7 +61,11 @@ public class PinYin4j {
 			}
 
 		}
-		return paiLie(temp);// 为了去掉重复项,直接返回Set  
+		return paiLie(temp);// 为了去掉重复项,直接返回Set
+	}
+
+	public String getPinyinStr(String src) {
+		return getPinyin(src).toString().replace("[", "").replace("]", "").trim();
 	}
 
 	/*

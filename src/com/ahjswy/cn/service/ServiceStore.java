@@ -192,7 +192,7 @@ public class ServiceStore {
 
 	// TODO 添加商品
 	public String AddGood(Goods goods, List<Pricesystem> listPrice, List<GoodsUnit> listGoodUnit) {
-		String url = baseNewAddress + "AddGood";
+		String url = baseNewAddress + "AddGoods";
 		if (goods == null) {
 			throw new RuntimeException("ReqAddGoods is null");
 		}

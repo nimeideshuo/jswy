@@ -38,7 +38,6 @@ import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -917,8 +916,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.readValue(localString,
 						DocContainerEntity.class);
 				doc = ((DefDocXS) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDocXS.class));
-				OutDocEditActivity.this.listPayType = JSONUtil.str2list(localDocContainerEntity.getPaytype(),
-						DefDocPayType.class);
+				listPayType = JSONUtil.str2list(localDocContainerEntity.getPaytype(), DefDocPayType.class);
 				if (getMaxTempItemId() != 0) {
 					isSort = true;
 				}
@@ -963,6 +961,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			RespServiceInfor printDoc = printDoc();
 			if (printDoc != null && printDoc.Result) {// 打印单据
 				showSuccess("打印成功!");
+				startActivity(new Intent(OutDocEditActivity.this, SwyMain.class));
+				finish();
 			} else {
 				showError("打印失败!服务请开启！");
 			}
@@ -1089,7 +1089,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				bottomCount();
 				break;
 			case 7:
-				// TODO 客史
 				List<DefDocItemXS> itemXSList = JSONUtil.str2list(data.getStringExtra("selecteditem"),
 						DefDocItemXS.class);
 				long itemId = this.getMaxTempItemId();

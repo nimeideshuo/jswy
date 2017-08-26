@@ -223,6 +223,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			break;
 		// 新增商品
 		case R.id.addNewGoods:
+			// TODO
 			startActivity(new Intent(SwyMain.this, AddNewGoodSAct.class));
 			break;
 		// 盘点

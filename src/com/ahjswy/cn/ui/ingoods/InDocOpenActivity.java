@@ -1,6 +1,5 @@
 package com.ahjswy.cn.ui.ingoods;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import com.ahjswy.cn.ui.CustomerSearchAct;
 import com.ahjswy.cn.ui.DepartmentSearchAct;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.ui.WarehouseSearchAct;
-import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.utils.DateTimePickDialogUtil;
 import com.ahjswy.cn.utils.DateTimePickDialogUtil.Time_callback;
 import com.ahjswy.cn.utils.GetTime;
@@ -317,16 +315,6 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 		public void handleMessage(android.os.Message msg) {
 			String message = msg.obj.toString();
 			if (RequestHelper.isSuccess(message)) {
-				// List<HashMap<String, String>> localList =
-				// JSONUtil.parse2ListMap(localString1);
-				// if (localList.size() > 0) {
-				// etCustomerAddress
-				// .setText((CharSequence) ((HashMap<String, String>)
-				// localList.get(0)).get("address"));
-				// return;
-				// }
-				// PDH.showFail("无可用地址");
-				// return;
 				List<HashMap<String, String>> localList = JSONUtil.parse2ListMap(message);
 				if (localList.size() == 1) {
 					etCustomerAddress

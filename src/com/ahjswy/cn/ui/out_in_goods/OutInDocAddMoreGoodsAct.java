@@ -98,13 +98,7 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 	private void setItemPrice(DefDocItemDD item) {
 		ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doccg.getCustomerid(), doccg.getWarehouseid(),
 				item.getGoodsid(), item.getUnitid());
-		if (goodsPrice == null) {
-			showError("获取商品价格失败!");
-			item.setPrice(0);
-		} else {
-			item.setPrice(goodsPrice.getPrice());
-		}
-
+		item.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
 	}
 
 	@Override

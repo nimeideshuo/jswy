@@ -147,7 +147,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 				}
 				// 查询库存
 				ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
-				defdocitemxs.setPrice(goodsPrice.getPrice());
+				defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
 				items.addAll(Newitems);
 				adapter.setData(items);
 				Newitems.clear();
@@ -216,7 +216,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 				}
 				// 查询库存
 				ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
-				defdocitemxs.setPrice(goodsPrice.getPrice());
+				defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
 				adapter.setData(items);
 				lv_commodity_add.setAdapter(adapter);
 				lv_commodity_add.setItemsCanFocus(true);

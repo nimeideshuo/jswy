@@ -139,14 +139,14 @@ public class Utils {
 		return new Date().getTime();
 	}
 
-	public static Double getDouble(String paramString) {
-		if (paramString == null) {
+	public static Double getDouble(String douStr) {
+		if (douStr == null) {
 			return Double.valueOf(0.0D);
 		}
-		if (paramString.length() == 0) {
+		if (douStr.length() == 0) {
 			return Double.valueOf(0.0D);
 		}
-		return Double.parseDouble(paramString);
+		return Double.parseDouble(douStr);
 	}
 
 	public static Long getEndTime() {

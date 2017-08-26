@@ -27,6 +27,21 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="@string/pinyin_code" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@+id/etPinYin"
+                style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
@@ -121,7 +136,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="90dp"
             android:orientation="horizontal" >
 
             <CheckBox
@@ -145,10 +160,13 @@
             android:orientation="vertical" >
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/dish_line_top" />
+        <Button
+            android:id="@+id/btnAddUnit"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_1_selector"
+            android:text="添加单位" />
 
         <ListView
             android:id="@+id/lvPrices"
@@ -157,27 +175,13 @@
             android:background="@drawable/btn_select_white_nor" >
         </ListView>
 
-        <LinearLayout
+        <Button
+            android:id="@id/btnSubmit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/btnAddUnit"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:background="@drawable/btn_1_selector"
-                android:text="添加单位" />
-
-            <Button
-                android:id="@id/btnSubmit"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:background="@drawable/btn_1_selector"
-                android:text="@string/submit" />
-        </LinearLayout>
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_1_selector"
+            android:text="@string/submit" />
     </LinearLayout>
 
 </ScrollView>

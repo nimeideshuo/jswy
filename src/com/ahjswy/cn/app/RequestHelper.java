@@ -2,6 +2,7 @@ package com.ahjswy.cn.app;
 
 import com.ahjswy.cn.service.ServiceSystem;
 import com.ahjswy.cn.utils.PDH;
+import com.ahjswy.cn.utils.TextUtils;
 
 public class RequestHelper {
 	public static RequestHelper helper;
@@ -60,13 +61,13 @@ public class RequestHelper {
 	}
 
 	// 验证 IP 是否正确
-	public String checkConnect(String paramString) {
+	public String checkConnect(String ipStr) {
 		String str;
-		if (paramString.isEmpty()) {
+		if (TextUtils.isEmpty(ipStr)) {
 			str = "请输入IP地址";
 			return str;
 		}
-		str = new ServiceSystem().sys_CheckRegister(paramString);
+		str = new ServiceSystem().sys_CheckRegister(ipStr);
 		if (str.equals("register")) {
 			return "register";
 		}

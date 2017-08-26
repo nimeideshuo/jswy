@@ -19,9 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 
 public class OutDocPayAct extends BaseActivity implements OnFocusChangeListener, Clean, OnClickListener {
 	// 折后合计
@@ -70,7 +72,7 @@ public class OutDocPayAct extends BaseActivity implements OnFocusChangeListener,
 		tvDiscountSubtotal.setText(discountsubtotal + "");
 		// 优惠
 		preference = getIntent().getDoubleExtra("preference", 0.0D);
-//		etPreference.setCleanDrawable(false);
+		// etPreference.setCleanDrawable(false);
 		etPreference.setClean(this);
 		etPreference.setText(preference + "");
 		etPreference.setTag(etPreference.getText());
@@ -88,7 +90,22 @@ public class OutDocPayAct extends BaseActivity implements OnFocusChangeListener,
 			((TextView) findViewById(R.id.tvReceivedLabel)).setText("已付：");
 			((TextView) findViewById(R.id.tvLeftLabel)).setText("待付：");
 		}
+		setHeight(listView, adapter);
+	}
 
+	// 重新绘制 item高度
+	public void setHeight(ListView listView, Adapter adapter) {
+		int height = 0;
+		int count = adapter.getCount();
+		for (int i = 0; i < count; i++) {
+			View temp = adapter.getView(i, null, listView);
+			temp.measure(0, 0);
+			height += temp.getMeasuredHeight();
+		}
+		LayoutParams params = (LayoutParams) listView.getLayoutParams();
+		params.width = LayoutParams.MATCH_PARENT;
+		params.height = height + 20;
+		listView.setLayoutParams(params);
 	}
 
 	private void initDate() {

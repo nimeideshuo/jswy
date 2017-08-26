@@ -3,6 +3,7 @@ package com.ahjswy.cn.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.GoodsUnit;
@@ -35,9 +36,9 @@ public class DocUtils {
 		rsp.setIsdiscount(false);
 		list.add(rsp);
 		String goodsPrice = new ServiceGoods().gds_GetMultiGoodsPrice(list, true, item.isIsusebatch());
-		if (goodsPrice != null) {
+		if (RequestHelper.isSuccess(goodsPrice)) {
 			List<ReqStrGetGoodsPrice> str2list = JSONUtil.str2list(goodsPrice, ReqStrGetGoodsPrice.class);
-			return str2list.get(0);
+			return str2list.size() == 0 ? null : str2list.get(0);
 		}
 		return null;
 	}

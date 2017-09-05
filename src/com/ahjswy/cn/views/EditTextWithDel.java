@@ -5,6 +5,7 @@ import com.ahjswy.cn.R;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -45,7 +46,13 @@ public class EditTextWithDel extends EditText {
 	}
 
 	private void init() {
-		imgAble = mContext.getResources().getDrawable(R.drawable.search_clear_pressed);
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				imgAble = mContext.getResources().getDrawable(R.drawable.search_clear_pressed);
+			}
+		}, 100);
 		addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {

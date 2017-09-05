@@ -39,7 +39,6 @@ public class SaleCustomerHistoryActivity extends BaseActivity implements OnItemC
 	}
 
 	private void initView() {
-
 		listView = (XListView) findViewById(R.id.listView);
 		this.customerid = getIntent().getStringExtra("customerid");
 		this.customername = getIntent().getStringExtra("customername");
@@ -72,6 +71,7 @@ public class SaleCustomerHistoryActivity extends BaseActivity implements OnItemC
 
 		};
 	};
+	// public static String listitem;
 	Handler handlerGetItem = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			String message = msg.obj.toString();
@@ -79,6 +79,7 @@ public class SaleCustomerHistoryActivity extends BaseActivity implements OnItemC
 				Intent intent = new Intent(SaleCustomerHistoryActivity.this, SaleCustomerHistoryItemActivity.class);
 				intent.putExtra("listitem", message);
 				startActivityForResult(intent, 0);
+				// listitem = message;
 				return;
 			}
 			PDH.showFail(message);

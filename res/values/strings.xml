@@ -176,7 +176,7 @@
     <string name="doc_maker">制单人</string>
     <string name="add">添加</string>
     <string name="goods_call_name">商品名称</string>
-    <string name="barcode">条形码</string>
+    <string name="barcode">条形码：</string>
     <string name="sync_customer_record">客史同步</string>
     <string name="close">关闭</string>
     <string name="sale_number">售量</string>
@@ -210,7 +210,7 @@
     <string name="system_setting">系统设置</string>
     <string name="ingoods_record">入库记录</string>
     <string name="outgoods_record">销售记录</string>
-    <string name="specification">规格</string>
+    <string name="specification">规格：</string>
     <string name="print">打印</string>
     <string name="reset_stock">重置库存</string>
     <string name="customer_record">客史</string>
@@ -257,7 +257,8 @@
     <string name="caigou_tuihuo">采购退货</string>
     <string name="jiage_chaxun">价格查询</string>
     <string name="dengdai_tianjia">等待添加</string>
-    <string name="KaiDanRiQi">开单日期</string>
+    <string name="openDate">开单日期</string>
+    <string name="overDate">结束日期</string>
     <string name="Promotion">促销方案</string>
     <string name="hint_auto_add_shop">请输入商品</string>
     <string name="customer_car">客户车辆</string>

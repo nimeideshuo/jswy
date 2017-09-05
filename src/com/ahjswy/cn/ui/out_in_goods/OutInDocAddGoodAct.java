@@ -224,11 +224,7 @@ public class OutInDocAddGoodAct extends BaseActivity implements OnFocusChangeLis
 		this.docitem.setDiscountsubtotal(
 				Utils.normalizeSubtotal(Utils.getDouble(this.etDiscountSubtotal.getText().toString()).doubleValue()));
 		this.docitem.setRemark(this.etRemark.getText().toString());
-		boolean isgift = false;
-		if (docitem.getPrice() == 0.0D) {
-			isgift = true;
-		}
-		docitem.setIsgift(isgift);
+		docitem.setIsgift(docitem.getPrice() == 0.0D ? true : false);
 		// TODO 商品详细代码待补齐
 		// docitem.setCostprice(0.0D);
 		// docitem.setRemark("");

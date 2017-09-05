@@ -1,7 +1,5 @@
 package com.ahjswy.cn.scaner;
 
-import com.ahjswy.cn.utils.MLog;
-
 import android.content.Context;
 import mexxen.mx5010.barcode.BarcodeConfig;
 import mexxen.mx5010.barcode.BarcodeEvent;
@@ -41,12 +39,6 @@ public class ScanerMX5020 extends Scaner {
 	public void setOutputMode(int mode) {
 		bc.setOutputMode(mode);
 	}
-
-	// BarcodeListener barcodeListener;
-	//
-	// public void setBarcodeListener(BarcodeListener barcodeListener) {
-	// this.barcodeListener = barcodeListener;
-	// }
 
 	@Override
 	public void defaultSetting() {

@@ -32,7 +32,6 @@ import com.ahjswy.cn.ui.outgoods.OutDocPayAct;
 import com.ahjswy.cn.ui.outgoods.SaleCustomerHistoryActivity;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -267,6 +266,10 @@ public class InDocEditActivity extends BaseActivity
 					DefDocItemXS localDefDocItem = InDocEditActivity.this.fillItem(localGoodsThin, 0.0D, 0.0D);
 					newListItem = new ArrayList<DefDocItemXS>();
 					newListItem.add(localDefDocItem);
+					if (!TextUtils.isEmpty(doc.getOpendate())) {
+						// TODO 查询 商品 销售均价
+						return;
+					}
 					ArrayList<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
 					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
 					localReqStrGetGoodsPrice.setType(2);

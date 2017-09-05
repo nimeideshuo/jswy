@@ -65,12 +65,10 @@ public class SaleRecordActivity extends BaseActivity {
 		};
 		listView.setMenuCreator(local6);
 		listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-			public boolean onMenuItemClick(final int paramAnonymousInt1, SwipeMenu paramAnonymousSwipeMenu,
-					int paramAnonymousInt2) {
-				switch (paramAnonymousInt2) {
+			public boolean onMenuItemClick(final int position, SwipeMenu menu, int index) {
+				switch (index) {
 				case 0:
-					if (!((RespStrDocThinEntity) SaleRecordActivity.this.listDoc.get(paramAnonymousInt1))
-							.getIsposted()) {
+					if (!listDoc.get(position).getIsposted()) {
 						PDH.showMessage("单据未过账，不能打印");
 						return false;
 					}
@@ -79,11 +77,8 @@ public class SaleRecordActivity extends BaseActivity {
 
 				PDH.show(SaleRecordActivity.this, new PDH.ProgressCallBack() {
 					public void action() {
-						String localString = new ServiceStore().str_PrintDoc(
-								((RespStrDocThinEntity) SaleRecordActivity.this.listDoc.get(paramAnonymousInt1))
-										.getDoctypeid(),
-								((RespStrDocThinEntity) SaleRecordActivity.this.listDoc.get(paramAnonymousInt1))
-										.getDocid());
+						String localString = new ServiceStore().str_PrintDoc((listDoc.get(position)).getDoctypeid(),
+								(listDoc.get(position)).getDocid());
 						handlerPrint.sendMessage(handler.obtainMessage(0, localString));
 					}
 				});
@@ -144,29 +139,33 @@ public class SaleRecordActivity extends BaseActivity {
 		}
 	};
 	public AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
-		public void onItemClick(final AdapterView<?> paramAnonymousAdapterView, View paramAnonymousView,
-				int paramAnonymousInt, long paramAnonymousLong) {
-			final RespStrDocThinEntity respStrDocThinEntity = listDoc.get(paramAnonymousInt);
-			PDH.show(SaleRecordActivity.this, new PDH.ProgressCallBack() {
-				public void action() {
-					String str = new ServiceStore().str_GetXHDocDetail(respStrDocThinEntity.getDocid());
-					if ("13".equals(respStrDocThinEntity.getDoctypeid())) {
-						str = new ServiceStore().str_GetXSDocDetail(respStrDocThinEntity.getDocid());
-						handlerEdit.sendMessage(handlerEdit.obtainMessage(0, str));
-						return;
-					}
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			try {
+				final RespStrDocThinEntity respStrDocThinEntity = listDoc.get(position);
+				PDH.show(SaleRecordActivity.this, new PDH.ProgressCallBack() {
+					public void action() {
+						String str = new ServiceStore().str_GetXHDocDetail(respStrDocThinEntity.getDocid());
+						if ("13".equals(respStrDocThinEntity.getDoctypeid())) {
+							str = new ServiceStore().str_GetXSDocDetail(respStrDocThinEntity.getDocid());
+							handlerEdit.sendMessage(handlerEdit.obtainMessage(0, str));
+							return;
+						}
 
-					if ("14".equals(respStrDocThinEntity.getDoctypeid())) {
-						str = new ServiceStore().str_GetXTDocDetail(respStrDocThinEntity.getDocid());
-						handlerEdit.sendMessage(handlerEdit.obtainMessage(1, str));
-						return;
-					}
-					if ("15".equals(respStrDocThinEntity.getDoctypeid())) {
-						handlerEdit.sendMessage(handlerEdit.obtainMessage(2, str));
-					}
+						if ("14".equals(respStrDocThinEntity.getDoctypeid())) {
+							str = new ServiceStore().str_GetXTDocDetail(respStrDocThinEntity.getDocid());
+							handlerEdit.sendMessage(handlerEdit.obtainMessage(1, str));
+							return;
+						}
+						if ("15".equals(respStrDocThinEntity.getDoctypeid())) {
+							handlerEdit.sendMessage(handlerEdit.obtainMessage(2, str));
+							return;
+						}
 
-				}
-			});
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	};
 
@@ -191,29 +190,6 @@ public class SaleRecordActivity extends BaseActivity {
 	private Handler handler = new Handler() {
 
 		public void handleMessage(Message message) {
-
-			// String sMessage = message.obj.toString();
-			// if (RequestHelper.isSuccess(sMessage)) {
-			// str2list = JSONUtil.str2list(sMessage,
-			// RespStrDocThinEntity.class);
-			// if ((str2list.size() == 0) || (str2list.size() < 20)) {
-			// listView.setFootViewVisible(false);
-			// }
-			// if (message.what == 0) {
-			// listDoc.clear();
-			// }
-			// listDoc.addAll(str2list);
-			// adapter.setData(listDoc);
-			// if (message.what == 1) {
-			// int i = listView.getFirstVisiblePosition();
-			// listView.setAdapter(adapter);
-			// listView.setSelection(i);
-			// listView.setFootViewVisible(true);
-			// }
-			// listView.setAdapter(adapter);
-			// return;
-			// }
-			// PDH.showMessage(sMessage);
 
 			List<RespStrDocThinEntity> str2list = null;
 			String sMessage = message.obj.toString();
@@ -244,17 +220,18 @@ public class SaleRecordActivity extends BaseActivity {
 		}
 	};
 	private Handler handlerEdit = new Handler() {
-		public void handleMessage(Message message) {
-			Object localObject = message.obj;
-			if (RequestHelper.isSuccess((String) localObject)) {
-				localObject = (DocContainerEntity) JSONUtil.readValue((String) localObject, DocContainerEntity.class);
-				switch (message.what) {
+		public void handleMessage(Message msg) {
+			String message = msg.obj.toString();
+			if (RequestHelper.isSuccess(message)) {
+				DocContainerEntity localObject = (DocContainerEntity) JSONUtil.readValue(message,
+						DocContainerEntity.class);
+				switch (msg.what) {
 				case 0:
 					startActivityForResult(new Intent().setClass(SaleRecordActivity.this, OutDocEditActivity.class)
 							.putExtra("docContainer", (Serializable) localObject).putExtra("ishaschanged", false), 1);
 					return;
 				case 1:
-					startActivityForResult(new Intent().setClass(SaleRecordActivity.this, InDocEditActivity.class)
+					startActivityForResult(new Intent(SaleRecordActivity.this, InDocEditActivity.class)
 							.putExtra("docContainer", (Serializable) localObject).putExtra("ishaschanged", false), 1);
 					return;
 				case 2:
@@ -266,7 +243,7 @@ public class SaleRecordActivity extends BaseActivity {
 					// return;
 				}
 			}
-			PDH.showFail((String) localObject);
+			PDH.showFail(message);
 		}
 	};
 

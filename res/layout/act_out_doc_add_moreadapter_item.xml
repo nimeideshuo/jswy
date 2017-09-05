@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="150dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:maxEms="8"
         android:singleLine="true"
@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/tvBarcode"
-        android:layout_width="150dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvName"
         android:maxEms="8"
@@ -37,6 +37,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnUnit"
+        android:text="0.0"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_specification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/btnUnit"
+        android:layout_below="@+id/btnUnit"
+        android:layout_marginRight="18dp"
+        android:text="规格:1*12"
         android:textSize="14sp" />
 
     <TextView

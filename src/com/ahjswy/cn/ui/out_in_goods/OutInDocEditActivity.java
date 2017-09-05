@@ -295,7 +295,6 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 					DefDocItemDD onitemdefdoc = fillItem(localGoodsThin, 0.0D, 0.0D, 0);
 					newListItem = new ArrayList<DefDocItemDD>();
 					newListItem.add(onitemdefdoc);
-
 					List<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
 					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
 					localReqStrGetGoodsPrice.setType(1);

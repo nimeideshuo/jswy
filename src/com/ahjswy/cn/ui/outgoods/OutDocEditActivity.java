@@ -26,7 +26,6 @@ import com.ahjswy.cn.print.BTPrintHelper;
 import com.ahjswy.cn.print.BTPrintHelper.PrintOverCall;
 import com.ahjswy.cn.print.PrintMode;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
-import com.ahjswy.cn.response.RespPromotionRule;
 import com.ahjswy.cn.response.RespServiceInfor;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
@@ -123,27 +122,27 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		listItemDelete = new ArrayList<Long>();
 		btnAdd.setOnClickListener(this);
 		listview_copy_dele.setOnItemClickListener(this);
-		dialog = new Dialog_listCheckBox(OutDocEditActivity.this);
+		dialog = new Dialog_listCheckBox(this);
 	}
 
 	private void intDate() {
 		SwipeMenuCreator local5 = new SwipeMenuCreator() {
 			@Override
 			public void create(SwipeMenu menu) {
-				SwipeMenuItem localSwipeMenuItem1 = new SwipeMenuItem(OutDocEditActivity.this.getApplicationContext());
-				localSwipeMenuItem1.setTitle("复制");
-				localSwipeMenuItem1.setTitleSize(14);
-				localSwipeMenuItem1.setTitleColor(-16777216);
-				localSwipeMenuItem1.setWidth(100);
-				localSwipeMenuItem1.setBackground(new ColorDrawable(Color.rgb(48, 177, 245)));
-				menu.addMenuItem(localSwipeMenuItem1);
-				SwipeMenuItem localSwipeMenuItem2 = new SwipeMenuItem(OutDocEditActivity.this.getApplicationContext());
-				localSwipeMenuItem2.setTitle("删除");
-				localSwipeMenuItem2.setTitleSize(14);
-				localSwipeMenuItem2.setTitleColor(-16777216);
-				localSwipeMenuItem2.setBackground(new ColorDrawable(Color.rgb(201, 201, 206)));
-				localSwipeMenuItem2.setWidth(100);
-				menu.addMenuItem(localSwipeMenuItem2);
+				SwipeMenuItem item1 = new SwipeMenuItem(getApplicationContext());
+				item1.setTitle("复制");
+				item1.setTitleSize(14);
+				item1.setTitleColor(-16777216);
+				item1.setWidth(100);
+				item1.setBackground(new ColorDrawable(Color.rgb(48, 177, 245)));
+				menu.addMenuItem(item1);
+				SwipeMenuItem item2 = new SwipeMenuItem(getApplicationContext());
+				item2.setTitle("删除");
+				item2.setTitleSize(14);
+				item2.setTitleColor(-16777216);
+				item2.setBackground(new ColorDrawable(Color.rgb(201, 201, 206)));
+				item2.setWidth(100);
+				menu.addMenuItem(item2);
 			}
 		};
 		listview_copy_dele.setMenuCreator(local5);
@@ -280,7 +279,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		switch (v.getId()) {
 		case R.id.btnAdd:
 			atvSearch.clearFocus();
-			if (atvSearch.getText().toString().length() > 0) {
+			if (!TextUtils.isEmpty(atvSearch.getText().toString())) {
 				addMoreListener();
 			} else {
 				PDH.showMessage("请选择商品！");
@@ -340,51 +339,46 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						}
 						localGoodsUnitDAO = new GoodsUnitDAO();
 						for (int i = 0; i < newListItem.size(); i++) {
-							DefDocItemXS localDefDocItemXS1 = (DefDocItemXS) newListItem.get(i);
+							DefDocItemXS itemXS1 = (DefDocItemXS) newListItem.get(i);
 							for (int j = 0; j < localList.size(); j++) {
-								ReqStrGetGoodsPrice localReqStrGetGoodsPrice1 = (ReqStrGetGoodsPrice) localList.get(j);
-								if ((localDefDocItemXS1.getGoodsid().equals(localReqStrGetGoodsPrice1.getGoodsid()))
-										&& (localDefDocItemXS1.getUnitid()
-												.equals(localReqStrGetGoodsPrice1.getUnitid()))) {
-									String localString2 = localReqStrGetGoodsPrice1.getWarehouseid();
+								ReqStrGetGoodsPrice price1 = (ReqStrGetGoodsPrice) localList.get(j);
+								if ((itemXS1.getGoodsid().equals(price1.getGoodsid()))
+										&& (itemXS1.getUnitid().equals(price1.getUnitid()))) {
+									String localString2 = price1.getWarehouseid();
 									if ((TextUtils.isEmptyS(localString2))
-											&& (localString2.equals(localDefDocItemXS1.getWarehouseid()))) {
-										localDefDocItemXS1.setWarehouseid(localString2);
-										localDefDocItemXS1.setWarehousename(
+											&& (localString2.equals(itemXS1.getWarehouseid()))) {
+										itemXS1.setWarehouseid(localString2);
+										itemXS1.setWarehousename(
 												new WarehouseDAO().getWarehouse(localString2).getName());
 									}
-									localDefDocItemXS1.setIsdiscount(localReqStrGetGoodsPrice1.getIsdiscount());
-									localDefDocItemXS1.setPrice(Utils.normalizePrice(
-											Utils.normalizePrice(localReqStrGetGoodsPrice1.getPrice())));
-									localDefDocItemXS1.setSubtotal(Utils.normalizePrice(
-											localDefDocItemXS1.getNum() * localDefDocItemXS1.getPrice()));
-									if (localDefDocItemXS1.isIsdiscount()) {
-										localDefDocItemXS1.setDiscountratio(doc.getDiscountratio());
-										if (localDefDocItemXS1.isIsusebatch()) {
-											localDefDocItemXS1.setBatch(localReqStrGetGoodsPrice1.getBatch());
-											localDefDocItemXS1
-													.setProductiondate(localReqStrGetGoodsPrice1.getProductiondate());
-											localDefDocItemXS1
-													.setWarehouseid(localReqStrGetGoodsPrice1.getWarehouseid());
-											if (!TextUtils.isEmptyS(localReqStrGetGoodsPrice1.getWarehouseid())) {
+									itemXS1.setIsdiscount(price1.getIsdiscount());
+									itemXS1.setPrice(Utils.normalizePrice(Utils.normalizePrice(price1.getPrice())));
+									itemXS1.setSubtotal(Utils.normalizePrice(itemXS1.getNum() * itemXS1.getPrice()));
+									if (itemXS1.isIsdiscount()) {
+										itemXS1.setDiscountratio(doc.getDiscountratio());
+										if (itemXS1.isIsusebatch()) {
+											itemXS1.setBatch(price1.getBatch());
+											itemXS1.setProductiondate(price1.getProductiondate());
+											itemXS1.setWarehouseid(price1.getWarehouseid());
+											if (!TextUtils.isEmptyS(price1.getWarehouseid())) {
 												Warehouse localWarehouse = new WarehouseDAO()
-														.getWarehouse(localReqStrGetGoodsPrice1.getWarehouseid());
+														.getWarehouse(price1.getWarehouseid());
 												if (localWarehouse != null) {
-													localDefDocItemXS1.setWarehousename(localWarehouse.getName());
+													itemXS1.setWarehousename(localWarehouse.getName());
 												}
 
 											}
 										}
 									}
-									localDefDocItemXS1.setDiscountprice(Utils.normalizePrice(
-											localDefDocItemXS1.getPrice() * localDefDocItemXS1.getDiscountratio()));
-									localDefDocItemXS1.setDiscountsubtotal(Utils.normalizeSubtotal(
-											localDefDocItemXS1.getNum() * localDefDocItemXS1.getDiscountprice()));
-									localDefDocItemXS1.setIsgift(localDefDocItemXS1.getPrice() == 0.0D ? true : false);
-									String bigNum = localGoodsUnitDAO.getBigNum(localDefDocItemXS1.getGoodsid(),
-											localDefDocItemXS1.getUnitid(), localDefDocItemXS1.getNum());
-									localDefDocItemXS1.setBignum(bigNum);
-									localDefDocItemXS1.setIsdiscount(localReqStrGetGoodsPrice1.getIsdiscount());
+									itemXS1.setDiscountprice(
+											Utils.normalizePrice(itemXS1.getPrice() * itemXS1.getDiscountratio()));
+									itemXS1.setDiscountsubtotal(
+											Utils.normalizeSubtotal(itemXS1.getNum() * itemXS1.getDiscountprice()));
+									itemXS1.setIsgift(itemXS1.getPrice() == 0.0D ? true : false);
+									String bigNum = localGoodsUnitDAO.getBigNum(itemXS1.getGoodsid(),
+											itemXS1.getUnitid(), itemXS1.getNum());
+									itemXS1.setBignum(bigNum);
+									itemXS1.setIsdiscount(price1.getIsdiscount());
 
 								}
 							}
@@ -404,49 +398,45 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					return;
 				}
 				if (msg.what == 2) {
-					DefDocItemXS localDefDocItemXS2 = (DefDocItemXS) OutDocEditActivity.this.newListItem.get(0);
+					DefDocItemXS itemXS2 = (DefDocItemXS) newListItem.get(0);
 					localList = JSONUtil.str2list(localString1, ReqStrGetGoodsPrice.class);
-					ReqStrGetGoodsPrice localReqStrGetGoodsPrice2 = (ReqStrGetGoodsPrice) localList.get(0);
-					String localString3 = localReqStrGetGoodsPrice2.getWarehouseid();
-					if ((TextUtils.isEmptyS(localString3))
-							&& (localString3.equals(localDefDocItemXS2.getWarehouseid()))) {
-						localDefDocItemXS2.setWarehouseid(localString3);
-						localDefDocItemXS2.setWarehousename(new WarehouseDAO().getWarehouse(localString3).getName());
+					ReqStrGetGoodsPrice goodsPrice2 = (ReqStrGetGoodsPrice) localList.get(0);
+					String localString3 = goodsPrice2.getWarehouseid();
+					if ((TextUtils.isEmptyS(localString3)) && (localString3.equals(itemXS2.getWarehouseid()))) {
+						itemXS2.setWarehouseid(localString3);
+						itemXS2.setWarehousename(new WarehouseDAO().getWarehouse(localString3).getName());
 					}
-					localDefDocItemXS2.setIsdiscount(localReqStrGetGoodsPrice2.getIsdiscount());
-					localDefDocItemXS2.setPrice(Utils.normalizePrice(localReqStrGetGoodsPrice2.getPrice()));
-					localDefDocItemXS2.setSubtotal(
-							Utils.normalizeSubtotal(localDefDocItemXS2.getNum() * localDefDocItemXS2.getPrice()));
-					localDefDocItemXS2.setBatch(localReqStrGetGoodsPrice2.getBatch());
-					localDefDocItemXS2.setProductiondate(localReqStrGetGoodsPrice2.getProductiondate());
+					itemXS2.setIsdiscount(goodsPrice2.getIsdiscount());
+					itemXS2.setPrice(Utils.normalizePrice(goodsPrice2.getPrice()));
+					itemXS2.setSubtotal(Utils.normalizeSubtotal(itemXS2.getNum() * itemXS2.getPrice()));
+					itemXS2.setBatch(goodsPrice2.getBatch());
+					itemXS2.setProductiondate(goodsPrice2.getProductiondate());
 
-					localDefDocItemXS2.setDiscountratio(OutDocEditActivity.this.doc.getDiscountratio());
-					localDefDocItemXS2.setDiscountprice(Utils
-							.normalizePrice(localDefDocItemXS2.getPrice() * localDefDocItemXS2.getDiscountratio()));
-					localDefDocItemXS2.setDiscountsubtotal(Utils
-							.normalizeSubtotal(localDefDocItemXS2.getNum() * localDefDocItemXS2.getDiscountprice()));
-					if (localDefDocItemXS2.isIsdiscount()) {
-						localDefDocItemXS2.setIsdiscount(localReqStrGetGoodsPrice2.getIsdiscount());
+					itemXS2.setDiscountratio(doc.getDiscountratio());
+					itemXS2.setDiscountprice(Utils.normalizePrice(itemXS2.getPrice() * itemXS2.getDiscountratio()));
+					itemXS2.setDiscountsubtotal(Utils.normalizeSubtotal(itemXS2.getNum() * itemXS2.getDiscountprice()));
+					if (itemXS2.isIsdiscount()) {
+						itemXS2.setIsdiscount(goodsPrice2.getIsdiscount());
 					}
-					DefDocItemXS localDefDocItemXS3 = new DefDocItemXS(localDefDocItemXS2);
-					if (localDefDocItemXS2.getPrice() == 0.0D) {
-						localDefDocItemXS2.setIsgift(true);
-						localDefDocItemXS3.setTempitemid(1L + localDefDocItemXS2.getTempitemid());
-						localDefDocItemXS3.setNum(0.0D);
-						localDefDocItemXS3.setSubtotal(0.0D);
-						localDefDocItemXS3.setDiscountratio(1.0D);
-						localDefDocItemXS3.setDiscountprice(0.0D);
-						localDefDocItemXS3.setDiscountsubtotal(0.0D);
+					DefDocItemXS itemXS3 = new DefDocItemXS(itemXS2);
+					if (itemXS2.getPrice() == 0.0D) {
+						itemXS2.setIsgift(true);
+						itemXS3.setTempitemid(1L + itemXS2.getTempitemid());
+						itemXS3.setNum(0.0D);
+						itemXS3.setSubtotal(0.0D);
+						itemXS3.setDiscountratio(1.0D);
+						itemXS3.setDiscountprice(0.0D);
+						itemXS3.setDiscountsubtotal(0.0D);
 					}
-					if (localDefDocItemXS2.isIsusebatch()) {
-						localDefDocItemXS3.setBatch(localReqStrGetGoodsPrice2.getBatch());
-						localDefDocItemXS3.setProductiondate(localReqStrGetGoodsPrice2.getProductiondate());
+					if (itemXS2.isIsusebatch()) {
+						itemXS3.setBatch(goodsPrice2.getBatch());
+						itemXS3.setProductiondate(goodsPrice2.getProductiondate());
 					}
 					// deleBm();
 					Intent localIntent = new Intent();
 					localIntent.putExtra("customerid", doc.getCustomerid());
 					localIntent.putExtra("position", 0);
-					localIntent.putExtra("docitem", localDefDocItemXS2);
+					localIntent.putExtra("docitem", itemXS2);
 					// localIntent.putExtra("positiongive", -1);
 					// localIntent.putExtra("docitemgive", localDefDocItemXS3);
 					startActivityForResult(localIntent.setClass(OutDocEditActivity.this, OutDocAddGoodAct.class), 4);
@@ -459,8 +449,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	};
 	ArrayList<ReqStrGetGoodsPrice> localArrayList;
 	private AdapterView.OnItemClickListener onItemClickListeners = new AdapterView.OnItemClickListener() {
-		@SuppressWarnings("rawtypes")
-		public void onItemClick(AdapterView parent, View view, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			if ((menuPopup != null) && (menuPopup.isShowing())) {
 				menuPopup.dismiss();
 				WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
@@ -474,21 +463,24 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 				public void action() {
 					long l = getMaxTempItemId();
-					DefDocItemXS localDefDocItemXS = fillItem(localGoodsThin, 0.0D, 0.0D, l + 1L);
+					DefDocItemXS docItem = fillItem(localGoodsThin, 0.0D, 0.0D, l + 1L);
+					if (docItem == null) {
+						return;
+					}
 					newListItem = new ArrayList<DefDocItemXS>();
-					newListItem.add(localDefDocItemXS);
+					newListItem.add(docItem);
 					localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
-					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
-					localReqStrGetGoodsPrice.setType(1);
-					localReqStrGetGoodsPrice.setCustomerid(OutDocEditActivity.this.doc.getCustomerid());
-					localReqStrGetGoodsPrice.setWarehouseid(localDefDocItemXS.getWarehouseid());
-					localReqStrGetGoodsPrice.setGoodsid(localDefDocItemXS.getGoodsid());
-					localReqStrGetGoodsPrice.setUnitid(localDefDocItemXS.getUnitid());
-					localReqStrGetGoodsPrice.setPrice(0.0D);
-					localReqStrGetGoodsPrice.setIsdiscount(false);
-					localArrayList.add(localReqStrGetGoodsPrice);
+					ReqStrGetGoodsPrice goodsPrice = new ReqStrGetGoodsPrice();
+					goodsPrice.setType(1);
+					goodsPrice.setCustomerid(doc.getCustomerid());
+					goodsPrice.setWarehouseid(doc.getWarehouseid());
+					goodsPrice.setGoodsid(docItem.getGoodsid());
+					goodsPrice.setUnitid(docItem.getUnitid());
+					goodsPrice.setPrice(0.0D);
+					goodsPrice.setIsdiscount(false);
+					localArrayList.add(goodsPrice);
 					String localString = new ServiceGoods().gds_GetMultiGoodsPrice(localArrayList, true,
-							localDefDocItemXS.isIsusebatch());
+							docItem.isIsusebatch());
 					handlerGet.sendMessage(handlerGet.obtainMessage(2, localString));
 				}
 			});
@@ -504,7 +496,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			@Override
 			public void action() {
 				String localString = new ServiceGoods().gds_GetMultiGoodsPrice(re, true, true);
-				handlerGet.sendMessage(OutDocEditActivity.this.handlerGet.obtainMessage(1, localString));
+				handlerGet.sendMessage(handlerGet.obtainMessage(1, localString));
 			}
 		});
 	}
@@ -512,7 +504,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private void addMoreListener() {
 		if ((menuPopup != null) && (menuPopup.isShowing())) {
 			menuPopup.dismiss();
-			WindowManager.LayoutParams localLayoutParams = OutDocEditActivity.this.getWindow().getAttributes();
+			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
 			localLayoutParams.alpha = 1.0F;
 			OutDocEditActivity.this.getWindow().setAttributes(localLayoutParams);
 		}
@@ -544,14 +536,14 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		DefDocItemXS itemxs = new DefDocItemXS();
 		itemxs.setItemid(0L);
 		itemxs.setTempitemid(paramLong);
-		itemxs.setDocid(this.doc.getDocid());
+		itemxs.setDocid(doc.getDocid());
 		itemxs.setGoodsid(paramGoodsThin.getId());
 		itemxs.setGoodsname(paramGoodsThin.getName());
 		itemxs.setBarcode(paramGoodsThin.getBarcode());
 		itemxs.setSpecification(paramGoodsThin.getSpecification());
 		itemxs.setModel(paramGoodsThin.getModel());
-		itemxs.setWarehouseid(this.doc.getWarehouseid());
-		itemxs.setWarehousename(this.doc.getWarehousename());
+		itemxs.setWarehouseid(doc.getWarehouseid());
+		itemxs.setWarehousename(doc.getWarehousename());
 		GoodsUnit localGoodsUnit = null;
 		if (Utils.DEFAULT_OutDocUNIT == 0) {
 			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(paramGoodsThin.getId());
@@ -594,51 +586,53 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		return itemxs;
 	}
 
-	@SuppressWarnings("unused")
-	private DefDocItemXS fillItem(RespPromotionRule paramRespPromotionRule, double paramDouble, long paramLong) {
-		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
-		DefDocItemXS localDefDocItemXS = new DefDocItemXS();
-		localDefDocItemXS.setItemid(0L);
-		localDefDocItemXS.setTempitemid(paramLong);
-		localDefDocItemXS.setDocid(this.doc.getDocid());
-		localDefDocItemXS.setGoodsid(paramRespPromotionRule.getGoodsid());
-		localDefDocItemXS.setGoodsname(paramRespPromotionRule.getGoodsname());
-		localDefDocItemXS.setBarcode(paramRespPromotionRule.getBarcode());
-		localDefDocItemXS.setSpecification(paramRespPromotionRule.getSpecification());
-		localDefDocItemXS.setModel(paramRespPromotionRule.getModel());
-		localDefDocItemXS.setWarehouseid(this.doc.getWarehouseid());
-		localDefDocItemXS.setWarehousename(this.doc.getWarehousename());
-		localDefDocItemXS.setUnitid(paramRespPromotionRule.getUnitid());
-		localDefDocItemXS.setUnitname(paramRespPromotionRule.getUnitname());
-		localDefDocItemXS.setNum(Utils.normalize(paramDouble, 2));
-		localDefDocItemXS.setBignum(localGoodsUnitDAO.getBigNum(localDefDocItemXS.getGoodsid(),
-				localDefDocItemXS.getUnitid(), localDefDocItemXS.getNum()));
-		localDefDocItemXS.setPrice(Utils.normalizePrice(paramRespPromotionRule.getPrice()));
-		localDefDocItemXS
-				.setSubtotal(Utils.normalizeSubtotal(localDefDocItemXS.getNum() * localDefDocItemXS.getPrice()));
-		localDefDocItemXS.setDiscountratio(1.0D);
-		localDefDocItemXS.setDiscountprice(localDefDocItemXS.getPrice());
-		localDefDocItemXS.setDiscountsubtotal(localDefDocItemXS.getSubtotal());
-		if (localDefDocItemXS.getPrice() == 0.0D) {
-			localDefDocItemXS.setIsgift(true);
-			localDefDocItemXS.setCostprice(0.0D);
-			localDefDocItemXS.setRemark("");
-			localDefDocItemXS.setRversion(0L);
-			localDefDocItemXS.setIsdiscount(false);
-			localDefDocItemXS.setIsexhibition(false);
-			localDefDocItemXS.setIspromotion(true);
-			localDefDocItemXS.setParentitemid(0L);
-			localDefDocItemXS.setPromotiontype(0);
-			localDefDocItemXS.setPromotiontypename("特惠");
-			localDefDocItemXS.setOutorderdocid(0L);
-			localDefDocItemXS.setOutorderdocshowid(null);
-			localDefDocItemXS.setOutorderitemid(0L);
-			localDefDocItemXS.setBatch(paramRespPromotionRule.getBatch());
-			localDefDocItemXS.setProductiondate(paramRespPromotionRule.getProductiondate());
-		}
-
-		return localDefDocItemXS;
-	}
+	// @SuppressWarnings("unused")
+	// private DefDocItemXS fillItem(RespPromotionRule paramRespPromotionRule,
+	// double paramDouble, long paramLong) {
+	// GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
+	// DefDocItemXS localDefDocItemXS = new DefDocItemXS();
+	// localDefDocItemXS.setItemid(0L);
+	// localDefDocItemXS.setTempitemid(paramLong);
+	// localDefDocItemXS.setDocid(this.doc.getDocid());
+	// localDefDocItemXS.setGoodsid(paramRespPromotionRule.getGoodsid());
+	// localDefDocItemXS.setGoodsname(paramRespPromotionRule.getGoodsname());
+	// localDefDocItemXS.setBarcode(paramRespPromotionRule.getBarcode());
+	// localDefDocItemXS.setSpecification(paramRespPromotionRule.getSpecification());
+	// localDefDocItemXS.setModel(paramRespPromotionRule.getModel());
+	// localDefDocItemXS.setWarehouseid(this.doc.getWarehouseid());
+	// localDefDocItemXS.setWarehousename(this.doc.getWarehousename());
+	// localDefDocItemXS.setUnitid(paramRespPromotionRule.getUnitid());
+	// localDefDocItemXS.setUnitname(paramRespPromotionRule.getUnitname());
+	// localDefDocItemXS.setNum(Utils.normalize(paramDouble, 2));
+	// localDefDocItemXS.setBignum(localGoodsUnitDAO.getBigNum(localDefDocItemXS.getGoodsid(),
+	// localDefDocItemXS.getUnitid(), localDefDocItemXS.getNum()));
+	// localDefDocItemXS.setPrice(Utils.normalizePrice(paramRespPromotionRule.getPrice()));
+	// localDefDocItemXS
+	// .setSubtotal(Utils.normalizeSubtotal(localDefDocItemXS.getNum() *
+	// localDefDocItemXS.getPrice()));
+	// localDefDocItemXS.setDiscountratio(1.0D);
+	// localDefDocItemXS.setDiscountprice(localDefDocItemXS.getPrice());
+	// localDefDocItemXS.setDiscountsubtotal(localDefDocItemXS.getSubtotal());
+	// if (localDefDocItemXS.getPrice() == 0.0D) {
+	// localDefDocItemXS.setIsgift(true);
+	// localDefDocItemXS.setCostprice(0.0D);
+	// localDefDocItemXS.setRemark("");
+	// localDefDocItemXS.setRversion(0L);
+	// localDefDocItemXS.setIsdiscount(false);
+	// localDefDocItemXS.setIsexhibition(false);
+	// localDefDocItemXS.setIspromotion(true);
+	// localDefDocItemXS.setParentitemid(0L);
+	// localDefDocItemXS.setPromotiontype(0);
+	// localDefDocItemXS.setPromotiontypename("特惠");
+	// localDefDocItemXS.setOutorderdocid(0L);
+	// localDefDocItemXS.setOutorderdocshowid(null);
+	// localDefDocItemXS.setOutorderitemid(0L);
+	// localDefDocItemXS.setBatch(paramRespPromotionRule.getBatch());
+	// localDefDocItemXS.setProductiondate(paramRespPromotionRule.getProductiondate());
+	// }
+	//
+	// return localDefDocItemXS;
+	// }
 
 	// 过账
 	public void check(final boolean isprint) {
@@ -694,6 +688,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		startActivityForResult(localIntent.setClass(this, OutDocPayAct.class), 8);
 	}
 
+	// TODO 客史
 	public void getCustomerHistory() {
 		if (TextUtils.isEmptyS(this.doc.getCustomerid())) {
 			Intent localIntent = new Intent();
@@ -880,7 +875,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			message = "打印模板不能为空";
 		}
 		for (int k = 0; k < listItem.size(); k++) {
-			DefDocItemXS localDefDocItemXS = (DefDocItemXS) this.listItem.get(k);
+			DefDocItemXS localDefDocItemXS = listItem.get(k);
 			if (localDefDocItemXS.getNum() == 0.0D) {
 				message = "【" + localDefDocItemXS.getGoodsname() + "】数量为0";
 			}
@@ -959,7 +954,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private Handler printDocHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			RespServiceInfor printDoc = printDoc();
-			if (printDoc != null && printDoc.Result) {// 打印单据
+			if (printDoc != null && printDoc.Result) {
+				// 打印单据
 				showSuccess("打印成功!");
 				startActivity(new Intent(OutDocEditActivity.this, SwyMain.class));
 				finish();
@@ -969,6 +965,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		};
 	};
 
+	// 保存打印
 	public void printServiceDoc() {
 		RespServiceInfor printDoc = printDoc();
 		if (printDoc != null && printDoc.Result) {// 打印单据
@@ -1007,7 +1004,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private List<DefDocItemXS> newListItem;
 	private Button bt_sumNumber;
 	private Button bt_totalSum;
-	// private BarcodeManager bm;
 	private Dialog_listCheckBox dialog;
 	private Button btnGoodClass;
 	private double preference;// 优惠

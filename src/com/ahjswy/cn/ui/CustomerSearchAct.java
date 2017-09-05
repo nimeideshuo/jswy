@@ -93,6 +93,7 @@ public class CustomerSearchAct extends BaseActivity implements OnTextChangeListe
 					boolean contains2 = (localString.toLowerCase()).contains(paramString);
 					if (contains && contains2) {
 						list.add(customers.get(k));
+						break;
 					}
 				}
 			}

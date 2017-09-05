@@ -26,7 +26,7 @@ public class DefDocXS implements Serializable {
 	protected String departmentname;
 	// 折扣
 	protected double discountratio;
-	//分配id
+	// 分配id
 	protected String distributionid;
 	protected long docid;
 	// 支付id
@@ -400,9 +400,9 @@ public class DefDocXS implements Serializable {
 	}
 
 	// 仓库 ID
-	public void setWarehouseid(String paramString) {
-		if (TextUtils.isEmptyS(paramString)) {
-			this.warehouseid = paramString;
+	public void setWarehouseid(String warehouseid) {
+		if (TextUtils.isEmptyS(warehouseid)) {
+			this.warehouseid = warehouseid;
 			return;
 		}
 		this.warehouseid = null;

@@ -214,6 +214,10 @@ public class OutDocAddGoodAct extends BaseActivity
 
 						@Override
 						public void run() {
+							if (docitem.getStocknum() == null) {
+								tvStock.setText("?");
+								return;
+							}
 							String stock = docitem.getStocknum().getBigstocknum();
 							if (stock.length() == 0) {
 								stock = "0" + docitem.getUnitname();
@@ -514,7 +518,7 @@ public class OutDocAddGoodAct extends BaseActivity
 		return stocknum;
 	}
 
-	// TODO 选择单位
+	// 选择单位
 	private void unitSelect() {
 		final List<GoodsUnit> localList = new GoodsUnitDAO().queryGoodsUnits(this.docitem.getGoodsid());
 		String[] arrayOfString = new String[localList.size()];

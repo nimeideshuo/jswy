@@ -42,7 +42,6 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 	private EditText etRemarkSummary;
 	private EditText etShowID;
 
-	
 	@Override
 	protected void onCreate(Bundle paramBundle) {
 		super.onCreate(paramBundle);
@@ -59,6 +58,7 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 		btnCustomer = ((Button) findViewById(R.id.btnCustomer));
 		btnStarttime = ((Button) findViewById(R.id.btnStarttime));
 		btnEndtime = ((Button) findViewById(R.id.btnEndtime));
+		Button btnDefaultSetting = (Button) findViewById(R.id.btnDefaultSetting);
 		etRemarkSummary = ((EditText) findViewById(R.id.etRemarkSummary));
 		etShowID = ((EditText) findViewById(R.id.etShowID));
 		checkOnlyShowNoSettleUp = ((CheckBox) findViewById(R.id.checkBox));
@@ -66,6 +66,7 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 		btnDepartment.setOnClickListener(this);
 		btnWarehouse.setOnClickListener(this);
 		btnCustomer.setOnClickListener(this);
+		btnDefaultSetting.setOnClickListener(this);
 		btnStarttime.setOnClickListener(dateClickListener);
 		btnEndtime.setOnClickListener(dateClickListener);
 		btnDoctype.setText(reqstrsearchdoc.getDoctypeName());
@@ -104,6 +105,25 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 			break;
 		case R.id.btnCustomer:
 			startActivityForResult(new Intent().setClass(this, CustomerSearchAct.class), 4);
+			break;
+		case R.id.btnDefaultSetting:
+			condition.setDoctype(null);
+			condition.setDoctypeName("全部");
+			condition.setDepartmentID(null);
+			condition.setDepartmentName("全部");
+			condition.setWarehouseID(null);
+			condition.setWarehouseName("全部");
+			condition.setCustomerID(null);
+			condition.setCustomerName("全部");
+			btnDoctype.setText("全部");
+			btnDoctype.setTag(null);
+			btnDepartment.setText("全部");
+			btnDepartment.setTag(null);
+			btnWarehouse.setText("全部");
+			btnWarehouse.setTag(null);
+			btnCustomer.setText("全部");
+			btnCustomer.setTag(null);
+			showSuccess("恢复默认成功!");
 			break;
 
 		default:

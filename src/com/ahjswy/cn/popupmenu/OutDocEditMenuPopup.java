@@ -74,20 +74,6 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 		btnSave.setOnClickListener(this);
 		ll_SavePrint.setOnClickListener(this);
 		ll_BlueDevicesPrint.setOnClickListener(this);
-		isShowBluetoothPrint(Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow")));
-		boolean bluetoothPrintIsShow = Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow", "false"));
-		if (!bluetoothPrintIsShow) {
-			ll_BlueDevicesPrint.setVisibility(View.GONE);
-		}
-		boolean isposted = activity.doc.isIsposted();
-		if (isposted) {
-			TextView tv_bluePrint = (TextView) root.findViewById(R.id.tv_bluePrint);
-			tv_bluePrint.setText("蓝牙打印");
-			TextView tv_SavePrint = (TextView) root.findViewById(R.id.tv_SavePrint);
-			tv_SavePrint.setText("打印");
-			TextView tv_Pay = (TextView) root.findViewById(R.id.tv_Pay);
-			tv_Pay.setText("收款状态");
-		}
 	}
 
 	private void isShowBluetoothPrint(boolean isShow) {
@@ -144,10 +130,7 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 		}
 	}
 
-	public void show(boolean paramBoolean) {
-		if (paramBoolean) {
-			doc = activity.getDoc();
-		}
+	public void show(boolean isShow) {
 		if ((doc.isIsavailable()) && (doc.isIsposted())) {
 			root.findViewById(R.id.linear_top).setVisibility(View.GONE);
 			btnSave.setVisibility(View.GONE);
@@ -164,5 +147,19 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 		// return;
 		// }
 		// btnPromotion.setVisibility(0);
+		boolean bluetoothPrintIsShow = Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow", "false"));
+		if (!bluetoothPrintIsShow) {
+			ll_BlueDevicesPrint.setVisibility(View.GONE);
+		}
+		if (activity.doc.isIsposted()) {
+			ll_SavePrint.setVisibility(View.GONE);
+			TextView tv_bluePrint = (TextView) root.findViewById(R.id.tv_bluePrint);
+			tv_bluePrint.setText("蓝牙打印");
+			TextView tv_SavePrint = (TextView) root.findViewById(R.id.tv_SavePrint);
+			tv_SavePrint.setText("打印");
+			TextView tv_Pay = (TextView) root.findViewById(R.id.tv_Pay);
+			tv_Pay.setText("收款状态");
+		}
+		isShowBluetoothPrint(Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow")));
 	}
 }

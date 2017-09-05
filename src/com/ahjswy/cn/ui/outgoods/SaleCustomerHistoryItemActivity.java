@@ -12,6 +12,7 @@ import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.MLog;
+import com.ahjswy.cn.utils.TextUtils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -37,6 +38,9 @@ public class SaleCustomerHistoryItemActivity extends BaseActivity {
 	}
 
 	private void initView() {
+		// if (TextUtils.isEmpty(SaleCustomerHistoryActivity.listitem)) {
+		// return;
+		// }
 		this.listView = (ListView) findViewById(R.id.listView);
 		listItem = JSONUtil.str2list(getIntent().getStringExtra("listitem"), DefDocItemXS.class);
 		this.adapter = new SaleCustomerHistoryItemAdapter(this);

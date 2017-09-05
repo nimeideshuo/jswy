@@ -4,16 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.Main_Setting;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.CustomerTypeDAO;
-import com.ahjswy.cn.dao.DBOpenHelper;
 import com.ahjswy.cn.dao.RegionDAO;
 import com.ahjswy.cn.model.Customer;
 import com.ahjswy.cn.model.Customertype;
 import com.ahjswy.cn.model.Region;
 import com.ahjswy.cn.service.ServiceCustomer;
-import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.CustomerTypeSearchAct;
 import com.ahjswy.cn.ui.MAlertDialog;
@@ -22,10 +19,8 @@ import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.UpdateUtils;
-import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -59,8 +54,8 @@ public class NewCustomerAddAct extends BaseActivity implements OnClickListener {
 		getCustomerID();
 	}
 
-	private List mapRegions;
-	private List mapTypes;
+	private List<Region> mapRegions;
+	private List<Customertype> mapTypes;
 	private Region region;
 
 	private void initView() {

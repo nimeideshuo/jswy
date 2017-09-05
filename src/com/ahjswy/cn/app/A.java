@@ -15,6 +15,6 @@ public final class A {
 	public static final String SUCCESS = "success";
 
 	public static boolean isFail(String paramString) {
-		return (("success".equals(paramString)) || ("permit".equals(paramString)) || (JSONUtil.isJson(paramString)));
+		return ((SUCCESS.equals(paramString)) || (PERMIT.equals(paramString)) || (JSONUtil.isJson(paramString)));
 	}
 }

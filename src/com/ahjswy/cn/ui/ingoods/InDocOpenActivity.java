@@ -1,7 +1,11 @@
 package com.ahjswy.cn.ui.ingoods;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
@@ -23,8 +27,10 @@ import com.ahjswy.cn.utils.DateTimePickDialogUtil.Time_callback;
 import com.ahjswy.cn.utils.GetTime;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
+import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +42,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 /**
@@ -67,6 +74,8 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 	private CheckBox cbDistribution;
 	// 配送地址
 	private EditText etCustomerAddress;
+	private Button btnOpenDate;
+	private Button btnOverDate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +92,13 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 		etDiscountRatio = (EditText) findViewById(R.id.etDiscountRatio);
 		btnDeliveryTime = (Button) findViewById(R.id.btnDeliveryTime);
 		btnSettleTime = (Button) findViewById(R.id.btnSettleTime);
+		btnOpenDate = (Button) findViewById(R.id.btnOpenDate);
+		btnOverDate = (Button) findViewById(R.id.btnOverDate);
 		cbDistribution = (CheckBox) findViewById(R.id.cbDistribution);
 		etCustomerAddress = (EditText) findViewById(R.id.etCustomerAddress);
 		etSummary = (EditText) findViewById(R.id.etSummary);
 		etRemark = (EditText) findViewById(R.id.etRemark);
+		calendar = Calendar.getInstance();
 	}
 
 	private void initDate() {
@@ -138,11 +150,11 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 			this.cbDistribution.setChecked(false);
 		}
 		if (this.isReadOnly) {
-			this.btnDepartment.setBackgroundDrawable(this.etSummary.getBackground());
-			this.btnWarehouse.setBackgroundDrawable(this.etSummary.getBackground());
-			this.btnCustomer.setBackgroundDrawable(this.etSummary.getBackground());
-			this.btnDeliveryTime.setBackgroundDrawable(this.etSummary.getBackground());
-			this.btnSettleTime.setBackgroundDrawable(this.etSummary.getBackground());
+			this.btnDepartment.setBackground(this.etSummary.getBackground());
+			this.btnWarehouse.setBackground(this.etSummary.getBackground());
+			this.btnCustomer.setBackground(this.etSummary.getBackground());
+			this.btnDeliveryTime.setBackground(this.etSummary.getBackground());
+			this.btnSettleTime.setBackground(this.etSummary.getBackground());
 			this.btnDepartment.setPadding(Utils.dp2px(this, 10), 0, 0, 0);
 			this.btnWarehouse.setPadding(Utils.dp2px(this, 10), 0, 0, 0);
 			this.btnCustomer.setPadding(Utils.dp2px(this, 10), 0, 0, 0);
@@ -177,6 +189,8 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 			this.btnDeliveryTime.setOnClickListener(this);
 			this.btnSettleTime.setOnClickListener(this);
 			etCustomerAddress.setOnClickListener(this);
+			btnOpenDate.setOnClickListener(dateClickListener);
+			btnOverDate.setOnClickListener(dateClickListener);
 		}
 	}
 
@@ -206,6 +220,34 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 		}
 		return true;
 	}
+
+	View.OnClickListener dateClickListener = new View.OnClickListener() {
+		private DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+			@Override
+			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+				calendar.set(1, year);
+				calendar.set(2, monthOfYear);
+				calendar.set(5, dayOfMonth);
+				SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+				btn.setText(localSimpleDateFormat.format(calendar.getTime()));
+				btn.setTag(localSimpleDateFormat.format(calendar.getTime()));
+			}
+		};
+		private Button btn;
+
+		@Override
+		public void onClick(View v) {
+			btn = (Button) v;
+			try {
+				calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).parse((String) btn.getText()));
+				new DatePickerDialog(InDocOpenActivity.this, listener, calendar.get(1), calendar.get(2),
+						calendar.get(5)).show();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+		}
+	};
 
 	long mHits[] = new long[2];
 
@@ -333,6 +375,7 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 			}
 		};
 	};
+	private Calendar calendar;
 
 	private void fillDoc() {
 		// 部门save
@@ -361,6 +404,12 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 		if (btnSettleTime.getText().toString().length() > 0) {
 			this.doc.setSettletime(this.btnSettleTime.getTag().toString());
 		}
+		if (!TextUtils.isEmpty(btnOpenDate.getText().toString())) {
+			doc.setOpendate(btnOpenDate.getText().toString());
+		}
+		if (!TextUtils.isEmpty(btnOverDate.getText().toString())) {
+			doc.setOverdate(btnOverDate.getText().toString());
+		}
 		// 备注
 		this.doc.setRemark(this.etRemark.getText().toString());
 		// 摘要
@@ -369,6 +418,7 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 		this.doc.setIsdistribution(this.cbDistribution.isChecked());
 		// 配送地址
 		this.doc.setCustomeraddress(this.etCustomerAddress.getText().toString());
+
 	}
 
 	@Override

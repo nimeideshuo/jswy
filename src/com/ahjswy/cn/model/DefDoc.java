@@ -36,6 +36,24 @@ public class DefDoc implements Serializable {
 	protected String summary;
 	protected String warehouseid;
 	protected String warehousename;
+	public String opendate;
+	public String overdate;
+
+	public String getOpendate() {
+		return opendate;
+	}
+
+	public void setOpendate(String opendate) {
+		this.opendate = opendate;
+	}
+
+	public String getOverdate() {
+		return overdate;
+	}
+
+	public void setOverdate(String overdate) {
+		this.overdate = overdate;
+	}
 
 	public String getBuilderid() {
 		return this.builderid;

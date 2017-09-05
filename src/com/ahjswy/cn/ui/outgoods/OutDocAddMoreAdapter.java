@@ -11,6 +11,7 @@ import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.PDH;
+import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
 import android.app.Activity;
@@ -21,6 +22,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -70,13 +72,16 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		this.doc = doc;
 	}
 
+	int selectPosition = 0;
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		convertView = LayoutInflater.from(context).inflate(R.layout.act_out_doc_add_moreadapter_item, null);
 		// 商品 name
 		TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
 		// 二维码
 		TextView tvBarcode = (TextView) convertView.findViewById(R.id.tvBarcode);
+		TextView tv_specification = (TextView) convertView.findViewById(R.id.tv_specification);
 		// 数量
 		final EditText etNum = (EditText) convertView.findViewById(R.id.etNum);
 		// 单位
@@ -108,7 +113,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 						// 设置当前库存
 						String stocknum = DocUtils.Stocknum(itemXS.getStocknum(), goodsUnit);
 						itemXS.goodStock = stocknum;
-						tv_Bfci.setText(stocknum);
+						tv_Bfci.setText("库存:" + stocknum);
 						PDH.show(context, new PDH.ProgressCallBack() {
 
 							@Override
@@ -135,26 +140,27 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 			}
 		});
 		tvName.setText(itemXS.getGoodsname());
+		tv_specification.setText("规格:" + itemXS.getSpecification());
 		tvBarcode.setText(itemXS.getBarcode());
 		btnUnit.setText(itemXS.getUnitname());
 		tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
-		tv_Bfci.setText(itemXS.goodStock);
+		tv_Bfci.setText("库存:" + itemXS.goodStock);
 		if (listItems.get(position).getNum() == 0.0d) {
 			etNum.setText("");
 		} else {
 			String num = Utils.removeZero(itemXS.getNum() + "");
 			etNum.setText(num);
 		}
-		// if (selectPosition == position) {
-		// etNum.requestFocus();
-		// }
-		// etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
-		//
-		// @Override
-		// public void onFocusChange(View v, boolean hasFocus) {
-		// selectPosition = position;
-		// }
-		// });
+		if (selectPosition == position) {
+			etNum.requestFocus();
+		}
+		etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				selectPosition = position;
+			}
+		});
 		etNum.setTag(Integer.valueOf(position));
 		btnUnit.setTag(Integer.valueOf(position));
 		etNum.setFocusable(true);
@@ -173,7 +179,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 			@Override
 			public void afterTextChanged(Editable s) {
 				int i = ((Integer) etNum.getTag()).intValue();
-				if (s.toString().length() > 0) {
+				if (!TextUtils.isEmpty(s.toString())) {
 					if (Double.parseDouble(s.toString()) > 0.0D) {
 						(listItems.get(i)).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
 					}

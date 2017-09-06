@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="20.0dip"
@@ -32,9 +33,11 @@
             android:gravity="center"
             android:padding="10.0dip"
             android:text="获取消息"
-            android:textColor="@color/heise" />
+            android:textColor="@color/heise"
+            android:textSize="16sp" />
 
         <LinearLayout
+            android:id="@+id/ll_Bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >

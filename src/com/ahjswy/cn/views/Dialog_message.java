@@ -4,9 +4,10 @@ import com.ahjswy.cn.R;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class Dialog_message extends Dialog {
@@ -17,6 +18,8 @@ public class Dialog_message extends Dialog {
 	private TextView tv_title_message;
 	private Button btn_dialg_money_true;
 	private Button btn_dialg_money_back;
+	private LinearLayout ll_Bottom;
+	private LinearLayout root;
 
 	public Dialog_message(Context context) {
 		super(context, R.style.MyDialog_NoTitle);
@@ -25,26 +28,12 @@ public class Dialog_message extends Dialog {
 		initView();
 	}
 
-	// /*
-	// * 自定义主题 走次方法
-	// */
-	// public Dialog_message_true_false(Context context) {
-	// super(context, R.style.MyDialog_NoTitle);
-	// this.context = context;
-	// }
-
-	// @Override
-	// protected void onCreate(Bundle savedInstanceState) {
-	// super.onCreate(savedInstanceState);
-	// setContentView(R.layout.dialog_pay_money);
-	// initView();
-	//
-	// }
-
 	private void initView() {
 		tv_message = (TextView) findViewById(R.id.tv_message);
 		btn_dialg_money_true = (Button) findViewById(R.id.btn_dialg_money_true);
 		btn_dialg_money_back = (Button) findViewById(R.id.btn_dialg_money_back);
+		ll_Bottom = (LinearLayout) findViewById(R.id.ll_Bottom);
+		root = (LinearLayout) findViewById(R.id.root);
 		tv_title_message = (TextView) findViewById(R.id.tv_title_message);
 		// 设置监听
 		btn_dialg_money_back.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +55,9 @@ public class Dialog_message extends Dialog {
 		tv_message.setText(text);
 	}
 
+	public void setMessageView(View v) {
+	}
+
 	// 设置 dialog true
 	public void setTextTrue(String text) {
 		btn_dialg_money_true.setText(text);
@@ -74,6 +66,18 @@ public class Dialog_message extends Dialog {
 	// 设置 dialog false
 	public void setTextFalse(String text) {
 		btn_dialg_money_back.setText(text);
+	}
+
+	public void setVisibilityBottom(int visibility) {
+		ll_Bottom.setVisibility(visibility);
+	}
+
+	public void setGravity(int gravity) {
+		getWindow().setGravity(gravity);
+	}
+
+	public void setRootPadding(int left, int top, int right, int bottom) {
+		root.setPadding(left, top, right, bottom);
 	}
 
 	/**

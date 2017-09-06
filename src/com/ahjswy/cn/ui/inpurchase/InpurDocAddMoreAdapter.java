@@ -94,6 +94,7 @@ public class InpurDocAddMoreAdapter extends BaseAdapter {
 		// 本次库存
 		final TextView tv_Bfci = (TextView) convertView.findViewById(R.id.tv_Bfci);
 		TextView tv_dicPrice = (TextView) convertView.findViewById(R.id.tv_dicPrice);
+		TextView tv_specification = (TextView) convertView.findViewById(R.id.tv_specification);
 		DefDocItemCG docItemCG = listItems.get(position);
 		// 显示上次 采购
 		btnUnit.setOnClickListener(new OnClickListener() {
@@ -129,6 +130,7 @@ public class InpurDocAddMoreAdapter extends BaseAdapter {
 		tvName.setText(docItemCG.getGoodsname());
 		tvBarcode.setText(docItemCG.getBarcode());
 		btnUnit.setText(docItemCG.getUnitname());
+		tv_specification.setText("规格:" + docItemCG.getSpecification());
 		tv_dicPrice.setText("单价: " + docItemCG.getPrice() + " 元");
 		if (docItemCG.getNum() != 0.0d) {
 			String num = Utils.removeZero(listItems.get(position).getNum() + "");

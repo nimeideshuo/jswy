@@ -19,6 +19,7 @@ import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
+import com.ahjswy.cn.views.Dialog_message;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,6 +30,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,6 +71,7 @@ public class GoodDetailAct extends BaseActivity {
 		this.tvModel = (TextView) findViewById(R.id.tvModel);
 		this.tvStockNum = (TextView) findViewById(R.id.tvStockNum);
 		this.tvSaleCue = (TextView) findViewById(R.id.tvSaleCue);
+		dialogPrices = new Dialog_message(this);
 	}
 
 	private void initData() {
@@ -102,6 +105,15 @@ public class GoodDetailAct extends BaseActivity {
 			this.imageView.setVisibility(View.GONE);
 			this.pagerAdapter = new MyPagerAdapter(this, this.goodsImages);
 			this.viewPager.setAdapter(this.pagerAdapter);
+		}
+		boolean isShowPrice = getIntent().getBooleanExtra("showPrice", false);
+		if (isShowPrice) {
+			PDH.show(this, new ProgressCallBack() {
+				public void action() {
+					handlerPrice.sendMessage(
+							handlerPrice.obtainMessage(1, new ServiceSupport().sup_QueryGoodsPrice(goods.getId())));
+				}
+			});
 		}
 	}
 
@@ -140,6 +152,9 @@ public class GoodDetailAct extends BaseActivity {
 	private Handler handlerPrice = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			String message = (String) msg.obj;
+			if (dialogPrices.isShowing()) {
+				dialogPrices.dismiss();
+			}
 			if (RequestHelper.isSuccess(message)) {
 				List<RespGoodsPriceEntity> listGoodPrice = JSONUtil.str2list(message, RespGoodsPriceEntity.class);
 				if (listGoodPrice.size() > 0) {
@@ -149,14 +164,23 @@ public class GoodDetailAct extends BaseActivity {
 						dialogMessage = dialogMessage + rp.getPricesystemname() + "：" + rp.getPrice() + "元/"
 								+ rp.getUnitname() + "\n";
 					}
-					TextView tv = new TextView(GoodDetailAct.this);
-					tv.setTextSize(16f);
-					tv.setPadding(50, 0, 0, 0);
-					AlertDialog.Builder dialogPrice = new AlertDialog.Builder(GoodDetailAct.this);
-					dialogPrice.setView(tv);
-					dialogPrice.setTitle(goods.getName());
-					tv.setText(dialogMessage);
-					dialogPrice.create().show();
+					// TextView tv = new TextView(GoodDetailAct.this);
+					// tv.setTextSize(16f);
+					// tv.setPadding(50, 0, 0, 0);
+					// dialogPrice
+					// AlertDialog.Builder dialogPrice = new
+					// AlertDialog.Builder(GoodDetailAct.this);
+					// dialogPrice.setView(tv);
+					// dialogPrice.setTitle(goods.getName());
+					// tv.setText(dialogMessage);
+					// AlertDialog create = dialogPrice.create();
+					// create.show();
+					dialogPrices.setRootPadding(10, 50, 10, 0);
+					dialogPrices.setVisibilityBottom(View.GONE);
+					dialogPrices.setGravity(Gravity.TOP);
+					dialogPrices.show();
+					dialogPrices.setTitle(goods.getName());
+					dialogPrices.setMessage(dialogMessage);
 				} else {
 					PDH.showMessage("无价格信息");
 				}
@@ -201,6 +225,7 @@ public class GoodDetailAct extends BaseActivity {
 			}
 		};
 	};
+	private Dialog_message dialogPrices;
 
 	class MyPagerAdapter extends PagerAdapter {
 		public Context context;

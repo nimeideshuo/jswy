@@ -61,7 +61,7 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarco
 	private Dialog_listCheckBox dialog;
 
 	protected void readBarcode(String barcode) {
-		if (items.size() >= 20) {
+		if (items.size() >= 50) {
 			showError("已经够多了请确认下!");
 			return;
 		}

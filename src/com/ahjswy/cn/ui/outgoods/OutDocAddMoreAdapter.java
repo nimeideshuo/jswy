@@ -140,7 +140,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 			}
 		});
 		tvName.setText(itemXS.getGoodsname());
-		tv_specification.setText("规格:" + itemXS.getSpecification());
+		tv_specification.setText(itemXS.getSpecification() == null ? "" : "规格:" + itemXS.getSpecification());
 		tvBarcode.setText(itemXS.getBarcode());
 		btnUnit.setText(itemXS.getUnitname());
 		tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");

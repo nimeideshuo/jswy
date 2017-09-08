@@ -2,7 +2,7 @@ package com.ahjswy.cn.model;
 
 import java.io.Serializable;
 
-public class DefDocPayType implements Serializable {
+public class DefDocPayType implements Serializable, Comparable<DefDocPayType> {
 	private static final long serialVersionUID = 1L;
 	private double amount;
 	private long docid;
@@ -65,5 +65,10 @@ public class DefDocPayType implements Serializable {
 		return "DefDocPayType [amount=" + amount + ", docid=" + docid + ", itemid=" + itemid + ", paytypeid="
 				+ paytypeid + ", paytypename=" + paytypename + ", rversion=" + rversion + "]";
 	}
-	
+
+	@Override
+	public int compareTo(DefDocPayType another) {
+		return -1;
+	}
+
 }

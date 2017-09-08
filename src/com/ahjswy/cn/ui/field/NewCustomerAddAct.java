@@ -71,8 +71,6 @@ public class NewCustomerAddAct extends BaseActivity implements OnClickListener {
 		this.etCusBankAccount = ((EditText) findViewById(R.id.etCusBankAccount));
 		this.etAddress = ((EditText) findViewById(R.id.etAddress));
 		this.actvCusBank = ((AutoCompleteTextView) findViewById(R.id.actvCusBank));
-		// this.actvCusBank.setAdapter(new ArrayAdapter(this, R,
-		// getResources().getStringArray(2131099650)));
 		this.actvCusBank.setThreshold(1);
 		this.mapTypes = new CustomerTypeDAO().queryAllcuCustomertypes();
 		if ((this.mapTypes == null) || (this.mapTypes.size() == 0)) {
@@ -150,11 +148,11 @@ public class NewCustomerAddAct extends BaseActivity implements OnClickListener {
 		return localCustomer;
 	}
 
-	private void saveCustomer(final boolean paramBoolean1, final boolean paramBoolean2) {
+	private void saveCustomer(final boolean isignorsamename, final boolean isignorsametel) {
 		PDH.show(this, "正在提交，请稍候...", new PDH.ProgressCallBack() {
 			public void action() {
-				String localString = new ServiceCustomer().cu_AddCustomerForSale(NewCustomerAddAct.this.customer,
-						paramBoolean1, paramBoolean2);
+				String localString = new ServiceCustomer().cu_AddCustomerForSale(customer, isignorsamename,
+						isignorsametel);
 				handler.sendMessage(handler.obtainMessage(0, localString));
 			}
 		});

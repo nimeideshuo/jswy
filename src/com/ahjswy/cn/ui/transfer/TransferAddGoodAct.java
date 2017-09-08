@@ -50,6 +50,12 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_transfer_add_goods);
+		initView();
+		initData();
+
+	}
+
+	private void initView() {
 		this.tvBarcode = ((TextView) findViewById(R.id.tvBarcode));
 		this.tvSpecification = ((TextView) findViewById(R.id.tvSpecification));
 		this.btnWarehouse = ((Button) findViewById(R.id.btnWarehouse));
@@ -61,6 +67,9 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 		this.btnUnit.setOnClickListener(this);
 		this.btnBatch.setOnClickListener(this);
 		this.btnWarehouse.setOnClickListener(this);
+	}
+
+	private void initData() {
 		position = getIntent().getIntExtra("position", 0);
 		this.docitem = ((DefDocItem) getIntent().getSerializableExtra("docitem"));
 		if ((this.docitem != null) && (this.docitem.isIsusebatch())) {
@@ -171,15 +180,15 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 						@Override
 						public void action() {
 							ArrayList<ReqStrGetGoodsPrice> localObject = new ArrayList<ReqStrGetGoodsPrice>();
-							ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
-							localReqStrGetGoodsPrice.setType(0);
-							localReqStrGetGoodsPrice.setCustomerid(null);
-							localReqStrGetGoodsPrice.setWarehouseid(btnWarehouse.getTag().toString());
-							localReqStrGetGoodsPrice.setGoodsid(TransferAddGoodAct.this.docitem.getGoodsid());
-							localReqStrGetGoodsPrice.setUnitid(TransferAddGoodAct.this.goodsUnit.getUnitid());
-							localReqStrGetGoodsPrice.setPrice(0.0D);
-							localReqStrGetGoodsPrice.setIsdiscount(false);
-							localObject.add(localReqStrGetGoodsPrice);
+							ReqStrGetGoodsPrice reqPrice = new ReqStrGetGoodsPrice();
+							reqPrice.setType(0);
+							reqPrice.setCustomerid(null);
+							reqPrice.setWarehouseid(btnWarehouse.getTag().toString());
+							reqPrice.setGoodsid(TransferAddGoodAct.this.docitem.getGoodsid());
+							reqPrice.setUnitid(TransferAddGoodAct.this.goodsUnit.getUnitid());
+							reqPrice.setPrice(0.0D);
+							reqPrice.setIsdiscount(false);
+							localObject.add(reqPrice);
 							String goodsPrice = new ServiceGoods().gds_GetMultiGoodsPrice(localObject, false,
 									docitem.isIsusebatch());
 							handlerGet.sendMessage(handlerGet.obtainMessage(0, goodsPrice));

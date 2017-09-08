@@ -83,7 +83,6 @@ public class InpurDocAddMoreAdapter extends BaseAdapter {
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		convertView = LayoutInflater.from(context).inflate(R.layout.act_out_doc_add_moreadapter_item, null);
 		// 商品 name
-		// TODO
 		TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
 		// 二维码
 		TextView tvBarcode = (TextView) convertView.findViewById(R.id.tvBarcode);
@@ -120,7 +119,7 @@ public class InpurDocAddMoreAdapter extends BaseAdapter {
 						docItem.setUnitname(goodsUnit.getUnitname());
 						String stockUnit = DocUtils.setItemStockUnit(docItem.stock, goodsUnit);
 						docItem.bigstocknumber = stockUnit;
-						tv_Bfci.setText(stockUnit);
+						tv_Bfci.setText("库存:" + stockUnit);
 					}
 				});
 				localBuilder.create().show();
@@ -130,7 +129,7 @@ public class InpurDocAddMoreAdapter extends BaseAdapter {
 		tvName.setText(docItemCG.getGoodsname());
 		tvBarcode.setText(docItemCG.getBarcode());
 		btnUnit.setText(docItemCG.getUnitname());
-		tv_specification.setText("规格:" + docItemCG.getSpecification());
+		tv_specification.setText(docItemCG.getSpecification() == null ? "" : "规格:" + docItemCG.getSpecification());
 		tv_dicPrice.setText("单价: " + docItemCG.getPrice() + " 元");
 		if (docItemCG.getNum() != 0.0d) {
 			String num = Utils.removeZero(listItems.get(position).getNum() + "");
@@ -147,7 +146,7 @@ public class InpurDocAddMoreAdapter extends BaseAdapter {
 			}
 		});
 
-		tv_Bfci.setText(docItemCG.bigstocknumber);
+		tv_Bfci.setText("库存:" + docItemCG.bigstocknumber);
 		etNum.setTag(Integer.valueOf(position));
 		btnUnit.setTag(Integer.valueOf(position));
 
@@ -178,7 +177,6 @@ public class InpurDocAddMoreAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	// TODO
 	public class Item {
 		TextView tvName;
 		TextView tvBarcode;

@@ -11,11 +11,12 @@ import com.ahjswy.cn.utils.Utils_help;
 public class ServiceCustomer {
 	private String baseAddress = "customer";
 	LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-	public String cu_AddCustomerForSale(Customer paramCustomer, boolean paramBoolean1, boolean paramBoolean2) {
+
+	public String cu_AddCustomerForSale(Customer paramCustomer, boolean isignorsamename, boolean isignorsametel) {
 		String url = Service.getServiceAddress(this.baseAddress, "addcustomerforsale");
 		map.put("parameter", JSONUtil.object2Json(paramCustomer));
-		map.put("isignorsamename", paramBoolean1 + "");
-		map.put("isignorsametel", paramBoolean2 + "");
+		map.put("isignorsamename", isignorsamename + "");
+		map.put("isignorsametel", isignorsametel + "");
 		return new Utils_help().getServiceInfor(url, map);
 	}
 

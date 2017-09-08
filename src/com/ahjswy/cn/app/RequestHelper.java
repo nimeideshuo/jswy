@@ -21,12 +21,12 @@ public class RequestHelper {
 		return (A.isFail(str));
 	}
 
-	public static void showError(String paramString) {
-		if ("无网络连接".equals(paramString)) {
+	public static void showError(String str) {
+		if ("无网络连接".equals(str)) {
 			PDH.showError("无网络连接");
 			return;
 		}
-		if ("nodog".equals(paramString)) {
+		if ("nodog".equals(str)) {
 			PDH.showError("加密狗不存在，程序即将退出");
 			new Thread() {
 				public void run() {
@@ -41,23 +41,23 @@ public class RequestHelper {
 			}.start();
 			return;
 		}
-		if ("forbid".equals(paramString)) {
+		if ("forbid".equals(str)) {
 			PDH.showFail("你的权限不足!");
 			return;
 		}
-		if ("fail".equals(paramString)) {
+		if ("fail".equals(str)) {
 			PDH.showFail("操作失败");
 			return;
 		}
-		if ("login".equals(paramString)) {
+		if ("login".equals(str)) {
 			PDH.showMessage("请登录");
 			return;
 		}
-		if (paramString.startsWith("<htm")) {
+		if (str.startsWith("<htm")) {
 			PDH.showFail("请求失败, 服务器异常.");
 			return;
 		}
-		PDH.showFail("操作失败，" + paramString);
+		PDH.showFail("操作失败，" + str);
 	}
 
 	// 验证 IP 是否正确

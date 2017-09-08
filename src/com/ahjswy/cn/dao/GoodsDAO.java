@@ -163,7 +163,7 @@ public class GoodsDAO {
 				}
 			}
 		}
-		localString1 = localString1 + ") order by g.id desc";// desc降序asc升序
+		localString1 = localString1 + ") order by g.id asc";// desc降序asc升序
 		try {
 			localCursor = this.db.rawQuery(localString1, arrayOfString2);
 			localArrayList = new ArrayList<GoodsThin>();

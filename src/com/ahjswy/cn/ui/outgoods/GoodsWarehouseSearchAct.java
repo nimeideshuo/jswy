@@ -1,10 +1,7 @@
 package com.ahjswy.cn.ui.outgoods;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
-
-import org.codehaus.jackson.JsonProcessingException;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
@@ -54,10 +51,8 @@ public class GoodsWarehouseSearchAct extends BaseActivity implements AdapterView
 				goodsWarehouses = JSONUtil.str2list(localString, RespGoodsWarehouse.class);
 				if (goodsWarehouses.size() == 0) {
 					PDH.showMessage("无可用发货仓库");
+					return;
 				}
-
-			}
-			if (msg.what != 1) {
 				GoodsWarehouseSearchAdapter adapter = new GoodsWarehouseSearchAdapter(GoodsWarehouseSearchAct.this);
 				adapter.setData(goodsWarehouses);
 				listview.setAdapter(adapter);
@@ -78,18 +73,17 @@ public class GoodsWarehouseSearchAct extends BaseActivity implements AdapterView
 				if (RequestHelper.isSuccess(localString)) {
 					handler.sendMessage(handler.obtainMessage(0, localString));
 					return;
+				} else {
+					RequestHelper.showError(localString);
 				}
-				// 失败走此方法
-				GoodsWarehouseSearchAct.this.handler
-						.sendMessage(GoodsWarehouseSearchAct.this.handler.obtainMessage(1, localString));
 			}
 		});
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> paramAdapterView, View paramView, int paramInt, long paramLong) {
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Intent localIntent = new Intent();
-		localIntent.putExtra("warehouse", (Serializable) this.goodsWarehouses.get(paramInt));
+		localIntent.putExtra("warehouse", goodsWarehouses.get(position));
 		setResult(RESULT_OK, localIntent);
 		finish();
 	}

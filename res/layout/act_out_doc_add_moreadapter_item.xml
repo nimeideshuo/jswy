@@ -44,9 +44,9 @@
         android:id="@+id/tv_specification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/btnUnit"
-        android:layout_below="@+id/btnUnit"
-        android:layout_marginRight="18dp"
+        android:layout_alignBaseline="@+id/tv_Bfci"
+        android:layout_alignBottom="@+id/tv_Bfci"
+        android:layout_alignLeft="@+id/btnUnit"
         android:text="规格:1*12"
         android:textSize="14sp" />
 

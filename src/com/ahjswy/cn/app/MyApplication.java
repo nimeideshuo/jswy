@@ -4,6 +4,7 @@ import com.ahjswy.cn.ui.Swy_splash;
 import com.ahjswy.cn.utils.TextUtils;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.wifi.WifiInfo;
@@ -48,8 +49,7 @@ public class MyApplication extends Application {
 		if ((TextUtils.isEmptyS(SystemCommons.UNIQUE_CODE))) {
 			return SystemCommons.UNIQUE_CODE;
 		}
-
-		String str1 = Settings.Secure.getString(getContentResolver(), "android_id");
+		String str1 = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 		CTelephoneInfo localCTelephoneInfo = CTelephoneInfo.getInstance(this);
 		localCTelephoneInfo.setCTelephoneInfo();
 		String str2 = localCTelephoneInfo.getImeiSIM1();
@@ -74,10 +74,17 @@ public class MyApplication extends Application {
 		return new Bean().put("key", "mmendianban");
 	}
 
+	// Android Id
+	public static String getAndroidId() {
+		String androidId = Settings.Secure.getString(MyApplication.getInstance().getContentResolver(),
+				Settings.Secure.ANDROID_ID);
+		return androidId;
+	}
+
 	// 得到本机Mac地址
 	public String getMac() {
 		// 获取wifi管理器
-		WifiManager wifiMng = (WifiManager) getSystemService(this.WIFI_SERVICE);
+		WifiManager wifiMng = (WifiManager) getSystemService(WIFI_SERVICE);
 		WifiInfo wifiInfor = wifiMng.getConnectionInfo();
 		return wifiInfor.getMacAddress();
 	}

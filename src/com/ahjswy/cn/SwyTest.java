@@ -1,5 +1,7 @@
 package com.ahjswy.cn;
 
+import com.ahjswy.cn.utils.MLog;
+
 import android.test.AndroidTestCase;
 
 public class SwyTest extends AndroidTestCase {

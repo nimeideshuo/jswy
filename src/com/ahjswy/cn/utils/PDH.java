@@ -40,9 +40,7 @@ public class PDH {
 				paCallBack.action();
 				PDH.handler.post(new Runnable() {
 					public void run() {
-						if (!activity.isFinishing()) {
-							localWaitingDialog.dismiss();
-						}
+						localWaitingDialog.dismiss();
 					}
 				});
 			}
@@ -57,9 +55,7 @@ public class PDH {
 				progressCallBack.action();
 				PDH.handler.post(new Runnable() {
 					public void run() {
-						if (!activity.isFinishing()) {
-							localLoadingDialog.dismiss();
-						}
+						localLoadingDialog.dismiss();
 					}
 				});
 			}

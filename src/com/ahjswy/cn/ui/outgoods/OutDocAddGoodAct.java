@@ -18,6 +18,7 @@ import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.GoodsBatchSearchAct;
 import com.ahjswy.cn.ui.GoodsSearchAct;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
@@ -218,11 +219,26 @@ public class OutDocAddGoodAct extends BaseActivity
 								tvStock.setText("?");
 								return;
 							}
-							String stock = docitem.getStocknum().getBigstocknum();
-							if (stock.length() == 0) {
-								stock = "0" + docitem.getUnitname();
-							}
-							tvStock.setText("库存:" + stock);
+
+							GoodsUnit goodsUnit = new GoodsUnitDAO().getGoodsUnit(docitem.getGoodsid(),
+									docitem.getUnitid());
+							String stocknum = DocUtils.Stocknum(docitem.getStocknum(), goodsUnit);
+							tvStock.setText("库存:" + stocknum);
+							// RespGoodsWarehouse stock = docitem.getStocknum();
+							// if (Utils.DEFAULT_OutDocUNIT == 0) {
+							// String stocknum = stock.getStocknum() == 0 ? "0"
+							// + docitem.getUnitname()
+							// : String.valueOf(stock.getStocknum()) +
+							// docitem.getUnitname();
+							// tvStock.setText("库存:" + stocknum);
+							// } else {
+							// String bigstocknum =
+							// stock.getBigstocknum().length() == 0 ? "0" +
+							// docitem.getUnitname()
+							// : stock.getBigstocknum();
+							// tvStock.setText("库存:" + bigstocknum);
+							// }
+
 						}
 					});
 				} else {
@@ -532,6 +548,7 @@ public class OutDocAddGoodAct extends BaseActivity
 				dig.dismiss();
 				goodsUnit = localList.get(position);
 				if (!goodsUnit.getUnitid().equals(btnUnit.getTag())) {
+					// TODO
 					String stock = setItemStock(docitem.getStocknum(), goodsUnit.getUnitname());
 					tvStock.setText("库存:" + stock);
 					PDH.show(OutDocAddGoodAct.this, new PDH.ProgressCallBack() {

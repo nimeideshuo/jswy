@@ -453,20 +453,4 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 		return -1;
 	}
 
-	@Override
-	public String toString() {
-		return "DefDocItemXS [barcode=" + barcode + ", batch=" + batch + ", bignum=" + bignum + ", costprice="
-				+ costprice + ", discountprice=" + discountprice + ", discountratio=" + discountratio
-				+ ", discountsubtotal=" + discountsubtotal + ", docid=" + docid + ", goodsid=" + goodsid
-				+ ", goodsname=" + goodsname + ", isdiscount=" + isdiscount + ", isexhibition=" + isexhibition
-				+ ", isgift=" + isgift + ", ispromotion=" + ispromotion + ", isusebatch=" + isusebatch + ", itemid="
-				+ itemid + ", model=" + model + ", num=" + num + ", outorderdocid=" + outorderdocid
-				+ ", outorderdocshowid=" + outorderdocshowid + ", outorderitemid=" + outorderitemid + ", parentitemid="
-				+ parentitemid + ", price=" + price + ", productiondate=" + productiondate + ", promotiontype="
-				+ promotiontype + ", promotiontypename=" + promotiontypename + ", remark=" + remark + ", rversion="
-				+ rversion + ", specification=" + specification + ", subtotal=" + subtotal + ", tempitemid="
-				+ tempitemid + ", unitid=" + unitid + ", unitname=" + unitname + ", warehouseid=" + warehouseid
-				+ ", warehousename=" + warehousename + "]";
-	}
-
 }

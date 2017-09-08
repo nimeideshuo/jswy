@@ -12,7 +12,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class DocTypeListAct extends BaseActivity implements OnItemClickListener {
-	private String[] doctypes = { "销售单", "销售退货单", "销售换货单" };
+	private String[] doctypes = { "销售单", "销售退货单" };// , "销售换货单"
 	private ListView listView;
 
 	@Override

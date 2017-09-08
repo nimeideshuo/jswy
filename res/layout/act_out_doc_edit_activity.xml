@@ -89,7 +89,6 @@
                 android:layout_weight="1"
                 android:background="@color/bg_menu_button"
                 android:gravity="center"
-                android:text="品种: 0 个"
                 android:textColor="@color/red" />
 
             <Button
@@ -100,7 +99,6 @@
                 android:layout_weight="1"
                 android:background="@color/bg_menu_button"
                 android:gravity="center"
-                android:text="数量 :0个"
                 android:textColor="@color/red" />
 
             <Button
@@ -111,7 +109,6 @@
                 android:layout_weight="1"
                 android:background="@color/bg_menu_button"
                 android:gravity="center"
-                android:text="总额 : 0 元"
                 android:textColor="@color/red" />
         </LinearLayout>
     </RelativeLayout>

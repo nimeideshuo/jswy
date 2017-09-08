@@ -1,6 +1,5 @@
 package com.ahjswy.cn.service;
 
-import java.net.InterfaceAddress;
 import java.util.LinkedHashMap;
 
 import com.ahjswy.cn.request.ReqCommonPara;
@@ -50,7 +49,7 @@ public class ServiceSupport {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 	/**
-	 * 查询商品库存
+	 *  //TODO 查询商品库存
 	 * @param goodsid
 	 * @return
 	 */
@@ -65,7 +64,7 @@ public class ServiceSupport {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 	/**
-	 * 查询商品库存
+	 *  //TODO 查询商品库存
 	 * @param goodsid
 	 * @return
 	 */

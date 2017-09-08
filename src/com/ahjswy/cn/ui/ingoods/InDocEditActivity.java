@@ -93,12 +93,15 @@ public class InDocEditActivity extends BaseActivity
 		intView();
 		intDate();
 		refreshUI();
+		// TODO
+		sum();
 	}
 
 	private void intView() {
 
 		atvSearch = ((AutoTextView) findViewById(R.id.atvSearch));
 		linearSearch = (LinearLayout) findViewById(R.id.linearSearch);
+		btnGoodClass = (Button) findViewById(R.id.btn_goodClass);
 		searchHelper = new SearchHelper(this, linearSearch);
 		atvSearch.setOnItemClickListener(this.onItemClickListeners);
 		// 添加按钮监听
@@ -267,7 +270,6 @@ public class InDocEditActivity extends BaseActivity
 					newListItem = new ArrayList<DefDocItemXS>();
 					newListItem.add(localDefDocItem);
 					if (!TextUtils.isEmpty(doc.getOpendate())) {
-						// TODO 查询 商品 销售均价
 						return;
 					}
 					ArrayList<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
@@ -536,17 +538,26 @@ public class InDocEditActivity extends BaseActivity
 
 	double sum = 0.0D;
 
-	// sum 总价
+	// TODO sum 总价
 	public void sum() {
 		List<DefDocItemXS> data = adapter.getData();
 		listItemDelete = adapter.getListItemDelete();
 		bt_sumNumber.setText("数量:" + data.size() + "个");
-		double totalSum = 0D;
-		for (int i = 0; i < data.size(); i++) {
-			totalSum += data.get(i).getDiscountsubtotal();
+		double sumMoney = 0D;
+		int sumNum = 0;
+		for (DefDocItemXS defDocItemXS : data) {
+			sumMoney += defDocItemXS.getDiscountsubtotal();
+			sumNum += defDocItemXS.getNum();
 		}
-		sum = Utils.normalizePrice(totalSum);
+		// for (int i = 0; i < data.size(); i++) {
+		// sumMoney += data.get(i).getDiscountsubtotal();
+		// }
+		sum = Utils.normalizePrice(sumMoney);
 		bt_totalSum.setText("总价:" + sum + "元");
+
+		btnGoodClass.setText("品种:" + listItem.size());
+		bt_sumNumber.setText("数量:" + sumNum);
+		bt_totalSum.setText("总价:\n" + Utils.normalizePrice(sumMoney) + "元");
 
 	}
 
@@ -792,6 +803,7 @@ public class InDocEditActivity extends BaseActivity
 				this.adapter.setData(this.listItem);
 				listView.setAdapter(adapter);
 				this.refreshUI();
+				sum();
 				break;
 			case 8:
 				// 支付
@@ -895,6 +907,7 @@ public class InDocEditActivity extends BaseActivity
 	// private BarcodeManager bm;
 	private Dialog_listCheckBox dialog;
 	private MAlertDialog maler;
+	private Button btnGoodClass;
 
 	/**
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *

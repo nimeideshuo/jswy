@@ -110,9 +110,7 @@ public class InpurchaseEditActivity extends BaseActivity
 		PurchaseEntity entity = (PurchaseEntity) getIntent().getSerializableExtra("entity");
 		doccg = ((Def_Doc) JSONUtil.readValue(entity.getDocjson(), Def_Doc.class));
 		listPayType = JSONUtil.str2list(entity.getTypelistjson(), DefDocPayType.class);
-		if (mGoodsUnitDAO == null) {
-			mGoodsUnitDAO = new GoodsUnitDAO();
-		}
+		mGoodsUnitDAO = new GoodsUnitDAO();
 		adapter = new InpurDocItemAdapter(this);
 		adapter.setSum(this);
 		dialog = new Dialog_listCheckBox(InpurchaseEditActivity.this);
@@ -186,33 +184,8 @@ public class InpurchaseEditActivity extends BaseActivity
 		listview_copy_dele.setOnItemClickListener(this);
 		listview_copy_dele.setOnTouchListener(this);
 		atvSearch.setOnItemClickListener(onItemClickListeners);
-		// if (bm == null) {
-		// bm = new BarcodeManager(this);
-		// }
-		// // onTouch(null, null);
-		// BarcodeConfig barcodeConfig = new BarcodeConfig(this);
-		// // 设置条码输出模式 不显示模式(复制到粘贴板)
-		// barcodeConfig.setOutputMode(2);
-		//
-		// bm.addListener(bl);
 
 	}
-
-	// private BarcodeListener bl = new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent event) {
-	// // TODO
-	// atvSearch.setText("");
-	// if (dialog != null) {
-	// dialog.dismiss();
-	// }
-	// // 当条码事件的命令为“SCANNER_READ”时，进行操作
-	// if (event.getOrder().equals("SCANNER_READ")) {
-	// readBarcode(bm.getBarcode().toString().trim());
-	// }
-	// }
-	// };
 
 	private void readBarcode(String barcodeStr) {
 
@@ -628,7 +601,7 @@ public class InpurchaseEditActivity extends BaseActivity
 	public void pay() {
 		Intent localIntent = new Intent(this, InpurDocPayAct.class);
 		localIntent.putExtra("discountsubtotal", discountsubtotal);// 折后合计
-		localIntent.putExtra("listpaytype", (Serializable) listPayType);// 支付类型集合
+		localIntent.putExtra("listpaytype", JSONUtil.object2Json(listPayType));// 支付类型集合
 		localIntent.putExtra("preference", doccg.getPreference());// .getPreference()
 		startActivityForResult(localIntent, 5);
 	}

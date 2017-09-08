@@ -68,8 +68,7 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 		this.getWindow().setSoftInputMode(3);
 		this.bounceListView.setOnItemClickListener(this);
 		this.bounceListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-			public void onScroll(AbsListView paramAnonymousAbsListView, int paramAnonymousInt1, int paramAnonymousInt2,
-					int paramAnonymousInt3) {
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 			}
 
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -115,7 +114,7 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 		atvSearch.setOnTextChangeListener(changeListener);
 		Scaner scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		dialogPrice = new AlertDialog.Builder(AllGoodsActivity.this);
+		// dialogPrice = new AlertDialog.Builder(AllGoodsActivity.this);
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
@@ -138,47 +137,7 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 		intent.putExtra("goodsid", goodsThin.getId());
 		intent.putExtra("showPrice", true);
 		startActivity(intent);
-		// TODO
-		// GoodsThin goodsThin = goodsThinList.get(0);
-		// dialogPrice.setTitle(goodsThin.getName());
-		// handlerPrice.sendMessage(
-		// handlerPrice.obtainMessage(1, new
-		// ServiceSupport().sup_QueryGoodsPrice(goodsThin.getId())));
 	}
-
-	// private Handler handlerPrice = new Handler() {
-	// private AlertDialog show;
-	//
-	// public void handleMessage(android.os.Message msg) {
-	// String message = (String) msg.obj;
-	// if (RequestHelper.isSuccess(message)) {
-	// if (show != null) {
-	// show.dismiss();
-	// }
-	// List<RespGoodsPriceEntity> listGoodPrice = JSONUtil.str2list(message,
-	// RespGoodsPriceEntity.class);
-	// if (listGoodPrice.size() > 0) {
-	// String dialogMessage = "\n";
-	// for (int i = 0; i < listGoodPrice.size(); ++i) {
-	// RespGoodsPriceEntity rp = listGoodPrice.get(i);
-	// dialogMessage = dialogMessage + rp.getPricesystemname() + "：" +
-	// rp.getPrice() + "元/"
-	// + rp.getUnitname() + "\n";
-	// }
-	// TextView tv = new TextView(AllGoodsActivity.this);
-	// tv.setText(dialogMessage);
-	// tv.setTextSize(16f);
-	// tv.setPadding(50, 0, 0, 0);
-	// dialogPrice.setView(tv);
-	// show = dialogPrice.show();
-	// } else {
-	// PDH.showMessage("无价格信息");
-	// }
-	// } else {
-	// PDH.showFail(message);
-	// }
-	// };
-	// };
 
 	private void initOverLay() {
 		this.toast = new Toast(this);
@@ -215,7 +174,7 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 			}
 		};
 	};
-	private AlertDialog.Builder dialogPrice;
+	// private AlertDialog.Builder dialogPrice;
 
 	private void refresh() {
 		MLog.d("refresh:" + listGoodsThin.toString());

@@ -32,10 +32,10 @@ public class ServiceGoods {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
-	public String gds_GetGoodsWarehouses(String paramString, boolean paramBoolean) {
+	public String gds_GetGoodsWarehouses(String goodsid, boolean isgetbatch) {
 		String url = Utils.getServiceAddress(this.baseAddress, "getgoodswarehouses");
-		map.put("goodsid", paramString);
-		map.put("isgetbatch", paramBoolean + "");
+		map.put("goodsid", goodsid);
+		map.put("isgetbatch", isgetbatch + "");
 		return new Utils_help().getServiceInfor(url, map);
 	}
 

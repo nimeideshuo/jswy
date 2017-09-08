@@ -16,16 +16,17 @@ import android.widget.TextView;
 
 public class GoodsWarehouseSearchAdapter extends BaseAdapter {
 	private Context context;
-	private boolean isShowStockNum = true;
+	private boolean isShowStockNum = false;
 	private List<RespGoodsWarehouse> items;
 
 	public GoodsWarehouseSearchAdapter(Context context) {
 		this.context = context;
+
 		if (!"1".equals(new AccountPreference().getValue("ViewKCStockBrowse", "0"))) {
-			this.isShowStockNum = false;
-			return;
+			isShowStockNum = false;
+		} else {
+			isShowStockNum = true;
 		}
-		this.isShowStockNum = true;
 	}
 
 	public int getCount() {
@@ -74,18 +75,20 @@ public class GoodsWarehouseSearchAdapter extends BaseAdapter {
 			this.tvStockNum = ((TextView) arg2.findViewById(R.id.tvStockNum));
 		}
 
-		public void setValue(RespGoodsWarehouse paramRespGoodsWarehouse) {
-			this.tvWarehouse.setText(paramRespGoodsWarehouse.getWarehousename());
-			if (isShowStockNum) {
-				this.tvStockNum.setVisibility(8);
-				return;
-			}
-			this.tvStockNum.setVisibility(0);
-			if (!TextUtils.isEmptyS(paramRespGoodsWarehouse.getBigstocknum())) {
+		public void setValue(RespGoodsWarehouse rgWarehouse) {
+			this.tvWarehouse.setText(rgWarehouse.getWarehousename());
+
+			if (!TextUtils.isEmptyS(rgWarehouse.getBigstocknum())) {
 				this.tvStockNum.setText("无库存");
 				return;
 			}
-			this.tvStockNum.setText(paramRespGoodsWarehouse.getBigstocknum());
+			this.tvStockNum.setText(rgWarehouse.getBigstocknum());
+			if (isShowStockNum) {
+				this.tvStockNum.setVisibility(View.VISIBLE);
+			} else {
+				this.tvStockNum.setVisibility(View.GONE);
+			}
+
 		}
 	}
 }

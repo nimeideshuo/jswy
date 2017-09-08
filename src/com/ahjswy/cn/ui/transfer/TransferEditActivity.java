@@ -28,6 +28,7 @@ import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -589,18 +590,20 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 						}
 						item.setBignum(dao.getBigNum(item.getGoodsid(), item.getUnitid(), item.getNum()));
 						item.setBatch(reqPrice.getBatch());
-						item.setProductiondate(reqPrice.getProductiondate());
+						// item.setProductiondate(reqPrice.getProductiondate());
+						item.setProductiondate("");
 						item.setPrice(Utils.normalizePrice(reqPrice.getPrice()));
 						item.setSubtotal(Utils.normalizeSubtotal(item.getNum() * item.getPrice()));
 						if (item.isIsusebatch()) {
 							item.setBatch(reqPrice.getBatch());
 							item.setProductiondate(reqPrice.getProductiondate());
-							item.setWarehouseid(reqPrice.getWarehouseid());
-							if (TextUtils.isEmptyS(reqPrice.getWarehouseid())) {
-								Warehouse warehouse = new WarehouseDAO().getWarehouse(reqPrice.getWarehouseid());
-								if (warehouse != null) {
-									item.setWarehousename(warehouse.getName());
-								}
+
+						}
+						if (TextUtils.isEmptyS(reqPrice.getWarehouseid())) {
+							Warehouse warehouse = new WarehouseDAO().getWarehouse(reqPrice.getWarehouseid());
+							if (warehouse != null) {
+								item.setWarehouseid(reqPrice.getWarehouseid());
+								item.setWarehousename(warehouse.getName());
 							}
 						}
 						item.setIsdiscount(reqPrice.getIsdiscount());
@@ -615,16 +618,20 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 				}
 				if (msg.what == 2) {
 					DefDocItem docItem = newListItem.get(0);
-					ReqStrGetGoodsPrice localObject1 = listPrice.get(0);
-					String localObject2 = localObject1.getWarehouseid();
-					if (localObject2 != null) {
-						docItem.setWarehouseid(localObject2);
+					ReqStrGetGoodsPrice respPrice = listPrice.get(0);
+					if (TextUtils.isEmptyS(respPrice.getWarehouseid())) {
+						Warehouse warehouse = new WarehouseDAO().getWarehouse(respPrice.getWarehouseid());
+						if (warehouse != null) {
+							docItem.setWarehouseid(respPrice.getWarehouseid());
+							docItem.setWarehousename(warehouse.getName());
+						}
 					}
-					docItem.setPrice(Utils.normalizePrice(((ReqStrGetGoodsPrice) localObject1).getPrice()));
+					docItem.setPrice(Utils.normalizePrice(respPrice.getPrice()));
 					docItem.setSubtotal(Utils.normalizeSubtotal(docItem.getNum() * docItem.getPrice()));
-					docItem.setIsdiscount(((ReqStrGetGoodsPrice) localObject1).getIsdiscount());
-					docItem.setBatch(((ReqStrGetGoodsPrice) localObject1).getBatch());
-					docItem.setProductiondate(((ReqStrGetGoodsPrice) localObject1).getProductiondate());
+					docItem.setIsdiscount(respPrice.getIsdiscount());
+					docItem.setBatch(respPrice.getBatch());
+					// docItem.setProductiondate(respPrice.getProductiondate());
+					docItem.setProductiondate("");
 					Intent intent = new Intent(TransferEditActivity.this, TransferAddGoodAct.class);
 					intent.putExtra("docitem", docItem);
 					startActivityForResult(intent, 1);

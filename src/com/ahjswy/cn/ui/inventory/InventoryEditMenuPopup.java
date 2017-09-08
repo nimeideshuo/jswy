@@ -2,6 +2,7 @@ package com.ahjswy.cn.ui.inventory;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.model.DefDocPD;
+import com.ahjswy.cn.utils.MLog;
 
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -44,8 +45,8 @@ public class InventoryEditMenuPopup extends PopupWindow implements OnClickListen
 		this.btnCheck = ((Button) this.root.findViewById(R.id.btnCheck));
 		this.btnCheckPrint = ((LinearLayout) this.root.findViewById(R.id.btnCheckPrint));
 		this.btnDocProperty = ((Button) this.root.findViewById(R.id.btnDocProperty));
-		this.btnSave = ((LinearLayout) this.root.findViewById(R.id.btnDelete));
-		this.btnDelete = ((LinearLayout) this.root.findViewById(R.id.btnSave));
+		this.btnDelete = ((LinearLayout) this.root.findViewById(R.id.btnDelete));
+		this.btnSave = ((LinearLayout) this.root.findViewById(R.id.btnSave));
 		this.btnCheck.setOnClickListener(this);
 		this.btnCheckPrint.setOnClickListener(this);
 		this.btnDocProperty.setOnClickListener(this);
@@ -81,13 +82,13 @@ public class InventoryEditMenuPopup extends PopupWindow implements OnClickListen
 	private void show() {
 		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
 			this.root.findViewById(R.id.linear_top).setVisibility(8);
-			this.btnSave.setVisibility(8);
-			this.btnDelete.setVisibility(8);
+			this.btnSave.setVisibility(View.GONE);
+			this.btnDelete.setVisibility(View.GONE);
 		} else {
 			this.root.findViewById(R.id.linear_top).setVisibility(0);
-			this.btnSave.setVisibility(0);
-			this.btnDelete.setVisibility(0);
+			this.btnSave.setVisibility(View.VISIBLE);
+			this.btnDelete.setVisibility(View.VISIBLE);
 		}
-
+		this.btnDelete.setVisibility(View.GONE);
 	}
 }

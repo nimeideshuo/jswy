@@ -20,6 +20,7 @@ import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
+import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.Dialog_listCheckBox;
 
@@ -87,7 +88,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	}
 
 	protected void readBarcode(String barcode) {
-		if (items.size() >= 20) {
+		if (items.size() >= 50) {
 			showError("已经开的够多了！请确认一下");
 			return;
 		}
@@ -137,10 +138,15 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 							&& defdocitemxs.getWarehouseid().equals(goodsWarehouses.get(j).getWarehouseid())) {
 						RespGoodsWarehouse res = goodsWarehouses.get(j);
 						defdocitemxs.setStocknum(res);
-						String bigstocknum = res.getBigstocknum().length() == 0 ? "0" + defdocitemxs.getUnitname()
-								: res.getBigstocknum();
-						// 库存 的 设置
-						defdocitemxs.goodStock = bigstocknum;
+						if (Utils.DEFAULT_OutDocUNIT == 0) {
+							String stocknum = res.getStocknum() == 0 ? "0" + defdocitemxs.getUnitname()
+									: String.valueOf(res.getStocknum()) + defdocitemxs.getUnitname();
+							defdocitemxs.goodStock = stocknum;
+						} else {
+							String bigstocknum = res.getBigstocknum().length() == 0 ? "0" + defdocitemxs.getUnitname()
+									: res.getBigstocknum();
+							defdocitemxs.goodStock = bigstocknum;
+						}
 						break;
 					}
 
@@ -167,7 +173,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	public boolean onOptionsItemSelected(MenuItem paramMenuItem) {
 		switch (paramMenuItem.getItemId()) {
 		case android.R.id.home:
-			// deleBm();
 			setResult(RESULT_FIRST_USER, new Intent());
 			finish();
 			break;
@@ -177,20 +182,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		}
 		return true;
 	}
-
-	// public void deleBm() {
-	// if (bm != null) {
-	// bm.removeListener(new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent arg0) {
-	//
-	// }
-	// });
-	// bm.dismiss();
-	// bm = null;
-	// }
-	// }
 
 	// 初始化 设置 库存 单位转换
 	protected void setInitItem() {
@@ -206,10 +197,17 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 							&& defdocitemxs.getWarehouseid().equals(goodsWarehouses.get(j).getWarehouseid())) {
 						RespGoodsWarehouse res = goodsWarehouses.get(j);
 						defdocitemxs.setStocknum(res);
-						String bigstocknum = res.getBigstocknum().length() == 0 ? "0" + defdocitemxs.getUnitname()
-								: res.getBigstocknum();
-						// 库存 的 设置
-						defdocitemxs.goodStock = bigstocknum;
+						if (Utils.DEFAULT_OutDocUNIT == 0) {
+							String stocknum = res.getStocknum() == 0 ? "0" + defdocitemxs.getUnitname()
+									: String.valueOf(res.getStocknum()) + defdocitemxs.getUnitname();
+							// 库存 的 设置
+							defdocitemxs.goodStock = stocknum;
+						} else {
+							String bigstocknum = res.getBigstocknum().length() == 0 ? "0" + defdocitemxs.getUnitname()
+									: res.getBigstocknum();
+							// 库存 的 设置
+							defdocitemxs.goodStock = bigstocknum;
+						}
 						break;
 					}
 

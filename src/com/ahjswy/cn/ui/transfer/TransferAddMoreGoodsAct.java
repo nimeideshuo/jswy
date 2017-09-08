@@ -7,6 +7,7 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.model.DefDocItem;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 
 import android.app.Activity;
@@ -22,7 +23,6 @@ public class TransferAddMoreGoodsAct extends BaseActivity {
 	private List<DefDocItem> items;
 	private ListView listView;
 	private TransferAddMoreAdapter adapter;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

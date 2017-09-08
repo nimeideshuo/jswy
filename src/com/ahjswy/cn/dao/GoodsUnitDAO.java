@@ -159,10 +159,10 @@ public class GoodsUnitDAO {
 		return goodsunit;
 	}
 
-	public double getBigUnitRatio(String paramString) {
+	public double getBigUnitRatio(String goodsid) {
 		this.db = this.helper.getReadableDatabase();
 		Cursor localCursor = this.db.rawQuery("select ratio from sz_goodsunit where goodsid=? and isshow='1'",
-				new String[] { paramString });
+				new String[] { goodsid });
 		double d1 = 1.0D;
 		try {
 			if (localCursor.moveToNext()) {
@@ -215,10 +215,10 @@ public class GoodsUnitDAO {
 	}
 
 	// 获取商品 规格 1*多少
-	public double getGoodsUnitRatio(String paramString1, String paramString2) {
+	public double getGoodsUnitRatio(String goodsid, String unitid) {
 		this.db = this.helper.getReadableDatabase();
 		Cursor localCursor = this.db.rawQuery("select ratio from sz_goodsunit where goodsid=? and unitid=?",
-				new String[] { paramString1, paramString2 });
+				new String[] { goodsid, unitid });
 		double d1 = 1.0D;
 		try {
 			if (localCursor.moveToNext()) {
@@ -330,9 +330,9 @@ public class GoodsUnitDAO {
 	}
 
 	// 查询计件单位
-	public GoodsUnit queryBigUnit(String paramString) {
+	public GoodsUnit queryBigUnit(String goodsid) {
 		this.db = this.helper.getReadableDatabase();
-		String[] arrays = { paramString };
+		String[] arrays = { goodsid };
 		GoodsUnit goodsunit = null;
 		Cursor cursor = this.db.rawQuery(
 				"select goodsid,unitid,unitname,isbasic,isshow,ratio from sz_goodsunit where isshow=1 and goodsid =?",

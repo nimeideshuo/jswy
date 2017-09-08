@@ -189,7 +189,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			}
 			startActivity(new Intent(SwyMain.this, InDocOpenActivity.class));
 			break;
-		// 采购入库
+		// 采购单
 		case R.id.lin_Inpurchase:
 			if (SystemState.getWarehouse() == null) {
 				PDH.showMessage("请设置默认仓库");

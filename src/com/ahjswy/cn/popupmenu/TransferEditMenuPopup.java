@@ -10,13 +10,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 public class TransferEditMenuPopup extends PopupWindow implements OnClickListener {
 	private TransferEditActivity activity;
 	private Button btnCheck;
 	private Button btnCheckPrint;
-	private Button btnDelete;
+	private LinearLayout btnDelete;
 	private Button btnDocProperty;
 	private Button btnSave;
 	private DefDocTransfer doc;
@@ -45,7 +46,7 @@ public class TransferEditMenuPopup extends PopupWindow implements OnClickListene
 		btnCheck = (Button) root.findViewById(R.id.btnCheck);
 		btnCheckPrint = (Button) root.findViewById(R.id.btnCheckPrint);
 		btnDocProperty = (Button) root.findViewById(R.id.btnDocProperty);
-		btnDelete = (Button) root.findViewById(R.id.btnDelete);
+		btnDelete = (LinearLayout) root.findViewById(R.id.btnDelete);
 		btnSave = (Button) root.findViewById(R.id.btnSave);
 		btnCheck.setOnClickListener(this);
 		btnCheckPrint.setOnClickListener(this);
@@ -86,12 +87,12 @@ public class TransferEditMenuPopup extends PopupWindow implements OnClickListene
 		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
 			this.root.findViewById(R.id.linear_top).setVisibility(View.GONE);
 			this.btnSave.setVisibility(View.GONE);
-			this.btnDelete.setVisibility(View.GONE);
+			// this.btnDelete.setVisibility(View.GONE);
 		} else {
 			this.root.findViewById(R.id.linear_top).setVisibility(View.VISIBLE);
 			this.btnSave.setVisibility(View.VISIBLE);
-			this.btnDelete.setVisibility(View.VISIBLE);
+			// this.btnDelete.setVisibility(View.VISIBLE);
 		}
-
+		this.btnDelete.setVisibility(View.GONE);
 	}
 }

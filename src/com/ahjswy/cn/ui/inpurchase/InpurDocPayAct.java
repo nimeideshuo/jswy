@@ -1,12 +1,14 @@
 package com.ahjswy.cn.ui.inpurchase;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.model.DefDocPayType;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.inpurchase.InpurPayAdapter.Amount;
+import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.EditTextWithDel;
 import com.ahjswy.cn.views.EditTextWithDel.Clean;
@@ -18,9 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 
 public class InpurDocPayAct extends BaseActivity implements Clean, OnClickListener, OnFocusChangeListener, Amount {
 	// 折后合计
@@ -73,7 +77,9 @@ public class InpurDocPayAct extends BaseActivity implements Clean, OnClickListen
 		discountsubtotal = getIntent().getDoubleExtra("discountsubtotal", 0.0D);
 		// 优惠
 		preference = getIntent().getDoubleExtra("preference", 0.0D);
-		listPayType = (List<DefDocPayType>) getIntent().getExtras().getSerializable("listpaytype");
+		listPayType = JSONUtil.str2list(getIntent().getStringExtra("listpaytype"), DefDocPayType.class);
+		// listPayType = (List<DefDocPayType>)
+		// getIntent().getExtras().getSerializable("listpaytype");
 		// 支付类型集合
 		double d2 = 0.0D;
 		for (int i = 0; i < listPayType.size(); i++) {
@@ -96,6 +102,7 @@ public class InpurDocPayAct extends BaseActivity implements Clean, OnClickListen
 		// 待收
 		this.tvLeft.setText(d4 + "");
 		adapter = new InpurPayAdapter(this);
+		Collections.sort(listPayType);
 		adapter.setData(listPayType);
 		listView.setAdapter(adapter);
 		adapter.setAmount(this);
@@ -103,11 +110,26 @@ public class InpurDocPayAct extends BaseActivity implements Clean, OnClickListen
 		tvReceiveableLabel.setText("优惠后应付：");
 		tvReceivedLabel.setText("已付：");
 		tvLeftLabel.setText("待付：");
+		setHeight(listView, adapter);
 
 	}
 
+	public void setHeight(ListView listView, Adapter adapter) {
+		int height = 0;
+		int count = adapter.getCount();
+		for (int i = 0; i < count; i++) {
+			View temp = adapter.getView(i, null, listView);
+			temp.measure(0, 0);
+			height += temp.getMeasuredHeight();
+		}
+		LayoutParams params = (LayoutParams) listView.getLayoutParams();
+		params.width = LayoutParams.MATCH_PARENT;
+		params.height = height + 20;
+		listView.setLayoutParams(params);
+	}
+
 	private void initListener() {
-//		etPreference.setCleanDrawable(false);
+		// etPreference.setCleanDrawable(false);
 		etPreference.setClean(this);
 		btnSave.setOnClickListener(this);
 	}

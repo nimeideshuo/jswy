@@ -11,7 +11,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -24,9 +23,10 @@ public class GoodsBatchSearchAdapter extends BaseAdapter {
 		this.context = context;
 		if (!"1".equals(new AccountPreference().getValue("ViewKCStockBrowse", "0"))) {
 			this.isShowStockNum = false;
-			return;
+		} else {
+			this.isShowStockNum = true;
 		}
-		this.isShowStockNum = true;
+
 	}
 
 	@Override
@@ -78,19 +78,20 @@ public class GoodsBatchSearchAdapter extends BaseAdapter {
 			this.tvStockNum = ((TextView) view.findViewById(R.id.tvStockNum));
 		}
 
-		public void setValue(RespGoodsBatchEntity paramRespGoodsBatchEntity) {
-			this.tvBatch.setText(paramRespGoodsBatchEntity.getBatch());
+		public void setValue(RespGoodsBatchEntity rgWarehouse) {
+			this.tvBatch.setText(rgWarehouse.getBatch());
 			// 库存是否显示
-			if (isShowStockNum) {
-				this.tvStockNum.setVisibility(8);
-				return;
-			}
-			this.tvStockNum.setVisibility(0);
-			if (TextUtils.isEmpty(paramRespGoodsBatchEntity.getBigstocknum())) {
+			if (TextUtils.isEmpty(rgWarehouse.getBigstocknum())) {
 				this.tvStockNum.setText("无库存");
 				return;
 			}
-			this.tvStockNum.setText(paramRespGoodsBatchEntity.getBigstocknum());
+			this.tvStockNum.setText(rgWarehouse.getBigstocknum());
+			if (isShowStockNum) {
+				this.tvStockNum.setVisibility(View.VISIBLE);
+			} else {
+				this.tvStockNum.setVisibility(View.GONE);
+			}
+
 		}
 	}
 }

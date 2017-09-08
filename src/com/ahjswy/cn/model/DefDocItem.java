@@ -2,6 +2,7 @@ package com.ahjswy.cn.model;
 
 import java.io.Serializable;
 
+import com.ahjswy.cn.response.RespGoodsWarehouse;
 import com.ahjswy.cn.utils.TextUtils;
 
 public class DefDocItem implements Serializable {
@@ -315,6 +316,16 @@ public class DefDocItem implements Serializable {
 
 	public void setWarehousename(String warehousename) {
 		this.warehousename = warehousename;
+	}
+
+	public RespGoodsWarehouse respGoodsWarehouse;
+
+	public void setStocknum(RespGoodsWarehouse respGoodsWarehouse) {
+		this.respGoodsWarehouse = respGoodsWarehouse;
+	}
+
+	public RespGoodsWarehouse getStocknum() {
+		return respGoodsWarehouse;
 	}
 
 }

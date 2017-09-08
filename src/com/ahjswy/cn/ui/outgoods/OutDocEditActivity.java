@@ -37,6 +37,7 @@ import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -92,6 +93,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		intView();
 		intDate();
 		refreshUI();
+		bottomCount();
 	}
 
 	private void intView() {
@@ -688,7 +690,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		startActivityForResult(localIntent.setClass(this, OutDocPayAct.class), 8);
 	}
 
-	// TODO 客史
 	public void getCustomerHistory() {
 		if (TextUtils.isEmptyS(this.doc.getCustomerid())) {
 			Intent localIntent = new Intent();
@@ -987,9 +988,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			sumMoney += itemXS.getDiscountsubtotal();
 			sumNum += itemXS.getNum();
 		}
-		btnGoodClass.setText("品种:" + listItem.size() + "个");
-		bt_sumNumber.setText("数量:" + sumNum + "个");
-		bt_totalSum.setText("总价:" + Utils.normalizePrice(sumMoney) + "元");
+		btnGoodClass.setText("品种:" + listItem.size());
+		bt_sumNumber.setText("数量:" + sumNum);
+		bt_totalSum.setText("总价:\n" + Utils.normalizePrice(sumMoney) + "元");
 	}
 
 	/**
@@ -1098,6 +1099,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				this.adapter.setData(this.listItem);
 				listview_copy_dele.setAdapter(adapter);
 				this.refreshUI();
+				bottomCount();
 				break;
 			case 8:
 				// 收款

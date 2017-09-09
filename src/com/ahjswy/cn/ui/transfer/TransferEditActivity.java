@@ -1,6 +1,5 @@
 package com.ahjswy.cn.ui.transfer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,6 @@ import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -582,10 +580,10 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 						}
 						String warehouseid = reqPrice.getWarehouseid();
 						if ((TextUtils.isEmptyS(warehouseid)) && (!(warehouseid).equals(item.getWarehouseid()))) {
-							item.setWarehouseid(warehouseid);
 							Warehouse warehouse = new WarehouseDAO().getWarehouse(warehouseid);
 							if (warehouse != null) {
 								item.setWarehousename(warehouse.getName());
+								item.setWarehouseid(warehouseid);
 							}
 						}
 						item.setBignum(dao.getBigNum(item.getGoodsid(), item.getUnitid(), item.getNum()));

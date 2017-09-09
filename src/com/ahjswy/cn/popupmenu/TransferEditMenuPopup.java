@@ -19,7 +19,7 @@ public class TransferEditMenuPopup extends PopupWindow implements OnClickListene
 	private Button btnCheckPrint;
 	private LinearLayout btnDelete;
 	private Button btnDocProperty;
-	private Button btnSave;
+	private LinearLayout btnSave;
 	private DefDocTransfer doc;
 	private View root;
 
@@ -47,7 +47,7 @@ public class TransferEditMenuPopup extends PopupWindow implements OnClickListene
 		btnCheckPrint = (Button) root.findViewById(R.id.btnCheckPrint);
 		btnDocProperty = (Button) root.findViewById(R.id.btnDocProperty);
 		btnDelete = (LinearLayout) root.findViewById(R.id.btnDelete);
-		btnSave = (Button) root.findViewById(R.id.btnSave);
+		btnSave = (LinearLayout) root.findViewById(R.id.btnSave);
 		btnCheck.setOnClickListener(this);
 		btnCheckPrint.setOnClickListener(this);
 		btnDocProperty.setOnClickListener(this);

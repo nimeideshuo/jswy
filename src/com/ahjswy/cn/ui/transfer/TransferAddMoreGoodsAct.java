@@ -23,6 +23,7 @@ public class TransferAddMoreGoodsAct extends BaseActivity {
 	private List<DefDocItem> items;
 	private ListView listView;
 	private TransferAddMoreAdapter adapter;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,36 +44,23 @@ public class TransferAddMoreGoodsAct extends BaseActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menu) {
 		if (menu.getItemId() == 1) {
-			PDH.show(this, new PDH.ProgressCallBack() {
-
-				@Override
-				public void action() {
-					ArrayList<DefDocItem> localArrayList = new ArrayList<DefDocItem>();
-					for (int i = 0; i < items.size(); i++) {
-						if (items.get(i).getNum() > 0.0D) {
-							localArrayList.add(items.get(i));
-						}
-					}
-					if (localArrayList.size() == 0) {
-						handler.sendMessage(TransferAddMoreGoodsAct.this.handler.obtainMessage(0, "必需至少有一条商品数量大于0"));
-						return;
-					}
-					Intent localObject = new Intent();
-					localObject.putExtra("items", JSONUtil.object2Json(localArrayList));
-					setResult(Activity.RESULT_OK, localObject);
-					finish();
+			ArrayList<DefDocItem> localArrayList = new ArrayList<DefDocItem>();
+			for (int i = 0; i < items.size(); i++) {
+				if (items.get(i).getNum() > 0.0D) {
+					localArrayList.add(items.get(i));
 				}
-
-			});
+			}
+			if (localArrayList.size() == 0) {
+				showError("必需至少有一条商品数量大于0");
+				return false;
+			}
+			Intent localObject = new Intent();
+			localObject.putExtra("items", JSONUtil.object2Json(localArrayList));
+			setResult(Activity.RESULT_OK, localObject);
+			finish();
 		}
 		return super.onOptionsItemSelected(menu);
 	}
-
-	private Handler handler = new Handler() {
-		public void handleMessage(Message message) {
-			PDH.showMessage(message.obj.toString());
-		}
-	};
 
 	public void setActionBarText() {
 		setTitle("商品添加");

@@ -15,6 +15,7 @@ import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.outgoods.GoodsWarehouseSearchAct;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -132,11 +133,9 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 			this.docitem.setUnitid(null);
 			this.docitem.setUnitname("");
 		}
-
 		this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
 		this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
 				this.docitem.getNum()));
-		this.docitem.setPrice(Utils.normalizePrice(Utils.getDouble(this.etNum.getText().toString()).doubleValue()));
 		this.docitem.setSubtotal(Utils.normalizeSubtotal(this.docitem.getNum() * this.docitem.getPrice()));
 		this.docitem.setRemark(this.etRemark.getText().toString());
 		this.docitem.setBatch(this.btnBatch.getText().toString());

@@ -55,13 +55,13 @@ public class GoodsUnitDAO {
 	public String getBigNum(String goodsid, String unitid, double num) {
 
 		String v2 = null;
-		if ((TextUtils.isEmpty(((CharSequence) goodsid))) || num == 0) {
+		if (TextUtils.isEmpty(goodsid) || TextUtils.isEmpty(goodsid)) {
 			v2 = "";
 		} else {
 			GoodsUnit v4 = this.getBigUnit(goodsid);
 			GoodsUnit v3 = this.getBasicUnit(goodsid);
 			double v0 = num;
-			if (!TextUtils.isEmpty(((CharSequence) unitid))) {
+			if (!TextUtils.isEmpty(unitid)) {
 				v0 *= this.getGoodsUnitRatio(goodsid, unitid);
 			}
 			v2 = "";

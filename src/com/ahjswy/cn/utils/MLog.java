@@ -6,7 +6,8 @@ import android.util.Log;
 
 public class MLog {
 	public static final String TAG = "TEST";
-	public static final String[] devices = { "c7df977a039464db", "f3abcf1effec8b17" };
+	//MX5020
+	public static final String[] devices = { "c7df977a039464db", "f3abcf1effec8b17", "75673d09d9812c80" };
 
 	public MLog() {
 		super();

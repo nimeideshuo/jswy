@@ -513,7 +513,7 @@ public class OutDocAddGoodAct extends BaseActivity
 	};
 	private GoodsUnitDAO dao;
 
-	private String setItemStock(RespGoodsWarehouse res, String arrayOfString) {
+	private String setItemStock(RespGoodsWarehouse res, String unitname) {
 		if (res == null) {
 			return "";
 		}
@@ -529,7 +529,7 @@ public class OutDocAddGoodAct extends BaseActivity
 			stocknum = stocknum + xs + queryBaseUnit.getUnitname();
 		}
 		if (stocknum.length() == 0) {
-			stocknum = "0" + arrayOfString;
+			stocknum = "0" + unitname;
 		}
 		return stocknum;
 	}

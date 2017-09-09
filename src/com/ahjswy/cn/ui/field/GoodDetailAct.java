@@ -105,7 +105,7 @@ public class GoodDetailAct extends BaseActivity {
 		if (this.goodsImages == null || this.goodsImages.size() == 0) {
 			this.imageView.setVisibility(0);
 			ViewGroup.LayoutParams ivParams = this.imageView.getLayoutParams();
-			ivParams.height = Swy_splash.height / 2;
+			ivParams.height = Swy_splash.height / 2 - 40;
 			this.imageView.setLayoutParams(ivParams);
 		} else {
 			this.imageView.setVisibility(View.GONE);
@@ -182,7 +182,7 @@ public class GoodDetailAct extends BaseActivity {
 		// });
 		// }
 
-		return true;
+		return super.onOptionsItemSelected(menu);
 	}
 
 	private Handler handlerPrice = new Handler() {
@@ -272,7 +272,7 @@ public class GoodDetailAct extends BaseActivity {
 					sb.append(warehouse.getWarehousename() + respSpaceStr(warehouse.getWarehousename()) + ":  "
 							+ DocUtils.Stocknum((int) warehouse.getStocknum(), bigUnit)).append("\n\n");
 				}
-				sb.append("库存数量 :  " + DocUtils.Stocknum(stocknum, bigUnit)).append("\n");
+				sb.append("库存数量 :  " + DocUtils.Stocknum(stocknum, bigUnit));
 				tvStockNum.setText(sb.toString());
 			}
 		};

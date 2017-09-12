@@ -66,7 +66,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private LinearLayout linUnit1;
 	private Button btnGoodsClass;
 	private ListView lvPrices;
-	private List<Pricesystem> listPrice;
+	private List<Pricesystem> listAdapterPrice;
 	private ScrollView svRoot;
 	private PriceAdapter priceAdapter;
 	private EditText etName;
@@ -75,7 +75,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private EditText etModel;
 	private EditText etSalecue;
 	private EditText etRemark;
-	Good good;// 商品类
+	private Good good;// 商品类
 	// private EditText etPinYin;
 
 	@Override
@@ -84,7 +84,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		setContentView(R.layout.act_addnewgoodst);
 		initView();
 		initUnit1();
-		Scaner factory = Scaner.factory(this);
+		factory = Scaner.factory(this);
 		factory.setBarcodeListener(this);
 	}
 
@@ -109,6 +109,8 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		btnSubmit.setOnClickListener(this);
 		dao = new PricesystemDAO();
 		listGoodUnit = new ArrayList<GoodsUnit>();
+		listPrice = new ArrayList<Pricesystem>();
+		cbIsusebatch.setClickable(false);
 	}
 
 	private void initUnit1() {
@@ -131,7 +133,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		// cbBaseUnit1.setOnCheckedChangeListener(this);
 		// cbBigUnit1.setOnCheckedChangeListener(this);
 		priceAdapter = new PriceAdapter();
-		listPrice = dao.queryAll();
+		listAdapterPrice = dao.queryAll();
 		lvPrices.setAdapter(priceAdapter);
 		// 请求 ScrollView 不要拦截 滑动事件
 		// listView1.setOnTouchListener(onTouchListener);
@@ -328,29 +330,40 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	};
 	private EditText ratio2;
 	private EditText ratio3;
+	private Scaner factory;
+	private ArrayList<Pricesystem> listPrice;
+	private boolean isAddPrice1;
+	private boolean isAddPrice2;
+	private boolean isAddPrice3;
 
 	private void submit() {
-		// TODO submit()
 		String validateDoc = validateDoc();
 		if (validateDoc != null) {
 			InfoDialog.showError(this, validateDoc);
 			return;
 		}
-		for (Pricesystem price : listPrice) {
-			price.setUnitid(unit1.getUnitid());
-			price.setPricesystemid(price.getPsid());
+		if (!isAddPrice1) {
+			for (Pricesystem price : listAdapterPrice) {
+				price.setUnitid(unit1.getUnitid());
+				price.setPricesystemid(price.getPsid());
+				listPrice.add(price);
+			}
+			isAddPrice1 = true;
 		}
+
 		unit1.setIsbasic(cbBaseUnit1.isChecked());
 		unit1.setIsshow(cbBigUnit1.isChecked());
 		unit1.setRatio(Utils.getDouble(ratio1.getText().toString()));
 		listGoodUnit.add(unit1);
 		if (linUnit2 != null) {
-			List<Pricesystem> queryAll = dao.queryAll();
-			for (Pricesystem pricesystem : queryAll) {
-				pricesystem.setUnitid(unit2.getUnitid());
-				// 本身不需要 系统 那边需要添加
-				pricesystem.setPricesystemid(pricesystem.getPsid());
-				listPrice.add(pricesystem);
+			if (!isAddPrice2) {
+				for (Pricesystem pricesystem : dao.queryAll()) {
+					pricesystem.setUnitid(unit2.getUnitid());
+					// 本身不需要 系统 那边需要添加
+					pricesystem.setPricesystemid(pricesystem.getPsid());
+					listPrice.add(pricesystem);
+				}
+				isAddPrice2 = true;
 			}
 			unit2.setIsbasic(cbBaseUnit2.isChecked());
 			unit2.setIsshow(cbBigUnit2.isChecked());
@@ -358,6 +371,16 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			listGoodUnit.add(unit2);
 		}
 		if (linUnit3 != null) {
+			if (!isAddPrice3) {
+				for (Pricesystem pricesystem : dao.queryAll()) {
+					pricesystem.setUnitid(unit3.getUnitid());
+					// 本身不需要 系统 那边需要添加
+					pricesystem.setPricesystemid(pricesystem.getPsid());
+					listPrice.add(pricesystem);
+				}
+				isAddPrice3 = true;
+			}
+
 			unit3.setIsbasic(false);
 			unit3.setIsshow(false);
 			unit3.setRatio(Utils.getDouble(ratio3.getText().toString()));
@@ -377,11 +400,12 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		goods.goodsclassid = btnGoodsClass.getTag().toString();
 		String addGood = new ServiceGoods().gds_AddGood(goods, listPrice, listGoodUnit);
 		if (RequestHelper.isSuccess(addGood)) {
-			showSuccess("添加成功!");
+			showSuccess("添加商品成功!");
 			startActivity(new Intent(this, SwyMain.class));
 			finish();
 		} else {
-			showError(addGood);
+			showError(TextUtils.isEmpty(addGood) ? "添加商品失败!" : addGood);
+			listGoodUnit.clear();
 		}
 
 	}
@@ -448,12 +472,12 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 
 		@Override
 		public int getCount() {
-			return listPrice.size();
+			return listAdapterPrice.size();
 		}
 
 		@Override
 		public Pricesystem getItem(int position) {
-			return listPrice.get(position);
+			return listAdapterPrice.get(position);
 		}
 
 		@Override
@@ -466,7 +490,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			View view = View.inflate(AddNewGoodSAct.this, R.layout.item_addgoods, null);
 			TextView tvName = (TextView) view.findViewById(R.id.tvName);
 			EditText edNumber = (EditText) view.findViewById(R.id.edNumber);
-			Pricesystem pricesystem = listPrice.get(position);
+			Pricesystem pricesystem = listAdapterPrice.get(position);
 			String psname = pricesystem.getPsname();
 			tvName.setText(psname);
 			edNumber.setText(pricesystem == null ? "0" : pricesystem.getPrice() + "");
@@ -495,11 +519,17 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			@Override
 			public void afterTextChanged(Editable s) {
 				int i = ((Integer) v.getTag()).intValue();
-				listPrice.get(i).setPrice(Utils.getDouble(s.toString()));
+				listAdapterPrice.get(i).setPrice(Utils.getDouble(s.toString()));
 			}
 
 		}
 
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		factory.removeListener();
 	}
 
 	@Override

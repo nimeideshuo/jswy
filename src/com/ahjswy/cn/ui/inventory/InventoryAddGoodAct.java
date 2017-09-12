@@ -12,6 +12,7 @@ import com.ahjswy.cn.request.ReqStrGetGoodsPricePD;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -102,8 +103,8 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 		// SimpleDateFormat("yyyy-MM-dd
 		// HH:mm:ss").parse(this.docitem.getProductiondate()).getTime(),
 		// "yyyy-MM-dd"));
-		this.etNum.setTag(this.etNum.getText());
-		this.etNetNum.setTag(this.etNetNum.getText());
+		this.etNum.setTag(this.etNum.getText().toString());
+		this.etNetNum.setTag(this.etNetNum.getText().toString());
 	}
 
 	private GoodsUnit goodsUnit;
@@ -251,8 +252,37 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
-		// TODO Auto-generated method stub
+		if (!hasFocus) {
+			switch (v.getId()) {
+			case R.id.etNum:
 
+				double num = Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2);
+				double lastNum = Utils.normalize(Utils.getDouble(this.etNum.getTag().toString()).doubleValue(), 2);
+				if (num != lastNum) {
+					double stockNum = Utils.getDouble(this.etStockNum.getText().toString()).doubleValue();
+					this.etNetNum.setText((num - stockNum) + "");
+					this.etNum.setTag(this.etNum.getText());
+					this.etNetNum.setTag(this.etNetNum.getText().toString());
+				}
+				return;
+			case R.id.etNetNum:
+				double v0 = Utils.normalize(Utils.getDouble(this.etNetNum.getText().toString()).doubleValue(), 2);
+				if (v0 != Utils.normalize(Utils.getDouble(this.etNetNum.getTag().toString()).doubleValue(), 2)) {
+					this.etNum
+							.setText(new StringBuilder(String.valueOf(Utils.normalize(
+									v0 + Utils.normalize(
+											Utils.getDouble(this.etStockNum.getText().toString()).doubleValue(), 2),
+									2))).toString());
+					this.etNetNum.setTag(this.etNetNum.getText().toString());
+					this.etNum.setTag(this.etNum.getText());
+				}
+
+				return;
+
+			default:
+				return;
+			}
+		}
 	}
 
 	public void setActionBarText() {

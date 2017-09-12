@@ -20,7 +20,6 @@ import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
-import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.Dialog_listCheckBox;
 

@@ -61,6 +61,7 @@ public class Swy_splash extends BaseActivity {
 		getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
 		width = localDisplayMetrics.widthPixels;
 		height = localDisplayMetrics.heightPixels;
+		System.out.println("width:"+width+"   height:"+height);
 		serviceips = new Dialog_ed_message(Swy_splash.this);
 		loading.setOnClickListener(new OnClickListener() {
 

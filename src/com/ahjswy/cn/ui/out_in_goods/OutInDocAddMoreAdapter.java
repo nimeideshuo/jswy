@@ -69,7 +69,7 @@ public class OutInDocAddMoreAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		convertView = View.inflate(context, R.layout.item_indoc_add_more_goods, null);
+		convertView = View.inflate(context, R.layout.item_outin_more, null);
 		TextView tvName = ((TextView) convertView.findViewById(R.id.tvName));
 		// TextView tvBarcode = ((TextView)
 		// convertView.findViewById(R.id.tvBarcode));
@@ -97,7 +97,7 @@ public class OutInDocAddMoreAdapter extends BaseAdapter {
 		etNum.setTag(Integer.valueOf(position));
 		// etBatch.setTag(Integer.valueOf(position));
 		tv_dicPrice.setText("单价: " + itemDD.getPrice() + " 元");
-		tv_Bfci.setText(" /" + itemDD.showStock);
+		tv_Bfci.setText("   /" + itemDD.showStock);
 		tvName.setText(items.get(position).getGoodsname());
 		// tvBarcode.setText(items.get(position).getBarcode());
 		btnUnit.setText(items.get(position).getUnitname());

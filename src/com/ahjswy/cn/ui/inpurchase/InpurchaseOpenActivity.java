@@ -3,6 +3,7 @@ package com.ahjswy.cn.ui.inpurchase;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -257,7 +258,7 @@ public class InpurchaseOpenActivity extends BaseActivity implements OnClickListe
 		public void handleMessage(android.os.Message msg) {
 			if (payTypes == null || payTypes.size() == 0) {
 				doccg = null;
-				InpurchaseOpenActivity.this.runOnUiThread(new Runnable() {
+				runOnUiThread(new Runnable() {
 
 					@Override
 					public void run() {
@@ -273,8 +274,10 @@ public class InpurchaseOpenActivity extends BaseActivity implements OnClickListe
 			doccg.setIsavailable(true);
 			doccg.setIssettleup(true);
 			PurchaseEntity entity = new PurchaseEntity();
+			Collections.sort(payTypes);
 			entity.setTypelistjson(JSONUtil.object2Json(payTypes));
 			entity.setDocjson(JSONUtil.object2Json(doccg));
+			//TODO
 			Intent intent = new Intent(InpurchaseOpenActivity.this, InpurchaseEditActivity.class);
 			intent.putExtra("entity", entity);
 			intent.putExtra("ishaschanged", true);

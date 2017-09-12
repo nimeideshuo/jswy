@@ -15,15 +15,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.7"
-            android:maxEms="8"
             android:singleLine="true"
-            android:text="木宜保椰油清透环保木器清底漆（半哑）"
+            android:text="这是测试商品"
             android:textSize="14sp" />
 
         <Button
             android:id="@+id/btnUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tvName"
             android:background="@drawable/btn_operation_selector"
             android:text="件"
             android:textSize="14sp" />
@@ -48,40 +48,19 @@
 
         <TextView
             android:id="@+id/tv_dicPrice"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="0.0"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_specification"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="规格:1*12"
+            android:text="单价:1.0"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_Bfci"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="right"
-            android:text="tv_Bfci"
+            android:text="库存:"
             android:textColor="#cc0000"
             android:textSize="14sp" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvBarcode"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvName"
-        android:singleLine="true"
-        android:text="123454432"
-        android:textSize="14sp"
-        android:visibility="gone" />
 
 </LinearLayout>

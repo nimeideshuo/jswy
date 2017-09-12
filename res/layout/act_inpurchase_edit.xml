@@ -82,6 +82,15 @@
             android:paddingLeft="2.0dip"
             android:paddingRight="2.0dip"
             android:paddingTop="1.0dip" >
+            <Button
+                android:id="@+id/btn_goodClass"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="1.0dip"
+                android:layout_weight="1"
+                android:background="@color/bg_menu_button"
+                android:gravity="center"
+                android:textColor="@color/red" />
 
             <Button
                 android:id="@+id/bt_sumNumber"
@@ -91,7 +100,6 @@
                 android:layout_weight="1"
                 android:background="@color/bg_menu_button"
                 android:gravity="center"
-                android:text="数量: 0 个"
                 android:textColor="@color/red" />
 
             <Button
@@ -102,7 +110,6 @@
                 android:layout_weight="1"
                 android:background="@color/bg_menu_button"
                 android:gravity="center"
-                android:text="总额: 0 元"
                 android:textColor="@color/red" />
         </LinearLayout>
     </RelativeLayout>

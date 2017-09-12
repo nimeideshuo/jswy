@@ -362,14 +362,13 @@
                     android:layout_width="0.0dip"
                     android:layout_height="match_parent"
                     android:layout_weight="1.0"
-                    android:background="@null"
-                    android:visibility="invisible" >
+                    android:background="@null" >
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="5.0dip"
-                        android:background="@drawable/ic_menu_stockgoods" />
+                        android:background="@drawable/addgood2" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -404,82 +403,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1.0dip"
                 android:background="@color/bg_main_divder" />
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" >
-
-                <LinearLayout
-                    android:id="@id/ll_my_transfer"
-                    style="@style/style_function_menu"
-                    android:layout_width="0.0dip"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0" >
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5.0dip"
-                        android:background="@drawable/ic_menu_transfer_record" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5.0dip"
-                        android:text="@string/my_transfer" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="1.0dip"
-                    android:layout_height="match_parent"
-                    android:background="@color/bg_main_divder" />
-
-                <LinearLayout
-                    style="@style/style_function_menu"
-                    android:layout_width="0.0dip"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:background="@null" >
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5.0dip"
-                        android:background="@drawable/ic_menu_return_open" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5.0dip"
-                        android:text="新增商品" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="1.0dip"
-                    android:layout_height="match_parent"
-                    android:background="@color/bg_main_divder" />
-
-                <LinearLayout
-                    style="@style/style_function_menu"
-                    android:layout_width="0.0dip"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:background="@null" >
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5.0dip"
-                        android:background="@drawable/ic_menu_customer" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5.0dip"
-                        android:text="采购退货" />
-                </LinearLayout>
-            </TableRow>
         </LinearLayout>
     </ScrollView>
 

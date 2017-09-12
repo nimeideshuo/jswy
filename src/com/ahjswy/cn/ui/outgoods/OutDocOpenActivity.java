@@ -336,6 +336,7 @@ public class OutDocOpenActivity extends BaseActivity
 				// 保存基本数据
 				fillDoc();
 				localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
+				//TODO
 				Intent localIntent = new Intent(OutDocOpenActivity.this, OutDocEditActivity.class);
 				localIntent.putExtra("docContainer", localDocContainerEntity);
 				localIntent.putExtra("ishaschanged", true);

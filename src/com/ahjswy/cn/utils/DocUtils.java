@@ -3,6 +3,8 @@ package com.ahjswy.cn.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Text;
+
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemXS;
@@ -25,6 +27,9 @@ public class DocUtils {
 	}
 
 	public static ReqStrGetGoodsPrice GetMultiGoodsPrice(String customerid, DefDocItemXS item) {
+		if (TextUtils.isEmpty(customerid) || item == null) {
+			return null;
+		}
 		ArrayList<ReqStrGetGoodsPrice> list = new ArrayList<ReqStrGetGoodsPrice>();
 		ReqStrGetGoodsPrice rsp = new ReqStrGetGoodsPrice();
 		rsp.setType(1);

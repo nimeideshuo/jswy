@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.Def_Doc;
 import com.ahjswy.cn.bean.Def_DocDraft;
@@ -88,6 +89,7 @@ public class InpurchaseEditActivity extends BaseActivity
 		initView();
 		initDate();
 		addListener();
+		sum();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(this);
 	}
@@ -100,6 +102,7 @@ public class InpurchaseEditActivity extends BaseActivity
 		serviceStore = new ServiceStore();
 		bt_sumNumber = (Button) findViewById(R.id.bt_sumNumber);
 		bt_totalSum = (Button) findViewById(R.id.bt_totalSum);
+		btnGoodClass = (Button) findViewById(R.id.btn_goodClass);
 		listview_copy_dele = (SwipeMenuListView) findViewById(R.id.listView_addShop);
 		listItem = new ArrayList<DefDocItemCG>();
 	}
@@ -632,16 +635,24 @@ public class InpurchaseEditActivity extends BaseActivity
 					showError("失败!没有从服务器获取返回信息！请重试 !");
 					return;
 				}
-				JSONUtil.readValue2(purchaseInfo);
-				if (JSONUtil.Result && (doccg.getDocid() == 0)) {
-					showSuccess(JSONUtil.Desc);
-					doccg.setDocid(JSONUtil.DocID);// 保存单据id
-					doccg.setShowid(JSONUtil.Data);// 保存单据号
-				} else if (JSONUtil.Result && (doccg.getDocid() != 0)) {
-					showSuccess(JSONUtil.Desc);
+				RespServiceInfor infor = JSONUtil.readValue3(purchaseInfo);
+				if (infor.Result) {
+					showSuccess(infor.Json.Desc);
+					startActivity(new Intent(InpurchaseEditActivity.this, SwyMain.class));
+					finish();
 				} else {
-					showSuccess(JSONUtil.Info);
+					showError(infor.Info);
 				}
+				// JSONUtil.readValue2(purchaseInfo);
+				// if (JSONUtil.Result && (doccg.getDocid() == 0)) {
+				// showSuccess(JSONUtil.Desc);
+				// doccg.setDocid(JSONUtil.DocID);// 保存单据id
+				// doccg.setShowid(JSONUtil.Data);// 保存单据号
+				// } else if (JSONUtil.Result && (doccg.getDocid() != 0)) {
+				// showSuccess(JSONUtil.Desc);
+				// } else {
+				// showSuccess(JSONUtil.Info);
+				// }
 			}
 		});
 	}
@@ -740,6 +751,7 @@ public class InpurchaseEditActivity extends BaseActivity
 	private double receiveable;// 优惠后应收
 	private ArrayList<DefDocItemCG> localArrayList;
 	private Scaner scaner;
+	private Button btnGoodClass;
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
@@ -815,16 +827,20 @@ public class InpurchaseEditActivity extends BaseActivity
 
 	@Override
 	public void sum() {
+		// TODO
 		List<DefDocItemCG> data = adapter.getData();
-		double sum = 0.00d;
+		double sumMoney = 0.00d;
+		int sumNum = 0;
 		listItemDelete = adapter.getListItemDelete();
 		for (int i = 0; i < data.size(); i++) {
-			sum += data.get(i).getDiscountsubtotal();
+			DefDocItemCG itemCG = data.get(i);
+			sumMoney += itemCG.getDiscountsubtotal();
+			sumNum += itemCG.getNum();
 		}
-		sum = Utils.normalizePrice(sum);
-		bt_sumNumber.setText("数量:" + data.size() + "个");
-		bt_totalSum.setText("总额:" + sum + "元");
-		discountsubtotal = sum;
+		btnGoodClass.setText("品种:" + data.size());
+		bt_sumNumber.setText("数量:" + sumNum + "个");
+		bt_totalSum.setText("总价:\n" + Utils.normalizePrice(sumMoney) + "元");
+		discountsubtotal = Utils.normalizePrice(sumMoney);
 	}
 
 	@Override

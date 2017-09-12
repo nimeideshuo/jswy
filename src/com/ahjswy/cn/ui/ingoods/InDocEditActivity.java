@@ -538,7 +538,7 @@ public class InDocEditActivity extends BaseActivity
 
 	double sum = 0.0D;
 
-	// TODO sum 总价
+	// sum 总价
 	public void sum() {
 		List<DefDocItemXS> data = adapter.getData();
 		listItemDelete = adapter.getListItemDelete();
@@ -549,9 +549,6 @@ public class InDocEditActivity extends BaseActivity
 			sumMoney += defDocItemXS.getDiscountsubtotal();
 			sumNum += defDocItemXS.getNum();
 		}
-		// for (int i = 0; i < data.size(); i++) {
-		// sumMoney += data.get(i).getDiscountsubtotal();
-		// }
 		sum = Utils.normalizePrice(sumMoney);
 		bt_totalSum.setText("总价:" + sum + "元");
 

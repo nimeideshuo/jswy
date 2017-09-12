@@ -908,14 +908,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					return;
 				}
 				boolean isSort = false;
-				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.readValue(localString,
-						DocContainerEntity.class);
-				doc = ((DefDocXS) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDocXS.class));
-				listPayType = JSONUtil.str2list(localDocContainerEntity.getPaytype(), DefDocPayType.class);
+				DocContainerEntity dce = (DocContainerEntity) JSONUtil.readValue(localString, DocContainerEntity.class);
+				doc = ((DefDocXS) JSONUtil.readValue(dce.getDoc(), DefDocXS.class));
+				listPayType = JSONUtil.str2list(dce.getPaytype(), DefDocPayType.class);
 				if (getMaxTempItemId() != 0) {
 					isSort = true;
 				}
-				listItem = JSONUtil.str2list(localDocContainerEntity.getItem(), DefDocItemXS.class);
+				listItem = JSONUtil.str2list(dce.getItem(), DefDocItemXS.class);
 				listItemDelete = new ArrayList<Long>();
 				switch (msg.what) {
 				case 0:
@@ -942,7 +941,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					}
 					adapter.setData(listItem);
 					refreshUI();
-					InfoDialog.showError(OutDocEditActivity.this, localDocContainerEntity.getInfo());
+					InfoDialog.showError(OutDocEditActivity.this,
+							TextUtils.isEmpty(dce.getInfo()) ? "请求失败!" : dce.getInfo());
 					return;
 				default:
 					break;
@@ -981,6 +981,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	 * 计算底部 品种 数量 总价
 	 */
 	private void bottomCount() {
+		//TODO
 		sumMoney = 0D;
 		int sumNum = 0;
 		for (DefDocItemXS itemXS : listItem) {

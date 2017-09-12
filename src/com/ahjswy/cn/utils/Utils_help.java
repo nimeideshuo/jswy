@@ -64,6 +64,7 @@ public class Utils_help {
 			conn.setRequestProperty("accept", "*/*");
 			conn.setRequestProperty("connection", "Keep-Alive");
 			conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			conn.setRequestProperty("key", "mmendianban");
 			conn.setRequestProperty("code", instance.getUniqueCode());
 			conn.setConnectTimeout(5000);
@@ -78,6 +79,7 @@ public class Utils_help {
 			out.print(sb.toString());
 			// flush输出流的缓冲
 			out.flush();
+
 			// 定义BufferedReader输入流来读取URL的响应
 			in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line;

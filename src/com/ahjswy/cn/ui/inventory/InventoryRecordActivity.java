@@ -193,7 +193,8 @@ public class InventoryRecordActivity extends BaseActivity {
 			if (RequestHelper.isSuccess(message)) {
 				DocContainerEntity docContainer = (DocContainerEntity) JSONUtil.readValue(message,
 						DocContainerEntity.class);
-				startActivityForResult(new Intent().setClass(InventoryRecordActivity.this, InventoryEditActivity.class)
+				// TODO
+				startActivityForResult(new Intent(InventoryRecordActivity.this, InventoryEditActivity.class)
 						.putExtra("docContainer", docContainer).putExtra("ishaschanged", false), 1);
 				return;
 			} else {

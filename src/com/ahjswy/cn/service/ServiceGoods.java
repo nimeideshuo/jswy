@@ -70,14 +70,14 @@ public class ServiceGoods {
 	 * 
 	 * @return
 	 */
-	public String gds_AddGood(Goods goods, List<Pricesystem> Price, List<GoodsUnit> listGoodUnit) {
+	public String gds_AddGood(Goods goods, List<Pricesystem> price, List<GoodsUnit> listGoodUnit) {
 		String url = Utils.getServiceAddress(this.baseAddress, "AddGoods");
-		if (goods == null) {
-			throw new RuntimeException("ReqAddGoods is null");
+		if (goods == null || price == null || listGoodUnit == null) {
+			return "ReqAddGoods is null";
 		}
 		GoodEntity goodEntity = new GoodEntity();
 		goodEntity.setGoods(JSONUtil.object2Json(goods));
-		goodEntity.setGoodsPrice(JSONUtil.object2Json(Price));
+		goodEntity.setGoodsPrice(JSONUtil.object2Json(price));
 		goodEntity.setGoodsunit(JSONUtil.object2Json(listGoodUnit));
 		map.put("parameter", JSONUtil.object2Json(goodEntity));
 		return new Utils_help().getServiceInfor(url, map);

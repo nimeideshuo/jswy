@@ -72,6 +72,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		findViewById(R.id.addNewGoods).setOnClickListener(this);
 		findViewById(R.id.ll_transfer).setOnClickListener(this);
 		findViewById(R.id.ll_my_transfer).setOnClickListener(this);
+
 		root = findViewById(R.id.root);
 		root.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View paramAnonymousView, MotionEvent paramAnonymousMotionEvent) {

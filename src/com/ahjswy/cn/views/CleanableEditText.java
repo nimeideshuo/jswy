@@ -81,7 +81,6 @@ public class CleanableEditText extends EditText {
 					clean.clean();
 				}
 			}
-			System.out.println("onTouchEvent>>>" + super.onTouchEvent(event));
 			break;
 
 		default:

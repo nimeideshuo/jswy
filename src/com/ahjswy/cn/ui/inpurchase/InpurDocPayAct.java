@@ -102,7 +102,6 @@ public class InpurDocPayAct extends BaseActivity implements Clean, OnClickListen
 		// 待收
 		this.tvLeft.setText(d4 + "");
 		adapter = new InpurPayAdapter(this);
-		Collections.sort(listPayType);
 		adapter.setData(listPayType);
 		listView.setAdapter(adapter);
 		adapter.setAmount(this);

@@ -52,7 +52,7 @@ public class ServiceStore {
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("43");
 		localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
-//		localDocContainerEntity.setItem(JSONUtil.object2Json(item));
+		// localDocContainerEntity.setItem(JSONUtil.object2Json(item));
 		localDocContainerEntity.setItem(new Gson().toJson(item));
 		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(deleteitem));
 		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
@@ -512,7 +512,7 @@ public class ServiceStore {
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("43");
 		localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
-//		localDocContainerEntity.setItem(JSONUtil.object2Json(item));
+		// localDocContainerEntity.setItem(JSONUtil.object2Json(item));
 		localDocContainerEntity.setItem(new Gson().toJson(item));
 		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(deleteitem));
 		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));

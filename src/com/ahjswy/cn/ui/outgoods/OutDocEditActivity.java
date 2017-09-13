@@ -941,14 +941,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					}
 					adapter.setData(listItem);
 					refreshUI();
-					InfoDialog.showError(OutDocEditActivity.this,
-							TextUtils.isEmpty(dce.getInfo()) ? "请求失败!" : dce.getInfo());
+					InfoDialog.showError(OutDocEditActivity.this, dce.getInfo());
 					return;
 				default:
 					break;
 				}
 			}
-			InfoDialog.showError(OutDocEditActivity.this, localString);
+			InfoDialog.showError(OutDocEditActivity.this, TextUtils.isEmpty(localString) ? "请求失败!" : localString);
 		}
 	};
 	private Handler printDocHandler = new Handler() {
@@ -981,7 +980,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	 * 计算底部 品种 数量 总价
 	 */
 	private void bottomCount() {
-		//TODO
+		// TODO
 		sumMoney = 0D;
 		int sumNum = 0;
 		for (DefDocItemXS itemXS : listItem) {
@@ -1158,6 +1157,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 				@Override
 				public void onClick(View v) {
+					maler.dismiss();
 					Intent intent = new Intent(OutDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();

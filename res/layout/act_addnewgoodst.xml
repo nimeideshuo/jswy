@@ -136,20 +136,26 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="100dp"
             android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="0.0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:textSize="16.0sp" />
 
             <CheckBox
                 android:id="@+id/cbIsDiscount"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1.5"
                 android:text="允许打折" />
 
             <CheckBox
                 android:id="@+id/cbIsusebatch"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_weight="1.5"
                 android:text="批次管理" />
         </LinearLayout>
 

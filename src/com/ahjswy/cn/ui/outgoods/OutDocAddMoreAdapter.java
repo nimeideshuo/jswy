@@ -179,13 +179,15 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 			@Override
 			public void afterTextChanged(Editable s) {
 				int i = ((Integer) etNum.getTag()).intValue();
-				if (!TextUtils.isEmpty(s.toString())) {
-					if (Double.parseDouble(s.toString()) > 0.0D) {
-						(listItems.get(i)).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
-					}
-				} else {
-					listItems.get(i).setNum(0);
-				}
+				// String string = s.toString();
+				// string = "";
+				// if (!TextUtils.isEmpty(string)) {
+				// if (Double.parseDouble(string) > 0.0D) {
+				(listItems.get(i)).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
+				// }
+				// } else {
+				// listItems.get(i).setNum(0);
+				// }
 			}
 		});
 		return convertView;

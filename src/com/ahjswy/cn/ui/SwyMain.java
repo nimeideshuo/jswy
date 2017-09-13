@@ -24,6 +24,7 @@ import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.InfoDialog;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;

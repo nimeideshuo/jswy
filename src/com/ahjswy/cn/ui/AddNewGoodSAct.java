@@ -192,7 +192,8 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			if (lvPrices != null) {// 获取子View 清除焦点
+			if (lvPrices != null) {// 获取子View
+									// 清除焦点
 				int childCount = lvPrices.getChildCount();
 				for (int i = 0; i < childCount; i++) {
 					lvPrices.getChildAt(i).clearFocus();
@@ -316,6 +317,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			cbBigUnit1.setVisibility(View.VISIBLE);
 			unitRoot.removeView(linUnit2);
 			linUnit2 = null;
+			unit2 = null;
 			btnAddUnit.setVisibility(View.VISIBLE);
 		}
 	};
@@ -325,6 +327,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		public void onClick(View v) {
 			unitRoot.removeView(linUnit3);
 			linUnit3 = null;
+			unit3 = null;
 			btnAddUnit.setVisibility(View.VISIBLE);
 		}
 	};
@@ -332,9 +335,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private EditText ratio3;
 	private Scaner factory;
 	private ArrayList<Pricesystem> listPrice;
-	private boolean isAddPrice1;
-	private boolean isAddPrice2;
-	private boolean isAddPrice3;
 
 	private void submit() {
 		String validateDoc = validateDoc();
@@ -342,13 +342,10 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			InfoDialog.showError(this, validateDoc);
 			return;
 		}
-		if (!isAddPrice1) {
-			for (Pricesystem price : listAdapterPrice) {
-				price.setUnitid(unit1.getUnitid());
-				price.setPricesystemid(price.getPsid());
-				listPrice.add(price);
-			}
-			isAddPrice1 = true;
+		for (Pricesystem price : listAdapterPrice) {
+			price.setUnitid(unit1.getUnitid());
+			price.setPricesystemid(price.getPsid());
+			listPrice.add(price);
 		}
 
 		unit1.setIsbasic(cbBaseUnit1.isChecked());
@@ -356,14 +353,11 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		unit1.setRatio(Utils.getDouble(ratio1.getText().toString()));
 		listGoodUnit.add(unit1);
 		if (linUnit2 != null) {
-			if (!isAddPrice2) {
-				for (Pricesystem pricesystem : dao.queryAll()) {
-					pricesystem.setUnitid(unit2.getUnitid());
-					// 本身不需要 系统 那边需要添加
-					pricesystem.setPricesystemid(pricesystem.getPsid());
-					listPrice.add(pricesystem);
-				}
-				isAddPrice2 = true;
+			for (Pricesystem pricesystem : dao.queryAll()) {
+				pricesystem.setUnitid(unit2.getUnitid());
+				// 本身不需要 系统 那边需要添加
+				pricesystem.setPricesystemid(pricesystem.getPsid());
+				listPrice.add(pricesystem);
 			}
 			unit2.setIsbasic(cbBaseUnit2.isChecked());
 			unit2.setIsshow(cbBigUnit2.isChecked());
@@ -371,14 +365,11 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			listGoodUnit.add(unit2);
 		}
 		if (linUnit3 != null) {
-			if (!isAddPrice3) {
-				for (Pricesystem pricesystem : dao.queryAll()) {
-					pricesystem.setUnitid(unit3.getUnitid());
-					// 本身不需要 系统 那边需要添加
-					pricesystem.setPricesystemid(pricesystem.getPsid());
-					listPrice.add(pricesystem);
-				}
-				isAddPrice3 = true;
+			for (Pricesystem pricesystem : dao.queryAll()) {
+				pricesystem.setUnitid(unit3.getUnitid());
+				// 本身不需要 系统 那边需要添加
+				pricesystem.setPricesystemid(pricesystem.getPsid());
+				listPrice.add(pricesystem);
 			}
 
 			unit3.setIsbasic(false);
@@ -406,6 +397,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		} else {
 			showError(TextUtils.isEmpty(addGood) ? "添加商品失败!" : addGood);
 			listGoodUnit.clear();
+			listPrice.clear();
 		}
 
 	}
@@ -413,6 +405,9 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private String validateDoc() {
 		if (TextUtils.isEmpty(etName.getText().toString())) {
 			return "请输入商品名称";
+		}
+		if (btnGoodsClass.getTag() == null) {
+			return "所属类别没有选择!";
 		}
 		if (unit2 != null) {
 			if (unit1.getUnitid().equals(unit2.getUnitid())) {
@@ -438,9 +433,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			if (unit2.getUnitid().equals(unit3.getUnitid())) {
 				return "该计量单位已经选择";
 			}
-		}
-		if (btnGoodsClass.getTag() == null) {
-			return "所属类别没有选择!";
 		}
 		return null;
 	}

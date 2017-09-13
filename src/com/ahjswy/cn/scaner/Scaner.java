@@ -13,6 +13,8 @@ public class Scaner {
 		case "MX-5020":
 			return new ScanerMX5020(context);
 		case "Data Terminal":
+			return new ScanerMX5060(context);
+		case "DataTerminal":
 			return new ScanerMX5020(context);
 		case "i6200S":
 			return new ScanerI6200S(context);

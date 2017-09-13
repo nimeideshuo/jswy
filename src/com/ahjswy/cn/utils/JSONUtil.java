@@ -136,6 +136,9 @@ public class JSONUtil {
 		ObjectMapper objectMapper = new ObjectMapper();
 		org.codehaus.jackson.JsonParser parser;
 		List<T> list = new ArrayList<T>();
+		if (!TextUtils.isEmptyS(content)) {
+			return list;
+		}
 		try {
 			parser = objectMapper.getJsonFactory().createJsonParser(content);
 			JsonNode nodes = parser.readValueAsTree();

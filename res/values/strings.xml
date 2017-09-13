@@ -247,6 +247,7 @@
     <string name="inventory">盘点</string>
     <string name="others">其他</string>
     <string name="goods_detail_info">产品手册</string>
+    <string name="goodsprice_detail_info">产品报价</string>
     <string name="customer_center">客户中心</string>
     <string name="record">记录</string>
     <string name="my_doc">我的销售</string>

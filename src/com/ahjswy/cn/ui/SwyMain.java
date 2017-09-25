@@ -12,6 +12,7 @@ import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
+import com.ahjswy.cn.ui.addgoods.AddNewGoodSAct;
 import com.ahjswy.cn.ui.field.AllGoodsActivity;
 import com.ahjswy.cn.ui.field.NewCustomerAddAct;
 import com.ahjswy.cn.ui.ingoods.InDocOpenActivity;
@@ -24,7 +25,6 @@ import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.InfoDialog;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -73,7 +73,6 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		findViewById(R.id.addNewGoods).setOnClickListener(this);
 		findViewById(R.id.ll_transfer).setOnClickListener(this);
 		findViewById(R.id.ll_my_transfer).setOnClickListener(this);
-
 		root = findViewById(R.id.root);
 		root.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View paramAnonymousView, MotionEvent paramAnonymousMotionEvent) {
@@ -109,6 +108,50 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				});
 			}
 		}
+
+	}
+
+	public void updataImg(View v) {
+		startActivity(new Intent(this, CameraActivity.class));
+		// TODO
+		// BitmapUtils bitmp = new BitmapUtils();
+		// String sd =
+		// Environment.getExternalStorageDirectory().getAbsolutePath();
+		// sd = sd + File.separator + "1.png";
+		// if (!new File(sd).exists()) {
+		// showSuccess("没找到图片");
+		// return;
+		// }
+		// Bitmap decodeFile = BitmapFactory.decodeFile(sd);
+		// ivSd.setImageBitmap(decodeFile);
+		//
+		// String imagefile = bitmp.bitmaptoString(decodeFile);
+		// // Bitmap stringtoBitmap = bitmp.stringtoBitmap(bitmaptoString);
+		// // bitmp.savePicture(stringtoBitmap, "3.jpg");
+		// ReqVstAddVisitCustomerJobImage image = new
+		// ReqVstAddVisitCustomerJobImage();
+		// image.setImagefile(imagefile);
+		// image.setImagepath("/000030001.jpg");
+		// image.setVisitjobid(7);
+		// String image2 = new ServiceVisit().vst_UploadVisitImage(image);
+		// if (RequestHelper.isSuccess(image2)) {
+		// showSuccess("上传成功!");
+		// MLog.d(">>>" + imagefile);
+		// } else {
+		// showSuccess("上传失败!" + image2);
+		// }
+		// ======================
+		// 查询商品历史均价
+		// String url = Utils.getServiceAddress("", "");
+		// LinkedHashMap<String, String> map = new LinkedHashMap<String,
+		// String>();
+		// ReqGoodDataPrice req = new ReqGoodDataPrice();
+		// req.startDataTime = "2017-9-1";
+		// req.endDataTime = "2017-9-15";
+		// req.goodsId = "00001";
+		// String object2Json = JSONUtil.object2Json(req);
+		// map.put("parameter", object2Json);
+		// new Utils_help().getServiceInfor(url, map);
 
 	}
 
@@ -225,7 +268,6 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			break;
 		// 新增商品
 		case R.id.addNewGoods:
-			// TODO
 			startActivity(new Intent(SwyMain.this, AddNewGoodSAct.class));
 			break;
 		// 盘点

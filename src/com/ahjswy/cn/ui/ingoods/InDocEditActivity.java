@@ -269,9 +269,9 @@ public class InDocEditActivity extends BaseActivity
 					DefDocItemXS localDefDocItem = InDocEditActivity.this.fillItem(localGoodsThin, 0.0D, 0.0D);
 					newListItem = new ArrayList<DefDocItemXS>();
 					newListItem.add(localDefDocItem);
-					if (!TextUtils.isEmpty(doc.getOpendate())) {
-						return;
-					}
+					// if (!TextUtils.isEmpty(doc.getOpendate())) {
+					// return;
+					// }
 					ArrayList<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
 					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
 					localReqStrGetGoodsPrice.setType(2);

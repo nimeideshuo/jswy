@@ -7,8 +7,6 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="22" />
-    
-    
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 必写 -->
@@ -50,6 +48,8 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
@@ -367,7 +367,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.ahjswy.cn.ui.AddNewGoodSAct"
+            android:name="com.ahjswy.cn.ui.addgoods.AddNewGoodSAct"
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>
@@ -408,6 +408,11 @@
         </activity>
         <activity
             android:name="com.ahjswy.cn.ui.transfer.TransferDocSearchAct"
+            android:icon="@drawable/menu_btn_back"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ahjswy.cn.ui.CameraActivity"
             android:icon="@drawable/menu_btn_back"
             android:screenOrientation="portrait" >
         </activity>

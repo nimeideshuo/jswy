@@ -74,8 +74,8 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 	private CheckBox cbDistribution;
 	// 配送地址
 	private EditText etCustomerAddress;
-	private Button btnOpenDate;
-	private Button btnOverDate;
+	// private Button btnOpenDate;
+	// private Button btnOverDate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +92,8 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 		etDiscountRatio = (EditText) findViewById(R.id.etDiscountRatio);
 		btnDeliveryTime = (Button) findViewById(R.id.btnDeliveryTime);
 		btnSettleTime = (Button) findViewById(R.id.btnSettleTime);
-		btnOpenDate = (Button) findViewById(R.id.btnOpenDate);
-		btnOverDate = (Button) findViewById(R.id.btnOverDate);
+		// btnOpenDate = (Button) findViewById(R.id.btnOpenDate);
+		// btnOverDate = (Button) findViewById(R.id.btnOverDate);
 		cbDistribution = (CheckBox) findViewById(R.id.cbDistribution);
 		etCustomerAddress = (EditText) findViewById(R.id.etCustomerAddress);
 		etSummary = (EditText) findViewById(R.id.etSummary);
@@ -189,8 +189,8 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 			this.btnDeliveryTime.setOnClickListener(this);
 			this.btnSettleTime.setOnClickListener(this);
 			etCustomerAddress.setOnClickListener(this);
-			btnOpenDate.setOnClickListener(dateClickListener);
-			btnOverDate.setOnClickListener(dateClickListener);
+			// btnOpenDate.setOnClickListener(dateClickListener);
+			// btnOverDate.setOnClickListener(dateClickListener);
 		}
 	}
 
@@ -344,7 +344,7 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 				InDocOpenActivity.this.fillDoc();
 				localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
 				Intent localIntent = new Intent();
-				//TODO
+				// TODO
 				localIntent.setClass(InDocOpenActivity.this, InDocEditActivity.class);
 				localIntent.putExtra("docContainer", localDocContainerEntity);
 				startActivity(localIntent);
@@ -405,12 +405,12 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 		if (btnSettleTime.getText().toString().length() > 0) {
 			this.doc.setSettletime(this.btnSettleTime.getTag().toString());
 		}
-		if (!TextUtils.isEmpty(btnOpenDate.getText().toString())) {
-			doc.setOpendate(btnOpenDate.getText().toString());
-		}
-		if (!TextUtils.isEmpty(btnOverDate.getText().toString())) {
-			doc.setOverdate(btnOverDate.getText().toString());
-		}
+		// if (!TextUtils.isEmpty(btnOpenDate.getText().toString())) {
+		// doc.setOpendate(btnOpenDate.getText().toString());
+		// }
+		// if (!TextUtils.isEmpty(btnOverDate.getText().toString())) {
+		// doc.setOverdate(btnOverDate.getText().toString());
+		// }
 		// 备注
 		this.doc.setRemark(this.etRemark.getText().toString());
 		// 摘要

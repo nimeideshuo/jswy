@@ -918,9 +918,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				listItemDelete = new ArrayList<Long>();
 				switch (msg.what) {
 				case 0:
-					if (isSort) {
-						Collections.sort(listItem);
-					}
+					// if (isSort) {
+					// Collections.sort(listItem);
+					// }
 					adapter.setData(listItem);
 					PDH.showSuccess("保存成功");
 					ishaschanged = false;
@@ -980,7 +980,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	 * 计算底部 品种 数量 总价
 	 */
 	private void bottomCount() {
-		// TODO
 		sumMoney = 0D;
 		int sumNum = 0;
 		for (DefDocItemXS itemXS : listItem) {

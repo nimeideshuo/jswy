@@ -1,6 +1,7 @@
 ﻿package com.ahjswy.cn.views;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.utils.MLog;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -9,12 +10,9 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 /**
  * @description: 自定义带有删除功能的EditText
@@ -53,6 +51,7 @@ public class EditTextWithDel extends EditText {
 				imgAble = mContext.getResources().getDrawable(R.drawable.search_clear_pressed);
 			}
 		}, 100);
+		// setOnFocusChangeListener(new FocusChangeListenerImpl());
 		addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -76,9 +75,9 @@ public class EditTextWithDel extends EditText {
 				setDrawable();
 			}
 		});
-		this.setOnFocusChangeListener(new FocusChangeListenerImpl());
+		// this.setOnFocusChangeListener(new FocusChangeListenerImpl());
 		setDrawable();
-		setCleanDrawable(false);
+		// setCleanDrawable(false);
 	}
 
 	// 设置删除图片
@@ -110,7 +109,7 @@ public class EditTextWithDel extends EditText {
 		if (imgAble != null && event.getAction() == MotionEvent.ACTION_UP) {
 			int eventX = (int) event.getRawX();
 			int eventY = (int) event.getRawY();
-			Log.e(TAG, "eventX = " + eventX + "; eventY = " + eventY);
+			// Log.e(TAG, "eventX = " + eventX + "; eventY = " + eventY);
 			Rect rect = new Rect();
 			getGlobalVisibleRect(rect);
 			rect.left = rect.right - 50;
@@ -120,23 +119,24 @@ public class EditTextWithDel extends EditText {
 					clean.clean();
 				}
 			}
+			setDrawable();
 		}
 		return super.onTouchEvent(event);
 	}
 
 	// 监听判断 是否显示右边的图标
-	private class FocusChangeListenerImpl implements OnFocusChangeListener {
-		@Override
-		public void onFocusChange(View v, boolean hasFocus) {
-			if (hasFocus) {
-				boolean isVisible = getText().toString().length() >= 1;
-				setCleanDrawable(isVisible);
-			} else {
-				setCleanDrawable(false);
-			}
-		}
-
-	}
+	// private class FocusChangeListenerImpl implements OnFocusChangeListener {
+	// @Override
+	// public void onFocusChange(View v, boolean hasFocus) {
+	// if (hasFocus) {
+	// boolean isVisible = getText().toString().length() >= 1;
+	// setCleanDrawable(isVisible);
+	// } else {
+	// setCleanDrawable(false);
+	// }
+	// }
+	//
+	// }
 
 	@Override
 	protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {

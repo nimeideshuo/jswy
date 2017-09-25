@@ -117,15 +117,15 @@ public class BitmapUtils {
 		return paramBitmap;
 	}
 
-	public boolean savePicture(Bitmap paramBitmap, String paramString) {
-		File localFile = new File(getPicDir(), paramString);
+	public boolean savePicture(Bitmap bitmap, String name) {
+		File localFile = new File(getPicDir(), name);
 		try {
 			localFile.createNewFile();
-			FileOutputStream localFileOutputStream = new FileOutputStream(localFile);
-			paramBitmap.compress(Bitmap.CompressFormat.JPEG, 80, localFileOutputStream);
-			localFileOutputStream.flush();
-			localFileOutputStream.close();
-			paramBitmap.recycle();
+			FileOutputStream os = new FileOutputStream(localFile);
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 80, os);
+			os.flush();
+			os.close();
+			bitmap.recycle();
 			System.gc();
 			return true;
 		} catch (Exception localException) {

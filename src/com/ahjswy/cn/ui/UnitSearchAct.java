@@ -6,7 +6,6 @@ import java.util.List;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.dao.UnitDAO;
 import com.ahjswy.cn.model.Unit;
-import com.ahjswy.cn.model.Unit;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextViews;

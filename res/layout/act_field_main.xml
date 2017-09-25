@@ -365,10 +365,10 @@
                     android:background="@null" >
 
                     <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="5.0dip"
-                        android:background="@drawable/addgood2" />
+                        android:background="@drawable/addgood" />
 
                     <TextView
                         android:layout_width="wrap_content"

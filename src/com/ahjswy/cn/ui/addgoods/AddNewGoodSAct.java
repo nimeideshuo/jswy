@@ -1,4 +1,4 @@
-package com.ahjswy.cn.ui;
+package com.ahjswy.cn.ui.addgoods;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.PricesystemDAO;
 import com.ahjswy.cn.dao.UnitDAO;
-import com.ahjswy.cn.model.Good;
 import com.ahjswy.cn.model.Goods;
 import com.ahjswy.cn.model.GoodsClass;
 import com.ahjswy.cn.model.GoodsUnit;
@@ -16,6 +15,9 @@ import com.ahjswy.cn.model.Unit;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceGoods;
+import com.ahjswy.cn.ui.BaseActivity;
+import com.ahjswy.cn.ui.SearchGoodsClassAct;
+import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.PinYin4j;
 import com.ahjswy.cn.utils.TextUtils;
@@ -75,7 +77,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private EditText etModel;
 	private EditText etSalecue;
 	private EditText etRemark;
-	private Good good;// 商品类
 	// private EditText etPinYin;
 
 	@Override
@@ -136,7 +137,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		listAdapterPrice = dao.queryAll();
 		lvPrices.setAdapter(priceAdapter);
 		// 请求 ScrollView 不要拦截 滑动事件
-		// listView1.setOnTouchListener(onTouchListener);
 		// 单位查询展示
 		// =========单位示例 展示
 		// initUnit(spUnit);
@@ -477,8 +477,10 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			return 0;
 		}
 
+		int selectPosition;
+
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView, ViewGroup parent) {
 			View view = View.inflate(AddNewGoodSAct.this, R.layout.item_addgoods, null);
 			TextView tvName = (TextView) view.findViewById(R.id.tvName);
 			EditText edNumber = (EditText) view.findViewById(R.id.edNumber);

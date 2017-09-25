@@ -13,5 +13,4 @@
         android:id="@+id/edNumber"
         style="@style/m_edtext"
         android:inputType="numberDecimal" />
-
 </LinearLayout>

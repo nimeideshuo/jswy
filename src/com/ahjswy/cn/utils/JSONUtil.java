@@ -82,7 +82,8 @@ public class JSONUtil {
 			localJsonGenerator.close();
 			String localString = localStringWriter.toString();
 			return localString;
-		} catch (Exception localException) {
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}

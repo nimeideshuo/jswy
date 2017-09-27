@@ -1,16 +1,14 @@
 package com.ahjswy.cn.ui.ingoods;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.codehaus.jackson.JsonProcessingException;
-
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
+import com.ahjswy.cn.bean.GoodEntity;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.GoodsUnit;
@@ -30,6 +28,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.format.DateUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +39,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-import mexxen.mx5010.barcode.BarcodeConfig;
 
 public class InDocAddGoodAct extends BaseActivity implements OnClickListener, OnFocusChangeListener {
 	// 条码
@@ -78,13 +76,15 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_indoc_add_goods);
 		initView();
-		initDate();
 	}
 
 	private void initView() {
 		tvBarcode = ((TextView) findViewById(R.id.tvBarcode));
 		tvSpecification = ((TextView) findViewById(R.id.tvSpecification));
 		btnDate = ((Button) findViewById(R.id.btnDate));
+		startDate = (Button) findViewById(R.id.startDate);
+		endDate = (Button) findViewById(R.id.endDate);
+		Button queryPrice = (Button) findViewById(R.id.queryPrice);
 		etBatch = ((EditText) findViewById(R.id.etBatch));
 
 		btnWarehouse = ((Button) findViewById(R.id.btnWarehouse));
@@ -100,7 +100,10 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 
 		this.btnWarehouse.setOnClickListener(this);
 		this.btnUnit.setOnClickListener(this);
+		queryPrice.setOnClickListener(this);
 		this.btnDate.setOnClickListener(dateClickListener);
+		this.startDate.setOnClickListener(dateClickListener);
+		this.endDate.setOnClickListener(dateClickListener);
 		this.etNum.setOnFocusChangeListener(this);
 		this.etPrice.setOnFocusChangeListener(this);
 		this.etSubtotal.setOnFocusChangeListener(this);
@@ -149,13 +152,13 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 		this.etDiscountPrice.setTag(this.etDiscountPrice.getText().toString());
 		this.etDiscountSubtotal.setTag(this.etDiscountSubtotal.getText().toString());
 		cal = Calendar.getInstance();
-	}
+		startDate.setText(docitem.getBuildbegintime());
+		if (TextUtils.isEmpty(docitem.getBuildendtime())) {
+			endDate.setText(Utils.getData());
+		} else {
+			endDate.setText(docitem.getBuildendtime());
+		}
 
-	private void initDate() {
-		// 扫码枪 功能调用 先new 对相 在调用
-		BarcodeConfig barcodeConfig = new BarcodeConfig(this);
-		// 设置条码输出模式 不显示模式(复制到粘贴板)
-		barcodeConfig.setOutputMode(2);
 	}
 
 	@Override
@@ -188,6 +191,38 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 			break;
 		case R.id.btnUnit:
 			unitSelect();
+			break;
+		case R.id.queryPrice:
+			if (TextUtils.isEmpty(customerid)) {
+				showError("请选择客户!");
+				return;
+			}
+			if (TextUtils.isEmpty(docitem.getGoodsid())) {
+				return;
+			}
+			if (TextUtils.isEmpty(startDate.getText().toString()) || TextUtils.isEmpty(endDate.getText().toString())) {
+				showError("请选择查询的 开始日期 和 结束日期!");
+				return;
+			}
+			// 查询
+			boolean basicUnit = new GoodsUnitDAO().isBasicUnit(docitem.getGoodsid(), docitem.getUnitid());
+			GoodEntity gooden = new GoodEntity();
+			gooden.setCustomerid(customerid);
+			gooden.setGoodsid(docitem.getGoodsid());
+			gooden.setUnittype(basicUnit == true ? 1 : 2);
+			gooden.setBuildbegintime(startDate.getText().toString() + " 00:00:00");
+			gooden.setBuildendtime(endDate.getText().toString() + " 00:00:00");
+			docitem.setBuildbegintime(startDate.getText().toString());
+			docitem.setBuildendtime(endDate.getText().toString());
+			String goodPrice = new ServiceGoods().gds_Querygoodsavgprice(gooden);
+			try {
+				double price = Double.parseDouble(goodPrice);
+				etPrice.setText(price + "");
+				showSuccess("查询成功!");
+			} catch (Exception e) {
+				e.printStackTrace();
+				showError(goodPrice);
+			}
 			break;
 		}
 	}
@@ -222,11 +257,11 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 		if (TextUtils.isEmptyS(this.btnWarehouse.getTag().toString())) {
 			this.docitem.setWarehouseid(this.btnWarehouse.getTag().toString());
 			this.docitem.setWarehousename(this.btnWarehouse.getText().toString());
-			if (TextUtils.isEmptyS(this.btnUnit.getTag().toString()))
+			if (TextUtils.isEmptyS(this.btnUnit.getTag().toString())) {
 				this.docitem.setUnitid(this.btnUnit.getTag().toString());
-			this.docitem.setUnitname(this.btnUnit.getText().toString());
+				this.docitem.setUnitname(this.btnUnit.getText().toString());
+			}
 			this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
-			//TODO 
 			this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
 					this.docitem.getNum()));
 			this.docitem
@@ -275,9 +310,9 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 		AlertDialog.Builder localBuilder = new AlertDialog.Builder(this);
 		localBuilder.setTitle("单位");
 		localBuilder.setItems(arrayOfString, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dig, int paramAnonymousInt) {
-				dig.dismiss();
-				goodsUnit = localList.get(paramAnonymousInt);
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				goodsUnit = localList.get(which);
 				if (!goodsUnit.getUnitid().equals(btnUnit.getTag()))
 					PDH.show(InDocAddGoodAct.this, new PDH.ProgressCallBack() {
 						public void action() {
@@ -335,12 +370,10 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 				ReqStrGetGoodsPrice localReqStrGetGoodsPrice = null;
 				localReqStrGetGoodsPrice = (ReqStrGetGoodsPrice) JSONUtil
 						.str2list(localString, ReqStrGetGoodsPrice.class).get(0);
-				InDocAddGoodAct.this.btnUnit.setText(InDocAddGoodAct.this.goodsUnit.getUnitname());
-				InDocAddGoodAct.this.btnUnit.setTag(InDocAddGoodAct.this.goodsUnit.getUnitid());
-				double d1 = Utils
-						.normalize(Utils.getDouble(InDocAddGoodAct.this.etNum.getText().toString()).doubleValue(), 2);
-				double d2 = Utils.normalize(
-						Utils.getDouble(InDocAddGoodAct.this.etDiscountRatio.getText().toString()).doubleValue(), 2);
+				btnUnit.setText(goodsUnit.getUnitname());
+				btnUnit.setTag(goodsUnit.getUnitid());
+				double d1 = Utils.normalize(Utils.getDouble(etNum.getText().toString()).doubleValue(), 2);
+				double d2 = Utils.normalize(Utils.getDouble(etDiscountRatio.getText().toString()).doubleValue(), 2);
 				double d3 = Utils.normalizePrice(localReqStrGetGoodsPrice.getPrice());
 				double d4 = Utils.normalizePrice(d3 * d2);
 				etPrice.setText(localReqStrGetGoodsPrice.getPrice() + "");
@@ -351,11 +384,15 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 				etSubtotal.setTag(etSubtotal.getText());
 				etDiscountPrice.setTag(etDiscountPrice.getText());
 				etDiscountSubtotal.setTag(etDiscountSubtotal.getText());
+				docitem.setUnitid(goodsUnit.getUnitid());
+				docitem.setUnitname(goodsUnit.getUnitname());
 				return;
 			}
 			PDH.showFail(localString);
 		};
 	};
+	private Button startDate;
+	private Button endDate;
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (resultCode) {

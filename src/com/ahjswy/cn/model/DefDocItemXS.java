@@ -73,6 +73,25 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 	private String warehousename;
 	private RespGoodsWarehouse stocknum;
 	public String goodStock;
+	public String buildbegintime;
+	public String buildendtime;
+	
+
+	public String getBuildbegintime() {
+		return buildbegintime;
+	}
+
+	public void setBuildbegintime(String buildbegintime) {
+		this.buildbegintime = buildbegintime;
+	}
+
+	public String getBuildendtime() {
+		return buildendtime;
+	}
+
+	public void setBuildendtime(String buildendtime) {
+		this.buildendtime = buildendtime;
+	}
 
 	public DefDocItemXS() {
 	}
@@ -292,126 +311,126 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 		return this.isusebatch;
 	}
 
-	public void setBarcode(String paramString) {
-		this.barcode = paramString;
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
 	}
 
 	// 批次
-	public void setBatch(String paramString) {
-		this.batch = paramString;
+	public void setBatch(String batch) {
+		this.batch = batch;
 	}
 
-	public void setBignum(String paramString) {
-		this.bignum = paramString;
+	public void setBignum(String bignum) {
+		this.bignum = bignum;
 	}
 
 	// 成本价格
-	public void setCostprice(double paramDouble) {
-		this.costprice = paramDouble;
+	public void setCostprice(double costprice) {
+		this.costprice = costprice;
 	}
 
 	// 折后单价
-	public void setDiscountprice(double paramDouble) {
-		this.discountprice = paramDouble;
+	public void setDiscountprice(double discountprice) {
+		this.discountprice = discountprice;
 	}
 
 	// 停止 终止
-	public void setDiscountratio(double paramDouble) {
-		this.discountratio = paramDouble;
+	public void setDiscountratio(double discountratio) {
+		this.discountratio = discountratio;
 	}
 
 	// 折扣小计
-	public void setDiscountsubtotal(double paramDouble) {
-		this.discountsubtotal = paramDouble;
+	public void setDiscountsubtotal(double discountsubtotal) {
+		this.discountsubtotal = discountsubtotal;
 	}
 
-	public void setDocid(long paramLong) {
-		this.docid = paramLong;
+	public void setDocid(long docid) {
+		this.docid = docid;
 	}
 
 	// 设置 商品 id
-	public void setGoodsid(String paramString) {
-		this.goodsid = paramString;
+	public void setGoodsid(String goodsid) {
+		this.goodsid = goodsid;
 	}
 
 	// 商品名称
-	public void setGoodsname(String paramString) {
-		this.goodsname = paramString;
+	public void setGoodsname(String goodsname) {
+		this.goodsname = goodsname;
 	}
 
 	// 折扣
-	public void setIsdiscount(boolean paramBoolean) {
-		this.isdiscount = paramBoolean;
+	public void setIsdiscount(boolean isdiscount) {
+		this.isdiscount = isdiscount;
 	}
 
-	public void setIsexhibition(boolean paramBoolean) {
-		this.isexhibition = paramBoolean;
+	public void setIsexhibition(boolean isexhibition) {
+		this.isexhibition = isexhibition;
 	}
 
-	public void setIsgift(boolean paramBoolean) {
-		this.isgift = paramBoolean;
+	public void setIsgift(boolean isgift) {
+		this.isgift = isgift;
 	}
 
-	public void setIspromotion(boolean paramBoolean) {
-		this.ispromotion = paramBoolean;
+	public void setIspromotion(boolean ispromotion) {
+		this.ispromotion = ispromotion;
 	}
 
-	public void setIsusebatch(boolean paramBoolean) {
-		this.isusebatch = paramBoolean;
+	public void setIsusebatch(boolean isusebatch) {
+		this.isusebatch = isusebatch;
 	}
 
-	public void setItemid(long paramLong) {
-		this.itemid = paramLong;
+	public void setItemid(long itemid) {
+		this.itemid = itemid;
 	}
 
-	public void setModel(String paramString) {
-		this.model = paramString;
+	public void setModel(String model) {
+		this.model = model;
 	}
 
 	// 数量
-	public void setNum(double paramDouble) {
-		this.num = paramDouble;
+	public void setNum(double num) {
+		this.num = num;
 	}
 
-	public void setOutorderdocid(long paramLong) {
-		this.outorderdocid = paramLong;
+	public void setOutorderdocid(long outorderdocid) {
+		this.outorderdocid = outorderdocid;
 	}
 
-	public void setOutorderdocshowid(String paramString) {
-		this.outorderdocshowid = paramString;
+	public void setOutorderdocshowid(String outorderdocshowid) {
+		this.outorderdocshowid = outorderdocshowid;
 	}
 
-	public void setOutorderitemid(long paramLong) {
-		this.outorderitemid = paramLong;
+	public void setOutorderitemid(long outorderitemid) {
+		this.outorderitemid = outorderitemid;
 	}
 
-	public void setParentitemid(long paramLong) {
-		this.parentitemid = paramLong;
+	public void setParentitemid(long parentitemid) {
+		this.parentitemid = parentitemid;
 	}
 
-	public void setPrice(double paramDouble) {
-		this.price = paramDouble;
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
-	public void setProductiondate(String paramString) {
-		this.productiondate = paramString;
+	public void setProductiondate(String productiondate) {
+		this.productiondate = productiondate;
 	}
 
-	public void setPromotiontype(int paramInt) {
-		this.promotiontype = paramInt;
+	public void setPromotiontype(int promotiontype) {
+		this.promotiontype = promotiontype;
 	}
 
-	public void setPromotiontypename(String paramString) {
-		this.promotiontypename = paramString;
+	public void setPromotiontypename(String promotiontypename) {
+		this.promotiontypename = promotiontypename;
 	}
 
 	// 备注
-	public void setRemark(String paramString) {
-		this.remark = paramString;
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
-	public void setRversion(long paramLong) {
-		this.rversion = paramLong;
+	public void setRversion(long rversion) {
+		this.rversion = rversion;
 	}
 
 	public void setSpecification(String paramString) {
@@ -419,30 +438,30 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 	}
 
 	// 小计
-	public void setSubtotal(double paramDouble) {
-		this.subtotal = paramDouble;
+	public void setSubtotal(double subtotal) {
+		this.subtotal = subtotal;
 	}
 
-	public void setTempitemid(long paramLong) {
-		this.tempitemid = paramLong;
+	public void setTempitemid(long tempitemid) {
+		this.tempitemid = tempitemid;
 	}
 
 	// 单位 ID
-	public void setUnitid(String paramString) {
-		this.unitid = paramString;
+	public void setUnitid(String unitid) {
+		this.unitid = unitid;
 	}
 
 	// 单位 name
-	public void setUnitname(String paramString) {
-		this.unitname = paramString;
+	public void setUnitname(String unitname) {
+		this.unitname = unitname;
 	}
 
-	public void setWarehouseid(String paramString) {
-		this.warehouseid = paramString;
+	public void setWarehouseid(String warehouseid) {
+		this.warehouseid = warehouseid;
 	}
 
-	public void setWarehousename(String paramString) {
-		this.warehousename = paramString;
+	public void setWarehousename(String warehousename) {
+		this.warehousename = warehousename;
 	}
 
 	@Override

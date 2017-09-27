@@ -27,7 +27,6 @@ import com.ahjswy.cn.utils.DateTimePickDialogUtil.Time_callback;
 import com.ahjswy.cn.utils.GetTime;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
-import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
 import android.app.DatePickerDialog;

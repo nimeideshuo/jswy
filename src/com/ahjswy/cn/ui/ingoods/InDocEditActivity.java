@@ -616,6 +616,7 @@ public class InDocEditActivity extends BaseActivity
 
 				@Override
 				public void onClick(View v) {
+					maler.dismiss();
 					Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
@@ -892,6 +893,7 @@ public class InDocEditActivity extends BaseActivity
 					// deleBm();
 					Intent localIntent = new Intent();
 					localIntent.putExtra("docitem", localDefDocItem2);
+					localIntent.putExtra("customerid", doc.getCustomerid());
 					InDocEditActivity.this.startActivityForResult(
 							localIntent.setClass(InDocEditActivity.this, InDocAddGoodAct.class), 4);
 				}

@@ -10,7 +10,6 @@ import com.ahjswy.cn.model.Pricesystem;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.request.ReqStrGetGoodsPricePD;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.utils.Utils_help;
 
@@ -82,4 +81,16 @@ public class ServiceGoods {
 		map.put("parameter", JSONUtil.object2Json(goodEntity));
 		return new Utils_help().getServiceInfor(url, map);
 	}
+
+	/*
+	 * querygoodsavgprice 查询 商品平均价格
+	 */
+	public String gds_Querygoodsavgprice(GoodEntity goodEntity) {
+		String url = Utils.getServiceAddress(this.baseAddress, "querygoodsavgprice");
+		map.put("parameter", JSONUtil.object2Json(goodEntity));
+		map.put("buildbegintime", goodEntity.getBuildbegintime());
+		map.put("buildendtime", goodEntity.getBuildendtime());
+		return new Utils_help().getServiceInfor(url, map);
+	}
+
 }

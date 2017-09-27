@@ -88,9 +88,9 @@ public class Utils {
 		return str;
 	}
 
-	public static String formatDate(String paramString1, String dateFormat) {
+	public static String formatDate(String dataTime, String dateFormat) {
 		try {
-			Date localDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).parse(paramString1);
+			Date localDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).parse(dataTime);
 			String localString = new SimpleDateFormat(dateFormat, Locale.CHINA).format(localDate);
 			return localString;
 		} catch (Exception localException) {

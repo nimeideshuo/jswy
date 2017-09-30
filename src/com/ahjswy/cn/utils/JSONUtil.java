@@ -122,12 +122,13 @@ public class JSONUtil {
 		return null;
 	}
 
-	public static <T> T readValue(String paramString, Class<T> paramClass) {
+	public static <T> T readValue(String content, Class<T> valueType) {
 		ObjectMapper localObjectMapper = new ObjectMapper();
 		try {
-			T localObject = localObjectMapper.readValue(paramString, paramClass);
+			T localObject = localObjectMapper.readValue(content, valueType);
 			return localObject;
-		} catch (Exception localException) {
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}

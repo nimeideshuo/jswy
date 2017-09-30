@@ -27,7 +27,7 @@ public class DocUtils {
 	}
 
 	public static ReqStrGetGoodsPrice GetMultiGoodsPrice(String customerid, DefDocItemXS item) {
-		if (TextUtils.isEmpty(customerid) || item == null) {
+		if (item == null) {
 			return null;
 		}
 		ArrayList<ReqStrGetGoodsPrice> list = new ArrayList<ReqStrGetGoodsPrice>();

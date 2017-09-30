@@ -60,6 +60,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		setInitItem();
 		dialog = new Dialog_listCheckBox(this);
 		Newitems = new ArrayList<DefDocItemXS>();
+		serviceGoods = new ServiceGoods();
 	}
 
 	@Override
@@ -127,7 +128,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	protected void addItems() {
 		for (int i = 0; i < Newitems.size(); i++) {
 			DefDocItemXS defdocitemxs = Newitems.get(i);
-			String localString = new ServiceGoods().gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
+			String localString = serviceGoods.gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
 					defdocitemxs.isIsusebatch());
 			List<RespGoodsWarehouse> goodsWarehouses;
 			if (RequestHelper.isSuccess(localString)) {
@@ -229,6 +230,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	// private BarcodeConfig barcodeConfig;
 	private Dialog_listCheckBox dialog;
 	private Scaner scaner;
+	private ServiceGoods serviceGoods;
 
 	// 保存输入的值 必须有一个 大于0 的
 	private void tv_title_start() {

@@ -70,6 +70,15 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/linNumber" />
 
+        <TextView
+            android:id="@+id/tv_Customer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/linNumber"
+            android:layout_marginLeft="3dp"
+            android:textColor="@color/red"
+            android:visibility="invisible" />
+
         <LinearLayout
             android:id="@+id/linNumber"
             android:layout_width="match_parent"

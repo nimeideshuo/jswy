@@ -1,7 +1,6 @@
 package com.ahjswy.cn.ui.outgoods;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.ahjswy.cn.R;
@@ -25,10 +24,12 @@ import com.ahjswy.cn.popupmenu.OutDocEditMenuPopup;
 import com.ahjswy.cn.print.BTPrintHelper;
 import com.ahjswy.cn.print.BTPrintHelper.PrintOverCall;
 import com.ahjswy.cn.print.PrintMode;
+import com.ahjswy.cn.request.ReqCustomerdebt;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespServiceInfor;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
+import com.ahjswy.cn.service.ServiceCustomer;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
@@ -68,6 +69,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class OutDocEditActivity extends BaseActivity implements OnItemClickListener, OnClickListener, OnTouchListener {
 	private ServiceStore serviceStore;
@@ -124,6 +126,24 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		btnAdd.setOnClickListener(this);
 		listview_copy_dele.setOnItemClickListener(this);
 		dialog = new Dialog_listCheckBox(this);
+		tv_Customer = (TextView) findViewById(R.id.tv_Customer);
+		if (doc.isIsavailable() && !doc.isIsposted()) {
+			queryCustomerdebt();
+		}
+
+	}
+
+	private void queryCustomerdebt() {
+		if (TextUtils.isEmptyS(doc.getCustomerid())) {
+			// 查询客户 欠款
+			String queryCustomerDebt = new ServiceCustomer()
+					.cu_queryCustomer(new ReqCustomerdebt(doc.getCustomerid(), true, 0));
+			if (RequestHelper.isSuccess(queryCustomerDebt)) {
+				ReqCustomerdebt reqCustomerdebt = JSONUtil.readValue(queryCustomerDebt, ReqCustomerdebt.class);
+				tv_Customer.setVisibility(View.VISIBLE);
+				tv_Customer.setText("客户欠款: " + reqCustomerdebt.amount + " 元");
+			}
+		}
 	}
 
 	private void intDate() {
@@ -1008,21 +1028,19 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private double preference;// 优惠
 	private double received;// 已收
 	private Scaner scaner;
+	private TextView tv_Customer;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		// if (resultCode == RESULT_FIRST_USER) {
-		// // addListener();
-		// }
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case 0:
-				// addListener();
 				doc = (DefDocXS) data.getSerializableExtra("doc");
 				ishaschanged = true;
 				setActionBarText();
 				bottomCount();
+				queryCustomerdebt();
 				break;
 			case 1:
 

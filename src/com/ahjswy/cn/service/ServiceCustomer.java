@@ -3,6 +3,7 @@ package com.ahjswy.cn.service;
 import java.util.LinkedHashMap;
 
 import com.ahjswy.cn.model.Customer;
+import com.ahjswy.cn.request.ReqCustomerdebt;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.Service;
 import com.ahjswy.cn.utils.Utils;
@@ -29,5 +30,12 @@ public class ServiceCustomer {
 		String url = Utils.getServiceAddress(this.baseAddress, "getcustomer");
 		return new Utils_help().getServiceInfor(url, map);
 
+	}
+
+	// 查询 客户欠款
+	public String cu_queryCustomer(ReqCustomerdebt customer) {
+		String url = Utils.getServiceAddress(this.baseAddress, "querycustomerdebt");
+		map.put("parameter", JSONUtil.object2Json(customer));
+		return new Utils_help().getServiceInfor(url, map);
 	}
 }

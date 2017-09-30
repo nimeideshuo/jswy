@@ -37,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class OutDocOpenActivity extends BaseActivity
 		implements OnClickListener, com.ahjswy.cn.utils.DateTimePickDialogUtil.Time_callback {

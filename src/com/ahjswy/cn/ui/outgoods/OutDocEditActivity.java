@@ -1,7 +1,11 @@
 package com.ahjswy.cn.ui.outgoods;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
@@ -19,7 +23,6 @@ import com.ahjswy.cn.model.FieldSaleForPrint;
 import com.ahjswy.cn.model.FieldSaleItemForPrint;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
-import com.ahjswy.cn.model.Warehouse;
 import com.ahjswy.cn.popupmenu.OutDocEditMenuPopup;
 import com.ahjswy.cn.print.BTPrintHelper;
 import com.ahjswy.cn.print.BTPrintHelper.PrintOverCall;
@@ -130,6 +133,56 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		if (doc.isIsavailable() && !doc.isIsposted()) {
 			queryCustomerdebt();
 		}
+		// bt_totalSum.setOnClickListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// combinationItem();
+		// }
+		// });
+
+	}
+
+	protected void combinationItem() {
+		int combinationNum = listItem.size();
+		ArrayList<DefDocItemXS> data = new ArrayList<DefDocItemXS>(listItem);
+		ArrayList<DefDocItemXS> listDocItem = new ArrayList<DefDocItemXS>();
+		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+		for (int i = data.size() - 1; i >= 0; i--) {
+			DefDocItemXS items1 = data.get(i);
+			// 没有的商品 缓存
+			if (map.get(items1.getGoodsid()) == null) {
+				map.put(items1.getGoodsid(), new DefDocItemXS(items1));
+				data.remove(items1);
+				// data2.remove(items1);
+				continue;
+			}
+			DefDocItemXS itemxs2 = (DefDocItemXS) map.get(items1.getGoodsid());
+			if (items1.getGoodsid().equals(itemxs2.getGoodsid()) && items1.getUnitid().equals(itemxs2.getUnitid())
+					&& items1.getPrice() == itemxs2.getPrice()
+					&& items1.getDiscountratio() == itemxs2.getDiscountratio()) {
+				itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
+				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
+				map.put(itemxs2.getGoodsid(), itemxs2);
+				// 商品 单位id 单价 相等删除！
+				data.remove(items1);
+			}
+		}
+		Set<String> keySet = map.keySet();
+		for (String string : keySet) {
+			listDocItem.add((DefDocItemXS) map.get(string));
+		}
+		if ((combinationNum - listDocItem.size() - data.size()) == 0) {
+			// 没有要合并的商品!
+			return;
+		}
+		showSuccess("同品增加成功!");
+		// 设置数据
+		listItem.clear();
+		listItem.addAll(listDocItem);
+		listItem.addAll(data);
+		adapter.setData(listItem);
 
 	}
 
@@ -142,6 +195,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				ReqCustomerdebt reqCustomerdebt = JSONUtil.readValue(queryCustomerDebt, ReqCustomerdebt.class);
 				tv_Customer.setVisibility(View.VISIBLE);
 				tv_Customer.setText("客户欠款: " + reqCustomerdebt.amount + " 元");
+			} else {
+				tv_Customer.setText("客户欠款: ? 元");
 			}
 		}
 	}
@@ -239,7 +294,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		final ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
 		if (goodsThinList.size() == 1) {
 			long l = getMaxTempItemId();
-			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, l + 1L);
+			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), 1, 0.0D, l + 1L);
 			localArrayList.add(fillItem);
 			Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
@@ -257,7 +312,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					long l = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
 						l += 1L;
-						DefDocItemXS fillItem = fillItem(select.get(i), 0.0D, 0.0D, l);
+						DefDocItemXS fillItem = fillItem(select.get(i), 1, 0.0D, l);
 						localArrayList.add(fillItem);
 					}
 					if (localArrayList.size() == 0) {
@@ -373,24 +428,27 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 												new WarehouseDAO().getWarehouse(localString2).getName());
 									}
 									itemXS1.setIsdiscount(price1.getIsdiscount());
-									itemXS1.setPrice(Utils.normalizePrice(Utils.normalizePrice(price1.getPrice())));
+									// itemXS1.setPrice(Utils.normalizePrice(Utils.normalizePrice(price1.getPrice())));
 									itemXS1.setSubtotal(Utils.normalizePrice(itemXS1.getNum() * itemXS1.getPrice()));
 									if (itemXS1.isIsdiscount()) {
 										itemXS1.setDiscountratio(doc.getDiscountratio());
-										if (itemXS1.isIsusebatch()) {
-											itemXS1.setBatch(price1.getBatch());
-											itemXS1.setProductiondate(price1.getProductiondate());
-											itemXS1.setWarehouseid(price1.getWarehouseid());
-											if (!TextUtils.isEmptyS(price1.getWarehouseid())) {
-												Warehouse localWarehouse = new WarehouseDAO()
-														.getWarehouse(price1.getWarehouseid());
-												if (localWarehouse != null) {
-													itemXS1.setWarehousename(localWarehouse.getName());
-												}
-
-											}
-										}
 									}
+									if (itemXS1.isIsusebatch()) {
+										itemXS1.setBatch(price1.getBatch());
+										itemXS1.setProductiondate(price1.getProductiondate());
+										itemXS1.setWarehouseid(price1.getWarehouseid());
+									}
+									// if
+									// (!TextUtils.isEmptyS(price1.getWarehouseid()))
+									// {
+									// Warehouse localWarehouse = new
+									// WarehouseDAO()
+									// .getWarehouse(price1.getWarehouseid());
+									// if (localWarehouse != null) {
+									// itemXS1.setWarehousename(localWarehouse.getName());
+									// }
+									//
+									// }
 									itemXS1.setDiscountprice(
 											Utils.normalizePrice(itemXS1.getPrice() * itemXS1.getDiscountratio()));
 									itemXS1.setDiscountsubtotal(
@@ -407,14 +465,14 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						}
 					}
 					if (newListItem.size() > 0) {
-						listItem.addAll(0, newListItem);
+						listItem.addAll(newListItem);
 						adapter.setData(listItem);
 						listview_copy_dele.setAdapter(adapter);
-						// addListener();
 						ishaschanged = true;
 						setActionBarText();
 						bottomCount();
 						refreshUI();
+						combinationItem();
 					}
 					return;
 				}
@@ -540,7 +598,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			for (int i = 0; i < localList.size(); i++) {
 				GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
 				l += 1L;
-				DefDocItemXS item = fillItem(localGoodsThin, 0.0D, 0.0D, l);
+				DefDocItemXS item = fillItem(localGoodsThin, 1, 0.0D, l);
 				if (item != null) {
 					localArrayList.add(item);
 				}
@@ -552,11 +610,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 	}
 
-	DefDocItemXS fillItem(GoodsThin paramGoodsThin, double paramDouble1, double paramDouble2, long paramLong) {
+	DefDocItemXS fillItem(GoodsThin paramGoodsThin, double num, double price, long tempitemid) {
 		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
 		DefDocItemXS itemxs = new DefDocItemXS();
 		itemxs.setItemid(0L);
-		itemxs.setTempitemid(paramLong);
+		itemxs.setTempitemid(tempitemid);
 		itemxs.setDocid(doc.getDocid());
 		itemxs.setGoodsid(paramGoodsThin.getId());
 		itemxs.setGoodsname(paramGoodsThin.getName());
@@ -576,10 +634,10 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		}
 		itemxs.setUnitid(localGoodsUnit.getUnitid());
 		itemxs.setUnitname(localGoodsUnit.getUnitname());
-		itemxs.setNum(Utils.normalize(paramDouble1, 2));
+		itemxs.setNum(Utils.normalize(num, 2));
 		itemxs.setBignum(localGoodsUnitDAO.getBigNum(itemxs.getGoodsid(), itemxs.getUnitid(), itemxs.getNum()));
 		// 价格
-		itemxs.setPrice(Utils.normalizePrice(paramDouble2));
+		itemxs.setPrice(Utils.normalizePrice(price));
 		// 小计
 		itemxs.setSubtotal(Utils.normalizeSubtotal(itemxs.getNum() * itemxs.getPrice()));
 		// 折扣率
@@ -927,13 +985,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					finish();
 					return;
 				}
-				boolean isSort = false;
+				// boolean isSort = false;
 				DocContainerEntity dce = (DocContainerEntity) JSONUtil.readValue(localString, DocContainerEntity.class);
-				doc = ((DefDocXS) JSONUtil.readValue(dce.getDoc(), DefDocXS.class));
+				doc = JSONUtil.readValue(dce.getDoc(), DefDocXS.class);
 				listPayType = JSONUtil.str2list(dce.getPaytype(), DefDocPayType.class);
-				if (getMaxTempItemId() != 0) {
-					isSort = true;
-				}
+				// if (getMaxTempItemId() != 0) {
+				// isSort = true;
+				// }
 				listItem = JSONUtil.str2list(dce.getItem(), DefDocItemXS.class);
 				listItemDelete = new ArrayList<Long>();
 				switch (msg.what) {
@@ -950,7 +1008,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					}
 					return;
 				case 1:
-					if ((OutDocEditActivity.this.doc.isIsavailable()) && (OutDocEditActivity.this.doc.isIsposted())) {
+					if ((doc.isIsavailable()) && (doc.isIsposted())) {
 						PDH.showSuccess("过账成功");
 						if (BLUE_STATE == BLUE_Print) {
 							bluePrint();
@@ -961,7 +1019,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					}
 					adapter.setData(listItem);
 					refreshUI();
-					InfoDialog.showError(OutDocEditActivity.this, dce.getInfo());
+					InfoDialog.showError(OutDocEditActivity.this, dce == null ? "操作失败!请重试!" : dce.getInfo());
 					return;
 				default:
 					break;
@@ -1002,11 +1060,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private void bottomCount() {
 		sumMoney = 0D;
 		int sumNum = 0;
+		Map<String, Object> map = new HashMap<>();
 		for (DefDocItemXS itemXS : listItem) {
 			sumMoney += itemXS.getDiscountsubtotal();
 			sumNum += itemXS.getNum();
+			map.put(itemXS.getGoodsid(), itemXS);
 		}
-		btnGoodClass.setText("品种:" + listItem.size());
+		btnGoodClass.setText("品种:" + map.size());
 		bt_sumNumber.setText("数量:" + sumNum);
 		bt_totalSum.setText("总价:\n" + Utils.normalizePrice(sumMoney) + "元");
 	}
@@ -1043,7 +1103,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				queryCustomerdebt();
 				break;
 			case 1:
-
 				newListItem = JSONUtil.str2list(data.getStringExtra("items"), DefDocItemXS.class);
 				final ArrayList<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
 				for (int i = 0; i < newListItem.size(); i++) {
@@ -1068,7 +1127,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				});
 				break;
 			case 2:
-				// addListener();
 				int j = data.getIntExtra("position", 0);
 				DefDocItemXS localDefDocItemXS3 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				listItem = adapter.getData();
@@ -1088,18 +1146,19 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				ishaschanged = true;
 				bottomCount();
 				refreshUI();
+				combinationItem();
 				break;
 			case 3:
 				doc = (DefDocXS) data.getSerializableExtra("doc");
 				break;
 			case 4:
-				// addListener();
 				DefDocItemXS defDocItemXS4 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				adapter.addItem(0, defDocItemXS4);
 				listview_copy_dele.setAdapter(adapter);
 				ishaschanged = true;
 				refreshUI();
 				bottomCount();
+				combinationItem();
 				break;
 			case 7:
 				List<DefDocItemXS> itemXSList = JSONUtil.str2list(data.getStringExtra("selecteditem"),

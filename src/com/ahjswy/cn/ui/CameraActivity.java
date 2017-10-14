@@ -2,12 +2,14 @@ package com.ahjswy.cn.ui;
 
 import com.ahjswy.cn.R;
 
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.PictureCallback;
 
 public class CameraActivity extends BaseActivity {
 	private FrameLayout frameLayout;
@@ -19,7 +21,6 @@ public class CameraActivity extends BaseActivity {
 		setContentView(R.layout.act_field_camera);
 		initView();
 		initData();
-
 	}
 
 	private void initView() {
@@ -41,16 +42,21 @@ public class CameraActivity extends BaseActivity {
 	};
 	private Camera mCamera;
 
-	public void openCamera(int paramInt1, int cameraId) {
-		mCamera = Camera.open(cameraId);
-		mCamera.setDisplayOrientation(getCameraDisplayOrientation(cameraId, this.mCamera));
-		if (this.mCamera != null) {
-			// this.type = arg3;
-			CameraPreview cameraPreview = new CameraPreview(this, this.mCamera);
-			this.frameLayout.addView(cameraPreview);
+	public Camera openCamera(int paramInt1, int cameraId) {
+		try {
+			mCamera = Camera.open(cameraId);
+			mCamera.setDisplayOrientation(getCameraDisplayOrientation(cameraId, this.mCamera));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		
+		return mCamera;
+		// if (this.mCamera != null) {
+		// // this.type = arg3;
+		// CameraPreview cameraPreview = new CameraPreview(this, this.mCamera);
+		// this.frameLayout.addView(cameraPreview);
+		// }
+		// Fail to connect to camera service
+
 	}
 
 	private int frontCameraid = -1;
@@ -58,6 +64,7 @@ public class CameraActivity extends BaseActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		System.out.println("CameraActivity>>>onResume");
 		if (this.mCamera == null) {
 			int v0 = Camera.getNumberOfCameras();
 			Camera.CameraInfo v2 = new Camera.CameraInfo();

@@ -1,11 +1,9 @@
 package com.ahjswy.cn.ui.inpurchase;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.Def_Doc;
 import com.ahjswy.cn.bean.Def_DocDraft;
@@ -59,10 +57,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import mexxen.mx5010.barcode.BarcodeConfig;
-import mexxen.mx5010.barcode.BarcodeEvent;
-import mexxen.mx5010.barcode.BarcodeListener;
-import mexxen.mx5010.barcode.BarcodeManager;
 
 /*
  * 采购单开单

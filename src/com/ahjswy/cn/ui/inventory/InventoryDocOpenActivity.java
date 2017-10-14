@@ -175,6 +175,7 @@ public class InventoryDocOpenActivity extends BaseActivity implements OnClickLis
 				doc = ((DefDocPD) JSONUtil.readValue(docent.getDoc(), DefDocPD.class));
 				fillDoc();
 				docent.setDoc(JSONUtil.object2Json(doc));
+				// TODO
 				Intent localIntent = new Intent();
 				localIntent.setClass(InventoryDocOpenActivity.this, InventoryEditActivity.class);
 				localIntent.putExtra("docContainer", docent);

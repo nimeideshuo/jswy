@@ -56,6 +56,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		setContentView(R.layout.act_field_main);
 		initView();
 		initDate();
+
 	}
 
 	private void initView() {
@@ -112,7 +113,9 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	}
 
 	public void updataImg(View v) {
-		startActivity(new Intent(this, CameraActivity.class));
+		// openViceCamera();
+		// return mCamera;
+		// startActivity(new Intent(this, CameraActivity.class));
 		// TODO
 		// BitmapUtils bitmp = new BitmapUtils();
 		// String sd =
@@ -154,6 +157,42 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		// new Utils_help().getServiceInfor(url, map);
 
 	}
+
+	// Camera camera;
+
+	/**
+	 * 打开摄像头
+	 * 
+	 * @return
+	 */
+	// private boolean openViceCamera() {
+	// SurfaceView sf = (SurfaceView) findViewById(R.id.sf);
+	// SurfaceHolder holder = sf.getHolder();
+	// if (camera != null) {
+	// closeCamera();
+	// }
+	// try {
+	// Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+	// int cameraCount = Camera.getNumberOfCameras();
+	// camera = Camera.open(1);
+	// camera.lock();
+	// camera.setPreviewDisplay(holder);
+	// camera.startPreview();
+	// camera.unlock();
+	// holder.addCallback(this);
+	// return true;
+	// } catch (Exception ex) {
+	// ex.printStackTrace();
+	// closeCamera();
+	// return false;
+	// }
+	// }
+
+	// private void closeCamera() {
+	// camera.stopPreview();
+	// camera.release();
+	// camera = null;
+	// }
 
 	Handler fostStartHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {

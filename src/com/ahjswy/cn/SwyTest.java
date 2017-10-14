@@ -1,8 +1,13 @@
 package com.ahjswy.cn;
 
+import com.ahjswy.cn.app.RequestHelper;
+import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.utils.MLog;
+import com.ahjswy.cn.utils.PDH;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
+import junit.framework.TestResult;
 
 public class SwyTest extends AndroidTestCase {
 
@@ -18,5 +23,6 @@ public class SwyTest extends AndroidTestCase {
 		// MLog.d("id:" + sz_pricesystem.getPsid() + " name:" +
 		// sz_pricesystem.getPsname() + " ");
 		// }
+
 	}
 }

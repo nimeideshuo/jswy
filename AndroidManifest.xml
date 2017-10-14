@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ahjswy.cn"
     android:versionCode="1"
-    android:versionName="5.0.48" >
+    android:versionName="5.0.49" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -44,12 +44,11 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.CAMERA" />
-
+    <!-- 调用硬件相机权限 -->
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"

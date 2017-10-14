@@ -37,7 +37,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class OutDocOpenActivity extends BaseActivity
 		implements OnClickListener, com.ahjswy.cn.utils.DateTimePickDialogUtil.Time_callback {
@@ -337,7 +336,7 @@ public class OutDocOpenActivity extends BaseActivity
 				// 保存基本数据
 				fillDoc();
 				localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
-				//TODO
+				// TODO
 				Intent localIntent = new Intent(OutDocOpenActivity.this, OutDocEditActivity.class);
 				localIntent.putExtra("docContainer", localDocContainerEntity);
 				localIntent.putExtra("ishaschanged", true);

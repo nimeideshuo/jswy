@@ -118,7 +118,7 @@ public class InventoryAddMoreAdapter extends BaseAdapter {
 	}
 
 	public void setItem(List<DefDocItemPD> listItems) {
-		this.listItems.clear();
+		// this.listItems.clear();
 		this.listItems = listItems;
 		notifyDataSetChanged();
 	}

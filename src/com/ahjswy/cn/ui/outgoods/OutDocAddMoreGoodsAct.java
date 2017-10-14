@@ -1,7 +1,9 @@
 package com.ahjswy.cn.ui.outgoods;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
@@ -42,7 +44,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	private List<DefDocItemXS> items;
 	private OutDocAddMoreAdapter adapter;
 	private DefDocXS doc;
-	ArrayList<DefDocItemXS> Newitems;
+	// ArrayList<DefDocItemXS> Newitems;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		adapter.setDoc(doc);
 		setInitItem();
 		dialog = new Dialog_listCheckBox(this);
-		Newitems = new ArrayList<DefDocItemXS>();
+		// Newitems = new ArrayList<DefDocItemXS>();
 		serviceGoods = new ServiceGoods();
 	}
 
@@ -93,11 +95,14 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 			return;
 		}
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
+		final Map<String, Object> goodsMap = new HashMap<String, Object>();
 		if (goodsThinList.size() == 1) {
 			long maxTempItemId = getMaxTempItemId();
-			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, maxTempItemId + 1L);
-			Newitems.add(fillItem);
-			addItems();
+			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), 1, 0.0D, maxTempItemId + 1L);
+			// Newitems.add(fillItem);
+			goodsMap.put(fillItem.getGoodsid(), fillItem);
+			addItems(goodsMap);
+			adapter.notifyDataSetInvalidated();
 		} else if (goodsThinList.size() > 1) {
 
 			dialog.setGoods(goodsThinList);
@@ -112,10 +117,12 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 					long maxTempItemId = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
 						maxTempItemId += 1L;
-						DefDocItemXS fillItem = fillItem(select.get(i), 0.0D, 0.0D, maxTempItemId);
-						Newitems.add(fillItem);
+						DefDocItemXS fillItem = fillItem(select.get(i), 1, 0.0D, maxTempItemId);
+						goodsMap.put(fillItem.getGoodsid(), fillItem);
+						// Newitems.add(fillItem);
 					}
-					addItems();
+					addItems(goodsMap);
+					adapter.notifyDataSetInvalidated();
 				}
 			});
 		} else {
@@ -125,9 +132,22 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	}
 
 	// 扫码枪添加商品 转换
-	protected void addItems() {
-		for (int i = 0; i < Newitems.size(); i++) {
-			DefDocItemXS defdocitemxs = Newitems.get(i);
+	protected void addItems(Map<String, Object> goodsMap) {
+		// 查找比对 是否存在 商品 有的情况下数量 +1
+		for (int i = 0; i < items.size(); i++) {
+			DefDocItemXS itemXS = items.get(i);
+			if (goodsMap.get(itemXS.getGoodsid()) != null) {
+				itemXS.setNum(itemXS.getNum() + 1);
+				goodsMap.remove(itemXS.getGoodsid());
+				showError("相同商品数量+1");
+			}
+		}
+		if (goodsMap.isEmpty()) {
+			return;
+		}
+		for (Object item : goodsMap.values()) {
+			DefDocItemXS defdocitemxs = (DefDocItemXS) item;
+			items.add(defdocitemxs);
 			String localString = serviceGoods.gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
 					defdocitemxs.isIsusebatch());
 			List<RespGoodsWarehouse> goodsWarehouses;
@@ -154,13 +174,11 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 				// 查询库存
 				ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
 				defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
-				items.addAll(Newitems);
-				adapter.setData(items);
-				Newitems.clear();
 			} else {
 				showError("没有获取到库存数据!请重试!");
 			}
 		}
+		adapter.setData(items);
 	}
 
 	@Override
@@ -212,7 +230,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 					}
 
 				}
-				// 查询库存
+				// 查询商品客史价格
 				ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
 				defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
 				adapter.setData(items);

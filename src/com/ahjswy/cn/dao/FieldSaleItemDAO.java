@@ -119,38 +119,7 @@ public class FieldSaleItemDAO {
 		this.db = this.helper.getWritableDatabase();
 		ContentValues content = new ContentValues();
 		content.put("fieldsaleid", Long.valueOf(item.getFieldsaleid()));
-		// content.put("warehouseid", item.getWarehouseid());
 		content.put("goodsid", item.getGoodsid());
-		// content.put("saleunitid", item.getSaleunitid());
-		// content.put("salenum", Double.valueOf(item.getSalenum()));
-		// content.put("saleprice", Double.valueOf(item.getSaleprice()));
-		// content.put("cancelunitid", item.getCancelunitid());
-		// content.put("cancelnum", Double.valueOf(item.getCancelnum()));
-		// content.put("cancelprice", Double.valueOf(item.getCancelprice()));
-		// content.put("giveunitid", item.getGiveunitid());
-		// content.put("givenum", Double.valueOf(item.getGivenum()));
-		// content.put("isexhibition", item.isIsexhibition() ? "1" : "0");
-		// content.put("exchangeunitid", item.getExchangeunitid());
-		// content.put("exchangenum", Double.valueOf(item.getExchangenum()));
-		// content.put("ispromotion", item.getIspromotion() ? 1 : 0);
-		// content.put("promotiontype",
-		// Integer.valueOf(item.getPromotiontype()));
-		// content.put("giftgoodsid", item.getGiftgoodsid());
-		// content.put("giftgoodsname", item.getGiftgoodsname());
-		// content.put("giftunitid", item.getGiftunitid());
-		// content.put("giftunitname", item.getGiftunitname());
-		// content.put("giftnum", Double.valueOf(item.getGiftnum()));
-		// content.put("cancelbatchin", item.getCancelbatchin());
-		// content.put("cancelproductiondatein",
-		// item.getCancelproductiondatein());
-		// content.put("exchangebatchin", item.getExchangebatchin());
-		// content.put("exchangeproductiondatein",
-		// item.getExchangeproductiondatein());
-		// content.put("saleremark", item.getSaleremark());
-		// content.put("giftremark", item.getGiftremark());
-		// content.put("cancelremark", item.getCancelremark());
-		// content.put("giveremark", item.getGiveremark());
-		// content.put("exchangeremark", item.getExchangeremark());
 		long insert = this.db.insert("kf_fieldsaleitem", null, content);
 		if (this.db != null) {
 			this.db.close();

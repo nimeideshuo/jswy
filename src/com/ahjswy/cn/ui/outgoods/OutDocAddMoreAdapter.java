@@ -4,19 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
+import com.ahjswy.cn.response.RespGoodsPriceEntity;
+import com.ahjswy.cn.service.ServiceSupport;
 import com.ahjswy.cn.utils.DocUtils;
+import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
-import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -32,7 +36,6 @@ import android.widget.TextView;
 public class OutDocAddMoreAdapter extends BaseAdapter {
 	private Activity context;
 	private List<DefDocItemXS> listItems;
-	// private int selectPosition = -1;// 记住选中的edtitext
 
 	public OutDocAddMoreAdapter(Activity context) {
 		this.context = context;
@@ -72,7 +75,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		this.doc = doc;
 	}
 
-	int selectPosition = 0;
+	int selectPosition = -1;
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
@@ -144,6 +147,8 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		tvBarcode.setText(itemXS.getBarcode());
 		btnUnit.setText(itemXS.getUnitname());
 		tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
+		tv_dicPrice.setOnClickListener(priceOnClick);
+		tv_dicPrice.setTag(Integer.valueOf(position));
 		tv_Bfci.setText("库存:" + itemXS.goodStock);
 		if (listItems.get(position).getNum() == 0.0d) {
 			etNum.setText("");
@@ -190,7 +195,48 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 				// }
 			}
 		});
+
 		return convertView;
 	}
 
+	OnClickListener priceOnClick = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			int i = ((Integer) v.getTag()).intValue();
+			final TextView price = (TextView) v;
+			final DefDocItemXS itemXS = listItems.get(i);
+			String goodsPrice = new ServiceSupport().sup_QueryGoodsPrice(itemXS.getGoodsid());
+			if (RequestHelper.isSuccess(goodsPrice)) {
+
+				final List<RespGoodsPriceEntity> listGoodPrice = JSONUtil.str2list(goodsPrice,
+						RespGoodsPriceEntity.class);
+				if (listGoodPrice.isEmpty()) {
+					PDH.showFail("没有查询到价格!");
+					return;
+				}
+				String arrayPrice[] = new String[listGoodPrice.size()];
+				for (int j = 0; j < listGoodPrice.size(); j++) {
+					RespGoodsPriceEntity priceEntity = listGoodPrice.get(j);
+					arrayPrice[j] = priceEntity.getPricesystemname() + ":" + priceEntity.getPrice();
+				}
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setTitle("商品价格");
+				builder.setItems(arrayPrice, new AlertDialog.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+						double price2 = listGoodPrice.get(which).getPrice();
+						itemXS.setPrice(price2);
+						price.setText("单价:" + price2 + "元");
+					}
+				});
+				builder.show();
+			} else {
+				PDH.showFail("价格查询失败!请重试!");
+				return;
+			}
+		}
+	};
 }

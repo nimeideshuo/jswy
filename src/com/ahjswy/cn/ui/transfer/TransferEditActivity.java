@@ -1,7 +1,9 @@
 package com.ahjswy.cn.ui.transfer;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
@@ -28,6 +30,7 @@ import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
+import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextView;
@@ -35,7 +38,6 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -531,7 +533,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 				break;
 			case 2:
 				newListItem = JSONUtil.str2list(data.getStringExtra("items"), DefDocItem.class);
-				ArrayList<ReqStrGetGoodsPrice> listPrice = new ArrayList<ReqStrGetGoodsPrice>();
+				final ArrayList<ReqStrGetGoodsPrice> listPrice = new ArrayList<ReqStrGetGoodsPrice>();
 				for (int i = 0; i < newListItem.size(); i++) {
 					DefDocItem localDefDocItem = (DefDocItem) this.newListItem.get(i);
 					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
@@ -544,9 +546,15 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 					localReqStrGetGoodsPrice.setIsdiscount(false);
 					listPrice.add(localReqStrGetGoodsPrice);
 				}
-				String priceDB = new ServiceGoods().gds_GetMultiGoodsPriceDB(listPrice, this.doc.getInwarehouseid(),
-						true, true);
-				this.handlerGet.sendMessage(this.handlerGet.obtainMessage(0, priceDB));
+				PDH.show(this, new ProgressCallBack() {
+
+					@Override
+					public void action() {
+						String priceDB = new ServiceGoods().gds_GetMultiGoodsPriceDB(listPrice, doc.getInwarehouseid(),
+								true, true);
+						handlerGet.sendMessage(handlerGet.obtainMessage(0, priceDB));
+					}
+				});
 
 				break;
 			case 3:
@@ -612,7 +620,6 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 					refreshUI();
 					ishaschanged = true;
 					setActionBarText();
-
 				}
 				if (msg.what == 2) {
 					DefDocItem docItem = newListItem.get(0);
@@ -654,6 +661,51 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		}
 		return false;
 	}
+	//TODO
+	// protected void combinationItem() {
+	// int combinationNum = listItem.size();
+	// ArrayList<DefDocItem> data = new ArrayList<DefDocItem>(listItem);
+	// ArrayList<DefDocItem> listDocItem = new ArrayList<DefDocItem>();
+	// LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+	// for (int i = data.size() - 1; i >= 0; i--) {
+	// DefDocItem items1 = data.get(i);
+	// // 没有的商品 缓存
+	// if (map.get(items1.getGoodsid()) == null) {
+	// map.put(items1.getGoodsid(), new DefDocItem(items1));
+	// data.remove(items1);
+	// // data2.remove(items1);
+	// continue;
+	// }
+	// DefDocItem itemxs2 = (DefDocItem) map.get(items1.getGoodsid());
+	// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
+	// items1.getUnitid().equals(itemxs2.getUnitid())
+	// && items1.getPrice() == itemxs2.getPrice()
+	// && items1.getDiscountratio() == itemxs2.getDiscountratio()) {
+	// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+	// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
+	// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
+	// itemxs2.getDiscountratio());
+	// map.put(itemxs2.getGoodsid(), itemxs2);
+	// // 商品 单位id 单价 相等删除！
+	// data.remove(items1);
+	// }
+	// }
+	// Set<String> keySet = map.keySet();
+	// for (String string : keySet) {
+	// listDocItem.add((DefDocItem) map.get(string));
+	// }
+	// if ((combinationNum - listDocItem.size() - data.size()) == 0) {
+	// // 没有要合并的商品!
+	// return;
+	// }
+	// showSuccess("同品增加成功!");
+	// // 设置数据
+	// listItem.clear();
+	// listItem.addAll(listDocItem);
+	// listItem.addAll(data);
+	// adapter.setData(listItem);
+	//
+	// }
 
 	public DefDocTransfer getDoc() {
 		return doc;

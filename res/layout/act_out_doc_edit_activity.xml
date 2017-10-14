@@ -76,8 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/linNumber"
             android:layout_marginLeft="3dp"
-            android:textColor="@color/red"
-            android:visibility="invisible" />
+            android:textColor="@color/red" />
 
         <LinearLayout
             android:id="@+id/linNumber"

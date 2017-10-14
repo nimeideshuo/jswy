@@ -1,7 +1,11 @@
 package com.ahjswy.cn.ui.ingoods;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
@@ -83,10 +87,15 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 
 	private void readBarcode(String barcode) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
-		final ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
+		// final ArrayList<DefDocItemXS> localArrayList = new
+		// ArrayList<DefDocItemXS>();
+		final Map<String, Object> goodsMap = new HashMap<String, Object>();
 		if (goodsThinList.size() == 1) {
-			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), 0.0D, 0.0D);
-			adapter.addData(defdocitem);
+			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), 1, 0.0D);
+			goodsMap.put(defdocitem.getGoodsid(), defdocitem);
+			addItems(goodsMap);
+			adapter.notifyDataSetInvalidated();
+			// adapter.addData(defdocitem);
 		} else if (goodsThinList.size() > 1) {
 			dialog.setGoods(goodsThinList);
 			dialog.setTempGoods(goodsThinList);
@@ -98,16 +107,33 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 					dialog.dismiss();
 					List<GoodsThin> select = dialog.getSelect();
 					for (int i = 0; i < select.size(); i++) {
-						DefDocItemXS defdocitem = fillItem(select.get(i), 0.0D, 0.0D);
-						localArrayList.add(defdocitem);
+						DefDocItemXS defdocitem = fillItem(select.get(i), 1, 0.0D);
+						// localArrayList.add(defdocitem);
+						goodsMap.put(defdocitem.getGoodsid(), defdocitem);
 					}
-					adapter.addItemDate(localArrayList);
+					// adapter.addItemDate(localArrayList);
+					addItems(goodsMap);
+					adapter.notifyDataSetInvalidated();
 				}
 			});
 		} else {
 			PDH.showFail("没有查找到商品！可以尝试更新数据");
 		}
-		adapter.notifyDataSetInvalidated();
+	}
+
+	protected void addItems(Map<String, Object> goodsMap) {
+		List<DefDocItemXS> data = adapter.getData();
+		for (int i = 0; i < data.size(); i++) {
+			DefDocItemXS itemXS = data.get(i);
+			if (goodsMap.get(itemXS.getGoodsid()) != null) {
+				itemXS.setNum(itemXS.getNum() + 1);
+				showError("相同商品数量+1");
+				goodsMap.remove(itemXS.getGoodsid());
+			}
+		}
+		for (Object item : goodsMap.values()) {
+			adapter.addData((DefDocItemXS) item);
+		}
 	}
 
 	protected void setInitItem(DefDocItemXS item) {
@@ -149,28 +175,6 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		return true;
 	}
 
-	// public void deleBm() {
-	// if (bm != null) {
-	// bm.removeListener(new BarcodeListener() {
-	//
-	// @Override
-	// public void barcodeEvent(BarcodeEvent arg0) {
-	//
-	// }
-	// });
-	// bm.dismiss();
-	// bm = null;
-	// }
-	//
-	// }
-
-	// // 扫码枪结果添加
-	// Handler handlerItem = new Handler() {
-	// public void handleMessage(android.os.Message msg) {
-	// adapter.addItemDate((ArrayList<DefDocItem>) msg.obj);
-	// };
-	// };
-
 	private void tv_title_start() {
 		PDH.show(this, new PDH.ProgressCallBack() {
 			public void action() {
@@ -204,30 +208,30 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 	// };
 	private Dialog_listCheckBox dialog;
 
-	private DefDocItemXS fillItem(GoodsThin paramGoodsThin, double paramDouble1, double paramDouble2) {
+	private DefDocItemXS fillItem(GoodsThin goodsThin, double num, double price) {
 		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
 		DefDocItemXS localDefDocItem = new DefDocItemXS();
 		localDefDocItem.setItemid(0L);
 		localDefDocItem.setDocid(this.doc.getDocid());
-		localDefDocItem.setGoodsid(paramGoodsThin.getId());
-		localDefDocItem.setGoodsname(paramGoodsThin.getName());
-		localDefDocItem.setBarcode(paramGoodsThin.getBarcode());
-		localDefDocItem.setSpecification(paramGoodsThin.getSpecification());
-		localDefDocItem.setModel(paramGoodsThin.getModel());
+		localDefDocItem.setGoodsid(goodsThin.getId());
+		localDefDocItem.setGoodsname(goodsThin.getName());
+		localDefDocItem.setBarcode(goodsThin.getBarcode());
+		localDefDocItem.setSpecification(goodsThin.getSpecification());
+		localDefDocItem.setModel(goodsThin.getModel());
 		localDefDocItem.setWarehouseid(this.doc.getWarehouseid());
 		localDefDocItem.setWarehousename(this.doc.getWarehousename());
 		GoodsUnit localGoodsUnit = null;
 		if (Utils.DEFAULT_OutDocUNIT == 0) {
-			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(paramGoodsThin.getId());
+			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(goodsThin.getId());
 		} else {
-			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(paramGoodsThin.getId());
+			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(goodsThin.getId());
 		}
 		localDefDocItem.setUnitid(localGoodsUnit.getUnitid());
 		localDefDocItem.setUnitname(localGoodsUnit.getUnitname());
-		localDefDocItem.setNum(Utils.normalize(paramDouble1, 2));
+		localDefDocItem.setNum(Utils.normalize(num, 2));
 		localDefDocItem.setBignum(localGoodsUnitDAO.getBigNum(localDefDocItem.getGoodsid(), localDefDocItem.getUnitid(),
 				localDefDocItem.getNum()));
-		localDefDocItem.setPrice(Utils.normalizePrice(paramDouble2));
+		localDefDocItem.setPrice(Utils.normalizePrice(price));
 		localDefDocItem.setSubtotal(Utils.normalizeSubtotal(localDefDocItem.getNum() * localDefDocItem.getPrice()));
 		localDefDocItem.setDiscountratio(this.doc.getDiscountratio());
 		localDefDocItem
@@ -243,7 +247,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		localDefDocItem.setRemark("");
 		localDefDocItem.setRversion(0L);
 		localDefDocItem.setIsdiscount(false);
-		localDefDocItem.setIsusebatch(paramGoodsThin.isIsusebatch());
+		localDefDocItem.setIsusebatch(goodsThin.isIsusebatch());
 
 		return localDefDocItem;
 	}

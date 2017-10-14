@@ -7,14 +7,10 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.model.DefDocItem;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
-import com.ahjswy.cn.utils.PDH;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;

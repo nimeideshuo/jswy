@@ -96,6 +96,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		atvSearch.setOnItemClickListener(atvSearchonItemClickListener);
 		// fileDao = new FieldSaleItemDAO();
 		// fileDao.deleteAll();
+		unitDAO = new GoodsUnitDAO();
 	}
 
 	private void initListView() {
@@ -172,29 +173,47 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		ArrayList<DefDocItemPD> data = new ArrayList<DefDocItemPD>(listItem);
 		ArrayList<DefDocItemPD> listDocItem = new ArrayList<DefDocItemPD>();
 		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-		for (int i = data.size() - 1; i >= 0; i--) {
+
+		for (int i = 0; i < data.size(); i++) {
 			DefDocItemPD items1 = data.get(i);
-			// 没有的商品 缓存
 			if (map.get(items1.getGoodsid()) == null) {
 				map.put(items1.getGoodsid(), new DefDocItemPD(items1));
-				data.remove(items1);
-				// data2.remove(items1);
 				continue;
 			}
 			DefDocItemPD itemxs2 = (DefDocItemPD) map.get(items1.getGoodsid());
 			if (items1.getGoodsid().equals(itemxs2.getGoodsid()) && items1.getUnitid().equals(itemxs2.getUnitid())) {
 				itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+				itemxs2.setBignum(unitDAO.getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
 				itemxs2.setNetnum(Utils.normalize(itemxs2.getNum() - itemxs2.getStocknum(), 2));
 				map.put(itemxs2.getGoodsid(), itemxs2);
-				// 商品 单位id 单价 相等删除！
-				data.remove(items1);
 			}
+
 		}
+
+		// for (int i = data.size() - 1; i >= 0; i--) {
+		// DefDocItemPD items1 = data.get(i);
+		// // 没有的商品 缓存
+		// if (map.get(items1.getGoodsid()) == null) {
+		// map.put(items1.getGoodsid(), new DefDocItemPD(items1));
+		// data.remove(items1);
+		// continue;
+		// }
+		// DefDocItemPD itemxs2 = (DefDocItemPD) map.get(items1.getGoodsid());
+		// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
+		// items1.getUnitid().equals(itemxs2.getUnitid())) {
+		// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+		// itemxs2.setNetnum(Utils.normalize(itemxs2.getNum() -
+		// itemxs2.getStocknum(), 2));
+		// map.put(itemxs2.getGoodsid(), itemxs2);
+		// // 商品 单位id 单价 相等删除！
+		// data.remove(items1);
+		// }
+		// }
 		Set<String> keySet = map.keySet();
 		for (String string : keySet) {
 			listDocItem.add((DefDocItemPD) map.get(string));
 		}
-		if ((combinationNum - listDocItem.size() - data.size()) == 0) {
+		if ((combinationNum - listDocItem.size()) == 0) {
 			// 没有要合并的商品!
 			return;
 		}
@@ -202,7 +221,6 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		// 设置数据
 		listItem.clear();
 		listItem.addAll(listDocItem);
-		listItem.addAll(data);
 		adapter.setData(listItem);
 	}
 
@@ -445,7 +463,6 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 	}
 
 	public DefDocItemPD fillItem(GoodsThin goodsThin, double stocknum, double costprice, double number) {
-		GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
 		DefDocItemPD defDocItemPD = new DefDocItemPD();
 		defDocItemPD.setItemid(0L);
 		defDocItemPD.setDocid(doc.getDocid());
@@ -456,21 +473,21 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		defDocItemPD.setModel(goodsThin.getModel());
 		GoodsUnit localGoodsUnit;
 		if (Utils.DEFAULT_TransferDocUNIT == 0) {
-			localGoodsUnit = goodsUnitDAO.queryBaseUnit(goodsThin.getId());
+			localGoodsUnit = unitDAO.queryBaseUnit(goodsThin.getId());
 		} else {
-			localGoodsUnit = goodsUnitDAO.queryBigUnit(goodsThin.getId());
+			localGoodsUnit = unitDAO.queryBigUnit(goodsThin.getId());
 		}
 		defDocItemPD.setUnitid(localGoodsUnit.getUnitid());
 		defDocItemPD.setUnitname(localGoodsUnit.getUnitname());
 		defDocItemPD.setStocknum(Utils.normalize(stocknum, 2));
-		defDocItemPD.setBigstocknum(goodsUnitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(),
-				defDocItemPD.getStocknum()));
+		defDocItemPD.setBigstocknum(
+				unitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getStocknum()));
 		defDocItemPD.setNum(number);
 		defDocItemPD.setBignum(
-				goodsUnitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNum()));
+				unitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNum()));
 		defDocItemPD.setNetnum(Utils.normalize(defDocItemPD.getNum() - defDocItemPD.getStocknum(), 2));
 		defDocItemPD.setBignetnum(
-				goodsUnitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNetnum()));
+				unitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNetnum()));
 		defDocItemPD.setCostprice(costprice);
 		defDocItemPD.setNetamount(Utils.normalizeSubtotal(defDocItemPD.getNetnum() * defDocItemPD.getCostprice()));
 		defDocItemPD.setRemark("");
@@ -673,7 +690,6 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		public void handleMessage(android.os.Message msg) {
 			String message = msg.obj.toString();
 			if (RequestHelper.isSuccess(message)) {
-				GoodsUnitDAO gd = new GoodsUnitDAO();
 				List<ReqStrGetGoodsPricePD> listNewItem = JSONUtil.str2list(message, ReqStrGetGoodsPricePD.class);
 				if (msg.what == 0) {
 					for (int i = 0; i < newListItem.size(); i++) {
@@ -686,10 +702,10 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 							}
 							itemPD.setStocknum(goodsPricePD.getStocknum());
 							itemPD.setBigstocknum(
-									gd.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getStocknum()));
+									unitDAO.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getStocknum()));
 							itemPD.setNetnum(Utils.normalize(itemPD.getNum() - itemPD.getStocknum(), 2));
 							itemPD.setBignetnum(
-									gd.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getNetnum()));
+									unitDAO.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getNetnum()));
 							itemPD.setCostprice(goodsPricePD.getCostprice());
 							itemPD.setNetamount(Utils.normalizeSubtotal(itemPD.getNetnum() * itemPD.getCostprice()));
 							itemPD.setBatch(goodsPricePD.getBatch());
@@ -708,7 +724,8 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 					DefDocItemPD itemPD = (DefDocItemPD) newListItem.get(0);
 					ReqStrGetGoodsPricePD goodsPrice = (ReqStrGetGoodsPricePD) listNewItem.get(0);
 					itemPD.setStocknum(goodsPrice.getStocknum());
-					itemPD.setBigstocknum(gd.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getStocknum()));
+					itemPD.setBigstocknum(
+							unitDAO.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getStocknum()));
 					itemPD.setNum(itemPD.getStocknum());
 					itemPD.setBignum(itemPD.getBigstocknum());
 					itemPD.setNetnum(0.0D);
@@ -725,6 +742,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			}
 		};
 	};
+	private GoodsUnitDAO unitDAO;
 	// private FieldSaleItemDAO fileDao;
 
 	private void saveDoc() {

@@ -340,7 +340,8 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.readValue(localString,
 						DocContainerEntity.class);
 				doc = ((DefDoc) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDoc.class));
-				InDocOpenActivity.this.fillDoc();
+				fillDoc();
+				doc.setShowid("销售出货单");
 				localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
 				Intent localIntent = new Intent();
 				// TODO

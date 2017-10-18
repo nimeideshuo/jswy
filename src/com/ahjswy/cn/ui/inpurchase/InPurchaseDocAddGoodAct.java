@@ -86,9 +86,7 @@ public class InPurchaseDocAddGoodAct extends BaseActivity implements OnClickList
 		// title 监听
 		btnWarehouse.setOnClickListener(this);
 		btnUnit.setOnClickListener(this);
-		if (goodsUnitDAO == null) {
-			goodsUnitDAO = new GoodsUnitDAO();
-		}
+		goodsUnitDAO = new GoodsUnitDAO();
 
 	}
 
@@ -106,7 +104,7 @@ public class InPurchaseDocAddGoodAct extends BaseActivity implements OnClickList
 		btnWarehouse.setTag(defdocitemCG.getWarehouseid());
 		btnUnit.setText(defdocitemCG.getUnitname());
 		btnUnit.setTag(defdocitemCG.getUnitid());
-		etNum.setText(defdocitemCG.getNum() + "");
+		etNum.setText(defdocitemCG.getNum() == 0 ? "" : defdocitemCG.getNum() + "");
 		etPrice.setText(defdocitemCG.getPrice() + "");
 		etSubtotal.setText(defdocitemCG.getSubtotal() + "");
 		etDiscountRatio.setText(defdocitemCG.getDiscountratio() + "");

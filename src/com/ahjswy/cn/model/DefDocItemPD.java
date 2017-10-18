@@ -141,92 +141,92 @@ public class DefDocItemPD implements Serializable {
 		return this.isusebatch;
 	}
 
-	public void setBarcode(String paramString) {
-		this.barcode = paramString;
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
 	}
 
-	public void setBatch(String paramString) {
-		this.batch = paramString;
+	public void setBatch(String batch) {
+		this.batch = batch;
 	}
 
-	public void setBignetnum(String paramString) {
-		this.bignetnum = paramString;
+	public void setBignetnum(String bignetnum) {
+		this.bignetnum = bignetnum;
 	}
 
-	public void setBignum(String paramString) {
-		this.bignum = paramString;
+	public void setBignum(String bignum) {
+		this.bignum = bignum;
 	}
 
-	public void setBigstocknum(String paramString) {
-		this.bigstocknum = paramString;
+	public void setBigstocknum(String bigstocknum) {
+		this.bigstocknum = bigstocknum;
 	}
 
-	public void setCostprice(double paramDouble) {
-		this.costprice = paramDouble;
+	public void setCostprice(double costprice) {
+		this.costprice = costprice;
 	}
 
-	public void setDocid(long paramLong) {
-		this.docid = paramLong;
+	public void setDocid(long docid) {
+		this.docid = docid;
 	}
 
-	public void setGoodsid(String paramString) {
-		this.goodsid = paramString;
+	public void setGoodsid(String goodsid) {
+		this.goodsid = goodsid;
 	}
 
-	public void setGoodsname(String paramString) {
-		this.goodsname = paramString;
+	public void setGoodsname(String goodsname) {
+		this.goodsname = goodsname;
 	}
 
-	public void setIsusebatch(boolean paramBoolean) {
-		this.isusebatch = paramBoolean;
+	public void setIsusebatch(boolean isusebatch) {
+		this.isusebatch = isusebatch;
 	}
 
-	public void setItemid(long paramLong) {
-		this.itemid = paramLong;
+	public void setItemid(long itemid) {
+		this.itemid = itemid;
 	}
 
-	public void setModel(String paramString) {
-		this.model = paramString;
+	public void setModel(String model) {
+		this.model = model;
 	}
 
-	public void setNetamount(double paramDouble) {
-		this.netamount = paramDouble;
+	public void setNetamount(double netamount) {
+		this.netamount = netamount;
 	}
 
-	public void setNetnum(double paramDouble) {
-		this.netnum = paramDouble;
+	public void setNetnum(double netnum) {
+		this.netnum = netnum;
 	}
 
-	public void setNum(double paramDouble) {
-		this.num = paramDouble;
+	public void setNum(double num) {
+		this.num = num;
 	}
 
-	public void setProductiondate(String paramString) {
-		this.productiondate = paramString;
+	public void setProductiondate(String productiondate) {
+		this.productiondate = productiondate;
 	}
 
-	public void setRemark(String paramString) {
-		this.remark = paramString;
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
-	public void setRversion(long paramLong) {
-		this.rversion = paramLong;
+	public void setRversion(long rversion) {
+		this.rversion = rversion;
 	}
 
-	public void setSpecification(String paramString) {
-		this.specification = paramString;
+	public void setSpecification(String specification) {
+		this.specification = specification;
 	}
 
-	public void setStocknum(double paramDouble) {
-		this.stocknum = paramDouble;
+	public void setStocknum(double stocknum) {
+		this.stocknum = stocknum;
 	}
 
-	public void setUnitid(String paramString) {
-		this.unitid = paramString;
+	public void setUnitid(String unitid) {
+		this.unitid = unitid;
 	}
 
-	public void setUnitname(String paramString) {
-		this.unitname = paramString;
+	public void setUnitname(String unitname) {
+		this.unitname = unitname;
 	}
 
 }

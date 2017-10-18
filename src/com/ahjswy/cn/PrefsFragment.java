@@ -90,6 +90,7 @@ public class PrefsFragment extends PreferenceFragment {
 		getMyPreference(R.string.clearlastzero).setOnPreferenceClickListener(this.preferenceClickListener);
 		getMyPreference(R.string.printer_model).setOnPreferenceClickListener(this.preferenceClickListener);
 		getMyPreference(R.string.bluetoothPrintIsShow).setOnPreferenceClickListener(this.preferenceClickListener);
+		getMyPreference(R.string.combinationItem).setOnPreferenceClickListener(this.preferenceClickListener);
 	}
 
 	private void intiValue() {
@@ -171,6 +172,9 @@ public class PrefsFragment extends PreferenceFragment {
 		String showText = ap.getValue("minustuihuo", "0").equals("0") ? "显示为负数" : "显示为正数";
 		getMyPreference(R.string.minustuihuo)
 				.setSummary(TextUtils.setTextStyle(getResources().getString(R.string.cancel_goods_show), showText));
+		getMyPreference(R.string.combinationItem)
+				.setSummary(TextUtils.setTextStyle(getResources().getString(R.string.combinationItem_on_off),
+						Boolean.parseBoolean(ap.getValue("iscombinationItem")) == true ? "开启" : "关闭"));
 		// 是否显示条码
 		String isShowBarcode = ap.getValue("printbarcode", "0").equals("0") ? "不打印" : "打印";
 		getMyPreference(R.string.printbarcode).setSummary(
@@ -233,7 +237,16 @@ public class PrefsFragment extends PreferenceFragment {
 				goodsSelectMore();
 				return false;
 			}
-			// TODO 是否显示蓝牙打印
+			if (preference.getKey().equals(getString(R.string.combinationItem))) {
+				ap.setValue("iscombinationItem", !Boolean.parseBoolean(ap.getValue("iscombinationItem")));
+				String isShow = Boolean.parseBoolean(ap.getValue("iscombinationItem")) == true ? "开启" : "关闭";
+				getMyPreference(R.string.combinationItem)
+
+						.setSummary(TextUtils.setTextStyle(getResources().getString(R.string.combinationItem_on_off),
+								isShow));
+				return false;
+			}
+			// 是否显示蓝牙打印
 			if (preference.getKey().equals(getString(R.string.bluetoothPrintIsShow))) {
 				ap.setValue("bluetoothPrintIsShow", !Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow")));
 				String isShow = Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow")) == true ? "显示" : "不显示";
@@ -352,7 +365,7 @@ public class PrefsFragment extends PreferenceFragment {
 	 * 设置小票打印模板
 	 */
 	protected void printMode() {
-		// TODO 设置小票打印模板
+		// 设置小票打印模板
 
 	}
 
@@ -391,7 +404,7 @@ public class PrefsFragment extends PreferenceFragment {
 	 * 打印时退货商品数量显示为负数，销售退货单无效
 	 */
 	protected void minustuihuo() {
-		// TODO 打印时退货商品数量显示为负数，销售退货单无效
+		// 打印时退货商品数量显示为负数，销售退货单无效
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle("数值打印");
 		String items[] = { "显示为负数", "显示为正数" };

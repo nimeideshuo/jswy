@@ -48,7 +48,7 @@
 
             <TextView
                 style="@style/m_text"
-                android:text="@string/barcode" />
+                android:text="条  形  码" />
 
             <com.ahjswy.cn.views.EditTextWithDel
                 android:id="@id/etBarcode"
@@ -62,7 +62,7 @@
 
             <TextView
                 style="@style/m_text"
-                android:text="@string/specification" />
+                android:text="规        格" />
 
             <com.ahjswy.cn.views.EditTextWithDel
                 android:id="@id/etSpecification"
@@ -76,7 +76,7 @@
 
             <TextView
                 style="@style/m_text"
-                android:text="@string/model" />
+                android:text="型        号" />
 
             <com.ahjswy.cn.views.EditTextWithDel
                 android:id="@id/etModel"
@@ -104,11 +104,41 @@
 
             <TextView
                 style="@style/m_text"
-                android:text="@string/goods_remark_m" />
+                android:text="商品备注" />
 
             <com.ahjswy.cn.views.EditTextWithDel
                 android:id="@+id/etRemark"
                 style="@style/m_edtext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="保  质  期" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@+id/guaranteeperiod"
+                style="@style/m_edtext"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                style="@style/m_text"
+                android:text="临期报警" />
+
+            <com.ahjswy.cn.views.EditTextWithDel
+                android:id="@+id/guaranteeearlier"
+                style="@style/m_edtext"
+                android:inputType="numberDecimal" />
         </LinearLayout>
 
         <LinearLayout

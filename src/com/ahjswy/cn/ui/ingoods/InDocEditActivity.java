@@ -132,14 +132,7 @@ public class InDocEditActivity extends BaseActivity
 			listView.setAdapter(adapter);
 		}
 		maler = new MAlertDialog(this);
-		// bt_totalSum.setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// // TODO 合并
-		// combinationItem();
-		// }
-		// });
+		unitDao = new GoodsUnitDAO();
 	}
 
 	private void intDate() {
@@ -366,21 +359,23 @@ public class InDocEditActivity extends BaseActivity
 		if (TextUtils.isEmptyS(this.doc.getBuilderid())) {
 			this.doc.setBuilderid(SystemState.getUser().getId());
 		}
+		if (!TextUtils.isEmptyS(doc.getCustomerid())) {
+			return "没有选择客户!";
+		}
 		if (!TextUtils.isEmptyS(this.doc.getDepartmentid())) {
-			message = "部门不能为空";
+			return "部门不能为空!";
 		}
 		if ((this.doc.getDiscountratio() <= 0.0D) || (this.doc.getDiscountratio() > 1.0D)) {
-			PDH.showMessage("整单折扣必须大于0且小于等于1");
-			return null;
+			return "整单折扣必须大于0且小于等于1";
 		}
 		if (!TextUtils.isEmptyS(this.doc.getDeliverytime())) {
-			message = "交货日期不能为空";
+			return "交货日期不能为空";
 		}
 		if (!TextUtils.isEmptyS(this.doc.getSettletime())) {
-			message = "结算日期不能为空";
+			return "结算日期不能为空";
 		}
 		if (!TextUtils.isEmptyS(this.doc.getPrinttemplate())) {
-			message = "打印模板不能为空";
+			return "打印模板不能为空";
 		}
 		for (int k = 0; k < listItem.size(); k++) {
 			DefDocItemXS localDefDocItem = (DefDocItemXS) this.listItem.get(k);
@@ -699,7 +694,6 @@ public class InDocEditActivity extends BaseActivity
 	}
 
 	private DefDocItemXS fillItem(GoodsThin goodsThin, double num, double price) {
-		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
 		DefDocItemXS localDefDocItem = new DefDocItemXS();
 		localDefDocItem.setItemid(0L);
 		localDefDocItem.setDocid(this.doc.getDocid());
@@ -712,15 +706,15 @@ public class InDocEditActivity extends BaseActivity
 		localDefDocItem.setWarehousename(this.doc.getWarehousename());
 		GoodsUnit localGoodsUnit = null;
 		if (Utils.DEFAULT_OutDocUNIT == 0) {
-			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(goodsThin.getId());
+			localGoodsUnit = unitDao.queryBaseUnit(goodsThin.getId());
 		} else {
-			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(goodsThin.getId());
+			localGoodsUnit = unitDao.queryBigUnit(goodsThin.getId());
 		}
 		localDefDocItem.setUnitid(localGoodsUnit.getUnitid());
 		localDefDocItem.setUnitname(localGoodsUnit.getUnitname());
 		localDefDocItem.setNum(Utils.normalize(num, 2));
-		localDefDocItem.setBignum(localGoodsUnitDAO.getBigNum(localDefDocItem.getGoodsid(), localDefDocItem.getUnitid(),
-				localDefDocItem.getNum()));
+		localDefDocItem.setBignum(
+				unitDao.getBigNum(localDefDocItem.getGoodsid(), localDefDocItem.getUnitid(), localDefDocItem.getNum()));
 		localDefDocItem.setPrice(Utils.normalizePrice(price));
 		localDefDocItem.setSubtotal(Utils.normalizeSubtotal(localDefDocItem.getNum() * localDefDocItem.getPrice()));
 		localDefDocItem.setDiscountratio(this.doc.getDiscountratio());
@@ -747,39 +741,59 @@ public class InDocEditActivity extends BaseActivity
 		ArrayList<DefDocItemXS> data = new ArrayList<DefDocItemXS>(adapter.getData());
 		ArrayList<DefDocItemXS> listDocItem = new ArrayList<DefDocItemXS>();
 		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-		for (int i = data.size() - 1; i >= 0; i--) {
+		for (int i = 0; i < data.size(); i++) {
 			DefDocItemXS items1 = data.get(i);
-			// 没有的商品 缓存
 			if (map.get(items1.getGoodsid()) == null) {
 				map.put(items1.getGoodsid(), new DefDocItemXS(items1));
-				data.remove(items1);
-				// data2.remove(items1);
 				continue;
 			}
 			DefDocItemXS itemxs2 = (DefDocItemXS) map.get(items1.getGoodsid());
 			if (items1.getGoodsid().equals(itemxs2.getGoodsid()) && items1.getUnitid().equals(itemxs2.getUnitid())
 					&& items1.getPrice() == itemxs2.getPrice()
-					&& items1.getDiscountratio() == itemxs2.getDiscountratio()) {
+					&& items1.getDiscountratio() == itemxs2.getDiscountratio()
+					&& items1.getWarehouseid().equals(itemxs2.getWarehouseid())) {
 				itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+				itemxs2.setBignum(unitDao.getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
 				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
 				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
 				map.put(itemxs2.getGoodsid(), itemxs2);
-				// 商品 单位id 单价 相等删除！
-				data.remove(items1);
 			}
+
 		}
+		// for (int i = data.size() - 1; i >= 0; i--) {
+		// DefDocItemXS items1 = data.get(i);
+		// // 没有的商品 缓存
+		// if (map.get(items1.getGoodsid()) == null) {
+		// map.put(items1.getGoodsid(), new DefDocItemXS(items1));
+		// data.remove(items1);
+		// continue;
+		// }
+		// DefDocItemXS itemxs2 = (DefDocItemXS) map.get(items1.getGoodsid());
+		// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
+		// items1.getUnitid().equals(itemxs2.getUnitid())
+		// && items1.getPrice() == itemxs2.getPrice()
+		// && items1.getDiscountratio() == itemxs2.getDiscountratio()
+		// && items1.getWarehouseid().equals(itemxs2.getWarehouseid())) {
+		// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+		// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
+		// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
+		// itemxs2.getDiscountratio());
+		// map.put(itemxs2.getGoodsid(), itemxs2);
+		// // 商品 单位id 单价 相等删除！
+		// data.remove(items1);
+		// }
+		// }
 		Set<String> keySet = map.keySet();
 		for (String string : keySet) {
 			listDocItem.add((DefDocItemXS) map.get(string));
 		}
-		if ((combinationNum - listDocItem.size() - data.size()) == 0) {
+		if ((combinationNum - listDocItem.size()) == 0) {
 			// 没有要合并的商品!
 			return;
 		}
 		// 设置数据
 		listItem.clear();
 		listItem.addAll(listDocItem);
-		listItem.addAll(data);
 		adapter.setData(listItem);
 		showSuccess("同品增加成功!");
 
@@ -908,8 +922,8 @@ public class InDocEditActivity extends BaseActivity
 								isgift = true;
 							}
 							defDocItem.setIsgift(isgift);
-							String bigNum = new GoodsUnitDAO().getBigNum(defDocItem.getGoodsid(),
-									defDocItem.getUnitid(), defDocItem.getNum());
+							String bigNum = unitDao.getBigNum(defDocItem.getGoodsid(), defDocItem.getUnitid(),
+									defDocItem.getNum());
 							defDocItem.setBignum(bigNum);
 							defDocItem.setIsdiscount(getGoodsPrice.getIsdiscount());
 						}
@@ -965,6 +979,7 @@ public class InDocEditActivity extends BaseActivity
 	private Dialog_listCheckBox dialog;
 	private MAlertDialog maler;
 	private Button btnGoodClass;
+	private GoodsUnitDAO unitDao;
 
 	/**
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *

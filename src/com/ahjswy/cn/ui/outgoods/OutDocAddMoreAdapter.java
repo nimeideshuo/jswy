@@ -127,11 +127,11 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 								if (goodsPrice == null) {
 									return;
 								}
-								itemXS.setPrice(goodsPrice.getPrice());
 								context.runOnUiThread(new Runnable() {
 
 									@Override
 									public void run() {
+										itemXS.setPrice(goodsPrice.getPrice());
 										tv_dicPrice.setText("单价:" + goodsPrice.getPrice() + "元");
 									}
 								});
@@ -150,12 +150,13 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		tv_dicPrice.setOnClickListener(priceOnClick);
 		tv_dicPrice.setTag(Integer.valueOf(position));
 		tv_Bfci.setText("库存:" + itemXS.goodStock);
-		if (listItems.get(position).getNum() == 0.0d) {
-			etNum.setText("");
-		} else {
-			String num = Utils.removeZero(itemXS.getNum() + "");
-			etNum.setText(num);
-		}
+		etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
+		// if (listItems.get(position).getNum() == 0.0d) {
+		// etNum.setText("");
+		// } else {
+		// String num = Utils.removeZero(itemXS.getNum() + "");
+		// etNum.setText(num);
+		// }
 		if (selectPosition == position) {
 			etNum.requestFocus();
 		}

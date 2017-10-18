@@ -99,6 +99,8 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		cbIsusebatch = (CheckBox) findViewById(R.id.cbIsusebatch);
 		etSalecue = (EditText) findViewById(R.id.etSalecue);
 		etRemark = (EditText) findViewById(R.id.etRemark);
+		guaranteeperiod = (EditText) findViewById(R.id.guaranteeperiod);
+		guaranteeearlier = (EditText) findViewById(R.id.guaranteeearlier);
 		btnGoodsClass = (Button) findViewById(R.id.btn_goodsClass);
 		btnGoodsClass.setOnClickListener(this);
 		Button btnSubmit = (Button) findViewById(R.id.btnSubmit);
@@ -335,6 +337,8 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private EditText ratio3;
 	private Scaner factory;
 	private ArrayList<Pricesystem> listPrice;
+	private EditText guaranteeearlier;
+	private EditText guaranteeperiod;
 
 	private void submit() {
 		String validateDoc = validateDoc();
@@ -377,7 +381,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			unit3.setRatio(Utils.getDouble(ratio3.getText().toString()));
 			listGoodUnit.add(unit3);
 		}
-
+		// TODO 提交
 		Goods goods = new Goods();
 		goods.name = etName.getText().toString();
 		goods.pinyin = new PinYin4j().getPinyin(goods.name).iterator().next();
@@ -389,6 +393,10 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		goods.isdiscount = cbIsDiscount.isChecked();
 		goods.isusebatch = cbIsusebatch.isChecked();
 		goods.goodsclassid = btnGoodsClass.getTag().toString();
+		// 保质期
+		goods.guaranteeperiod = guaranteeperiod.getText().toString();
+		// 临期报警
+		goods.guaranteeearlier = guaranteeearlier.getText().toString();
 		String addGood = new ServiceGoods().gds_AddGood(goods, listPrice, listGoodUnit);
 		if (RequestHelper.isSuccess(addGood)) {
 			showSuccess("添加商品成功!");
@@ -457,7 +465,15 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 
 	@Override
 	public void setBarcode(String barcode) {
-		etBarcode.setText(barcode);
+
+		if (TextUtils.isEmpty(etBarcode.getText().toString())) {
+			etBarcode.setText(barcode);
+			return;
+		}
+		if (TextUtils.isEmpty(etModel.getText().toString())) {
+			etModel.setText(barcode);
+			return;
+		}
 	}
 
 	public class PriceAdapter extends BaseAdapter {
@@ -487,7 +503,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			Pricesystem pricesystem = listAdapterPrice.get(position);
 			String psname = pricesystem.getPsname();
 			tvName.setText(psname);
-			edNumber.setText(pricesystem == null ? "0" : pricesystem.getPrice() + "");
+			edNumber.setText(pricesystem == null || pricesystem.getPrice() == 0 ? "" : pricesystem.getPrice() + "");
 			edNumber.setTag(Integer.valueOf(position));
 			edNumber.addTextChangedListener(new MyWatcher(edNumber));
 			return view;

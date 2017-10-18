@@ -95,14 +95,13 @@ public class OutInDocAddGoodAct extends BaseActivity implements OnFocusChangeLis
 		tvSpecification.setText(this.docitem.getSpecification());
 		btnUnit.setText(docitem.getUnitname());
 		btnUnit.setTag(docitem.getUnitid());
-		etNum.setText(docitem.getNum() + "");
+		etNum.setText(docitem.getNum() == 0 ? "" : docitem.getNum() + "");
 		etPrice.setText(docitem.getPrice() + "");
 		etSubtotal.setText(docitem.getSubtotal() + "");
 		etDiscountRatio.setText(docitem.getDiscountratio() + "");
 		etDiscountPrice.setText(docitem.getDiscountprice() + "");
 		etDiscountSubtotal.setText(docitem.getDiscountsubtotal() + "");
 		etRemark.setText(docitem.getRemark());
-
 	}
 
 	private void initListener() {

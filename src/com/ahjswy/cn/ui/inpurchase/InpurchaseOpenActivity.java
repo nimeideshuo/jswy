@@ -273,11 +273,13 @@ public class InpurchaseOpenActivity extends BaseActivity implements OnClickListe
 			doccg.setPrinttemplate("2014采购单模板");// 无效！PC端模板名称已经写死 2016采购单模板
 			doccg.setIsavailable(true);
 			doccg.setIssettleup(true);
+			doccg.setShowid("采购入库单");
 			PurchaseEntity entity = new PurchaseEntity();
 			Collections.sort(payTypes);
 			entity.setTypelistjson(JSONUtil.object2Json(payTypes));
 			entity.setDocjson(JSONUtil.object2Json(doccg));
-			//TODO
+
+			// TODO
 			Intent intent = new Intent(InpurchaseOpenActivity.this, InpurchaseEditActivity.class);
 			intent.putExtra("entity", entity);
 			intent.putExtra("ishaschanged", true);

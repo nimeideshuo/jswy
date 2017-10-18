@@ -39,6 +39,12 @@
         <Preference
             android:key="@string/goods_select_more_add"
             android:title="商品多选模式" />
+
+        <CheckBoxPreference
+            android:key="@string/combinationItem"
+            android:summary="商品合并：默认不合并"
+            android:title="商品合并开关:" >
+        </CheckBoxPreference>
     </PreferenceCategory>
     <PreferenceCategory android:title="打印设置" >
         <CheckBoxPreference

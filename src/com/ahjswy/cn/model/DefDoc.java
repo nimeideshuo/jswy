@@ -184,145 +184,145 @@ public class DefDoc implements Serializable {
 		return this.issettleup;
 	}
 
-	public void setBuilderid(String paramString) {
-		if (!paramString.isEmpty()) {
-			this.builderid = paramString;
+	public void setBuilderid(String builderid) {
+		if (!builderid.isEmpty()) {
+			this.builderid = builderid;
 			return;
 		}
 		this.builderid = null;
 	}
 
-	public void setBuildername(String paramString) {
-		this.buildername = paramString;
+	public void setBuildername(String buildername) {
+		this.buildername = buildername;
 	}
 
-	public void setBuildtime(String paramString) {
-		this.buildtime = paramString;
+	public void setBuildtime(String buildtime) {
+		this.buildtime = buildtime;
 	}
 
-	public void setCustomeraddress(String paramString) {
-		this.customeraddress = paramString;
+	public void setCustomeraddress(String customeraddress) {
+		this.customeraddress = customeraddress;
 	}
 
-	public void setCustomerid(String paramString) {
-		if (paramString != null && paramString.length() > 0) {
-			this.customerid = paramString;
+	public void setCustomerid(String customerid) {
+		if (customerid != null && customerid.length() > 0) {
+			this.customerid = customerid;
 			return;
 		}
 		this.customerid = null;
 	}
 
-	public void setCustomername(String paramString) {
-		this.customername = paramString;
+	public void setCustomername(String customername) {
+		this.customername = customername;
 	}
 
-	public void setDeliverytime(String paramString) {
-		this.deliverytime = paramString;
+	public void setDeliverytime(String deliverytime) {
+		this.deliverytime = deliverytime;
 	}
 
-	public void setDepartmentid(String paramString) {
-		if (paramString != null) {
-			this.departmentid = paramString;
+	public void setDepartmentid(String departmentid) {
+		if (departmentid != null) {
+			this.departmentid = departmentid;
 			return;
 		}
 		this.departmentid = null;
 	}
 
-	public void setDepartmentname(String paramString) {
-		this.departmentname = paramString;
+	public void setDepartmentname(String departmentname) {
+		this.departmentname = departmentname;
 	}
 
-	public void setDiscountratio(double paramDouble) {
-		this.discountratio = paramDouble;
+	public void setDiscountratio(double discountratio) {
+		this.discountratio = discountratio;
 	}
 
-	public void setDistributionid(String paramString) {
-		this.distributionid = paramString;
+	public void setDistributionid(String distributionid) {
+		this.distributionid = distributionid;
 	}
 
-	public void setDocid(long paramLong) {
-		this.docid = paramLong;
+	public void setDocid(long docid) {
+		this.docid = docid;
 	}
 
-	public void setDoctypeid(String paramString) {
-		this.doctypeid = paramString;
+	public void setDoctypeid(String doctypeid) {
+		this.doctypeid = doctypeid;
 	}
 
-	public void setDoctypename(String paramString) {
-		this.doctypename = paramString;
+	public void setDoctypename(String doctypename) {
+		this.doctypename = doctypename;
 	}
 
-	public void setFinancialcfid(String paramString) {
-		this.financialcfid = paramString;
+	public void setFinancialcfid(String financialcfid) {
+		this.financialcfid = financialcfid;
 	}
 
-	public void setIsavailable(boolean paramBoolean) {
-		this.isavailable = paramBoolean;
+	public void setIsavailable(boolean isavailable) {
+		this.isavailable = isavailable;
 	}
 
-	public void setIsdistribution(boolean paramBoolean) {
-		this.isdistribution = paramBoolean;
+	public void setIsdistribution(boolean isdistribution) {
+		this.isdistribution = isdistribution;
 	}
 
-	public void setIsposted(boolean paramBoolean) {
-		this.isposted = paramBoolean;
+	public void setIsposted(boolean isposted) {
+		this.isposted = isposted;
 	}
 
-	public void setIssettleup(boolean paramBoolean) {
-		this.issettleup = paramBoolean;
+	public void setIssettleup(boolean issettleup) {
+		this.issettleup = issettleup;
 	}
 
-	public void setMakerid(String paramString) {
-		if (paramString != null) {
-			this.makerid = paramString;
+	public void setMakerid(String makerid) {
+		if (makerid != null) {
+			this.makerid = makerid;
 			return;
 		}
 		this.makerid = null;
 	}
 
-	public void setMakername(String paramString) {
-		this.makername = paramString;
+	public void setMakername(String makername) {
+		this.makername = makername;
 	}
 
-	public void setMaketime(String paramString) {
-		this.maketime = paramString;
+	public void setMaketime(String maketime) {
+		this.maketime = maketime;
 	}
 
-	public void setPreference(double paramDouble) {
-		this.preference = paramDouble;
+	public void setPreference(double preference) {
+		this.preference = preference;
 	}
 
-	public void setPrintnum(int paramInt) {
-		this.printnum = paramInt;
+	public void setPrintnum(int printnum) {
+		this.printnum = printnum;
 	}
 
-	public void setPrinttemplate(String paramString) {
-		this.printtemplate = paramString;
+	public void setPrinttemplate(String printtemplate) {
+		this.printtemplate = printtemplate;
 	}
 
-	public void setRemark(String paramString) {
-		this.remark = paramString;
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
-	public void setRversion(long paramLong) {
-		this.rversion = paramLong;
+	public void setRversion(long rversion) {
+		this.rversion = rversion;
 	}
 
-	public void setSettletime(String paramString) {
-		this.settletime = paramString;
+	public void setSettletime(String settletime) {
+		this.settletime = settletime;
 	}
 
-	public void setShowid(String paramString) {
-		this.showid = paramString;
+	public void setShowid(String showid) {
+		this.showid = showid;
 	}
 
-	public void setSummary(String paramString) {
-		this.summary = paramString;
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 
-	public void setWarehouseid(String paramString) {
-		if (!paramString.isEmpty()) {
-			this.warehouseid = paramString;
+	public void setWarehouseid(String warehouseid) {
+		if (!warehouseid.isEmpty()) {
+			this.warehouseid = warehouseid;
 			return;
 		}
 		this.warehouseid = null;

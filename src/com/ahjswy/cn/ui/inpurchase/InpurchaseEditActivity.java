@@ -1,7 +1,11 @@
 package com.ahjswy.cn.ui.inpurchase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.SystemState;
@@ -191,7 +195,7 @@ public class InpurchaseEditActivity extends BaseActivity
 		localArrayList = new ArrayList<DefDocItemCG>();
 		if (goodsThinList.size() == 1) {
 			long maxTempItemId = getMaxTempItemId();
-			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, maxTempItemId + 1L);
+			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), 1, 0.0D, maxTempItemId + 1L);
 			localArrayList.add(fillItem);
 			Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
@@ -209,7 +213,7 @@ public class InpurchaseEditActivity extends BaseActivity
 					long maxTempItemId = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
 						maxTempItemId += 1L;
-						DefDocItemCG fillItem = fillItem(select.get(i), 0.0D, 0.0D, maxTempItemId);
+						DefDocItemCG fillItem = fillItem(select.get(i), 1, 0.0D, maxTempItemId);
 						localArrayList.add(fillItem);
 
 					}
@@ -238,6 +242,72 @@ public class InpurchaseEditActivity extends BaseActivity
 			scaner = Scaner.factory(this);
 			scaner.setBarcodeListener(this);
 		}
+	}
+
+	protected void combinationItem() {
+		int combinationNum = listItem.size();
+		ArrayList<DefDocItemCG> data = new ArrayList<DefDocItemCG>(listItem);
+		ArrayList<DefDocItemCG> listDocItem = new ArrayList<DefDocItemCG>();
+		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+
+		for (int i = 0; i < data.size(); i++) {
+			DefDocItemCG items1 = data.get(i);
+			if (map.get(items1.getGoodsid()) == null) {
+				map.put(items1.getGoodsid(), new DefDocItemCG(items1));
+				continue;
+			}
+			DefDocItemCG itemxs2 = (DefDocItemCG) map.get(items1.getGoodsid());
+			if (items1.getGoodsid().equals(itemxs2.getGoodsid()) && items1.getUnitid().equals(itemxs2.getUnitid())
+					&& items1.getPrice() == itemxs2.getPrice()
+					&& items1.getDiscountratio() == itemxs2.getDiscountratio()
+					&& items1.getWarehouseid().equals(itemxs2.getWarehouseid())) {
+				itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+				itemxs2.setBignum(mGoodsUnitDAO.getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
+				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
+				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
+				map.put(itemxs2.getGoodsid(), itemxs2);
+			}
+
+		}
+
+		// for (int i = data.size() - 1; i >= 0; i--) {
+		// DefDocItemCG items1 = data.get(i);
+		// // 没有的商品 缓存
+		// if (map.get(items1.getGoodsid()) == null) {
+		// map.put(items1.getGoodsid(), new DefDocItemCG(items1));
+		// data.remove(items1);
+		// // data2.remove(items1);
+		// continue;
+		// }
+		// DefDocItemCG itemxs2 = (DefDocItemCG) map.get(items1.getGoodsid());
+		// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
+		// items1.getUnitid().equals(itemxs2.getUnitid())
+		// && items1.getPrice() == itemxs2.getPrice()
+		// && items1.getDiscountratio() == itemxs2.getDiscountratio()
+		// && items1.getWarehouseid().equals(itemxs2.getWarehouseid())) {
+		// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+		// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
+		// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
+		// itemxs2.getDiscountratio());
+		// map.put(itemxs2.getGoodsid(), itemxs2);
+		// // 商品 单位id 单价 相等删除！
+		// data.remove(items1);
+		// }
+		//
+		// }
+		Set<String> keySet = map.keySet();
+		for (String string : keySet) {
+			listDocItem.add((DefDocItemCG) map.get(string));
+		}
+		if ((combinationNum - listDocItem.size()) == 0) {
+			// 没有要合并的商品!
+			return;
+		}
+		showSuccess("同品增加成功!");
+		// 设置数据
+		listItem.clear();
+		listItem.addAll(listDocItem);
+		adapter.setData(listItem);
 	}
 
 	private AdapterView.OnItemClickListener onItemClickListeners = new AdapterView.OnItemClickListener() {
@@ -286,8 +356,7 @@ public class InpurchaseEditActivity extends BaseActivity
 			defdocitemcg.setDiscountprice(Utils.normalize(price * defdocitemcg.getDiscountratio(), 3));// 折后单价
 			defdocitemcg.setDiscountsubtotal(
 					Utils.normalize(price * defdocitemcg.getDiscountratio() * defdocitemcg.getNum(), 3));// 折后总价
-			GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();// 设置基本单位
-			String bigNum = localGoodsUnitDAO.getBigNum(defdocitemcg.getGoodsid(), defdocitemcg.getUnitid(),
+			String bigNum = mGoodsUnitDAO.getBigNum(defdocitemcg.getGoodsid(), defdocitemcg.getUnitid(),
 					defdocitemcg.getNum());
 			defdocitemcg.setBignum(bigNum);
 			defdocitemcg.setSubtotal(defdocitemcg.getNum() * price);// 小计
@@ -348,7 +417,7 @@ public class InpurchaseEditActivity extends BaseActivity
 		ArrayList<DefDocItemCG> localArrayList = new ArrayList<DefDocItemCG>();
 		for (int i = 0; i < localList.size(); i++) {
 			GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
-			DefDocItemCG fillItem = fillItem(localGoodsThin, 0.0D, 0.0D, 0);
+			DefDocItemCG fillItem = fillItem(localGoodsThin, 1, 0.0D, 0);
 			if (fillItem == null) {
 				continue;
 			}
@@ -361,7 +430,6 @@ public class InpurchaseEditActivity extends BaseActivity
 	}
 
 	private DefDocItemCG fillItem(GoodsThin localGoodsThin, double paramDouble1, double paramDouble2, long paramLong) {
-		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
 		DefDocItemCG defDocItemCG = new DefDocItemCG();
 		defDocItemCG.setGoodsid(localGoodsThin.getId());
 		defDocItemCG.setGoodsname(localGoodsThin.getName());
@@ -374,9 +442,9 @@ public class InpurchaseEditActivity extends BaseActivity
 		defDocItemCG.setDiscountratio(doccg.getDiscountratio());
 		GoodsUnit localGoodsUnit = null;
 		if (Utils.DEFAULT_OutDocUNIT == 0) {
-			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(localGoodsThin.getId());
+			localGoodsUnit = mGoodsUnitDAO.queryBaseUnit(localGoodsThin.getId());
 		} else {
-			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(localGoodsThin.getId());
+			localGoodsUnit = mGoodsUnitDAO.queryBigUnit(localGoodsThin.getId());
 		}
 		if (localGoodsUnit == null) {
 			return null;
@@ -384,8 +452,8 @@ public class InpurchaseEditActivity extends BaseActivity
 		defDocItemCG.setUnitid(localGoodsUnit.getUnitid());
 		defDocItemCG.setUnitname(localGoodsUnit.getUnitname());
 		defDocItemCG.setNum(Utils.normalize(paramDouble1, 2));
-		defDocItemCG.setBignum(localGoodsUnitDAO.getBigNum(defDocItemCG.getGoodsid(), defDocItemCG.getUnitid(),
-				defDocItemCG.getNum()));
+		defDocItemCG.setBignum(
+				mGoodsUnitDAO.getBigNum(defDocItemCG.getGoodsid(), defDocItemCG.getUnitid(), defDocItemCG.getNum()));
 
 		// 价格
 		defDocItemCG.setPrice(Utils.normalizePrice(paramDouble2));
@@ -683,7 +751,8 @@ public class InpurchaseEditActivity extends BaseActivity
 
 								@Override
 								public void run() {
-									listItem.addAll(0, newListItem);
+									listItem.addAll(newListItem);
+									combinationItem();
 									adapter.setData(listItem);
 									listview_copy_dele.setAdapter(adapter);
 								}
@@ -705,6 +774,7 @@ public class InpurchaseEditActivity extends BaseActivity
 				// adapter.setData(newListItem);
 				listview_copy_dele.setAdapter(adapter);
 				ishaschanged = true;
+				combinationItem();
 				break;
 			case 4:
 				DefDocItemCG docitem = (DefDocItemCG) data.getExtras().get("docitem");
@@ -714,6 +784,7 @@ public class InpurchaseEditActivity extends BaseActivity
 				ishaschanged = true;
 				setActionBarText();
 				addListener();
+				combinationItem();
 				break;
 			case 5:
 				// 收款方式
@@ -766,22 +837,24 @@ public class InpurchaseEditActivity extends BaseActivity
 		if (TextUtils.isEmptyS(doccg.getBuilderid())) {
 			doccg.setBuilderid(SystemState.getUser().getId());
 		}
+		if (!TextUtils.isEmptyS(doccg.getCustomerid())) {
+			return "没有选择供应商!";
+		}
 		if (!TextUtils.isEmptyS(doccg.getDepartmentid())) {
-			message = "部门不能为空";
+			return "部门不能为空";
 		}
 		if ((doccg.getDiscountratio() <= 0.0D) || (doccg.getDiscountratio() > 1.0D)) {
-			PDH.showMessage("整单折扣必须大于0且小于等于1");
-			return null;
+			return "整单折扣必须大于0且小于等于1";
 		}
 		if (!TextUtils.isEmptyS(doccg.getDeliverytime())) {
-			message = "交货日期不能为空";
+			return "交货日期不能为空";
 		}
 		if (!TextUtils.isEmptyS(doccg.getSettletime())) {
-			message = "结算日期不能为空";
+			return "结算日期不能为空";
 		}
 		// 应该不需要
 		if (!TextUtils.isEmptyS(doccg.getPrinttemplate())) {
-			message = "打印模板不能为空";
+			return "打印模板不能为空";
 		}
 		List<DefDocItemCG> data = adapter.getData();
 		if (data != null && data.size() > 0) {
@@ -826,13 +899,15 @@ public class InpurchaseEditActivity extends BaseActivity
 		double sumMoney = 0.00d;
 		int sumNum = 0;
 		listItemDelete = adapter.getListItemDelete();
+		Map<String, Object> sumGoodsClassMap = new HashMap<>();
 		for (int i = 0; i < data.size(); i++) {
 			DefDocItemCG itemCG = data.get(i);
 			sumMoney += itemCG.getDiscountsubtotal();
 			sumNum += itemCG.getNum();
+			sumGoodsClassMap.put(itemCG.getGoodsid(), itemCG);
 		}
-		btnGoodClass.setText("品种:" + data.size());
-		bt_sumNumber.setText("数量:" + sumNum + "个");
+		btnGoodClass.setText("品种:" + sumGoodsClassMap.size());
+		bt_sumNumber.setText("数量:" + sumNum);
 		bt_totalSum.setText("总价:\n" + Utils.normalizePrice(sumMoney) + "元");
 		discountsubtotal = Utils.normalizePrice(sumMoney);
 	}

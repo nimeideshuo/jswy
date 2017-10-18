@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
@@ -63,6 +64,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		dialog = new Dialog_listCheckBox(this);
 		// Newitems = new ArrayList<DefDocItemXS>();
 		serviceGoods = new ServiceGoods();
+		ap = new AccountPreference();
 	}
 
 	@Override
@@ -98,9 +100,12 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		final Map<String, Object> goodsMap = new HashMap<String, Object>();
 		if (goodsThinList.size() == 1) {
 			long maxTempItemId = getMaxTempItemId();
-			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), 1, 0.0D, maxTempItemId + 1L);
-			// Newitems.add(fillItem);
+			int num = Boolean.parseBoolean(ap.getValue("iscombinationItem")) ? 1 : 0;
+			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), num, 0.0D, maxTempItemId + 1L);
 			goodsMap.put(fillItem.getGoodsid(), fillItem);
+			if (Boolean.parseBoolean(ap.getValue("iscombinationItem"))) {
+				combinationItem(goodsMap);
+			}
 			addItems(goodsMap);
 			adapter.notifyDataSetInvalidated();
 		} else if (goodsThinList.size() > 1) {
@@ -117,9 +122,12 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 					long maxTempItemId = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
 						maxTempItemId += 1L;
-						DefDocItemXS fillItem = fillItem(select.get(i), 1, 0.0D, maxTempItemId);
+						int num = Boolean.parseBoolean(ap.getValue("iscombinationItem")) ? 1 : 0;
+						DefDocItemXS fillItem = fillItem(select.get(i), num, 0.0D, maxTempItemId);
 						goodsMap.put(fillItem.getGoodsid(), fillItem);
-						// Newitems.add(fillItem);
+					}
+					if (Boolean.parseBoolean(ap.getValue("iscombinationItem"))) {
+						combinationItem(goodsMap);
 					}
 					addItems(goodsMap);
 					adapter.notifyDataSetInvalidated();
@@ -131,9 +139,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 
 	}
 
-	// 扫码枪添加商品 转换
-	protected void addItems(Map<String, Object> goodsMap) {
-		// 查找比对 是否存在 商品 有的情况下数量 +1
+	private void combinationItem(Map<String, Object> goodsMap) {
 		for (int i = 0; i < items.size(); i++) {
 			DefDocItemXS itemXS = items.get(i);
 			if (goodsMap.get(itemXS.getGoodsid()) != null) {
@@ -142,43 +148,67 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 				showError("相同商品数量+1");
 			}
 		}
+	}
+
+	// 扫码枪添加商品 转换
+	protected void addItems(final Map<String, Object> goodsMap) {
+		// TODO 商品合并控制
+		// 查找比对 是否存在 商品 有的情况下数量 +1
+		// for (int i = 0; i < items.size(); i++) {
+		// DefDocItemXS itemXS = items.get(i);
+		// if (goodsMap.get(itemXS.getGoodsid()) != null) {
+		// itemXS.setNum(itemXS.getNum() + 1);
+		// goodsMap.remove(itemXS.getGoodsid());
+		// showError("相同商品数量+1");
+		// }
+		// }
 		if (goodsMap.isEmpty()) {
 			return;
 		}
-		for (Object item : goodsMap.values()) {
-			DefDocItemXS defdocitemxs = (DefDocItemXS) item;
-			items.add(defdocitemxs);
-			String localString = serviceGoods.gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
-					defdocitemxs.isIsusebatch());
-			List<RespGoodsWarehouse> goodsWarehouses;
-			if (RequestHelper.isSuccess(localString)) {
-				goodsWarehouses = JSONUtil.str2list(localString, RespGoodsWarehouse.class);
-				for (int j = 0; j < goodsWarehouses.size(); j++) {
-					if (defdocitemxs.getGoodsid().equals(goodsWarehouses.get(j).getGoodsid())
-							&& defdocitemxs.getWarehouseid().equals(goodsWarehouses.get(j).getWarehouseid())) {
-						RespGoodsWarehouse res = goodsWarehouses.get(j);
-						defdocitemxs.setStocknum(res);
-						if (Utils.DEFAULT_OutDocUNIT == 0) {
-							String stocknum = res.getStocknum() == 0 ? "0" + defdocitemxs.getUnitname()
-									: String.valueOf(res.getStocknum()) + defdocitemxs.getUnitname();
-							defdocitemxs.goodStock = stocknum;
-						} else {
-							String bigstocknum = res.getBigstocknum().length() == 0 ? "0" + defdocitemxs.getUnitname()
-									: res.getBigstocknum();
-							defdocitemxs.goodStock = bigstocknum;
-						}
-						break;
-					}
+		PDH.show(this, "库存查询中...", new PDH.ProgressCallBack() {
 
+			@Override
+			public void action() {
+				for (Object item : goodsMap.values()) {
+					DefDocItemXS defdocitemxs = (DefDocItemXS) item;
+					String localString = serviceGoods.gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
+							defdocitemxs.isIsusebatch());
+					List<RespGoodsWarehouse> goodsWarehouses;
+					if (RequestHelper.isSuccess(localString)) {
+						goodsWarehouses = JSONUtil.str2list(localString, RespGoodsWarehouse.class);
+						for (int j = 0; j < goodsWarehouses.size(); j++) {
+							if (defdocitemxs.getGoodsid().equals(goodsWarehouses.get(j).getGoodsid())
+									&& defdocitemxs.getWarehouseid().equals(goodsWarehouses.get(j).getWarehouseid())) {
+								RespGoodsWarehouse res = goodsWarehouses.get(j);
+								defdocitemxs.setStocknum(res);
+								if (Utils.DEFAULT_OutDocUNIT == 0) {
+									String stocknum = res.getStocknum() == 0 ? "0" + defdocitemxs.getUnitname()
+											: String.valueOf(res.getStocknum()) + defdocitemxs.getUnitname();
+									defdocitemxs.goodStock = stocknum;
+								} else {
+									String bigstocknum = res.getBigstocknum().length() == 0
+											? "0" + defdocitemxs.getUnitname() : res.getBigstocknum();
+									defdocitemxs.goodStock = bigstocknum;
+								}
+								break;
+							}
+
+						}
+						// 查询库存
+						ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
+						defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
+						items.add(defdocitemxs);
+						runOnUiThread(new Runnable() {
+							public void run() {
+								adapter.setData(items);
+							}
+						});
+					} else {
+						showError("没有获取到库存数据!请重试!");
+					}
 				}
-				// 查询库存
-				ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
-				defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
-			} else {
-				showError("没有获取到库存数据!请重试!");
 			}
-		}
-		adapter.setData(items);
+		});
 	}
 
 	@Override
@@ -249,6 +279,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	private Dialog_listCheckBox dialog;
 	private Scaner scaner;
 	private ServiceGoods serviceGoods;
+	private AccountPreference ap;
 
 	// 保存输入的值 必须有一个 大于0 的
 	private void tv_title_start() {

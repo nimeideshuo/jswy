@@ -68,6 +68,7 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 	private void initData() {
 		dialog = new Dialog_listCheckBox(this);
 		adapter = new OutInDocAddMoreAdapter(this);
+		adapter.setDoc(doccg);
 		for (int i = 0; i < items.size(); i++) {
 			setItemStock(items.get(i));
 			setItemPrice(items.get(i));
@@ -156,7 +157,7 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 			return;
 		}
 		if (goodsThinList.size() == 1) {
-			DefDocItemDD itemDD = fillItem(goodsThinList.get(0), 0.0D, 0.0D, 0);
+			DefDocItemDD itemDD = fillItem(goodsThinList.get(0), 1, 0.0D, 0);
 			setItemStock(itemDD);
 			setItemPrice(itemDD);
 			adapter.addData(itemDD);
@@ -171,7 +172,7 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 					dialog.dismiss();
 					List<GoodsThin> select = dialog.getSelect();
 					for (int i = 0; i < select.size(); i++) {
-						DefDocItemDD fillItem = fillItem(select.get(i), 0.0D, 0.0D, 0);
+						DefDocItemDD fillItem = fillItem(select.get(i), 1, 0.0D, 0);
 						setItemStock(fillItem);
 						setItemPrice(fillItem);
 						adapter.addData(fillItem);

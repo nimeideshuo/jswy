@@ -63,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5.0dip"
-                        android:text="销售" />
+                        android:text="销售单" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -89,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5.0dip"
-                        android:text="退货" />
+                        android:text="销售退货" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -323,7 +323,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5.0dip"
-                        android:text="调拨" />
+                        android:text="调拨单" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -398,6 +398,8 @@
                         android:text="@string/goods_detail_info" />
                 </LinearLayout>
             </TableRow>
+
+           
 
             <LinearLayout
                 android:layout_width="match_parent"

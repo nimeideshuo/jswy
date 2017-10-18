@@ -6,6 +6,7 @@ import java.util.List;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.CustomerThin;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.Department;
@@ -335,6 +336,7 @@ public class OutDocOpenActivity extends BaseActivity
 				doc = ((DefDocXS) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDocXS.class));
 				// 保存基本数据
 				fillDoc();
+				doc.setShowid("销售开单");
 				localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
 				// TODO
 				Intent localIntent = new Intent(OutDocOpenActivity.this, OutDocEditActivity.class);
@@ -342,6 +344,7 @@ public class OutDocOpenActivity extends BaseActivity
 				localIntent.putExtra("ishaschanged", true);
 				startActivity(localIntent);
 				finish();
+				new Sv_docitem().insetDocItem(localDocContainerEntity);
 				return;
 			} else {
 				RequestHelper.showError(localString);

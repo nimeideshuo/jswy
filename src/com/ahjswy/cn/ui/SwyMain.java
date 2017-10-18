@@ -6,10 +6,16 @@ import java.util.List;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.dao.Sv_docitem;
+import com.ahjswy.cn.model.DefDocPayType;
+import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.Department;
+import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
+import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
 import com.ahjswy.cn.ui.addgoods.AddNewGoodSAct;
@@ -20,11 +26,13 @@ import com.ahjswy.cn.ui.inpurchase.InpurchaseOpenActivity;
 import com.ahjswy.cn.ui.inventory.InventoryDocOpenActivity;
 import com.ahjswy.cn.ui.inventory.InventoryRecordActivity;
 import com.ahjswy.cn.ui.out_in_goods.OutInDocOpen;
+import com.ahjswy.cn.ui.outgoods.OutDocEditActivity;
 import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.InfoDialog;
+import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -36,12 +44,14 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.view.WindowManager;
 
 public class SwyMain extends BaseActivity implements OnClickListener, BumenCall {
@@ -56,7 +66,6 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		setContentView(R.layout.act_field_main);
 		initView();
 		initDate();
-
 	}
 
 	private void initView() {
@@ -89,7 +98,80 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		ap = new AccountPreference();
 	}
 
+	// 测试代码
+	boolean isShow = false;
+	int numsss = 0;
+
+	public void startOpenDoc(View v) {
+		// TODO
+		// final EditText edNum = (EditText) findViewById(R.id.edNum);
+		// final EditText edTime = (EditText) findViewById(R.id.edTime);
+		// serviceStore = new ServiceStore();
+		// PDH.show(this, "开单中....", new ProgressCallBack() {
+		//
+		// @Override
+		// public void action() {
+		// // int num = Integer.parseInt(edNum.getText().toString());
+		// // for (int i = 0; i < num; i++) {
+		// String localString = new ServiceStore().str_InitXSDoc("01", "01");
+		// if (RequestHelper.isSuccess(localString)) {
+		// DocContainerEntity localDocContainerEntity = (DocContainerEntity)
+		// JSONUtil.readValue(localString,
+		// DocContainerEntity.class);
+		// DefDocXS doc = ((DefDocXS)
+		// JSONUtil.readValue(localDocContainerEntity.getDoc(),
+		// DefDocXS.class));
+		// doc.setCustomerid("00003");
+		//
+		// doc.setShowid(isShow == false ? "XS_201610050004" : "XS_20171005999"
+		// + numsss++);
+		// isShow = true;
+		// List<DefDocPayType> listPayType =
+		// JSONUtil.str2list(localDocContainerEntity.getPaytype(),
+		// DefDocPayType.class);
+		// String resFor = serviceStore.str_SaveXSDoc(doc, null, listPayType,
+		// null);
+		// if (!RequestHelper.isSuccess(resFor)) {
+		// showError("第 " + " 次请求错误！");
+		// }
+		// long long1 = Long.parseLong(edTime.getText().toString());
+		// SystemClock.sleep(long1);
+		// }
+		// // }
+		//
+		// }
+		// });
+
+		// <EditText
+		// android:id="@+id/edNum"
+		// android:layout_width="match_parent"
+		// android:layout_height="wrap_content"
+		// android:hint="开单数量"
+		// android:inputType="numberDecimal" />
+		//
+		// <EditText
+		// android:id="@+id/edTime"
+		// android:layout_width="match_parent"
+		// android:layout_height="wrap_content"
+		// android:hint="开单数时间(毫秒)"
+		// android:inputType="numberDecimal" />
+		//
+		// <Button
+		// android:layout_width="match_parent"
+		// android:layout_height="wrap_content"
+		// android:onClick="startOpenDoc"
+		// android:text="开单" />
+		//
+		
+		
+		
+		
+		
+		// 保存
+	}
+
 	private void initDate() {
+		sv = new Sv_docitem();
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setProgressStyle(1);
 		progressDialog.setCancelable(false);
@@ -263,7 +345,16 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				PDH.showMessage("请设置默认仓库");
 				return;
 			}
-			startActivity(new Intent(this, OutDocOpenActivity.class));
+			// TODO
+			DocContainerEntity queryDoc = sv.queryDoc();
+			if (queryDoc == null) {
+				startActivity(new Intent(this, OutDocOpenActivity.class));
+			} else {
+				Intent intent = new Intent(this, OutDocEditActivity.class);
+				intent.putExtra("docContainer", queryDoc);
+				intent.putExtra("ishaschanged", true);
+				startActivity(intent);
+			}
 			break;
 		// 退货
 		case R.id.ll_return_goods:
@@ -379,6 +470,8 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			}
 		};
 	};
+	private ServiceStore serviceStore;
+	private Sv_docitem sv;
 
 	/**
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *
@@ -444,7 +537,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	@Override
 	public void setActionBarText() {
 		getActionBar().setHomeButtonEnabled(false);
-		setTitle("光辉");
+		setTitle("競商勿忧-光辉");
 	}
 
 }

@@ -19,8 +19,8 @@ public class Goods implements Serializable {
 	public String pinyin;// 商品拼音
 	public String barcode;// 条码
 	public String specification;
-	public int guaranteeperiod;
-	public int guaranteeearlier;
+	public String guaranteeperiod;
+	public String guaranteeearlier;
 	public String goodsclassid;
 	public int costpricetype;
 	public int property;
@@ -113,19 +113,19 @@ public class Goods implements Serializable {
 		this.specification = specification;
 	}
 
-	public int getGuaranteeperiod() {
+	public String getGuaranteeperiod() {
 		return guaranteeperiod;
 	}
 
-	public void setGuaranteeperiod(int guaranteeperiod) {
+	public void setGuaranteeperiod(String guaranteeperiod) {
 		this.guaranteeperiod = guaranteeperiod;
 	}
 
-	public int getGuaranteeearlier() {
+	public String getGuaranteeearlier() {
 		return guaranteeearlier;
 	}
 
-	public void setGuaranteeearlier(int guaranteeearlier) {
+	public void setGuaranteeearlier(String guaranteeearlier) {
 		this.guaranteeearlier = guaranteeearlier;
 	}
 

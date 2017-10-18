@@ -168,5 +168,13 @@ CREATE TABLE IF NOT EXISTS "kf_fieldsaleitem" (
 "ispromotion" 		TEXT(1),
 "isexhibition"		TEXT(1)
 );
-
+CREATE TABLE IF NOT EXISTS "sv_docitem" (
+"id"  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+"deleteinitem"  TEXT(20),
+"deleteitem"  TEXT(20),
+"doc"  TEXT(100),
+"item"  TEXT(100),
+"doctype"  TEXT(20),
+"paytype"  TEXT(100)
+);
 

@@ -1,18 +1,22 @@
 package com.ahjswy.cn.ui.out_in_goods;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONObject;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.bean.DefDocItemDD;
 import com.ahjswy.cn.bean.Def_Doc;
 import com.ahjswy.cn.bean.Def_DocDraft;
 import com.ahjswy.cn.bean.SaleEntity;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
+import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.FieldSaleForPrint;
 import com.ahjswy.cn.model.FieldSaleItemForPrint;
 import com.ahjswy.cn.model.GoodsThin;
@@ -50,6 +54,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -68,7 +74,7 @@ import android.widget.LinearLayout;
  * @author Administrator
  *
  */
-public class OutInDocEditActivity extends BaseActivity implements OnTouchListener, OnClickListener {
+public class OutInDocEditActivity extends BaseActivity implements OnTouchListener {
 	private LinearLayout linearSearch;
 	private SearchHelper searchHelper;
 	private MenuPayPopup menuPopup;
@@ -97,10 +103,74 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		btnAdd = (Button) findViewById(R.id.btnAdd);
 		listView = (SwipeMenuListView) findViewById(R.id.listView_addShop);
 		serviceStore = new ServiceStore();
-		btnAdd.setOnClickListener(this);
+		btnAdd.setOnClickListener(addGoodsClick);
 		listView.setOnItemClickListener(goodsItemListener);
 		listView.setOnTouchListener(this);
 		dialog = new Dialog_listCheckBox(this);
+		unitDAO = new GoodsUnitDAO();
+	}
+
+	private void combinationItem() {
+		int combinationNum = listItem.size();
+		ArrayList<DefDocItemDD> data = new ArrayList<DefDocItemDD>(listItem);
+		ArrayList<DefDocItemDD> listDocItem = new ArrayList<DefDocItemDD>();
+		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+		for (int i = 0; i < data.size(); i++) {
+			DefDocItemDD items1 = data.get(i);
+			if (map.get(items1.getGoodsid()) == null) {
+				map.put(items1.getGoodsid(), new DefDocItemDD(items1));
+				continue;
+			}
+			DefDocItemDD itemxs2 = (DefDocItemDD) map.get(items1.getGoodsid());
+			if (items1.getGoodsid().equals(itemxs2.getGoodsid()) && items1.getUnitid().equals(itemxs2.getUnitid())
+					&& items1.getPrice() == itemxs2.getPrice()
+					&& items1.getDiscountratio() == itemxs2.getDiscountratio()) {
+				itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+				itemxs2.setBignum(unitDAO.getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
+				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
+				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
+				map.put(itemxs2.getGoodsid(), itemxs2);
+			}
+
+		}
+
+		// for (int i = data.size() - 1; i >= 0; i--) {
+		// DefDocItemDD items1 = data.get(i);
+		// // 没有的商品 缓存
+		// if (map.get(items1.getGoodsid()) == null) {
+		// map.put(items1.getGoodsid(), new DefDocItemDD(items1));
+		// data.remove(items1);
+		// // data2.remove(items1);
+		// continue;
+		// }
+		// DefDocItemDD itemxs2 = (DefDocItemDD) map.get(items1.getGoodsid());
+		// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
+		// items1.getUnitid().equals(itemxs2.getUnitid())
+		// && items1.getPrice() == itemxs2.getPrice()
+		// && items1.getDiscountratio() == itemxs2.getDiscountratio()) {
+		// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+		// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
+		// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
+		// itemxs2.getDiscountratio());
+		// map.put(itemxs2.getGoodsid(), itemxs2);
+		// // 商品 单位id 单价 相等删除！
+		// data.remove(items1);
+		// }
+		//
+		// }
+		Set<String> keySet = map.keySet();
+		for (String string : keySet) {
+			listDocItem.add((DefDocItemDD) map.get(string));
+		}
+		if ((combinationNum - listDocItem.size()) == 0) {
+			// 没有要合并的商品!
+			return;
+		}
+		showSuccess("同品增加成功!");
+		// 设置数据
+		listItem.clear();
+		listItem.addAll(listDocItem);
+		adapter.setItems(listItem);
 	}
 
 	private void initData() {
@@ -109,7 +179,6 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		doccg = ((Def_Doc) JSONUtil.readValue(entity.getDocjson(), Def_Doc.class));
 		listItem = new ArrayList<DefDocItemDD>();
 		adapter = new OutInDocAdaprer();
-		mGoodsUnitDAO = new GoodsUnitDAO();
 		SwipeMenuCreator local5 = new SwipeMenuCreator() {
 			@Override
 			public void create(SwipeMenu menu) {
@@ -186,15 +255,13 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 			return;
 		}
 		if (goodsThinList.size() == 1) {
-			DefDocItemDD itemDD = fillItem(goodsThinList.get(0), 0.0D, 0.0D, 0);
+			DefDocItemDD itemDD = fillItem(goodsThinList.get(0), 1, 0.0D, 0);
 			localArrayList.add(itemDD);
 			Intent intent = new Intent(OutInDocEditActivity.this, OutInDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
 			intent.putExtra("doc", doccg);
 			startActivityForResult(intent, 1);
-			MLog.d("readBarcode  1");
 		} else if (goodsThinList.size() > 1) {
-			MLog.d("readBarcode  >1");
 			dialog.setGoods(goodsThinList);
 			dialog.setTempGoods(goodsThinList);
 			dialog.ShowMe();
@@ -204,7 +271,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 					dialog.dismiss();
 					List<GoodsThin> select = dialog.getSelect();
 					for (int i = 0; i < select.size(); i++) {
-						DefDocItemDD fillItem = fillItem(select.get(i), 0.0D, 0.0D, 0);
+						DefDocItemDD fillItem = fillItem(select.get(i), 1, 0.0D, 0);
 						localArrayList.add(fillItem);
 					}
 					Intent intent = new Intent(OutInDocEditActivity.this, OutInDocAddMoreGoodsAct.class);
@@ -233,40 +300,61 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		MLog.d("onResume");
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btnAdd:
-			addGoods();
-			break;
-		}
+	View.OnClickListener addGoodsClick = new View.OnClickListener() {
 
-	}
-
-	private void addGoods() {
-		if ((menuPopup != null) && (menuPopup.isShowing())) {
-			menuPopup.dismiss();
-			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
-			localLayoutParams.alpha = 1.0F;
-			getWindow().setAttributes(localLayoutParams);
-		}
-		List<GoodsThin> localList = searchHelper.getAdapter().getSelect();
-		if ((localList == null) || (localList.size() == 0)) {
-			PDH.showMessage("请选择商品！");
-			return;
-		}
-		atvSearch.setText("");
-		if (!"1".equals(new AccountPreference().getValue("goods_select_more"))) {
-			ArrayList<DefDocItemDD> localArrayList = new ArrayList<DefDocItemDD>();
-			for (int i = 0; i < localList.size(); i++) {
-				GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
-				localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D, 0));
+		@Override
+		public void onClick(View v) {
+			if ((menuPopup != null) && (menuPopup.isShowing())) {
+				menuPopup.dismiss();
+				WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
+				localLayoutParams.alpha = 1.0F;
+				getWindow().setAttributes(localLayoutParams);
 			}
-			startActivityForResult(new Intent().setClass(this, OutInDocAddMoreGoodsAct.class)
-					.putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc", doccg), 1);
+			List<GoodsThin> localList = searchHelper.getAdapter().getSelect();
+			if ((localList == null) || (localList.size() == 0)) {
+				PDH.showMessage("请选择商品！");
+				return;
+			}
+			atvSearch.setText("");
+			if (!"1".equals(new AccountPreference().getValue("goods_select_more"))) {
+				ArrayList<DefDocItemDD> localArrayList = new ArrayList<DefDocItemDD>();
+				for (int i = 0; i < localList.size(); i++) {
+					GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
+					localArrayList.add(fillItem(localGoodsThin, 1, 0.0D, 0));
+				}
+				startActivityForResult(new Intent(OutInDocEditActivity.this, OutInDocAddMoreGoodsAct.class)
+						.putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc", doccg), 1);
+			}
 		}
+	};
 
-	}
+	// private void addGoodsClick() {
+	// if ((menuPopup != null) && (menuPopup.isShowing())) {
+	// menuPopup.dismiss();
+	// WindowManager.LayoutParams localLayoutParams =
+	// getWindow().getAttributes();
+	// localLayoutParams.alpha = 1.0F;
+	// getWindow().setAttributes(localLayoutParams);
+	// }
+	// List<GoodsThin> localList = searchHelper.getAdapter().getSelect();
+	// if ((localList == null) || (localList.size() == 0)) {
+	// PDH.showMessage("请选择商品！");
+	// return;
+	// }
+	// atvSearch.setText("");
+	// if (!"1".equals(new AccountPreference().getValue("goods_select_more"))) {
+	// ArrayList<DefDocItemDD> localArrayList = new ArrayList<DefDocItemDD>();
+	// for (int i = 0; i < localList.size(); i++) {
+	// GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
+	// localArrayList.add(fillItem(localGoodsThin, 1, 0.0D, 0));
+	// }
+	// startActivityForResult(new Intent().setClass(this,
+	// OutInDocAddMoreGoodsAct.class)
+	// .putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc",
+	// doccg), 1);
+	// }
+	//
+	// }
 
 	/* 商品item点击 商品详细信息 */
 	OnItemClickListener goodsItemListener = new OnItemClickListener() {
@@ -284,66 +372,67 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	};
 	// 销售订单
 	private AdapterView.OnItemClickListener onItemClickListeners = new AdapterView.OnItemClickListener() {
-		@SuppressWarnings("rawtypes")
-		public void onItemClick(AdapterView parent, View view, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			onTouch(null, null);
 			final GoodsThin localGoodsThin = searchHelper.getAdapter().getTempGoods().get(position);
 			atvSearch.setText("");
 			PDH.show(OutInDocEditActivity.this, new PDH.ProgressCallBack() {
 
 				public void action() {
-					DefDocItemDD onitemdefdoc = fillItem(localGoodsThin, 0.0D, 0.0D, 0);
+					DefDocItemDD onitemdefdoc = fillItem(localGoodsThin, 0, 0.0D, 0);
 					newListItem = new ArrayList<DefDocItemDD>();
-					newListItem.add(onitemdefdoc);
 					List<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
 					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
 					localReqStrGetGoodsPrice.setType(1);
 					localReqStrGetGoodsPrice.setCustomerid(doccg.getCustomerid());
-					// localReqStrGetGoodsPrice.setWarehouseid(localDefDocItemXS.getWarehouseid());
+					// localReqStrGetGoodsPrice.setWarehouseid(onitemdefdoc.getWarehouseid());
 					localReqStrGetGoodsPrice.setGoodsid(onitemdefdoc.getGoodsid());
 					localReqStrGetGoodsPrice.setUnitid(onitemdefdoc.getUnitid());
 					localReqStrGetGoodsPrice.setPrice(0.0D);
 					localReqStrGetGoodsPrice.setIsdiscount(false);
 					localArrayList.add(localReqStrGetGoodsPrice);
-
+					newListItem.add(onitemdefdoc);
 					String localString = new ServiceGoods().gds_GetMultiGoodsPrice(localArrayList, true,
 							onitemdefdoc.isIsusebatch());
-					// handlerGet.sendMessage(handlerGet.obtainMessage(2,
-					// localString));
-					// setItemsGoods(onitemdefdoc);
-					setItemPrice(localString);
-					// deleBm();
-					Intent localIntent = new Intent(OutInDocEditActivity.this, OutInDocAddGoodAct.class);
-					localIntent.putExtra("customerid", doccg.getCustomerid());
-					localIntent.putExtra("docitem", onitemdefdoc);
-					localIntent.putExtra("doc", doccg);
-					startActivityForResult(localIntent, 4);
+					handlerDetail.sendMessage(handlerDetail.obtainMessage(2, localString));
 				}
 
 			});
 
 		}
-		// ReqStrGetGoodsPrice
 	};
+	private Handler handlerDetail = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			if (RequestHelper.isSuccess(msg.obj.toString())) {
+				if (newListItem.isEmpty()) {
+					return;
+				}
+				DefDocItemDD onitemdefdoc = newListItem.get(0);
+				List<ReqStrGetGoodsPrice> localList = JSONUtil.str2list(msg.obj.toString(), ReqStrGetGoodsPrice.class);
+				ReqStrGetGoodsPrice localReqStrGetGoodsPrice2 = (ReqStrGetGoodsPrice) localList.get(0);
+				onitemdefdoc.setIsdiscount(localReqStrGetGoodsPrice2.getIsdiscount());
+				onitemdefdoc.setPrice(Utils.normalizePrice(localReqStrGetGoodsPrice2.getPrice()));
+				onitemdefdoc.setSubtotal(Utils.normalizeSubtotal(onitemdefdoc.getNum() * onitemdefdoc.getPrice()));
+				// defDocItemDD.setBatch(localReqStrGetGoodsPrice2.getBatch());
+				// defDocItemDD.setProductiondate(localReqStrGetGoodsPrice2.getProductiondate());
+				onitemdefdoc.setDiscountratio(doccg.getDiscountratio());
+				onitemdefdoc.setDiscountprice(
+						Utils.normalizePrice(onitemdefdoc.getPrice() * onitemdefdoc.getDiscountratio()));
+				onitemdefdoc.setDiscountsubtotal(
+						Utils.normalizeSubtotal(onitemdefdoc.getNum() * onitemdefdoc.getDiscountprice()));
 
-	private void setItemPrice(String localString) {
-		DefDocItemDD defDocItemDD = newListItem.get(0);
-		List<ReqStrGetGoodsPrice> localList = JSONUtil.str2list(localString, ReqStrGetGoodsPrice.class);
-		ReqStrGetGoodsPrice localReqStrGetGoodsPrice2 = (ReqStrGetGoodsPrice) localList.get(0);
-		defDocItemDD.setIsdiscount(localReqStrGetGoodsPrice2.getIsdiscount());
-		defDocItemDD.setPrice(Utils.normalizePrice(localReqStrGetGoodsPrice2.getPrice()));
-		defDocItemDD.setSubtotal(Utils.normalizeSubtotal(defDocItemDD.getNum() * defDocItemDD.getPrice()));
-		// defDocItemDD.setBatch(localReqStrGetGoodsPrice2.getBatch());
-		// defDocItemDD.setProductiondate(localReqStrGetGoodsPrice2.getProductiondate());
-		defDocItemDD.setDiscountratio(doccg.getDiscountratio());
-		defDocItemDD.setDiscountprice(Utils.normalizePrice(defDocItemDD.getPrice() * defDocItemDD.getDiscountratio()));
-		defDocItemDD
-				.setDiscountsubtotal(Utils.normalizeSubtotal(defDocItemDD.getNum() * defDocItemDD.getDiscountprice()));
-
-		if (defDocItemDD.isIsdiscount()) {
-			defDocItemDD.setIsdiscount(localReqStrGetGoodsPrice2.getIsdiscount());
-		}
-	}
+				if (onitemdefdoc.isIsdiscount()) {
+					onitemdefdoc.setIsdiscount(localReqStrGetGoodsPrice2.getIsdiscount());
+				}
+				newListItem.add(onitemdefdoc);
+				Intent localIntent = new Intent(OutInDocEditActivity.this, OutInDocAddGoodAct.class);
+				localIntent.putExtra("customerid", doccg.getCustomerid());
+				localIntent.putExtra("docitem", onitemdefdoc);
+				localIntent.putExtra("doc", doccg);
+				startActivityForResult(localIntent, 4);
+			}
+		};
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -415,13 +504,15 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	}
 
 	private String validateDoc() {
-		String message = null;
+		String message = "";
 		if ((doccg.getDiscountratio() <= 0.0D) || (doccg.getDiscountratio() > 1.0D)) {
-			PDH.showMessage("整单折扣必须大于0且小于等于1");
-			return null;
+			return "整单折扣必须大于0且小于等于1";
 		}
 		if (!TextUtils.isEmptyS(doccg.getSettletime())) {
-			message = "结算日期不能为空";
+			return "结算日期不能为空!";
+		}
+		if (!TextUtils.isEmptyS(doccg.getCustomerid())) {
+			return "没有选择客户!";
 		}
 		List<DefDocItemDD> items = adapter.getItems();
 		if (items != null && items.size() > 0) {
@@ -490,12 +581,13 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 				listView.setAdapter(adapter);
 				adapter.notifyDataSetChanged();
 				ishaschanged = true;
-				// initListener();
 				itemCount();
+				combinationItem();
 				break;
 			case 4:
 				DefDocItemDD docitem = (DefDocItemDD) data.getExtras().get("docitem");
-				listItem.add(0, docitem);
+				listItem.add(docitem);
+				combinationItem();
 				adapter.setItems(listItem);
 				listView.setAdapter(adapter);
 				adapter.notifyDataSetChanged();
@@ -528,7 +620,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 						isgift = true;
 					}
 					defDocItemDD.setIsgift(isgift);
-					String bigNum = mGoodsUnitDAO.getBigNum(defDocItemDD.getGoodsid(), defDocItemDD.getUnitid(),
+					String bigNum = unitDAO.getBigNum(defDocItemDD.getGoodsid(), defDocItemDD.getUnitid(),
 							defDocItemDD.getNum());
 					defDocItemDD.setBignum(bigNum);
 					defDocItemDD.setIsdiscount(localReqStrGetGoodsPrice1.getIsdiscount());
@@ -537,7 +629,8 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 			}
 		}
 		if (newListItem.size() > 0) {
-			listItem.addAll(0, newListItem);
+			listItem.addAll(newListItem);
+			combinationItem();
 			adapter.setItems(listItem);
 			listView.setAdapter(adapter);
 		}
@@ -599,11 +692,9 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	//
 	// }
 
-	GoodsUnitDAO mGoodsUnitDAO;
-
 	// 设置商品件数
 	protected void setBigNum(DefDocItemDD itemGoods) {
-		String bigNum = mGoodsUnitDAO.getBigNum(itemGoods.getGoodsid(), itemGoods.getUnitid(), itemGoods.getNum());
+		String bigNum = unitDAO.getBigNum(itemGoods.getGoodsid(), itemGoods.getUnitid(), itemGoods.getNum());
 		itemGoods.setBignum(bigNum);
 	}
 
@@ -636,9 +727,10 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 
 		@Override
 		public void check(final boolean check) {
-
-			if (validateDoc() != null) {
-				PDH.showMessage(validateDoc());
+			String validateDoc = validateDoc();
+			if (validateDoc != null) {
+				PDH.showMessage(validateDoc);
+				return;
 			}
 			List<DefDocItemDD> items = adapter.getItems();
 			if ((items == null) || (items.size() == 0)) {
@@ -651,37 +743,8 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 				@Override
 				public void action() {
 
-					// if (!checkSale) {
 					doccg.setIsposted(true);
 
-					// int sumMoney = 0;
-					// TODO 计算总金额 单位转换比例
-					// for (int i = 0; i < listItem.size(); i++) {
-					// DefDocItemDD defDocItemDD = listItem.get(i);
-					// GoodsUnit bigUnit =
-					// mGoodsUnitDAO.getBigUnit(defDocItemDD.getGoodsid());//
-					// 计件单位
-					// GoodsUnit basicUnit =
-					// mGoodsUnitDAO.getBasicUnit(defDocItemDD.getGoodsid());//
-					// 基本单位
-					// double num = defDocItemDD.getNum();
-					// String unitid = defDocItemDD.getUnitid();
-					// double price = defDocItemDD.getPrice();
-					// double discountprice =
-					// defDocItemDD.getDiscountprice();
-					// if (unitid.equals(bigUnit.getUnitid())) {
-					// int sumNum = (int) (num * bigUnit.getRatio());
-					// defDocItemDD.setNum(sumNum);
-					// defDocItemDD.setUnitid(basicUnit.getUnitid());
-					// defDocItemDD.setUnitname(basicUnit.getUnitname());
-					// defDocItemDD.setPrice(Utils.normalize(price /
-					// bigUnit.getRatio(), 3));
-					// defDocItemDD.setDiscountprice(Utils.normalize(discountprice
-					// / bigUnit.getRatio(), 3));
-					// }
-					// sumMoney += defDocItemDD.getDiscountsubtotal();
-					// }
-					// doccg.setMoney(sumMoney);
 					// 审核过账
 					final String addSaleReview = serviceStore.AddSaleReview(doccg, listItem);
 					if (TextUtils.isEmpty(addSaleReview)) {
@@ -803,6 +866,11 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 			showError("请添加商品后保存!");
 			return;
 		}
+		String validateDoc = validateDoc();
+		if (validateDoc != null) {
+			PDH.showMessage(validateDoc);
+			return;
+		}
 		PDH.show(OutInDocEditActivity.this, "保存中", new ProgressCallBack() {
 
 			@Override
@@ -856,6 +924,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	// private BarcodeManager bm;
 	private ArrayList<DefDocItemDD> localArrayList;
 	private Scaner scaner;
+	private GoodsUnitDAO unitDAO;
 
 	@Override
 	public boolean onTouch(View paramView, MotionEvent paramMotionEvent) {
@@ -895,11 +964,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		localDefDocItem.setDiscountprice(Utils.normalizePrice(localDefDocItem.getPrice() * doccg.getDiscountratio()));
 		localDefDocItem.setDiscountsubtotal(
 				Utils.normalizeSubtotal(localDefDocItem.getNum() * localDefDocItem.getDiscountprice()));
-		boolean isgift = false;
-		if (localDefDocItem.getPrice() == 0.0D) {
-			isgift = true;
-		}
-		localDefDocItem.setIsgift(isgift);
+		localDefDocItem.setIsgift(localDefDocItem.getPrice() == 0.0D ? true : false);
 		// localDefDocItem.setCostprice(0.0D);
 		localDefDocItem.setRemark("");
 		localDefDocItem.setRversion(0L);
@@ -909,12 +974,23 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	}
 
 	@Override
-	public void setActionBarText() {
-		if (ishaschanged) {
-			getActionBar().setTitle("没有保存单据*");
-		} else {
-			getActionBar().setTitle("已经保存");
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+			intenToMain();
+			return false;
 		}
+
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public void setActionBarText() {
+		// if (ishaschanged) {
+		// getActionBar().setTitle("销售订单录入");
+		// } else {
+		// getActionBar().setTitle("已经保存");
+		// }
+		getActionBar().setTitle("销售订单录入");
 	}
 
 }

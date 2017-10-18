@@ -160,7 +160,7 @@ public class OutDocAddGoodAct extends BaseActivity
 		btnWarehouse.setTag(this.docitem.getWarehouseid());
 		btnUnit.setText(docitem.getUnitname());
 		btnUnit.setTag(docitem.getUnitid());
-		etNum.setText((docitem.getNum() == 0 ? "0" : docitem.getNum() + ""));
+		etNum.setText((docitem.getNum() == 0 ? "" : docitem.getNum() + ""));
 		etPrice.setText(docitem.getPrice() + "");
 		etSubtotal.setText(docitem.getSubtotal() + "");
 		etDiscountRatio.setText(docitem.getDiscountratio() + "");
@@ -357,7 +357,6 @@ public class OutDocAddGoodAct extends BaseActivity
 	}
 
 	private void fillItem() {
-		DefDocItemXS localDefDocItemXS1;
 		if (TextUtils.isEmptyS(this.btnWarehouse.getTag().toString())) {
 			docitem.setWarehouseid(this.btnWarehouse.getTag().toString());
 			this.docitem.setWarehousename(this.btnWarehouse.getText().toString());
@@ -388,13 +387,7 @@ public class OutDocAddGoodAct extends BaseActivity
 			this.docitem.setDiscountsubtotal(Utils
 					.normalizeSubtotal(Utils.getDouble(this.etDiscountSubtotal.getText().toString()).doubleValue()));
 			this.docitem.setRemark(this.etRemark.getText().toString());
-			localDefDocItemXS1 = this.docitem;
-			if (this.docitem.getPrice() == 0.0D) {
-				// 0 >true显示 赠 false不显示
-				localDefDocItemXS1.setIsgift(true);
-			} else {
-				localDefDocItemXS1.setIsgift(false);
-			}
+			docitem.setIsgift(docitem.getPrice() == 0.0D ? true : false);
 			if (docitem.isIsexhibition()) {
 				this.docitemgive = null;
 				this.docitem.setIspromotion(false);

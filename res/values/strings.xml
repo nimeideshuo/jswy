@@ -64,6 +64,7 @@
     <string name="clear_fields_record">clear_fields_record</string>
     <string name="default_printer">default_printer</string>
     <string name="bluetoothPrintIsShow">bluetoothPrintIsShow</string>
+    <string name="combinationItem">combinationItem</string>
     <string name="printer_model">printer_model</string>
     <string name="print_mode">print_mode</string>
     <string name="clearlastzero">clearlastzero</string>
@@ -244,7 +245,7 @@
     <string name="return_goods">退货</string>
     <string name="exchange_goods">换货</string>
     <string name="transfer">调拨</string>
-    <string name="inventory">盘点</string>
+    <string name="inventory">盘点单</string>
     <string name="others">其他</string>
     <string name="goods_detail_info">产品手册</string>
     <string name="goodsprice_detail_info">产品报价</string>
@@ -270,5 +271,6 @@
     <string name="shipping_address">配送地址</string>
     <string name="date_of_arrival">到货日期</string>
     <string name="bluetoothPrint_on_off">蓝牙打印开关:</string>
+    <string name="combinationItem_on_off">商品合并开关:</string>
 
 </resources>

@@ -10,6 +10,7 @@ import java.util.Locale;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.CustomerThin;
 import com.ahjswy.cn.model.DefDoc;
 import com.ahjswy.cn.model.Department;
@@ -337,21 +338,23 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 		public void handleMessage(android.os.Message msg) {
 			String localString = msg.obj.toString();
 			if (RequestHelper.isSuccess(localString)) {
-				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.readValue(localString,
+				DocContainerEntity docEntity = (DocContainerEntity) JSONUtil.fromJson(localString,
 						DocContainerEntity.class);
-				doc = ((DefDoc) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDoc.class));
+				doc = ((DefDoc) JSONUtil.readValue(docEntity.getDoc(), DefDoc.class));
 				fillDoc();
-				doc.setShowid("销售出货单");
-				localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
+				doc.setShowid("销售退货单");
+				docEntity.setDoc(JSONUtil.object2Json(doc));
 				Intent localIntent = new Intent();
 				// TODO
 				localIntent.setClass(InDocOpenActivity.this, InDocEditActivity.class);
-				localIntent.putExtra("docContainer", localDocContainerEntity);
+				localIntent.putExtra("docContainer", docEntity);
 				startActivity(localIntent);
 				finish();
-				return;
+				new Sv_docitem().insetDocItem(docEntity);
+			} else {
+				RequestHelper.showError(localString);
 			}
-			PDH.showFail(localString);
+
 		};
 	};
 	Handler handlerGet = new Handler() {

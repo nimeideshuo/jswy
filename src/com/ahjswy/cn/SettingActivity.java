@@ -11,7 +11,6 @@ public class SettingActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		pref = new PrefsFragment();
-		// android.R.id.content 在节点 插入 后期 修改 到需要插入的位置
 		getFragmentManager().beginTransaction().replace(android.R.id.content, pref).commit();
 
 	}

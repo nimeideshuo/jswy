@@ -41,7 +41,7 @@ public class Utils {
 	public static String strBatchPrefix;
 	public static String strBatchSuffix;
 	public static String strCancelWarehouse;
-
+	static AccountPreference ap = new AccountPreference();
 	static {
 		RECEIVE_DEC_NUM = 2;
 		DEFAULT_OutDocUNIT = 0;
@@ -343,6 +343,15 @@ public class Utils {
 			localParseException.printStackTrace();
 		}
 		return 0L;
+	}
+
+	/**
+	 * 是否开启商品合并
+	 * 
+	 * @return
+	 */
+	public static boolean isCombination() {
+		return Boolean.parseBoolean(ap.getValue("iscombinationItem", "false"));
 	}
 
 	public static int px2dip(Context paramContext, float paramFloat) {

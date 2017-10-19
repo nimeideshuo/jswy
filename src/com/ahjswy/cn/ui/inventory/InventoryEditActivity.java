@@ -186,6 +186,8 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				itemxs2.setBignum(unitDAO.getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
 				itemxs2.setNetnum(Utils.normalize(itemxs2.getNum() - itemxs2.getStocknum(), 2));
 				map.put(itemxs2.getGoodsid(), itemxs2);
+			}else{
+				listDocItem.add(items1);
 			}
 
 		}
@@ -340,7 +342,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 					finish();
 					return;
 				}
-				DocContainerEntity localObject = (DocContainerEntity) JSONUtil.readValue(message,
+				DocContainerEntity localObject = (DocContainerEntity) JSONUtil.fromJson(message,
 						DocContainerEntity.class);
 				doc = ((DefDocPD) JSONUtil.readValue(localObject.getDoc(), DefDocPD.class));
 				listItem = JSONUtil.str2list(localObject.getItem(), DefDocItemPD.class);

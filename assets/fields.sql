@@ -169,7 +169,8 @@ CREATE TABLE IF NOT EXISTS "kf_fieldsaleitem" (
 "isexhibition"		TEXT(1)
 );
 CREATE TABLE IF NOT EXISTS "sv_docitem" (
-"id"  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+"svid"  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+"showid"  TEXT(20),
 "deleteinitem"  TEXT(20),
 "deleteitem"  TEXT(20),
 "doc"  TEXT(100),

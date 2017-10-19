@@ -104,14 +104,14 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 
 			@Override
 			public void create(SwipeMenu menu) {
-				SwipeMenuItem localSwipeMenuItem = new SwipeMenuItem(TransferEditActivity.this.getApplicationContext());
+				SwipeMenuItem localSwipeMenuItem = new SwipeMenuItem(getApplicationContext());
 				localSwipeMenuItem.setTitle("复制");
 				localSwipeMenuItem.setTitleSize(14);
 				localSwipeMenuItem.setTitleColor(-16777216);
 				localSwipeMenuItem.setWidth(100);
 				localSwipeMenuItem.setBackground(new ColorDrawable(Color.rgb(48, 177, 245)));
 				menu.addMenuItem(localSwipeMenuItem);
-				localSwipeMenuItem = new SwipeMenuItem(TransferEditActivity.this.getApplicationContext());
+				localSwipeMenuItem = new SwipeMenuItem(getApplicationContext());
 				localSwipeMenuItem.setTitle("删除");
 				localSwipeMenuItem.setTitleSize(14);
 				localSwipeMenuItem.setTitleColor(-16777216);
@@ -482,7 +482,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 					finish();
 					return;
 				}
-				DocContainerEntity doccontainer = (DocContainerEntity) JSONUtil.readValue(localObject,
+				DocContainerEntity doccontainer = (DocContainerEntity) JSONUtil.fromJson(localObject,
 						DocContainerEntity.class);
 				doc = ((DefDocTransfer) JSONUtil.readValue(doccontainer.getDoc(), DefDocTransfer.class));
 				listItem = JSONUtil.str2list(doccontainer.getItem(), DefDocItem.class);

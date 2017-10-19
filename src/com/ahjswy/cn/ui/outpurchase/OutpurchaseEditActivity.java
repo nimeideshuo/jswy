@@ -401,7 +401,7 @@ public class OutpurchaseEditActivity extends BaseActivity
 					finish();
 					return;
 				}
-				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.readValue(message,
+				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.fromJson(message,
 						DocContainerEntity.class);
 				defdoccg = JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDocCG.class);
 				listPayType = JSONUtil.str2list(localDocContainerEntity.getDoctype(), DefDocPayType.class);

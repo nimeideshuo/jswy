@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.Def_Doc;
 import com.ahjswy.cn.bean.Def_DocDraft;
@@ -30,7 +31,6 @@ import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.ui.inpurchase.InpurDocItemAdapter.Sum;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -114,6 +114,7 @@ public class InpurchaseEditActivity extends BaseActivity
 		mGoodsUnitDAO = new GoodsUnitDAO();
 		adapter = new InpurDocItemAdapter(this);
 		adapter.setSum(this);
+		ap = new AccountPreference();
 		dialog = new Dialog_listCheckBox(InpurchaseEditActivity.this);
 
 		SwipeMenuCreator local5 = new SwipeMenuCreator() {
@@ -195,7 +196,8 @@ public class InpurchaseEditActivity extends BaseActivity
 		localArrayList = new ArrayList<DefDocItemCG>();
 		if (goodsThinList.size() == 1) {
 			long maxTempItemId = getMaxTempItemId();
-			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), 1, 0.0D, maxTempItemId + 1L);
+			int num = Utils.isCombination() ? 1 : 0;
+			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), num, 0.0D, maxTempItemId + 1L);
 			localArrayList.add(fillItem);
 			Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
@@ -212,10 +214,9 @@ public class InpurchaseEditActivity extends BaseActivity
 					List<GoodsThin> select = dialog.getSelect();
 					long maxTempItemId = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
-						maxTempItemId += 1L;
-						DefDocItemCG fillItem = fillItem(select.get(i), 1, 0.0D, maxTempItemId);
+						int num = Utils.isCombination() ? 1 : 0;
+						DefDocItemCG fillItem = fillItem(select.get(i), num, 0.0D, maxTempItemId += 1L);
 						localArrayList.add(fillItem);
-
 					}
 					Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
 					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
@@ -266,6 +267,8 @@ public class InpurchaseEditActivity extends BaseActivity
 				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
 				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
 				map.put(itemxs2.getGoodsid(), itemxs2);
+			} else {
+				listDocItem.add(items1);
 			}
 
 		}
@@ -311,8 +314,7 @@ public class InpurchaseEditActivity extends BaseActivity
 	}
 
 	private AdapterView.OnItemClickListener onItemClickListeners = new AdapterView.OnItemClickListener() {
-		@SuppressWarnings("rawtypes")
-		public void onItemClick(AdapterView parent, View view, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			onTouch(null, null);
 			final GoodsThin localGoodsThin = searchHelper.getAdapter().getTempGoods().get(position);
 			atvSearch.setText("");
@@ -351,7 +353,7 @@ public class InpurchaseEditActivity extends BaseActivity
 		if (TextUtils.isEmptyS(goodsPrice)) {
 			RespServiceInfor infor = JSONUtil.readValue3(goodsPrice);
 			double price = Double.parseDouble(TextUtils.isEmptyS(infor.Json.Data) == true ? infor.Json.Data : "0");
-			defdocitemcg.setIsgift(price > 0 ? false : true);
+			defdocitemcg.setIsgift(price == 0 ? true : false);
 			defdocitemcg.setPrice(price);// 单价
 			defdocitemcg.setDiscountprice(Utils.normalize(price * defdocitemcg.getDiscountratio(), 3));// 折后单价
 			defdocitemcg.setDiscountsubtotal(
@@ -417,7 +419,8 @@ public class InpurchaseEditActivity extends BaseActivity
 		ArrayList<DefDocItemCG> localArrayList = new ArrayList<DefDocItemCG>();
 		for (int i = 0; i < localList.size(); i++) {
 			GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
-			DefDocItemCG fillItem = fillItem(localGoodsThin, 1, 0.0D, 0);
+			int num = Utils.isCombination() ? 1 : 0;
+			DefDocItemCG fillItem = fillItem(localGoodsThin, num, 0.0D, 0);
 			if (fillItem == null) {
 				continue;
 			}
@@ -745,14 +748,18 @@ public class InpurchaseEditActivity extends BaseActivity
 						public void action() {
 							for (int i = 0; i < newListItem.size(); i++) {
 								setItemsGoods(newListItem.get(i));
-								setBigNum(newListItem.get(i));
+								// setBigNum(newListItem.get(i));
 							}
 							runOnUiThread(new Runnable() {
 
 								@Override
 								public void run() {
-									listItem.addAll(newListItem);
-									combinationItem();
+									if (Utils.isCombination()) {
+										listItem.addAll(newListItem);
+										combinationItem();
+									} else {
+										listItem.addAll(0, newListItem);
+									}
 									adapter.setData(listItem);
 									listview_copy_dele.setAdapter(adapter);
 								}
@@ -770,21 +777,25 @@ public class InpurchaseEditActivity extends BaseActivity
 				int j = data.getIntExtra("position", 0);
 				DefDocItemCG defdocitemCG3 = (DefDocItemCG) data.getSerializableExtra("docitem");
 				adapter.getData().set(j, defdocitemCG3);
-				// int k = data.getIntExtra("positiongive", -1);
-				// adapter.setData(newListItem);
 				listview_copy_dele.setAdapter(adapter);
+				if (Utils.isCombination()) {
+					combinationItem();
+				}
 				ishaschanged = true;
-				combinationItem();
 				break;
 			case 4:
 				DefDocItemCG docitem = (DefDocItemCG) data.getExtras().get("docitem");
-				listItem.add(0, docitem);
+				if (Utils.isCombination()) {
+					listItem.add(docitem);
+					combinationItem();
+				} else {
+					listItem.add(0, docitem);
+				}
 				adapter.setData(listItem);
 				listview_copy_dele.setAdapter(adapter);
 				ishaschanged = true;
 				setActionBarText();
 				addListener();
-				combinationItem();
 				break;
 			case 5:
 				// 收款方式
@@ -817,6 +828,7 @@ public class InpurchaseEditActivity extends BaseActivity
 	private ArrayList<DefDocItemCG> localArrayList;
 	private Scaner scaner;
 	private Button btnGoodClass;
+	private AccountPreference ap;
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
@@ -894,7 +906,6 @@ public class InpurchaseEditActivity extends BaseActivity
 
 	@Override
 	public void sum() {
-		// TODO
 		List<DefDocItemCG> data = adapter.getData();
 		double sumMoney = 0.00d;
 		int sumNum = 0;
@@ -935,7 +946,6 @@ public class InpurchaseEditActivity extends BaseActivity
 	@Override
 	public void setBarcode(String barcode) {
 		atvSearch.setText("");
-		MLog.d(getLocalClassName() + ">>>readBarcode");
 		readBarcode(barcode);
 
 	}

@@ -255,7 +255,7 @@ public class OutpurchaseOpenActivity extends BaseActivity implements OnClickList
 		public void handleMessage(android.os.Message msg) {
 			String localString = msg.obj.toString();
 			if (RequestHelper.isSuccess(localString)) {
-				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.readValue(msg.obj.toString(),
+				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.fromJson(msg.obj.toString(),
 						DocContainerEntity.class);
 				defdoccg = ((DefDocCG) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDocCG.class));
 				// 保存基本数据

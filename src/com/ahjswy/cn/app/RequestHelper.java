@@ -34,8 +34,8 @@ public class RequestHelper {
 						Thread.sleep(2000L);
 						MyApplication.getInstance().exit();
 						return;
-					} catch (InterruptedException localInterruptedException) {
-						localInterruptedException.printStackTrace();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
 			}.start();

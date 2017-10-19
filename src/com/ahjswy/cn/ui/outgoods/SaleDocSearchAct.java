@@ -16,6 +16,8 @@ import com.ahjswy.cn.ui.CustomerSearchAct;
 import com.ahjswy.cn.ui.DepartmentSearchAct;
 import com.ahjswy.cn.ui.DocTypeListAct;
 import com.ahjswy.cn.ui.WarehouseSearchAct;
+import com.ahjswy.cn.utils.TextUtils;
+import com.ahjswy.cn.utils.Utils;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -78,10 +80,12 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 		btnCustomer.setText(reqstrsearchdoc.getCustomerName());
 		btnCustomer.setTag(reqstrsearchdoc.getCustomerID());
 		try {
-			Date localDate1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(reqstrsearchdoc.getDateBeginTime());
+			// Date localDate1 = new SimpleDateFormat("yyyy-MM-dd
+			// HH:mm:ss").parse(reqstrsearchdoc.getDateBeginTime());
 			Date localDate2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(reqstrsearchdoc.getDateEndTime());
-			btnStarttime.setText(
-					new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(Long.valueOf(localDate1.getTime())));
+			// btnStarttime.setText(
+			// new SimpleDateFormat("yyyy-MM-dd",
+			// Locale.CHINA).format(Long.valueOf(localDate1.getTime())));
 			btnEndtime.setText(
 					new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(Long.valueOf(localDate2.getTime())));
 		} catch (Exception e) {
@@ -241,7 +245,8 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 		public void onClick(View v) {
 			this.btn = ((Button) v);
 			try {
-				calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).parse((String) this.btn.getText()));
+				calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).parse(
+						TextUtils.isEmpty(btn.getText().toString()) ? Utils.getData() : btn.getText().toString()));
 				new DatePickerDialog(SaleDocSearchAct.this, this.listener, SaleDocSearchAct.this.calendar.get(1),
 						SaleDocSearchAct.this.calendar.get(2), calendar.get(5)).show();
 			} catch (ParseException e) {

@@ -26,6 +26,7 @@ import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.EditTextWithDel;
+import com.google.gson.Gson;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -331,20 +332,22 @@ public class OutDocOpenActivity extends BaseActivity
 		public void handleMessage(android.os.Message msg) {
 			String localString = msg.obj.toString();
 			if (RequestHelper.isSuccess(localString)) {
-				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.readValue(localString,
-						DocContainerEntity.class);
-				doc = ((DefDocXS) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDocXS.class));
+				// DocContainerEntity entity = (DocContainerEntity)
+				// JSONUtil.readValue(localString,
+				// DocContainerEntity.class);
+				DocContainerEntity entity = JSONUtil.fromJson(localString, DocContainerEntity.class);
+				doc = ((DefDocXS) JSONUtil.readValue(entity.getDoc(), DefDocXS.class));
 				// 保存基本数据
 				fillDoc();
 				doc.setShowid("销售开单");
-				localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
+				entity.setDoc(JSONUtil.object2Json(doc));
 				// TODO
 				Intent localIntent = new Intent(OutDocOpenActivity.this, OutDocEditActivity.class);
-				localIntent.putExtra("docContainer", localDocContainerEntity);
+				localIntent.putExtra("docContainer", entity);
 				localIntent.putExtra("ishaschanged", true);
 				startActivity(localIntent);
 				finish();
-				new Sv_docitem().insetDocItem(localDocContainerEntity);
+				new Sv_docitem().insetDocItem(entity);
 				return;
 			} else {
 				RequestHelper.showError(localString);

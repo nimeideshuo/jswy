@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import com.ahjswy.cn.model.DefDocPayType;
 import com.ahjswy.cn.response.RespServiceInfor;
+import com.google.gson.Gson;
 
 public class JSONUtil {
 
@@ -131,6 +132,13 @@ public class JSONUtil {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static <T> T fromJson(String json, Class<T> classOfT) {
+		if (!TextUtils.isEmptyS(json) || classOfT == null) {
+			return null;
+		}
+		return new Gson().fromJson(json, classOfT);
 	}
 
 	// String json to list

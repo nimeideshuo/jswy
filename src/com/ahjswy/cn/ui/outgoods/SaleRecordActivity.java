@@ -54,7 +54,7 @@ public class SaleRecordActivity extends BaseActivity {
 		listView.setXListViewListener(listener);
 		SwipeMenuCreator local6 = new SwipeMenuCreator() {
 			public void create(SwipeMenu paramAnonymousSwipeMenu) {
-				SwipeMenuItem localSwipeMenuItem = new SwipeMenuItem(SaleRecordActivity.this.getApplicationContext());
+				SwipeMenuItem localSwipeMenuItem = new SwipeMenuItem(getApplicationContext());
 				localSwipeMenuItem.setTitle("打印");
 				localSwipeMenuItem.setTitleSize(14);
 				localSwipeMenuItem.setTitleColor(-16777216);
@@ -223,7 +223,7 @@ public class SaleRecordActivity extends BaseActivity {
 		public void handleMessage(Message msg) {
 			String message = msg.obj.toString();
 			if (RequestHelper.isSuccess(message)) {
-				DocContainerEntity localObject = (DocContainerEntity) JSONUtil.readValue(message,
+				DocContainerEntity localObject = (DocContainerEntity) JSONUtil.fromJson(message,
 						DocContainerEntity.class);
 				switch (msg.what) {
 				case 0:

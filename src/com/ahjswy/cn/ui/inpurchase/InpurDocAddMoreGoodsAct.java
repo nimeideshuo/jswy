@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.bean.Def_Doc;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
@@ -55,6 +56,7 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarco
 		support = new ServiceSupport();
 		Newitems = new ArrayList<DefDocItemCG>();
 		setInitItem();
+		ap = new AccountPreference();
 	}
 
 	ArrayList<DefDocItemCG> Newitems;
@@ -67,7 +69,8 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarco
 		}
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
 		if (goodsThinList.size() == 1) {
-			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, 0L);// 0
+			int num = Utils.isCombination() ? 1 : 0;
+			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), num, 0.0D, 0L);// 0
 			if (fillItem != null) {
 				Newitems.add(fillItem);
 				addItems();
@@ -191,33 +194,33 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarco
 		}
 	}
 
-	private DefDocItemCG fillItem(GoodsThin localGoodsThin, double paramDouble1, double paramDouble2, Long paramLong) {
+	private DefDocItemCG fillItem(GoodsThin goodsThin, double num, double price, Long tempitemid) {
 		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
 		DefDocItemCG defDocItemCG = new DefDocItemCG();
-		defDocItemCG.setGoodsid(localGoodsThin.getId());
-		defDocItemCG.setGoodsname(localGoodsThin.getName());
-		defDocItemCG.setBarcode(localGoodsThin.getBarcode());
-		defDocItemCG.setSpecification(localGoodsThin.getSpecification());
+		defDocItemCG.setGoodsid(goodsThin.getId());
+		defDocItemCG.setGoodsname(goodsThin.getName());
+		defDocItemCG.setBarcode(goodsThin.getBarcode());
+		defDocItemCG.setSpecification(goodsThin.getSpecification());
 		defDocItemCG.setWarehouseid(doccg.getWarehouseid());
 		defDocItemCG.setWarehousename(doccg.getWarehousename());
 		defDocItemCG.setItemid(0L);
-		defDocItemCG.setTempitemid(paramLong);
+		defDocItemCG.setTempitemid(tempitemid);
 		GoodsUnit localGoodsUnit = null;
 		if (Utils.DEFAULT_OutDocUNIT == 0) {
-			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(localGoodsThin.getId());
+			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(goodsThin.getId());
 		} else {
-			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(localGoodsThin.getId());
+			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(goodsThin.getId());
 		}
 		if (localGoodsUnit == null) {
 			return null;
 		}
 		defDocItemCG.setUnitid(localGoodsUnit.getUnitid());
 		defDocItemCG.setUnitname(localGoodsUnit.getUnitname());
-		defDocItemCG.setNum(Utils.normalize(paramDouble1, 2));
+		defDocItemCG.setNum(Utils.normalize(num, 2));
 		defDocItemCG.setBignum(localGoodsUnitDAO.getBigNum(defDocItemCG.getGoodsid(), defDocItemCG.getUnitid(),
 				defDocItemCG.getNum()));
 		// 价格
-		defDocItemCG.setPrice(Utils.normalizePrice(paramDouble2));
+		defDocItemCG.setPrice(Utils.normalizePrice(price));
 		// 小计
 		defDocItemCG.setSubtotal(Utils.normalizeSubtotal(defDocItemCG.getNum() * defDocItemCG.getPrice()));
 		// 折扣率
@@ -226,12 +229,10 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarco
 		defDocItemCG.setDiscountprice(Utils.normalizePrice(defDocItemCG.getPrice() * doccg.getDiscountratio()));
 		// 折后小计
 		defDocItemCG.setDiscountsubtotal(defDocItemCG.getNum() * defDocItemCG.getDiscountprice());
-		if (defDocItemCG.getPrice() == 0.0D) {
-			defDocItemCG.setIsgift(true);
-		}
+		defDocItemCG.setIsgift(defDocItemCG.getPrice() == 0 ? true : false);
 		// 总金额
 		// defDocItemCG.setCostprice(0.0D);
-		defDocItemCG.setIsusebatch(localGoodsThin.isIsusebatch());
+		defDocItemCG.setIsusebatch(goodsThin.isIsusebatch());
 
 		return defDocItemCG;
 	}
@@ -293,6 +294,7 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarco
 
 	private ServiceSupport support;
 	private Scaner scaner;
+	private AccountPreference ap;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

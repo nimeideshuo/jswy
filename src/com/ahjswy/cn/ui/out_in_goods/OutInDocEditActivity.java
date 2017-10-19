@@ -130,6 +130,8 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
 				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
 				map.put(itemxs2.getGoodsid(), itemxs2);
+			}else{
+				listDocItem.add(items1);
 			}
 
 		}
@@ -504,7 +506,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	}
 
 	private String validateDoc() {
-		String message = "";
+		String message = null;
 		if ((doccg.getDiscountratio() <= 0.0D) || (doccg.getDiscountratio() > 1.0D)) {
 			return "整单折扣必须大于0且小于等于1";
 		}
@@ -764,6 +766,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 							Intent intent = new Intent(OutInDocEditActivity.this, SwyMain.class);
 							startActivity(intent);
 							finish();
+							showSuccess("打印成功!");
 						}
 					}
 					if (serviceInfor.Result && BLUE_PRINT_DOC == 3) {

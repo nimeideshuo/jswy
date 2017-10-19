@@ -191,7 +191,7 @@ public class InventoryRecordActivity extends BaseActivity {
 		public void handleMessage(Message msg) {
 			String message = msg.obj.toString();
 			if (RequestHelper.isSuccess(message)) {
-				DocContainerEntity docContainer = (DocContainerEntity) JSONUtil.readValue(message,
+				DocContainerEntity docContainer = (DocContainerEntity) JSONUtil.fromJson(message,
 						DocContainerEntity.class);
 				// TODO
 				startActivityForResult(new Intent(InventoryRecordActivity.this, InventoryEditActivity.class)

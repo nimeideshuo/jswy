@@ -213,7 +213,7 @@ public class TransferRecordActivity extends BaseActivity {
 		public void handleMessage(android.os.Message msg) {
 			String result = msg.obj.toString();
 			if (RequestHelper.isSuccess(result)) {
-				DocContainerEntity doccontainer = (DocContainerEntity) JSONUtil.readValue(result,
+				DocContainerEntity doccontainer = (DocContainerEntity) JSONUtil.fromJson(result,
 						DocContainerEntity.class);
 				startActivityForResult(new Intent().setClass(TransferRecordActivity.this, TransferEditActivity.class)
 						.putExtra("docContainer", doccontainer).putExtra("ishaschanged", false), 1);

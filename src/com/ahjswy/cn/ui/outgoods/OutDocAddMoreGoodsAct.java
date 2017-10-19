@@ -100,10 +100,10 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		final Map<String, Object> goodsMap = new HashMap<String, Object>();
 		if (goodsThinList.size() == 1) {
 			long maxTempItemId = getMaxTempItemId();
-			int num = Boolean.parseBoolean(ap.getValue("iscombinationItem")) ? 1 : 0;
+			int num = Utils.isCombination() ? 1 : 0;
 			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), num, 0.0D, maxTempItemId + 1L);
 			goodsMap.put(fillItem.getGoodsid(), fillItem);
-			if (Boolean.parseBoolean(ap.getValue("iscombinationItem"))) {
+			if (Utils.isCombination()) {
 				combinationItem(goodsMap);
 			}
 			addItems(goodsMap);
@@ -122,11 +122,11 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 					long maxTempItemId = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
 						maxTempItemId += 1L;
-						int num = Boolean.parseBoolean(ap.getValue("iscombinationItem")) ? 1 : 0;
+						int num = Utils.isCombination() ? 1 : 0;
 						DefDocItemXS fillItem = fillItem(select.get(i), num, 0.0D, maxTempItemId);
 						goodsMap.put(fillItem.getGoodsid(), fillItem);
 					}
-					if (Boolean.parseBoolean(ap.getValue("iscombinationItem"))) {
+					if (Utils.isCombination()) {
 						combinationItem(goodsMap);
 					}
 					addItems(goodsMap);
@@ -194,18 +194,20 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 							}
 
 						}
-						// 查询库存
-						ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
-						defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
-						items.add(defdocitemxs);
-						runOnUiThread(new Runnable() {
-							public void run() {
-								adapter.setData(items);
-							}
-						});
 					} else {
 						showError("没有获取到库存数据!请重试!");
 					}
+					ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
+					if (goodsPrice == null) {
+						showSuccess("商品单价没有查询到!");
+					}
+					defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
+					items.add(defdocitemxs);
+					runOnUiThread(new Runnable() {
+						public void run() {
+							adapter.setData(items);
+						}
+					});
 				}
 			}
 		});
@@ -233,43 +235,58 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 
 	// 初始化 设置 库存 单位转换
 	protected void setInitItem() {
-		for (int i = 0; i < items.size(); i++) {
-			DefDocItemXS defdocitemxs = items.get(i);
-			String localString = new ServiceGoods().gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
-					defdocitemxs.isIsusebatch());
-			List<RespGoodsWarehouse> goodsWarehouses;
-			if (RequestHelper.isSuccess(localString)) {
-				goodsWarehouses = JSONUtil.str2list(localString, RespGoodsWarehouse.class);
-				for (int j = 0; j < goodsWarehouses.size(); j++) {
-					if (defdocitemxs.getGoodsid().equals(goodsWarehouses.get(j).getGoodsid())
-							&& defdocitemxs.getWarehouseid().equals(goodsWarehouses.get(j).getWarehouseid())) {
-						RespGoodsWarehouse res = goodsWarehouses.get(j);
-						defdocitemxs.setStocknum(res);
-						if (Utils.DEFAULT_OutDocUNIT == 0) {
-							String stocknum = res.getStocknum() == 0 ? "0" + defdocitemxs.getUnitname()
-									: String.valueOf(res.getStocknum()) + defdocitemxs.getUnitname();
-							// 库存 的 设置
-							defdocitemxs.goodStock = stocknum;
-						} else {
-							String bigstocknum = res.getBigstocknum().length() == 0 ? "0" + defdocitemxs.getUnitname()
-									: res.getBigstocknum();
-							// 库存 的 设置
-							defdocitemxs.goodStock = bigstocknum;
-						}
-						break;
-					}
+		PDH.show(this, "查询中...", new PDH.ProgressCallBack() {
 
+			@Override
+			public void action() {
+				for (int i = 0; i < items.size(); i++) {
+					DefDocItemXS defdocitemxs = items.get(i);
+					String localString = new ServiceGoods().gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
+							defdocitemxs.isIsusebatch());
+					List<RespGoodsWarehouse> goodsWarehouses;
+					if (RequestHelper.isSuccess(localString)) {
+						goodsWarehouses = JSONUtil.str2list(localString, RespGoodsWarehouse.class);
+						for (int j = 0; j < goodsWarehouses.size(); j++) {
+							// 库存 查询
+							if (defdocitemxs.getGoodsid().equals(goodsWarehouses.get(j).getGoodsid())
+									&& defdocitemxs.getWarehouseid().equals(goodsWarehouses.get(j).getWarehouseid())) {
+								RespGoodsWarehouse res = goodsWarehouses.get(j);
+								defdocitemxs.setStocknum(res);
+								if (Utils.DEFAULT_OutDocUNIT == 0) {
+									String stocknum = res.getStocknum() == 0 ? "0" + defdocitemxs.getUnitname()
+											: String.valueOf(res.getStocknum()) + defdocitemxs.getUnitname();
+									// 库存 的 设置
+									defdocitemxs.goodStock = stocknum;
+								} else {
+									String bigstocknum = res.getBigstocknum().length() == 0
+											? "0" + defdocitemxs.getUnitname() : res.getBigstocknum();
+									// 库存 的 设置
+									defdocitemxs.goodStock = bigstocknum;
+								}
+								break;
+							}
+
+						}
+					} else {
+						showError("没有获取到库存数据!请重试!");
+					}
+					// 查询商品客史价格
+					ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
+					if (goodsPrice == null) {
+						showSuccess("商品单价没有查询到!");
+					}
+					defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
+					runOnUiThread(new Runnable() {
+						public void run() {
+							adapter.setData(items);
+							lv_commodity_add.setAdapter(adapter);
+							lv_commodity_add.setItemsCanFocus(true);
+						}
+					});
 				}
-				// 查询商品客史价格
-				ReqStrGetGoodsPrice goodsPrice = DocUtils.GetMultiGoodsPrice(doc.getCustomerid(), defdocitemxs);
-				defdocitemxs.setPrice(goodsPrice == null ? 0 : goodsPrice.getPrice());
-				adapter.setData(items);
-				lv_commodity_add.setAdapter(adapter);
-				lv_commodity_add.setItemsCanFocus(true);
-			} else {
-				showError("没有获取到库存数据!请重试!");
 			}
-		}
+		});
+
 	}
 
 	private List<DefDocItemXS> listDe;

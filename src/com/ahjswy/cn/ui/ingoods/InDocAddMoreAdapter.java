@@ -56,8 +56,8 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 	}
 
 	// 添加一个
-	public void addData(DefDocItemXS listItem) {
-		listItems.add(listItem);
+	public void addData(DefDocItemXS item) {
+		listItems.add(item);
 		notifyDataSetChanged();
 	}
 

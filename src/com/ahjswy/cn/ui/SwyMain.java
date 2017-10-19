@@ -6,11 +6,8 @@ import java.util.List;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
-import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.dao.Sv_docitem;
-import com.ahjswy.cn.model.DefDocPayType;
-import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
@@ -21,6 +18,7 @@ import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
 import com.ahjswy.cn.ui.addgoods.AddNewGoodSAct;
 import com.ahjswy.cn.ui.field.AllGoodsActivity;
 import com.ahjswy.cn.ui.field.NewCustomerAddAct;
+import com.ahjswy.cn.ui.ingoods.InDocEditActivity;
 import com.ahjswy.cn.ui.ingoods.InDocOpenActivity;
 import com.ahjswy.cn.ui.inpurchase.InpurchaseOpenActivity;
 import com.ahjswy.cn.ui.inventory.InventoryDocOpenActivity;
@@ -32,7 +30,6 @@ import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.InfoDialog;
-import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -44,14 +41,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.view.WindowManager;
 
 public class SwyMain extends BaseActivity implements OnClickListener, BumenCall {
@@ -162,11 +157,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		// android:onClick="startOpenDoc"
 		// android:text="开单" />
 		//
-		
-		
-		
-		
-		
+
 		// 保存
 	}
 
@@ -346,7 +337,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				return;
 			}
 			// TODO
-			DocContainerEntity queryDoc = sv.queryDoc();
+			DocContainerEntity queryDoc = sv.queryDoc("13");
 			if (queryDoc == null) {
 				startActivity(new Intent(this, OutDocOpenActivity.class));
 			} else {
@@ -362,7 +353,15 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				PDH.showMessage("请设置默认仓库");
 				return;
 			}
-			startActivity(new Intent(SwyMain.this, InDocOpenActivity.class));
+			DocContainerEntity entity = sv.queryDoc("14");
+			if (entity == null) {
+				startActivity(new Intent(SwyMain.this, InDocOpenActivity.class));
+			} else {
+				Intent localIntent = new Intent();
+				localIntent.setClass(this, InDocEditActivity.class);
+				localIntent.putExtra("docContainer", entity);
+				startActivity(localIntent);
+			}
 			break;
 		// 采购单
 		case R.id.lin_Inpurchase:

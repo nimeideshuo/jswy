@@ -99,6 +99,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		intDate();
 		refreshUI();
 		bottomCount();
+		findViewById(R.id.bt_totalSum).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				System.out.println(1 / 0);
+			}
+		});
 	}
 
 	private void intView() {
@@ -117,7 +124,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		// 底部总价格
 		bt_totalSum = (Button) findViewById(R.id.bt_totalSum);
 		btnGoodClass = (Button) findViewById(R.id.btn_goodClass);
-		serviceStore = new ServiceStore();
 		ishaschanged = getIntent().getBooleanExtra("ishaschanged", true);
 		docContainerEntity = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
 		doc = ((DefDocXS) JSONUtil.readValue(docContainerEntity.getDoc(), DefDocXS.class));
@@ -137,6 +143,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		ap = new AccountPreference();
 		sv = new Sv_docitem();
 		unitDAO = new GoodsUnitDAO();
+		serviceStore = new ServiceStore();
 	}
 
 	protected void combinationItem() {
@@ -160,34 +167,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
 				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
 				map.put(itemxs2.getGoodsid(), itemxs2);
+			} else {
+				listDocItem.add(items1);
 			}
 
 		}
-
-		// for (int i = data.size() - 1; i >= 0; i--) {
-		// DefDocItemXS items1 = data.get(i);
-		// // 没有的商品 缓存
-		// if (map.get(items1.getGoodsid()) == null) {
-		// map.put(items1.getGoodsid(), new DefDocItemXS(items1));
-		// data.remove(items1);
-		// continue;
-		// }
-		// DefDocItemXS itemxs2 = (DefDocItemXS) map.get(items1.getGoodsid());
-		// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
-		// items1.getUnitid().equals(itemxs2.getUnitid())
-		// && items1.getPrice() == itemxs2.getPrice()
-		// && items1.getDiscountratio() == itemxs2.getDiscountratio()
-		// && items1.getWarehouseid().equals(itemxs2.getWarehouseid())) {
-		// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
-		// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
-		// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
-		// itemxs2.getDiscountratio());
-		// map.put(itemxs2.getGoodsid(), itemxs2);
-		// // 商品 单位id 单价 相等删除！
-		// data.remove(items1);
-		// // listItemDelete.add(Long.valueOf(items1.getItemid()));
-		// }
-		// }
 		Set<String> keySet = map.keySet();
 		for (String string : keySet) {
 			listDocItem.add((DefDocItemXS) map.get(string));
@@ -210,8 +194,14 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		docEntity.setDeleteitem(JSONUtil.object2Json(listItemDelete));
 		docEntity.setDoc(JSONUtil.object2Json(doc));
 		docEntity.setItem(JSONUtil.object2Json(listItem));
+		docEntity.setDoctype(docContainerEntity.getDoctype());
 		docEntity.setPaytype(JSONUtil.object2Json(listPayType));
-		sv.updataDocItem(docEntity);
+		if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
+			sv.insetDocItem(docEntity);
+		} else {
+			sv.updataDocItem(docEntity);
+		}
+
 	}
 
 	private void queryCustomerdebt() {
@@ -267,6 +257,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 							ishaschanged = true;
 							setActionBarText();
 							bottomCount();
+							setDBDoc();
 						}
 					}, 180L);
 					break;
@@ -323,7 +314,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		final ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
 		if (goodsThinList.size() == 1) {
 			long l = getMaxTempItemId();
-			int num = Boolean.parseBoolean(ap.getValue("iscombinationItem")) ? 1 : 0;
+			int num = Utils.isCombination() ? 1 : 0;
 			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), num, 0.0D, l + 1L);
 			localArrayList.add(fillItem);
 			Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
@@ -342,7 +333,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					long l = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
 						l += 1L;
-						int num = Boolean.parseBoolean(ap.getValue("iscombinationItem")) ? 1 : 0;
+						int num = Utils.isCombination() ? 1 : 0;
 						DefDocItemXS fillItem = fillItem(select.get(i), num, 0.0D, l);
 						localArrayList.add(fillItem);
 					}
@@ -390,7 +381,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				menuPopup.dismiss();
 				WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
 				localLayoutParams.alpha = 1.0F;
-				OutDocEditActivity.this.getWindow().setAttributes(localLayoutParams);
+				getWindow().setAttributes(localLayoutParams);
 			}
 			List<GoodsThin> localList = searchHelper.getAdapter().getSelect();
 			if ((localList == null) || (localList.size() == 0)) {
@@ -404,12 +395,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			for (int i = 0; i < localList.size(); i++) {
 				GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
 				l += 1L;
-				int num = Boolean.parseBoolean(ap.getValue("iscombinationItem")) ? 1 : 0;
+				int num = Utils.isCombination() ? 1 : 0;
 				DefDocItemXS item = fillItem(localGoodsThin, num, 0.0D, l);
 				if (item != null) {
 					localArrayList.add(item);
 				} else {
-					PDH.showMessage("商品数据错误!");
+					PDH.showMessage("商品有误!");
+					return;
 				}
 			}
 			Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
@@ -467,9 +459,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				if (msg.what == 0) {
 					localList = JSONUtil.str2list(localString1, ReqStrGetGoodsPrice.class);
 					if (newListItem != null) {
-						if ((msg.what != 0) && (msg.what != 1)) {
-							return;
-						}
 						for (int i = 0; i < newListItem.size(); i++) {
 							DefDocItemXS itemXS1 = (DefDocItemXS) newListItem.get(i);
 							for (int j = 0; j < localList.size(); j++) {
@@ -520,9 +509,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 						}
 					}
-					// TODO
 					if (newListItem.size() > 0) {
-						if (Boolean.parseBoolean(ap.getValue("iscombinationItem"))) {
+						if (Utils.isCombination()) {
 							listItem.addAll(newListItem);
 							combinationItem();
 						} else {
@@ -583,7 +571,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					return;
 				}
 			} else {
-				PDH.showFail(localString1);
+				PDH.showFail(TextUtils.isEmpty(localString1) ? "网络链接失败!" : localString1);
 			}
 		};
 
@@ -943,7 +931,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		}
 		startActivity(new Intent(OutDocEditActivity.this, SwyMain.class));
 		finish();
-		sv.deleteAllDoc();
+		sv.deleteDoc(docContainerEntity.getDoctype());
 	}
 
 	// 属性
@@ -1022,11 +1010,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					Intent intent = new Intent(OutDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
-					sv.deleteAllDoc();
+					sv.deleteDoc(docContainerEntity.getDoctype());
 					return;
 				}
 				// boolean isSort = false;
-				DocContainerEntity dce = (DocContainerEntity) JSONUtil.readValue(localString, DocContainerEntity.class);
+				DocContainerEntity dce = (DocContainerEntity) JSONUtil.fromJson(localString, DocContainerEntity.class);
 				if (dce == null) {
 					return;
 				}
@@ -1050,7 +1038,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						printDocHandler.sendEmptyMessage(0);
 					}
 					// setDBDoc();
-					sv.deleteAllDoc();
+					sv.deleteDoc(docContainerEntity.getDoctype());
 					return;
 				case 1:
 					if ((doc.isIsavailable()) && (doc.isIsposted())) {
@@ -1060,7 +1048,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						}
 						startActivity(new Intent(OutDocEditActivity.this, SwyMain.class));
 						finish();
-						sv.deleteAllDoc();
+						sv.deleteDoc(docContainerEntity.getDoctype());
 						return;
 					}
 					adapter.setData(listItem);
@@ -1197,7 +1185,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				ishaschanged = true;
 				bottomCount();
 				refreshUI();
-				if (Boolean.parseBoolean(ap.getValue("iscombinationItem"))) {
+				if (Utils.isCombination()) {
 					combinationItem();
 				}
 				setDBDoc();
@@ -1208,7 +1196,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				break;
 			case 4:
 				DefDocItemXS defDocItemXS4 = (DefDocItemXS) data.getSerializableExtra("docitem");
-				if (Boolean.parseBoolean(ap.getValue("iscombinationItem"))) {
+				if (Utils.isCombination()) {
 					adapter.addItem(defDocItemXS4);
 					combinationItem();
 				} else {
@@ -1235,7 +1223,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				listview_copy_dele.setAdapter(adapter);
 				this.refreshUI();
 				bottomCount();
-				if (Boolean.parseBoolean(ap.getValue("iscombinationItem"))) {
+				if (Utils.isCombination()) {
 					combinationItem();
 				}
 				setDBDoc();
@@ -1302,7 +1290,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					Intent intent = new Intent(OutDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
-					sv.deleteAllDoc();
+					sv.deleteDoc(docContainerEntity.getDoctype());
 				}
 			});
 			return;
@@ -1324,9 +1312,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			}
 			break;
 		case 0:
-			// if (this.menuPopup == null) {
-			this.menuPopup = new OutDocEditMenuPopup(this);
-			// }
+			if (this.menuPopup == null) {
+				this.menuPopup = new OutDocEditMenuPopup(this);
+			}
 			this.menuPopup.showAtLocation(listview_copy_dele, 80, 0, 0);
 			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
 			localLayoutParams.alpha = 0.8F;

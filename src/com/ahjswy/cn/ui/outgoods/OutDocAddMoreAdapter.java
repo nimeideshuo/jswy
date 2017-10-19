@@ -15,6 +15,7 @@ import com.ahjswy.cn.service.ServiceSupport;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
+import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
 import android.app.Activity;
@@ -116,7 +117,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 						// 设置当前库存
 						String stocknum = DocUtils.Stocknum(itemXS.getStocknum(), goodsUnit);
 						itemXS.goodStock = stocknum;
-						tv_Bfci.setText("库存:" + stocknum);
+						tv_Bfci.setText("库存:" + (TextUtils.isEmpty(itemXS.goodStock) ? "0" : itemXS.goodStock));
 						PDH.show(context, new PDH.ProgressCallBack() {
 
 							@Override
@@ -149,7 +150,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
 		tv_dicPrice.setOnClickListener(priceOnClick);
 		tv_dicPrice.setTag(Integer.valueOf(position));
-		tv_Bfci.setText("库存:" + itemXS.goodStock);
+		tv_Bfci.setText("库存:" + (itemXS.goodStock == null ? "0" : itemXS.goodStock));
 		etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
 		// if (listItems.get(position).getNum() == 0.0d) {
 		// etNum.setText("");

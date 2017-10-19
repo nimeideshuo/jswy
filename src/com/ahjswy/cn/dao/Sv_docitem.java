@@ -10,34 +10,57 @@ public class Sv_docitem {
 	private DBOpenHelper helper = new DBOpenHelper();
 	private SQLiteDatabase db;
 
-	public DocContainerEntity queryDoc() {
+	public DocContainerEntity queryDoc(String doctype) {
 		this.db = this.helper.getWritableDatabase();
-		String sql = "select id,deleteinitem,deleteitem,doc,item,doctype,paytype from sv_docitem";
-		Cursor cursor = db.rawQuery(sql, null);
-		while (cursor.moveToNext()) {
-			DocContainerEntity docEntity = new DocContainerEntity();
-			docEntity.setDeleteinitem(cursor.getString(1));
-			docEntity.setDeleteitem(cursor.getString(2));
-			docEntity.setDoc(cursor.getString(3));
-			docEntity.setItem(cursor.getString(4));
-			docEntity.setDoctype(cursor.getString(5));
-			docEntity.setPaytype(cursor.getString(6));
-			return docEntity;
+		String sql = "select svid,showid,deleteinitem,deleteitem,doc,item,doctype,paytype from sv_docitem where doctype = ?";
+		try {
+			Cursor cursor = db.rawQuery(sql, new String[] { doctype });
+			while (cursor.moveToNext()) {
+				DocContainerEntity docEntity = new DocContainerEntity();
+				docEntity.setSvid(cursor.getInt(0));
+				docEntity.setShowid(cursor.getString(1));
+				docEntity.setDeleteinitem(cursor.getString(2));
+				docEntity.setDeleteitem(cursor.getString(3));
+				docEntity.setDoc(cursor.getString(4));
+				docEntity.setItem(cursor.getString(5));
+				docEntity.setDoctype(cursor.getString(6));
+				docEntity.setPaytype(cursor.getString(7));
+				return docEntity;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public void insetDocItem(DocContainerEntity docEntity) {
+	public String getLastShowId(String doctype) {
+		this.db = this.helper.getWritableDatabase();
+		String sql = "select showid from sv_docitem where doctype=? order by desc";
+		try {
+			Cursor cursor = db.rawQuery(sql, null);
+			if (cursor.moveToNext()) {
+				return cursor.getString(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "001";
+	}
+
+	public String insetDocItem(DocContainerEntity docEntity) {
 		this.db = this.helper.getWritableDatabase();
 		ContentValues values = new ContentValues();
+		values.put("showid", docEntity.getShowid());
 		values.put("deleteinitem", docEntity.getDeleteinitem());
 		values.put("deleteitem", docEntity.getDeleteitem());
 		values.put("doc", docEntity.getDoc());
 		values.put("item", docEntity.getItem());
 		values.put("doctype", docEntity.getDoctype());
 		values.put("paytype", docEntity.getPaytype());
-		values.put("paytype", docEntity.getItem());
-		db.insert("sv_docitem", null, values);
+		long insert = db.insert("sv_docitem", null, values);
+		String svId = getLastShowId(docEntity.getDoctype());
+		System.out.println(getClass().getName() + ">>>insetDocItem>>写入数据库 返回结果>>" + insert + ">>showId>>" + svId);
+		return svId;
 	}
 
 	public void updataDocItem(DocContainerEntity docEntity) {
@@ -49,11 +72,11 @@ public class Sv_docitem {
 		values.put("item", docEntity.getItem());
 		values.put("doctype", docEntity.getDoctype());
 		values.put("paytype", docEntity.getPaytype());
-		db.update("sv_docitem", values, null, null);
+		db.update("sv_docitem", values, "doctype = ?", new String[] { docEntity.getDoctype() });
 	}
 
-	public void deleteAllDoc() {
+	public void deleteDoc(String doctype) {
 		this.db = this.helper.getWritableDatabase();
-		db.delete("sv_docitem", null, null);
+		db.delete("sv_docitem", "doctype=?", new String[] { doctype });
 	}
 }

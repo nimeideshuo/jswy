@@ -27,7 +27,7 @@ public class SystemState {
 	public static final String[] goods_select_items;
 	public static final String[] goods_select_keys = { "id", "pinyin", "name", "barcode" };
 	public static String random;
-
+	public static final String defaultTime="2000-01-01";
 	static {
 		goods_select_items = new String[] { "编号", "拼音", "名称", "条形码" };
 		customer_select_keys = new String[] { "id", "pinyin", "name" };

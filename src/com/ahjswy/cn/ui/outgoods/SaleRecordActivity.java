@@ -106,7 +106,9 @@ public class SaleRecordActivity extends BaseActivity {
 			this.condition.setCustomerName("全部");
 			this.condition.setWarehouseName("全部");
 			this.condition.setBuilderName(SystemState.getUser().getName());
-			this.condition.setDateBeginTime(Utils.formatDate(Utils.getStartTime().longValue(), "yyyy-MM-dd HH:mm:ss"));
+			this.condition.setDateBeginTime(SystemState.defaultTime + " 00:00:00");
+			// this.condition.setDateBeginTime(Utils.formatDate(Utils.getStartTime().longValue(),
+			// "yyyy-MM-dd HH:mm:ss"));
 			this.condition.setDateEndTime(Utils.formatDate(Utils.getEndTime().longValue(), "yyyy-MM-dd HH:mm:ss"));
 			this.condition.setOnlyShowNoSettleUp(false);
 			this.condition.setInWarehouseID(null);

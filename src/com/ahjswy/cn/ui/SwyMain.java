@@ -353,6 +353,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				PDH.showMessage("请设置默认仓库");
 				return;
 			}
+			//android:windowSoftInputMode="adjustPan|stateHidden"
 			DocContainerEntity entity = sv.queryDoc("14");
 			if (entity == null) {
 				startActivity(new Intent(SwyMain.this, InDocOpenActivity.class));

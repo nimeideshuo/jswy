@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class DepartmentSearchAct extends BaseActivity implements OnItemClickListener {
-	// 部门list
 	private List<Department> departments;
 	private ListView lvDepartments;
 

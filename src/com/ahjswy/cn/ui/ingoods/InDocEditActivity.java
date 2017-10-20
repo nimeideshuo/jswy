@@ -98,13 +98,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		intDate();
 		refreshUI();
 		sum();
-		findViewById(R.id.bt_totalSum).setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				System.out.println(1 / 0);
-			}
-		});
 	}
 
 	private void intView() {
@@ -1013,15 +1006,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	}
 
 	@Override
-	public void setActionBarText() {
-		if (this.ishaschanged) {
-			getActionBar().setTitle(doc.getShowid() + "*");
-		} else {
-			getActionBar().setTitle(doc.getShowid());
-		}
-	}
-
-	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		if ((this.menuPopup != null) && (this.menuPopup.isShowing())) {
 			this.menuPopup.dismiss();
@@ -1030,5 +1014,15 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			getWindow().setAttributes(localLayoutParams);
 		}
 		return false;
+	}
+
+	@Override
+	public void setActionBarText() {
+		String showId = TextUtils.isEmpty(doc.getShowid()) ? "销售退货单" : doc.getShowid();
+		if (this.ishaschanged) {
+			getActionBar().setTitle(showId + "*");
+		} else {
+			getActionBar().setTitle(showId);
+		}
 	}
 }

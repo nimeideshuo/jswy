@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.model.CustomerThin;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.Warehouse;
@@ -53,7 +54,7 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 		calendar = Calendar.getInstance();
 	}
 
-	private void initView(ReqStrSearchDoc reqstrsearchdoc) {
+	private void initView(ReqStrSearchDoc reqDoc) {
 		btnDoctype = ((Button) findViewById(R.id.btnDoctype));
 		btnDepartment = ((Button) findViewById(R.id.btnDepartment));
 		btnWarehouse = ((Button) findViewById(R.id.btnWarehouse));
@@ -71,28 +72,33 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 		btnDefaultSetting.setOnClickListener(this);
 		btnStarttime.setOnClickListener(dateClickListener);
 		btnEndtime.setOnClickListener(dateClickListener);
-		btnDoctype.setText(reqstrsearchdoc.getDoctypeName());
-		btnDoctype.setTag(reqstrsearchdoc.getDoctype());
-		btnDepartment.setText(reqstrsearchdoc.getDepartmentName());
-		btnDepartment.setTag(reqstrsearchdoc.getDepartmentID());
-		btnWarehouse.setText(reqstrsearchdoc.getWarehouseName());
-		btnWarehouse.setTag(reqstrsearchdoc.getWarehouseID());
-		btnCustomer.setText(reqstrsearchdoc.getCustomerName());
-		btnCustomer.setTag(reqstrsearchdoc.getCustomerID());
+		btnDoctype.setText(reqDoc.getDoctypeName());
+		btnDoctype.setTag(reqDoc.getDoctype());
+		btnDepartment.setText(reqDoc.getDepartmentName());
+		btnDepartment.setTag(reqDoc.getDepartmentID());
+		btnWarehouse.setText(reqDoc.getWarehouseName());
+		btnWarehouse.setTag(reqDoc.getWarehouseID());
+		btnCustomer.setText(reqDoc.getCustomerName());
+		btnCustomer.setTag(reqDoc.getCustomerID());
+		btnStarttime
+				.setText(reqDoc.getDateBeginTime().equals(SystemState.defaultTime) ? "" : reqDoc.getDateBeginTime());
 		try {
-			// Date localDate1 = new SimpleDateFormat("yyyy-MM-dd
-			// HH:mm:ss").parse(reqstrsearchdoc.getDateBeginTime());
-			Date localDate2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(reqstrsearchdoc.getDateEndTime());
-			// btnStarttime.setText(
-			// new SimpleDateFormat("yyyy-MM-dd",
-			// Locale.CHINA).format(Long.valueOf(localDate1.getTime())));
+			Date localDate2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(reqDoc.getDateEndTime());
 			btnEndtime.setText(
 					new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(Long.valueOf(localDate2.getTime())));
+			if (reqDoc.getDateBeginTime().contains(SystemState.defaultTime)) {
+				btnStarttime.setText("");
+			} else {
+				Date localDate1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(reqDoc.getDateBeginTime());
+				btnStarttime.setText(
+						new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(Long.valueOf(localDate1.getTime())));
+			}
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		etRemarkSummary.setText(reqstrsearchdoc.getRemarkSummary());
-		etShowID.setText(reqstrsearchdoc.getShowID());
-		checkOnlyShowNoSettleUp.setChecked(reqstrsearchdoc.isOnlyShowNoSettleUp());
+		etRemarkSummary.setText(reqDoc.getRemarkSummary());
+		etShowID.setText(reqDoc.getShowID());
+		checkOnlyShowNoSettleUp.setChecked(reqDoc.isOnlyShowNoSettleUp());
 	}
 
 	@Override
@@ -127,6 +133,9 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 			btnWarehouse.setTag(null);
 			btnCustomer.setText("全部");
 			btnCustomer.setTag(null);
+			btnStarttime.setText("");
+			btnStarttime.setTag(null);
+			btnEndtime.setText(Utils.getData());
 			showSuccess("恢复默认成功!");
 			break;
 
@@ -167,9 +176,10 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 			condition.setCustomerID(btnCustomer.getTag().toString());
 			condition.setCustomerName(btnCustomer.getText().toString());
 		}
-		condition.setDateBeginTime(btnStarttime.getText() + " 00:00:00");
-		condition.setDateEndTime(btnEndtime.getText() + " 00:00:00");
-		condition.setRemarkSummary(etRemarkSummary.getText().toString());
+		String begTime = btnStarttime.getTag() == null ? SystemState.defaultTime : btnStarttime.getTag().toString();
+		condition.setDateBeginTime(begTime + " 00:00:00");
+		condition.setDateEndTime(btnEndtime.getText().toString() + " 00:00:00");
+		condition.setRemarkSummary(etRemarkSummary.getText().toString().toString());
 		condition.setShowID(etShowID.getText().toString());
 		condition.setOnlyShowNoSettleUp(checkOnlyShowNoSettleUp.isChecked());
 		return condition;
@@ -239,6 +249,7 @@ public class SaleDocSearchAct extends BaseActivity implements OnClickListener {
 				calendar.set(5, dayOfMonth);
 				SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
 				btn.setText(localSimpleDateFormat.format(calendar.getTime()));
+				btn.setTag(localSimpleDateFormat.format(calendar.getTime()));
 			}
 		};
 

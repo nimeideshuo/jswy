@@ -99,13 +99,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		intDate();
 		refreshUI();
 		bottomCount();
-		findViewById(R.id.bt_totalSum).setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				System.out.println(1 / 0);
-			}
-		});
 	}
 
 	private void intView() {
@@ -1270,6 +1263,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 								public void run() {
 									if (RequestHelper.isSuccess(localString)) {
 										PDH.showSuccess("保存成功");
+										sv.deleteDoc(docContainerEntity.getDoctype());
 										Intent intent = new Intent(OutDocEditActivity.this, SwyMain.class);
 										startActivity(intent);
 										finish();
@@ -1287,10 +1281,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				@Override
 				public void onClick(View v) {
 					maler.dismiss();
+					sv.deleteDoc(docContainerEntity.getDoctype());
 					Intent intent = new Intent(OutDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
-					sv.deleteDoc(docContainerEntity.getDoctype());
+
 				}
 			});
 			return;
@@ -1344,11 +1339,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	@Override
 	public void setActionBarText() {
 		ActionBar localActionBar = getActionBar();
-		String showid = doc.getShowid();
+		String showid = TextUtils.isEmpty(doc.getShowid()) ? "销售开单" : doc.getShowid();
 		if (ishaschanged) {
-			localActionBar.setTitle(TextUtils.isEmpty(showid) ? "销售出货单*" : showid + "*");
+			localActionBar.setTitle(showid + "*");
 		} else {
-			localActionBar.setTitle(doc.getShowid());
+			localActionBar.setTitle(showid);
 		}
 	}
 

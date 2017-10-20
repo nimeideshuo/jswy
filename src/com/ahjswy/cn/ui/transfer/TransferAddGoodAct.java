@@ -74,11 +74,11 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 		position = getIntent().getIntExtra("position", 0);
 		this.docitem = ((DefDocItem) getIntent().getSerializableExtra("docitem"));
 		if ((this.docitem != null) && (this.docitem.isIsusebatch())) {
-			findViewById(R.id.linearDate).setVisibility(0);
-			findViewById(R.id.linearBatch).setVisibility(0);
+			findViewById(R.id.linearDate).setVisibility(View.VISIBLE);
+			findViewById(R.id.linearBatch).setVisibility(View.VISIBLE);
 		} else {
-			findViewById(R.id.linearDate).setVisibility(8);
-			findViewById(R.id.linearBatch).setVisibility(8);
+			findViewById(R.id.linearDate).setVisibility(View.GONE);
+			findViewById(R.id.linearBatch).setVisibility(View.GONE);
 		}
 		this.tvBarcode.setText(this.docitem.getBarcode());
 		this.tvSpecification.setText(this.docitem.getSpecification());
@@ -86,7 +86,7 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 		this.btnWarehouse.setTag(this.docitem.getWarehouseid());
 		this.btnUnit.setText(this.docitem.getUnitname());
 		this.btnUnit.setTag(this.docitem.getUnitid());
-		etNum.setText(String.valueOf(docitem.getNum()));
+		etNum.setText(docitem.getNum() == 0 ? "" : docitem.getNum() + "");
 		etRemark.setText(docitem.getRemark());
 	}
 

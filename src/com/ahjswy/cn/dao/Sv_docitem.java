@@ -57,9 +57,8 @@ public class Sv_docitem {
 		values.put("item", docEntity.getItem());
 		values.put("doctype", docEntity.getDoctype());
 		values.put("paytype", docEntity.getPaytype());
-		long insert = db.insert("sv_docitem", null, values);
+		db.insert("sv_docitem", null, values);
 		String svId = getLastShowId(docEntity.getDoctype());
-		System.out.println(getClass().getName() + ">>>insetDocItem>>写入数据库 返回结果>>" + insert + ">>showId>>" + svId);
 		return svId;
 	}
 

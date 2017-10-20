@@ -994,6 +994,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		// getActionBar().setTitle("已经保存");
 		// }
 		getActionBar().setTitle("销售订单录入");
+		
 	}
 
 }

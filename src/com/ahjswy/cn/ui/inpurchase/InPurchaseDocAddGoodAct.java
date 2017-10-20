@@ -66,7 +66,7 @@ public class InPurchaseDocAddGoodAct extends BaseActivity implements OnClickList
 	@Override
 	protected void onCreate(Bundle paramBundle) {
 		super.onCreate(paramBundle);
-		setContentView(R.layout.act_indoc_add_goods);
+		setContentView(R.layout.act_inpurchase_add_goods);
 		initView();
 		initDate();
 	}

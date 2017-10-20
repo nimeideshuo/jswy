@@ -186,8 +186,8 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btnWarehouse:
-			startActivityForResult(new Intent().setClass(this, GoodsWarehouseSearchAct.class).putExtra("goodsid",
-					this.docitem.getGoodsid()), 6);
+			startActivityForResult(
+					new Intent(this, GoodsWarehouseSearchAct.class).putExtra("goodsid", this.docitem.getGoodsid()), 6);
 			break;
 		case R.id.btnUnit:
 			unitSelect();
@@ -395,13 +395,15 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 	private Button endDate;
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (resultCode) {
-		case 6:
-			// 仓库
-			RespGoodsWarehouse localRespGoodsWarehouse2 = (RespGoodsWarehouse) data.getSerializableExtra("warehouse");
-			this.btnWarehouse.setTag(localRespGoodsWarehouse2.getWarehouseid());
-			this.btnWarehouse.setText(localRespGoodsWarehouse2.getWarehousename());
-			break;
+		if (resultCode == RESULT_OK) {
+			switch (requestCode) {
+			case 6:
+				RespGoodsWarehouse localRespGoodsWarehouse2 = (RespGoodsWarehouse) data
+						.getSerializableExtra("warehouse");
+				this.btnWarehouse.setTag(localRespGoodsWarehouse2.getWarehouseid());
+				this.btnWarehouse.setText(localRespGoodsWarehouse2.getWarehousename());
+				break;
+			}
 		}
 
 	};

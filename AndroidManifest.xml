@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ahjswy.cn"
     android:versionCode="1"
-    android:versionName="5.0.49" >
+    android:versionName="5.0.50" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -124,7 +124,8 @@
         <activity
             android:name="com.ahjswy.cn.ui.outgoods.OutDocEditActivity"
             android:icon="@drawable/menu_btn_back"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
         <activity
             android:name="com.ahjswy.cn.ui.outgoods.OutDocAddMoreGoodsAct"
@@ -173,7 +174,8 @@
         <activity
             android:name="com.ahjswy.cn.ui.ingoods.InDocEditActivity"
             android:icon="@drawable/menu_btn_back"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
         <activity
             android:name="com.ahjswy.cn.ui.ingoods.InDocAddMoreGoodsAct"
@@ -283,7 +285,8 @@
         <activity
             android:name="com.ahjswy.cn.ui.out_in_goods.OutInDocEditActivity"
             android:icon="@drawable/menu_btn_back"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
         <activity
             android:name="com.ahjswy.cn.ui.out_in_goods.OutInDocAddMoreGoodsAct"

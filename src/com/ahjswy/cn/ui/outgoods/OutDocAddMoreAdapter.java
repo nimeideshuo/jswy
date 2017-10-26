@@ -21,13 +21,11 @@ import com.ahjswy.cn.utils.Utils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -64,9 +62,13 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		return this.listItems;
 	}
 
-	public void setData(List<DefDocItemXS> paramList) {
+	public void setItem(List<DefDocItemXS> listItems) {
+		this.listItems = listItems;
+	}
+
+	public void setData(List<DefDocItemXS> listItems) {
 		this.listItems.clear();
-		this.listItems.addAll(paramList);
+		this.listItems.addAll(listItems);
 		notifyDataSetChanged();
 	}
 
@@ -115,9 +117,10 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 						itemXS.setUnitid(goodsUnit.getUnitid());
 						itemXS.setUnitname(goodsUnit.getUnitname());
 						// 设置当前库存
-						String stocknum = DocUtils.Stocknum(itemXS.getStocknum(), goodsUnit);
+						String stocknum = DocUtils.Stocknum(itemXS.stocknum, goodsUnit);
 						itemXS.goodStock = stocknum;
-						tv_Bfci.setText("库存:" + (TextUtils.isEmpty(itemXS.goodStock) ? "0" : itemXS.goodStock));
+						itemXS.unit = goodsUnit;
+						tv_Bfci.setText("库存:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" : itemXS.goodStock));
 						PDH.show(context, new PDH.ProgressCallBack() {
 
 							@Override
@@ -150,24 +153,23 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
 		tv_dicPrice.setOnClickListener(priceOnClick);
 		tv_dicPrice.setTag(Integer.valueOf(position));
-		tv_Bfci.setText("库存:" + (itemXS.goodStock == null ? "0" : itemXS.goodStock));
+		tv_Bfci.setText("库存:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" : itemXS.goodStock));
 		etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
-		// if (listItems.get(position).getNum() == 0.0d) {
-		// etNum.setText("");
-		// } else {
-		// String num = Utils.removeZero(itemXS.getNum() + "");
-		// etNum.setText(num);
+		// if (selectPosition == position) {
+		// etNum.requestFocus();
 		// }
-		if (selectPosition == position) {
-			etNum.requestFocus();
-		}
-		etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				selectPosition = position;
-			}
-		});
+		// etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
+		//
+		// @Override
+		// public void onFocusChange(View v, boolean hasFocus) {
+		// selectPosition = position;
+		// }
+		// });
+		// etNum.setSelection(position - 1);// 调整光标到最后一行
+		int selectionStart = etNum.getSelectionStart();
+		int selectionEnd = etNum.getSelectionEnd();
+		System.out.println("selectionStart>>" + selectionStart);
+		System.out.println("selectionEnd>>" + selectionEnd);
 		etNum.setTag(Integer.valueOf(position));
 		btnUnit.setTag(Integer.valueOf(position));
 		etNum.setFocusable(true);

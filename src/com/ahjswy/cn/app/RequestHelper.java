@@ -57,7 +57,7 @@ public class RequestHelper {
 			PDH.showFail("请求失败, 服务器异常.");
 			return;
 		}
-		PDH.showFail("操作失败，" + str);
+		PDH.showFail("网络链接失败，" + str);
 	}
 
 	// 验证 IP 是否正确

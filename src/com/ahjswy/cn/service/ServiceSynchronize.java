@@ -8,6 +8,7 @@ import java.util.List;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.request.ReqCommonPara;
 import com.ahjswy.cn.request.ReqSynQueryRecords;
+import com.ahjswy.cn.request.ReqSynQueryRecordsByID;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.Utils;
@@ -250,6 +251,7 @@ public class ServiceSynchronize {
 		localArrayList.add(new ReqSynUpdateInfo("sz_goodsclass", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_pricesystem", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_unit", 0L));
+		localArrayList.add(new ReqSynUpdateInfo("cu_customerfieldsalegoods", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_goodsimage", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("rversion", paramLong));
 		localArrayList.add(new ReqSynUpdateInfo("pagesize", pagesize));
@@ -300,6 +302,34 @@ public class ServiceSynchronize {
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.parse2ListMap(infor);
 		}
+		return null;
+	}
+
+	// 查询商品列表客史
+	public List<HashMap<String, String>> syn_QueryCustomerGoodsRecords(int pageindex) {
+		String url = Utils.getServiceAddress(this.baseAddress, "querycustomergoodsrecords");
+		ReqSynQueryRecordsByID recordsByID = new ReqSynQueryRecordsByID();
+		// recordsByID.setId(customerid);
+		recordsByID.setPageIndex(pageindex);
+		recordsByID.setPageSize(pagesize);
+		map.put("parameter", JSONUtil.object2Json(recordsByID));
+		String serviceInfor = new Utils_help().getServiceInfor(url, map);
+		if (RequestHelper.isSuccess(serviceInfor))
+			return JSONUtil.parse2ListMap(serviceInfor);
+		return null;
+	}
+
+	public List<HashMap<String, String>> syn_QueryCustomerGoodsRecords(String customerid, int pageindex) {
+		String url = Utils.getServiceAddress(this.baseAddress, "querycustomergoodsrecords");
+		ReqSynQueryRecordsByID recordsByID = new ReqSynQueryRecordsByID();
+		recordsByID.setId(customerid);
+		recordsByID.setPageIndex(pageindex);
+		recordsByID.setPageSize(pagesize);
+		map.put("parameter", JSONUtil.object2Json(recordsByID));
+
+		String serviceInfor = new Utils_help().getServiceInfor(url, map);
+		if (RequestHelper.isSuccess(serviceInfor))
+			return JSONUtil.parse2ListMap(serviceInfor);
 		return null;
 	}
 

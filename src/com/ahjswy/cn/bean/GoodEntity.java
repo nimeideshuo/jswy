@@ -9,8 +9,9 @@ public class GoodEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	public String goods;
 	public String goodsPrice;
-	public String goodsunit;
-	public String goodsimage;
+	public String goodsUnit;
+	public String goodsImage;
+	// 查询商品平均价
 	public String goodsid;
 	public String customerid;
 	public String buildendtime;
@@ -74,19 +75,19 @@ public class GoodEntity implements Serializable {
 	}
 
 	public String getGoodsunit() {
-		return goodsunit;
+		return goodsUnit;
 	}
 
-	public void setGoodsunit(String goodsunit) {
-		this.goodsunit = goodsunit;
+	public void setGoodsunit(String goodsUnit) {
+		this.goodsUnit = goodsUnit;
 	}
 
 	public String getGoodsimage() {
-		return goodsimage;
+		return goodsImage;
 	}
 
-	public void setGoodsimage(String goodsimage) {
-		this.goodsimage = goodsimage;
+	public void setGoodsImage(String goodsImage) {
+		this.goodsImage = goodsImage;
 	}
 
 }

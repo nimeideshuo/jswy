@@ -267,6 +267,9 @@ public class InpurchaseEditActivity extends BaseActivity
 				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
 				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
 				map.put(itemxs2.getGoodsid(), itemxs2);
+				if (items1.getItemid() != 0) {
+					listItemDelete.add(items1.getItemid());
+				}
 			} else {
 				listDocItem.add(items1);
 			}

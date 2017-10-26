@@ -186,6 +186,9 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				itemxs2.setBignum(unitDAO.getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
 				itemxs2.setNetnum(Utils.normalize(itemxs2.getNum() - itemxs2.getStocknum(), 2));
 				map.put(itemxs2.getGoodsid(), itemxs2);
+				if (items1.getItemid() != 0) {
+					listItemDelete.add(items1.getItemid());
+				}
 			}else{
 				listDocItem.add(items1);
 			}

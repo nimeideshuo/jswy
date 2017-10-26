@@ -3,16 +3,17 @@ package com.ahjswy.cn.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Text;
-
 import com.ahjswy.cn.app.RequestHelper;
+import com.ahjswy.cn.dao.CustomerFieldsaleGoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
+import com.ahjswy.cn.model.CustomerRecords;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
-import com.ahjswy.cn.response.RespGoodsWarehouse;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
+
+import android.text.TextUtils;
 
 public class DocUtils {
 	private static ServiceStore serviceStore;
@@ -78,28 +79,39 @@ public class DocUtils {
 	 * @param unit
 	 * @return
 	 */
-	public static String Stocknum(RespGoodsWarehouse res, GoodsUnit goodsUnit) {
-		if (res == null || goodsUnit == null) {
-			return "";
-		}
-		GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(), goodsUnit.getUnitid());
-		GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
-		int zs = (int) (res.getStocknum() / goodsRatio.getRatio());
-		int xs = (int) Utils.normalizePrice(res.getStocknum() % goodsRatio.getRatio());
-		String stocknum = "";
-		if (zs != 0) {
-			stocknum = stocknum + zs + goodsUnit.getUnitname();
-		}
-		if (xs != 0) {
-			stocknum = stocknum + xs + queryBaseUnit.getUnitname();
-		}
-		if (stocknum.length() == 0) {
-			stocknum = "0" + goodsUnit.getUnitname();
-		}
-		return stocknum;
-	}
-
-	public static String Stocknum(int stocknumber, GoodsUnit goodsUnit) {
+	// public static String Stocknum(RespGoodsWarehouse res, GoodsUnit
+	// goodsUnit) {
+	// if (res == null || goodsUnit == null) {
+	// return "";
+	// }
+	// GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(),
+	// goodsUnit.getUnitid());
+	// GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
+	// int zs = (int) (res.getStocknum() / goodsRatio.getRatio());
+	// int xs = (int) Utils.normalizePrice(res.getStocknum() %
+	// goodsRatio.getRatio());
+	// String stocknum = "";
+	// if (zs != 0) {
+	// stocknum = stocknum + zs + goodsUnit.getUnitname();
+	// }
+	// if (xs != 0) {
+	// stocknum = stocknum + xs + queryBaseUnit.getUnitname();
+	// }
+	// if (stocknum.length() == 0) {
+	// stocknum = "0" + goodsUnit.getUnitname();
+	// }
+	// return stocknum;
+	// }
+	/**
+	 * 商品 库存单位转换
+	 * 
+	 * @param stocknumber
+	 *            库存数量
+	 * @param goodsid
+	 *            商品id
+	 * @return
+	 */
+	public static String Stocknum(double stocknumber, GoodsUnit goodsUnit) {
 		if (goodsUnit == null) {
 			return "";
 		}
@@ -119,6 +131,37 @@ public class DocUtils {
 		}
 		return stocknum;
 	}
+
+	/**
+	 * 商品 库存单位转换
+	 * 
+	 * @param stocknumber
+	 *            库存数量
+	 * @param goodsid
+	 *            商品id
+	 * @return
+	 */
+	// public static String Stocknum(double stocknumber, String goodsid) {
+	// if (TextUtils.isEmpty(goodsid)) {
+	// return "";
+	// }
+	// GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(),
+	// goodsUnit.getUnitid());
+	// GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
+	// int zs = (int) (stocknumber / goodsRatio.getRatio());
+	// int xs = (int) Utils.normalizePrice(stocknumber % goodsRatio.getRatio());
+	// String stocknum = "";
+	// if (zs != 0) {
+	// stocknum = stocknum + zs + goodsUnit.getUnitname();
+	// }
+	// if (xs != 0) {
+	// stocknum = stocknum + xs + queryBaseUnit.getUnitname();
+	// }
+	// if (stocknum.length() == 0) {
+	// stocknum = "0" + goodsUnit.getUnitname();
+	// }
+	// return stocknum;
+	// }
 
 	// 库存数量测试可用
 	public static String setItemStockUnit(int stockNum, GoodsUnit unit) {
@@ -142,4 +185,23 @@ public class DocUtils {
 		return stocknum;
 	}
 
+	private static CustomerFieldsaleGoodsDAO customerfield = new CustomerFieldsaleGoodsDAO();
+
+	/**
+	 * 查询客户商品客史价格
+	 * 
+	 * @param customerid
+	 *            客户id
+	 * @param goodsid
+	 *            商品id
+	 * @param unitid
+	 *            单位id
+	 * @return
+	 */
+	public static CustomerRecords getCustomerGoodsHistoryPrice(String customerid, String goodsid, String unitid) {
+		if (TextUtils.isEmpty(customerid) || TextUtils.isEmpty(goodsid) || TextUtils.isEmpty(unitid)) {
+			return null;
+		}
+		return customerfield.queryUnitidPrice(customerid, goodsid, unitid);
+	}
 }

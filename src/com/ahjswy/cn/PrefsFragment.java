@@ -458,10 +458,10 @@ public class PrefsFragment extends PreferenceFragment {
 
 	// 全部同步
 	protected void loadData() {
-		if (!NetUtils.isConnected(getActivity())) {
-			PDH.showFail("当前无可用网络");
-			return;
-		}
+		// if (!NetUtils.isConnected(getActivity())) {
+		// PDH.showFail("当前无可用网络");
+		// return;
+		// }
 		final Dialog_message dialog_massage = new Dialog_message(getActivity());
 		dialog_massage.show();
 		dialog_massage.setMessage("请选择同步方式");
@@ -472,10 +472,10 @@ public class PrefsFragment extends PreferenceFragment {
 
 			@Override
 			public void onClick(View v) {
-				if (!NetUtils.isConnected(getActivity())) {
-					PDH.showFail("当前无可用网络");
-					return;
-				}
+				// if (!NetUtils.isConnected(getActivity())) {
+				// PDH.showFail("当前无可用网络");
+				// return;
+				// }
 
 				PDH.show(getActivity(), "正在检查更新....", new ProgressCallBack() {
 

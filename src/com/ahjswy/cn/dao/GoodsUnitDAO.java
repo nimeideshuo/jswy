@@ -397,11 +397,11 @@ public class GoodsUnitDAO {
 	}
 
 	// 查询 商品单位
-	public List<GoodsUnit> queryGoodsUnits(String paramString) {
+	public List<GoodsUnit> queryGoodsUnits(String goodsid) {
 		this.db = this.helper.getReadableDatabase();
 		Cursor localCursor = this.db.rawQuery(
 				"select goodsid,unitid,unitname,ratio,isbasic,isshow from sz_goodsunit where goodsid=? order by ratio",
-				new String[] { paramString });
+				new String[] { goodsid });
 		ArrayList<GoodsUnit> localArrayList = new ArrayList<GoodsUnit>();
 		try {
 			while (localCursor.moveToNext()) {
@@ -428,6 +428,32 @@ public class GoodsUnitDAO {
 				this.db.close();
 		}
 		return localArrayList;
+	}
+
+	public GoodsUnit queryUnit(String unitid) {
+		this.db = this.helper.getReadableDatabase();
+		Cursor cursor = this.db.rawQuery(
+				"select goodsid,unitid,unitname,ratio,isbasic,isshow from sz_goodsunit where unitid=? ",
+				new String[] { unitid });
+		try {
+			while (cursor.moveToNext()) {
+				GoodsUnit goodsUnit = new GoodsUnit();
+				goodsUnit.setGoodsid(cursor.getString(0));
+				goodsUnit.setUnitid(cursor.getString(1));
+				goodsUnit.setUnitname(cursor.getString(2));
+				goodsUnit.setRatio(cursor.getDouble(3));
+				if (cursor.getInt(4) != 1) {
+					goodsUnit.setIsbasic(true);
+				}
+				if (cursor.getInt(5) != 1) {
+					goodsUnit.setIsshow(true);
+				}
+				return goodsUnit;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

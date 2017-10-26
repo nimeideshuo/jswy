@@ -253,49 +253,45 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 	}
 
 	private void fillItem() {
-		DefDocItemXS localDefDocItem;
 		if (TextUtils.isEmptyS(this.btnWarehouse.getTag().toString())) {
 			this.docitem.setWarehouseid(this.btnWarehouse.getTag().toString());
 			this.docitem.setWarehousename(this.btnWarehouse.getText().toString());
-			if (TextUtils.isEmptyS(this.btnUnit.getTag().toString())) {
-				this.docitem.setUnitid(this.btnUnit.getTag().toString());
-				this.docitem.setUnitname(this.btnUnit.getText().toString());
-			}
-			this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
-			this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
-					this.docitem.getNum()));
-			this.docitem
-					.setPrice(Utils.normalizePrice(Utils.getDouble(this.etPrice.getText().toString()).doubleValue()));
-			this.docitem.setSubtotal(
-					Utils.normalizeSubtotal(Utils.getDouble(this.etSubtotal.getText().toString()).doubleValue()));
-			this.docitem.setDiscountratio(
-					Utils.normalize(Utils.getDouble(this.etDiscountRatio.getText().toString()).doubleValue(), 2));
-			this.docitem.setDiscountprice(
-					Utils.normalizePrice(Utils.getDouble(this.etDiscountPrice.getText().toString()).doubleValue()));
-			this.docitem.setDiscountsubtotal(Utils
-					.normalizeSubtotal(Utils.getDouble(this.etDiscountSubtotal.getText().toString()).doubleValue()));
-			this.docitem.setRemark(this.etRemark.getText().toString());
-			localDefDocItem = this.docitem;
-			boolean isgift = false;
-			if (localDefDocItem.getPrice() == 0.0D) {
-				isgift = true;
-			}
-			localDefDocItem.setIsgift(isgift);
-			localDefDocItem.setCostprice(0.0D);
-			localDefDocItem.setRemark("");
-			localDefDocItem.setRversion(0L);
-			localDefDocItem.setIsdiscount(false);
-			localDefDocItem.setIsusebatch(docitem.isIsusebatch());
+		} else {
+			this.docitem.setWarehouseid(null);
+			this.docitem.setWarehousename("");
 		}
-
+		if (TextUtils.isEmptyS(this.btnUnit.getTag().toString())) {
+			this.docitem.setUnitid(this.btnUnit.getTag().toString());
+			this.docitem.setUnitname(this.btnUnit.getText().toString());
+		} else {
+			this.docitem.setUnitid(null);
+			this.docitem.setUnitname("");
+		}
 		if (this.docitem.isIsusebatch()) {
 			this.docitem.setBatch(this.etBatch.getText().toString());
 			this.docitem.setProductiondate(this.btnDate.getText() + " 00:00:00");
 		}
-		// this.docitem.setWarehouseid(null);
-		// this.docitem.setWarehousename("");
-		// this.docitem.setUnitid(null);
-		// this.docitem.setUnitname("");
+		this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
+		this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
+				this.docitem.getNum()));
+		this.docitem.setPrice(Utils.normalizePrice(Utils.getDouble(this.etPrice.getText().toString()).doubleValue()));
+		this.docitem.setSubtotal(
+				Utils.normalizeSubtotal(Utils.getDouble(this.etSubtotal.getText().toString()).doubleValue()));
+		this.docitem.setDiscountratio(
+				Utils.normalize(Utils.getDouble(this.etDiscountRatio.getText().toString()).doubleValue(), 2));
+		this.docitem.setDiscountprice(
+				Utils.normalizePrice(Utils.getDouble(this.etDiscountPrice.getText().toString()).doubleValue()));
+		this.docitem.setDiscountsubtotal(
+				Utils.normalizeSubtotal(Utils.getDouble(this.etDiscountSubtotal.getText().toString()).doubleValue()));
+		this.docitem.setRemark(this.etRemark.getText().toString());
+		// localDefDocItem = this.docitem;
+		docitem.setIsgift(docitem.getPrice() == 0.0D ? true : false);
+		// docitem.setCostprice(0.0D);
+		// docitem.setRemark("");
+		// docitem.setRversion(0L);
+		// docitem.setIsdiscount(false);
+		docitem.setIsusebatch(docitem.isIsusebatch());
+
 	}
 
 	private GoodsUnit goodsUnit;

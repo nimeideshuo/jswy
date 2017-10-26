@@ -244,17 +244,17 @@ public class DefDocXS implements Serializable {
 	}
 
 	// 用户ID
-	public void setCustomerid(String paramString) {
-		if (TextUtils.isEmptyS(paramString)) {
-			this.customerid = paramString;
+	public void setCustomerid(String customerid) {
+		if (TextUtils.isEmptyS(customerid)) {
+			this.customerid = customerid;
 			return;
 		}
 		this.customerid = null;
 
 	}
 
-	public void setCustomername(String paramString) {
-		this.customername = paramString;
+	public void setCustomername(String customername) {
+		this.customername = customername;
 	}
 
 	public void setDeliverytime(String paramString) {

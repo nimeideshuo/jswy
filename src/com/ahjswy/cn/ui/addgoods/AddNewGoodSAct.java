@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
+import com.ahjswy.cn.bean.GoodEntity;
+import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.PricesystemDAO;
 import com.ahjswy.cn.dao.UnitDAO;
 import com.ahjswy.cn.model.Goods;
@@ -19,6 +21,7 @@ import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.SearchGoodsClassAct;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.utils.InfoDialog;
+import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PinYin4j;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -381,7 +384,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			unit3.setRatio(Utils.getDouble(ratio3.getText().toString()));
 			listGoodUnit.add(unit3);
 		}
-		// TODO 提交
+		// 提交
 		Goods goods = new Goods();
 		goods.name = etName.getText().toString();
 		goods.pinyin = new PinYin4j().getPinyin(goods.name).iterator().next();
@@ -399,6 +402,11 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		goods.guaranteeearlier = guaranteeearlier.getText().toString();
 		String addGood = new ServiceGoods().gds_AddGood(goods, listPrice, listGoodUnit);
 		if (RequestHelper.isSuccess(addGood)) {
+			GoodEntity respGood = JSONUtil.fromJson(addGood, GoodEntity.class);
+			if (respGood != null) {
+				// sql insert addgood
+				new GoodsDAO().insertAddGood(JSONUtil.fromJson(respGood.getGoods(), Goods.class));
+			}
 			showSuccess("添加商品成功!");
 			startActivity(new Intent(this, SwyMain.class));
 			finish();

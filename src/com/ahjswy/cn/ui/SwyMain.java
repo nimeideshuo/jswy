@@ -7,7 +7,9 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.Sv_docitem;
+import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
@@ -48,6 +50,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 public class SwyMain extends BaseActivity implements OnClickListener, BumenCall {
 	AccountPreference ap;
@@ -98,68 +101,64 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	int numsss = 0;
 
 	public void startOpenDoc(View v) {
-		// TODO
-		// final EditText edNum = (EditText) findViewById(R.id.edNum);
-		// final EditText edTime = (EditText) findViewById(R.id.edTime);
+
+		// edNum = (EditText) findViewById(R.id.edNum);
+		// edTime = (EditText) findViewById(R.id.edTime);
 		// serviceStore = new ServiceStore();
 		// PDH.show(this, "开单中....", new ProgressCallBack() {
 		//
 		// @Override
 		// public void action() {
-		// // int num = Integer.parseInt(edNum.getText().toString());
-		// // for (int i = 0; i < num; i++) {
+		// int num = Integer.parseInt(edNum.getText().toString());
+		// for (int i = 0; i < num; i++) {
 		// String localString = new ServiceStore().str_InitXSDoc("01", "01");
 		// if (RequestHelper.isSuccess(localString)) {
-		// DocContainerEntity localDocContainerEntity = (DocContainerEntity)
-		// JSONUtil.readValue(localString,
-		// DocContainerEntity.class);
-		// DefDocXS doc = ((DefDocXS)
-		// JSONUtil.readValue(localDocContainerEntity.getDoc(),
-		// DefDocXS.class));
-		// doc.setCustomerid("00003");
+		// openDoc(i, localString);
+		// } else {
+		// showError("没有获取到数据!失败!等待。。。" + localString);
+		// SystemClock.sleep(5000);
+		// String res = new ServiceStore().str_InitXSDoc("01", "01");
+		// if (RequestHelper.isSuccess(localString)) {
+		// openDoc(i, res);
+		// } else {
+		// showError(i + "没有获取到数据!失败!等待。。。" + res);
+		// SystemClock.sleep(5000);
+		// }
 		//
-		// doc.setShowid(isShow == false ? "XS_201610050004" : "XS_20171005999"
-		// + numsss++);
-		// isShow = true;
-		// List<DefDocPayType> listPayType =
-		// JSONUtil.str2list(localDocContainerEntity.getPaytype(),
-		// DefDocPayType.class);
-		// String resFor = serviceStore.str_SaveXSDoc(doc, null, listPayType,
-		// null);
-		// if (!RequestHelper.isSuccess(resFor)) {
-		// showError("第 " + " 次请求错误！");
 		// }
-		// long long1 = Long.parseLong(edTime.getText().toString());
-		// SystemClock.sleep(long1);
 		// }
-		// // }
 		//
 		// }
 		// });
 
-		// <EditText
-		// android:id="@+id/edNum"
-		// android:layout_width="match_parent"
-		// android:layout_height="wrap_content"
-		// android:hint="开单数量"
-		// android:inputType="numberDecimal" />
-		//
-		// <EditText
-		// android:id="@+id/edTime"
-		// android:layout_width="match_parent"
-		// android:layout_height="wrap_content"
-		// android:hint="开单数时间(毫秒)"
-		// android:inputType="numberDecimal" />
-		//
-		// <Button
-		// android:layout_width="match_parent"
-		// android:layout_height="wrap_content"
-		// android:onClick="startOpenDoc"
-		// android:text="开单" />
-		//
-
-		// 保存
 	}
+
+	// protected void openDoc(int position, String localString) {
+	// DocContainerEntity localDocContainerEntity = (DocContainerEntity)
+	// JSONUtil.fromJson(localString,
+	// DocContainerEntity.class);
+	// doc = ((DefDocXS) JSONUtil.fromJson(localDocContainerEntity.getDoc(),
+	// DefDocXS.class));
+	// List<DefDocPayType> listPayType =
+	// JSONUtil.str2list(localDocContainerEntity.getPaytype(),
+	// DefDocPayType.class);
+	// List<DefDocItemXS> listItem =
+	// JSONUtil.str2list(localDocContainerEntity.getItem(), DefDocItemXS.class);
+	// List<Long> listItemDelete = new ArrayList<>();
+	// doc.setPromotionid(null);
+	// doc.setDistributionid(null);
+	// doc.setCustomerid("安康001");
+	// // doc.setCustomername("东至侯结才");
+	// String resFor = serviceStore.str_SaveXSDoc(doc, listItem, listPayType,
+	// listItemDelete);
+	// if (!RequestHelper.isSuccess(resFor)) {
+	// showError("第 " + position + " 次请求错误！" + resFor);
+	// SystemClock.sleep(5000);
+	// return;
+	// }
+	// long long1 = Long.parseLong(edTime.getText().toString());
+	// SystemClock.sleep(long1);
+	// }
 
 	private void initDate() {
 		sv = new Sv_docitem();
@@ -353,7 +352,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				PDH.showMessage("请设置默认仓库");
 				return;
 			}
-			//android:windowSoftInputMode="adjustPan|stateHidden"
+			// TODO
 			DocContainerEntity entity = sv.queryDoc("14");
 			if (entity == null) {
 				startActivity(new Intent(SwyMain.this, InDocOpenActivity.class));
@@ -410,7 +409,6 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			break;
 		// 我的盘点
 		case R.id.ll_my_inventory:
-			// startActivity(new Intent(SwyMain.this, AddGoodSActivity.class));
 			startActivity(new Intent(SwyMain.this, InventoryRecordActivity.class));
 			break;
 		// 产品手册
@@ -472,6 +470,9 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	};
 	private ServiceStore serviceStore;
 	private Sv_docitem sv;
+	private EditText edTime;
+	private EditText edNum;
+	private DefDocXS doc;
 
 	/**
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *

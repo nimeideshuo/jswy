@@ -138,7 +138,12 @@ public class JSONUtil {
 		if (!TextUtils.isEmptyS(json) || classOfT == null) {
 			return null;
 		}
-		return new Gson().fromJson(json, classOfT);
+		try {
+			return new Gson().fromJson(json, classOfT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	// String json to list

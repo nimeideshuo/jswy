@@ -16,6 +16,7 @@ import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.dao.WarehouseDAO;
+import com.ahjswy.cn.model.CustomerRecords;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocPayType;
 import com.ahjswy.cn.model.DefDocXS;
@@ -40,6 +41,7 @@ import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.ui.SwyMain;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
@@ -160,6 +162,10 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
 				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
 				map.put(itemxs2.getGoodsid(), itemxs2);
+				// 添加删除服务器数据
+				if (items1.getItemid() != 0) {
+					listItemDelete.add(items1.getItemid());
+				}
 			} else {
 				listDocItem.add(items1);
 			}
@@ -520,6 +526,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					return;
 				}
 				if (msg.what == 2) {
+					// TODO AAAAAAAAAAAAAAAAA
 					DefDocItemXS itemXS2 = (DefDocItemXS) newListItem.get(0);
 					localList = JSONUtil.str2list(localString1, ReqStrGetGoodsPrice.class);
 					ReqStrGetGoodsPrice goodsPrice2 = (ReqStrGetGoodsPrice) localList.get(0);
@@ -569,7 +576,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		};
 
 	};
-	ArrayList<ReqStrGetGoodsPrice> localArrayList;
+	// ArrayList<ReqStrGetGoodsPrice> localArrayList;
 	private AdapterView.OnItemClickListener onItemClickListeners = new AdapterView.OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			if ((menuPopup != null) && (menuPopup.isShowing())) {
@@ -591,25 +598,53 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					}
 					newListItem = new ArrayList<DefDocItemXS>();
 					newListItem.add(docItem);
-					localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
-					ReqStrGetGoodsPrice goodsPrice = new ReqStrGetGoodsPrice();
-					goodsPrice.setType(1);
-					goodsPrice.setCustomerid(doc.getCustomerid());
-					goodsPrice.setWarehouseid(doc.getWarehouseid());
-					goodsPrice.setGoodsid(docItem.getGoodsid());
-					goodsPrice.setUnitid(docItem.getUnitid());
-					goodsPrice.setPrice(0.0D);
-					goodsPrice.setIsdiscount(false);
-					localArrayList.add(goodsPrice);
-					String localString = new ServiceGoods().gds_GetMultiGoodsPrice(localArrayList, true,
-							docItem.isIsusebatch());
-					handlerGet.sendMessage(handlerGet.obtainMessage(2, localString));
+
+					// TODO 查询商品单价
+					setAddItem(docItem);
+
+					Intent localIntent = new Intent();
+					localIntent.putExtra("customerid", doc.getCustomerid());
+					localIntent.putExtra("position", 0);
+					localIntent.putExtra("docitem", docItem);
+					startActivityForResult(localIntent.setClass(OutDocEditActivity.this, OutDocAddGoodAct.class), 4);
+
+					// localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
+					// ReqStrGetGoodsPrice goodsPrice = new
+					// ReqStrGetGoodsPrice();
+					// goodsPrice.setType(1);
+					// goodsPrice.setCustomerid(doc.getCustomerid());
+					// goodsPrice.setWarehouseid(doc.getWarehouseid());
+					// goodsPrice.setGoodsid(docItem.getGoodsid());
+					// goodsPrice.setUnitid(docItem.getUnitid());
+					// goodsPrice.setPrice(0.0D);
+					// goodsPrice.setIsdiscount(false);
+					// localArrayList.add(goodsPrice);
+					// String localString = new
+					// ServiceGoods().gds_GetMultiGoodsPrice(localArrayList,
+					// true,
+					// docItem.isIsusebatch());
+					// handlerGet.sendMessage(handlerGet.obtainMessage(2,
+					// localString));
 				}
+
 			});
 
 		}
 
 	};
+
+	private void setAddItem(DefDocItemXS docItem) {
+		// TODO 重点查看是否有错误!
+		CustomerRecords historyPrice = DocUtils.getCustomerGoodsHistoryPrice(doc.getCustomerid(), docItem.getGoodsid(),
+				docItem.getUnitid());
+		if (historyPrice == null) {
+			showSuccess("商品客史单价没有查询到!");
+		} else {
+			docItem.setPrice(historyPrice.getPrice());
+		}
+		docItem.setDiscountratio(doc.getDiscountratio());
+		docItem.setIsgift(docItem.getPrice() == 0.0D ? true : false);
+	}
 
 	public void getGoodsPrice(final List<ReqStrGetGoodsPrice> re) {
 
@@ -651,6 +686,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		}
 		itemxs.setUnitid(localGoodsUnit.getUnitid());
 		itemxs.setUnitname(localGoodsUnit.getUnitname());
+		itemxs.unit = localGoodsUnit;
 		itemxs.setNum(Utils.normalize(num, 2));
 		itemxs.setBignum(unitDAO.getBigNum(itemxs.getGoodsid(), itemxs.getUnitid(), itemxs.getNum()));
 		// 价格

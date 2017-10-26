@@ -143,6 +143,15 @@ CREATE TABLE IF NOT EXISTS "sz_unit" (
 PRIMARY KEY("id")
 );
 
+CREATE TABLE IF NOT EXISTS "cu_customerfieldsalegoods" (
+"customerid" TEXT(50) NOT NULL,
+"goodsid"  TEXT(50),
+"goodsthirdclassid"  TEXT(50),
+"unitid"  TEXT(50),
+"price"  TEXT(50),
+"issale"  TEXT(1)
+);
+
 CREATE TABLE IF NOT EXISTS "kf_fieldsaleitem" (
 "serialid"  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 "fieldsaleid"  		INTEGER NOT NULL,

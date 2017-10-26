@@ -8,6 +8,7 @@ import com.ahjswy.cn.model.Goods;
 import com.ahjswy.cn.model.GoodsInfo;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.response.RespQueryStockWithTimeEntity;
+import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
 import android.content.ContentValues;
@@ -410,5 +411,25 @@ public class GoodsDAO {
 		ContentValues localContentValues = new ContentValues();
 		localContentValues.put(paramString2, paramString3);
 		this.db.update("sz_goods", localContentValues, "id=?", new String[] { paramString1 });
+	}
+
+	// TODO 添加商品
+	public boolean insertAddGood(Goods goods) {
+		if (goods == null && TextUtils.isEmpty(goods.getId())) {
+			return false;
+		}
+		this.db = this.helper.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("id", goods.id);
+		values.put("name", goods.name);
+		values.put("pinyin", goods.pinyin);
+		values.put("barcode", goods.barcode);
+		values.put("specification", goods.specification);
+		values.put("model", goods.model);
+		values.put("goodsclassid", goods.goodsclassid);
+		values.put("isusebatch", goods.isusebatch);
+		values.put("isavailable", goods.isavailable == true ? "1" : "0");
+		long insert = db.insert("sz_goods", "in NOT EXISTS =?", values);
+		return insert == -1 ? false : true;
 	}
 }

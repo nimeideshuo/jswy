@@ -582,10 +582,10 @@ public class Main_Setting extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void onClick(View v) {
-				if (!NetUtils.isConnected(Main_Setting.this)) {
-					PDH.showFail("当前无可用网络");
-					return;
-				}
+				// if (!NetUtils.isConnected(Main_Setting.this)) {
+				// PDH.showFail("当前无可用网络");
+				// return;
+				// }
 
 				PDH.show(Main_Setting.this, "正在检查更新....", new ProgressCallBack() {
 

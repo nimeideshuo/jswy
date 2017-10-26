@@ -71,10 +71,12 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 	private String warehouseid;
 	// 仓库名称
 	private String warehousename;
-	private RespGoodsWarehouse stocknum;
+	// private RespGoodsWarehouse stocknum;
+	public double stocknum;
 	public String goodStock;
 	public String buildbegintime;
 	public String buildendtime;
+	public GoodsUnit unit;
 	// ======
 	public boolean isExist;
 
@@ -188,13 +190,13 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 
 	}
 
-	public RespGoodsWarehouse getStocknum() {
-		return stocknum;
-	}
-
-	public void setStocknum(RespGoodsWarehouse stocknum) {
-		this.stocknum = stocknum;
-	}
+	// public RespGoodsWarehouse getStocknum() {
+	// return stocknum;
+	// }
+	//
+	// public void setStocknum(RespGoodsWarehouse stocknum) {
+	// this.stocknum = stocknum;
+	// }
 
 	public String getBarcode() {
 		return this.barcode;

@@ -554,7 +554,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		}
 		PDH.show(this, new PDH.ProgressCallBack() {
 			public void action() {
-				String localString = serviceStore.str_SaveXTDoc(doc, listItem, listPayType, listItemDelete);
+				String localString = serviceStore.str_SaveXTDoc(doc, adapter.getData(), listPayType, listItemDelete);
 				handler.sendMessage(handler.obtainMessage(0, localString));
 			}
 		});
@@ -722,17 +722,12 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				.setDiscountprice(Utils.normalizePrice(localDefDocItem.getPrice() * this.doc.getDiscountratio()));
 		localDefDocItem.setDiscountsubtotal(
 				Utils.normalizeSubtotal(localDefDocItem.getNum() * localDefDocItem.getDiscountprice()));
-		boolean isgift = false;
-		if (localDefDocItem.getPrice() == 0.0D) {
-			isgift = true;
-		}
-		localDefDocItem.setIsgift(isgift);
+		localDefDocItem.setIsgift(localDefDocItem.getPrice() == 0.0D ? true : false);
 		localDefDocItem.setCostprice(0.0D);
 		localDefDocItem.setRemark("");
 		localDefDocItem.setRversion(0L);
 		localDefDocItem.setIsdiscount(false);
 		localDefDocItem.setIsusebatch(goodsThin.isIsusebatch());
-
 		return localDefDocItem;
 	}
 
@@ -757,6 +752,9 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
 				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
 				map.put(itemxs2.getGoodsid(), itemxs2);
+				if (items1.getItemid() != 0) {
+					listItemDelete.add(items1.getItemid());
+				}
 			} else {
 				listDocItem.add(items1);
 			}
@@ -787,7 +785,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				doc = (DefDoc) data.getSerializableExtra("doc");
 				ishaschanged = true;
 				setActionBarText();
-
 				DBupdataDocItem();
 				break;
 			case 1:
@@ -824,8 +821,8 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			case 3:
 				int j = data.getIntExtra("position", 0);
 				DefDocItemXS localDefDocItem2 = (DefDocItemXS) data.getSerializableExtra("docitem");
-				this.listItem.set(j, localDefDocItem2);
-				this.adapter.setData(this.listItem);
+				listItem.set(j, localDefDocItem2);
+				adapter.setData(listItem);
 				refreshUI();
 				if (Utils.isCombination()) {
 					combinationItem();
@@ -885,7 +882,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			if (RequestHelper.isSuccess(localString1)) {
 				if (msg.what == 1) {
 					// 单价list
-
 					localList = JSONUtil.str2list(localString1, ReqStrGetGoodsPrice.class);
 					for (int j = 0; j < newListItem.size(); j++) {
 						DefDocItemXS defDocItem = (DefDocItemXS) newListItem.get(j);
@@ -906,11 +902,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 									Utils.normalizePrice(defDocItem.getPrice() * defDocItem.getDiscountratio()));
 							defDocItem.setDiscountsubtotal(
 									Utils.normalizeSubtotal(defDocItem.getNum() * defDocItem.getDiscountprice()));
-							boolean isgift = false;
-							if (defDocItem.getPrice() == 0.0D) {
-								isgift = true;
-							}
-							defDocItem.setIsgift(isgift);
+							defDocItem.setIsgift(defDocItem.getPrice() == 0.0D ? true : false);
 							String bigNum = unitDao.getBigNum(defDocItem.getGoodsid(), defDocItem.getUnitid(),
 									defDocItem.getNum());
 							defDocItem.setBignum(bigNum);
@@ -922,9 +914,8 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 						combinationItem();
 					} else {
 						listItem.addAll(0, newListItem);
-						adapter.setData(listItem);
 					}
-
+					adapter.setData(listItem);
 					listView.setAdapter(adapter);
 					ishaschanged = true;
 					setActionBarText();

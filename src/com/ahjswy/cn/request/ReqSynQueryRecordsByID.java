@@ -55,26 +55,26 @@ public class ReqSynQueryRecordsByID
   }
 
   @JsonIgnore
-  public void setId(String paramString)
+  public void setId(String id)
   {
-    this.id = paramString;
+    this.id = id;
   }
 
   @JsonIgnore
-  public void setPageIndex(int paramInt)
+  public void setPageIndex(int pageindex)
   {
-    this.pageindex = paramInt;
+    this.pageindex = pageindex;
   }
 
   @JsonIgnore
-  public void setPageSize(int paramInt)
+  public void setPageSize(int pagesize)
   {
-    this.pagesize = paramInt;
+    this.pagesize = pagesize;
   }
 
   @JsonIgnore
-  public void setRVersion(long paramLong)
+  public void setRVersion(long rversion)
   {
-    this.rversion = paramLong;
+    this.rversion = rversion;
   }
 }

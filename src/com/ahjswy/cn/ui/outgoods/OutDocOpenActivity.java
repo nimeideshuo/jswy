@@ -26,7 +26,6 @@ import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.EditTextWithDel;
-import com.google.gson.Gson;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -58,7 +58,6 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 	// 添加一个
 	public void addData(DefDocItemXS item) {
 		listItems.add(item);
-		notifyDataSetChanged();
 	}
 
 	public void addItemDate(ArrayList<DefDocItemXS> listItem) {
@@ -87,6 +86,7 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 		// convertView.findViewById(R.id.linearLayout).setVisibility(0);
 		// convertView.findViewById(R.id.divider).setVisibility(0);
 		// }
+		DefDocItemXS itemXS = listItems.get(position);
 		etNum.setFocusable(true);
 		etNum.setFilterTouchesWhenObscured(true);
 		if (selectPosition == position) {
@@ -120,8 +120,10 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 			@Override
 			public void afterTextChanged(Editable s) {
 				int i = ((Integer) etNum.getTag()).intValue();
-				if (s.toString().length() > 0 && Double.parseDouble(s.toString()) > 0.0D) {
-					(listItems.get(i)).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
+				try {
+					listItems.get(i).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		});
@@ -145,13 +147,16 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 		// ((DefDocItem) listItems.get(i)).setBatch(s.toString());
 		// }
 		// });
-		tvName.setText(listItems.get(position).getGoodsname());
+		tvName.setText(itemXS.getGoodsname());
 		// tvBarcode.setText(listItems.get(position).getBarcode());
-		btnUnit.setText(listItems.get(position).getUnitname());
-		if ((listItems.get(position).getNum() + "".length()) > 0 && listItems.get(position).getNum() > 0.0D) {
-			String num = Utils.removeZero(listItems.get(position).getNum() + "");
-			etNum.setText(num);
-		}
+		btnUnit.setText(itemXS.getUnitname());
+		etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
+
+		// if ((listItems.get(position).getNum() + "".length()) > 0 &&
+		// listItems.get(position).getNum() > 0.0D) {
+		// String num = Utils.removeZero(listItems.get(position).getNum() + "");
+		// etNum.setText(num);
+		// }
 		// etBatch.setText(listItems.get(position).getBatch());
 		// if (listItems.get(position).isIsusebatch()) {
 		// // 显示
@@ -182,10 +187,8 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	public void setData(List<DefDocItemXS> paramList) {
-		this.listItems.clear();
-		this.listItems.addAll(paramList);
-		notifyDataSetChanged();
+	public void setData(List<DefDocItemXS> listItems) {
+		this.listItems = listItems;
 	}
 
 	// public class Item {

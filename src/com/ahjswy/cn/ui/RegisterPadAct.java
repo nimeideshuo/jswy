@@ -31,8 +31,6 @@ public class RegisterPadAct extends BaseActivity implements View.OnClickListener
 		// 加载 注册布局
 		TextView tv_user = (TextView) findViewById(R.id.tv_user);
 		TextView tv_pass = (TextView) findViewById(R.id.tv_pass);
-		tv_user.setText("注册码");
-		tv_pass.setText("注册人");
 		etRegisterId = ((EditText) findViewById(R.id.ed_userName));
 		etPadUser = ((EditText) findViewById(R.id.ed_password));
 		btnRegister = ((Button) findViewById(R.id.btn_start));
@@ -41,6 +39,9 @@ public class RegisterPadAct extends BaseActivity implements View.OnClickListener
 		btnRegister.setOnClickListener(this);
 		btnExit.setOnClickListener(this);
 		ap = new AccountPreference();
+		tv_user.setText("注册码");
+		tv_pass.setText("注册人");
+		btnRegister.setText("注册");
 	}
 
 	// 点击的 是 注册按钮

@@ -7,8 +7,8 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.bean.GoodEntity;
 import com.ahjswy.cn.dao.GoodsDAO;
+import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.dao.PricesystemDAO;
-import com.ahjswy.cn.dao.UnitDAO;
 import com.ahjswy.cn.model.Goods;
 import com.ahjswy.cn.model.GoodsClass;
 import com.ahjswy.cn.model.GoodsUnit;
@@ -25,6 +25,7 @@ import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PinYin4j;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
+import com.alibaba.fastjson.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -147,7 +148,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		// initUnit(spUnit);
 		setHeight(lvPrices, priceAdapter);
 		svRoot.setOnTouchListener(svTouchListener);
-		listUnit = new UnitDAO().queryAll();
+		listUnit = new GoodsUnitDAO().queryAll();
 		if (listUnit.isEmpty()) {
 			showError("没有查询到单位! 请重试!");
 			return;
@@ -405,7 +406,12 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			GoodEntity respGood = JSONUtil.fromJson(addGood, GoodEntity.class);
 			if (respGood != null) {
 				// sql insert addgood
-				new GoodsDAO().insertAddGood(JSONUtil.fromJson(respGood.getGoods(), Goods.class));
+				new GoodsDAO().insertAddGood(JSONUtil.parseObject(respGood.getGoods(), Goods.class));
+				List<GoodsUnit> parseArray = JSONUtil.parseArray(respGood.getGoodsunit(), GoodsUnit.class);
+				for (GoodsUnit goodsUnit : parseArray) {
+					new GoodsUnitDAO().insetAddGoodUnit(goodsUnit);
+				}
+				// TODO 写入 价格体系 待完善
 			}
 			showSuccess("添加商品成功!");
 			startActivity(new Intent(this, SwyMain.class));

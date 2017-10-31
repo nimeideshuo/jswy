@@ -3,46 +3,39 @@ package com.ahjswy.cn.request;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class ReqUsrCheckAuthority
-{
+public class ReqUsrCheckAuthority {
 
-  @JsonProperty("authority")
-  private String authority;
+	@JsonProperty("authority")
+	private String authority;
 
-  @JsonProperty("userid")
-  private String userid;
+	@JsonProperty("userid")
+	private String userid;
 
-  public ReqUsrCheckAuthority()
-  {
-  }
+	public ReqUsrCheckAuthority() {
+	}
 
-  public ReqUsrCheckAuthority(String paramString1, String paramString2)
-  {
-    this.userid = paramString1;
-    this.authority = paramString2;
-  }
+	public ReqUsrCheckAuthority(String userid, String authority) {
+		this.userid = userid;
+		this.authority = authority;
+	}
 
-  @JsonIgnore
-  public String getAuthority()
-  {
-    return this.authority;
-  }
+	@JsonIgnore
+	public String getAuthority() {
+		return this.authority;
+	}
 
-  @JsonIgnore
-  public String getUserid()
-  {
-    return this.userid;
-  }
+	@JsonIgnore
+	public String getUserid() {
+		return this.userid;
+	}
 
-  @JsonIgnore
-  public void setAuthority(String paramString)
-  {
-    this.authority = paramString;
-  }
+	@JsonIgnore
+	public void setAuthority(String authority) {
+		this.authority = authority;
+	}
 
-  @JsonIgnore
-  public void setUserid(String paramString)
-  {
-    this.userid = paramString;
-  }
+	@JsonIgnore
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
 }

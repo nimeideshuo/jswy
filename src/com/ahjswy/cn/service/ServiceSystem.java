@@ -39,7 +39,7 @@ public class ServiceSystem {
 	}
 
 	/**
-	 * 获取权限
+	 * 获取系统默认设置
 	 * 
 	 * @return
 	 */
@@ -47,7 +47,7 @@ public class ServiceSystem {
 		String url = Service.getServiceAddress(this.baseAddress, "getbizparameter");
 		ReqCommonPara localReqCommonPara = new ReqCommonPara();
 		localReqCommonPara.setStringValue(
-				"'intPricePrecision','intSubtotalPrecision','intReceivablePrecision','intSubtotalChange','intOutDocUnit','intTransferDocUnit','strCancelWarehouse','isAutoChangeGoodsDiscountAfterDoc','companyname','intGenerateBatch','strBatchPrefix','strBatchSuffix'");
+				"'intPricePrecision','intSubtotalPrecision','intReceivablePrecision','intSubtotalChange','intOutDocUnit','intTransferDocUnit','strCancelWarehouse','isAutoChangeGoodsDiscountAfterDoc','companyname','intGenerateBatch','strBatchPrefix','strBatchSuffix','strPriceSystem'");
 		map.put("parameter", JSONUtil.object2Json(localReqCommonPara));
 		return new Utils_help().getServiceInfor(url, map);
 	}

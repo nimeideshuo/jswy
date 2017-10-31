@@ -7,7 +7,6 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
-import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.Department;
@@ -100,7 +99,39 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	boolean isShow = false;
 	int numsss = 0;
 
+	public class TestUnit {
+		public String goodsid;
+		public String unitid;
+		public boolean isbasic;
+		public boolean isshow;
+		public double ratio;
+		public String remark;
+		public String rversion;
+	}
+
+	// TODO
 	public void startOpenDoc(View v) {
+		// List<UnitidPrice> price = new ArrayList<UnitidPrice>();
+		// UnitidPrice price2 = new UnitidPrice();
+		// price2.customerid = "00001";
+		// price2.goodsid = "澳米伽-013";
+		// price2.unitid = "04";
+		// price.add(price2);
+		// UnitidPrice price3 = new UnitidPrice();
+		// price3.customerid = "00001";
+		// price3.goodsid = "卤-025";
+		// price3.unitid = "01";
+		// price.add(price3);
+		// UnitidPrice price4 = new UnitidPrice();
+		// price4.customerid = "00001";
+		// price4.goodsid = "晏子-016";
+		// price4.unitid = "01";
+		// price.add(price4);
+		// List<UnitidPrice> priceLis =
+		// DocUtils.getCustomerGoodsHistoryPrice(price);
+		// if (priceLis != null) {
+		// System.out.println("sssssssssssssss:" + priceLis.toString());
+		// }
 
 		// edNum = (EditText) findViewById(R.id.edNum);
 		// edTime = (EditText) findViewById(R.id.edTime);
@@ -188,7 +219,6 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		// openViceCamera();
 		// return mCamera;
 		// startActivity(new Intent(this, CameraActivity.class));
-		// TODO
 		// BitmapUtils bitmp = new BitmapUtils();
 		// String sd =
 		// Environment.getExternalStorageDirectory().getAbsolutePath();

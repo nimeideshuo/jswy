@@ -210,15 +210,26 @@ public class UpdateUtils {
 				paramHandler.sendEmptyMessage(i);
 			}
 		}
-		// TODO 同步商品有问题
+		// 同步商品有问题
 		int pageindex = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_customerfieldsalegoods");
 		if (pageindex > 0) {
-			for (int j = 1; j < pageindex; j++) {
+			for (int j = 1; j <= pageindex; j++) {
 				List<HashMap<String, String>> goodsRecords = ssy.syn_QueryCustomerGoodsRecords(j);
 				if (goodsRecords == null) {
 					return false;
 				}
-				System.out.println(goodsRecords);
+				this.saveToLocalDB(goodsRecords);
+				i++;
+				paramHandler.sendEmptyMessage(i);
+			}
+		}
+		pageindex = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "sz_goodsprice");
+		if (pageindex > 0) {
+			for (int j = 1; j <= pageindex; j++) {
+				List<HashMap<String, String>> goodsRecords = ssy.syn_QueryGoodsPriceRecords(j);
+				if (goodsRecords == null) {
+					return false;
+				}
 				this.saveToLocalDB(goodsRecords);
 				i++;
 				paramHandler.sendEmptyMessage(i);

@@ -12,8 +12,6 @@ import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
 
-import android.util.Log;
-
 public class Utils_help {
 	LinkedHashMap<String, String> linMap = new LinkedHashMap<String, String>();
 	private AccountPreference ap = new AccountPreference();
@@ -67,8 +65,8 @@ public class Utils_help {
 			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			conn.setRequestProperty("key", "mmendianban");
 			conn.setRequestProperty("code", instance.getUniqueCode());
-			conn.setConnectTimeout(30000);
-			conn.setReadTimeout(30000);
+			conn.setConnectTimeout(10000);
+			conn.setReadTimeout(10000);
 			// 发送POST请求必须设置如下两行
 			conn.setDoOutput(true);
 			conn.setDoInput(true);

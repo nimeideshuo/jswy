@@ -65,32 +65,32 @@ public class RespGoodsPriceEntity {
 	}
 
 	@JsonIgnore
-	public void setGoodsid(String paramString) {
-		this.goodsid = paramString;
+	public void setGoodsid(String goodsid) {
+		this.goodsid = goodsid;
 	}
 
 	@JsonIgnore
-	public void setPrice(double paramDouble) {
-		this.price = paramDouble;
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	@JsonIgnore
-	public void setPricesystemid(String paramString) {
-		this.pricesystemid = paramString;
+	public void setPricesystemid(String pricesystemid) {
+		this.pricesystemid = pricesystemid;
 	}
 
 	@JsonIgnore
-	public void setPricesystemname(String paramString) {
-		this.pricesystemname = paramString;
+	public void setPricesystemname(String pricesystemname) {
+		this.pricesystemname = pricesystemname;
 	}
 
 	@JsonIgnore
-	public void setUnitid(String paramString) {
-		this.unitid = paramString;
+	public void setUnitid(String unitid) {
+		this.unitid = unitid;
 	}
 
 	@JsonIgnore
-	public void setUnitname(String paramString) {
-		this.unitname = paramString;
+	public void setUnitname(String unitname) {
+		this.unitname = unitname;
 	}
 }

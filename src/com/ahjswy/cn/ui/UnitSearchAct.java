@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.dao.UnitDAO;
+import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.Unit;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -51,7 +51,7 @@ public class UnitSearchAct extends BaseActivity implements OnTextChangeListener,
 	private void loadData() {
 		list = new ArrayList<Unit>();
 		temp = new ArrayList<Unit>();
-		listUnit = new UnitDAO().queryAll();
+		listUnit = new GoodsUnitDAO().queryAll();
 
 		temp.addAll(listUnit);
 

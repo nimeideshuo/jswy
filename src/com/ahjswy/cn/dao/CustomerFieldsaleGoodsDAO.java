@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.model.CustomerRecords;
+import com.ahjswy.cn.model.UnitidPrice;
 
-import android.R.transition;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.TableRow;
 
 public class CustomerFieldsaleGoodsDAO {
 	private SQLiteDatabase db;
@@ -58,4 +57,54 @@ public class CustomerFieldsaleGoodsDAO {
 
 		return null;
 	}
+
+	/**
+	 * 查询商品客史 价格
+	 * 
+	 * @param prices
+	 *            查询商品集合
+	 * @return
+	 */
+	public List<UnitidPrice> queryUnitidPriceList(List<UnitidPrice> prices) {
+		db = helper.getWritableDatabase();
+		List<UnitidPrice> listUnitidPrice = new ArrayList<UnitidPrice>();
+		StringBuilder pricesSB = new StringBuilder();
+		pricesSB.append(
+				"select a.customerid,a.goodsid,a.unitid,a.price,a.issale from cu_customerfieldsalegoods a where issale='true' and");
+		String strCustomerid = " a.customerid in (";
+		String strGoodsid = " and a.goodsid in (";
+		String strUnitid = " and a.unitid in (";
+		String d = ",";
+		for (int i = 0; i < prices.size(); i++) {
+			if (i == prices.size() - 1) {
+				d = "";
+			}
+			UnitidPrice price = prices.get(i);
+			strCustomerid += "'" + price.customerid + "'" + d;
+			strGoodsid += "'" + price.goodsid + "'" + d;
+			strUnitid += "'" + price.unitid + "'" + d;
+		}
+		strCustomerid += ")";
+		strGoodsid += ")";
+		strUnitid += ")";
+		pricesSB.append(strCustomerid);
+		pricesSB.append(strGoodsid);
+		pricesSB.append(strUnitid);
+		Cursor query = db.rawQuery(pricesSB.toString(), null);
+		try {
+			while (query.moveToNext()) {
+				UnitidPrice price = new UnitidPrice();
+				price.customerid = query.getString(0);
+				price.goodsid = query.getString(1);
+				price.unitid = query.getString(2);
+				price.price = query.getDouble(3);
+				listUnitidPrice.add(price);
+			}
+			return listUnitidPrice;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return listUnitidPrice;
+	}
+
 }

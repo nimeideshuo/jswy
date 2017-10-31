@@ -429,7 +429,7 @@ public class GoodsDAO {
 		values.put("goodsclassid", goods.goodsclassid);
 		values.put("isusebatch", goods.isusebatch);
 		values.put("isavailable", goods.isavailable == true ? "1" : "0");
-		long insert = db.insert("sz_goods", "in NOT EXISTS =?", values);
+		long insert = db.insert("sz_goods", null, values);
 		return insert == -1 ? false : true;
 	}
 }

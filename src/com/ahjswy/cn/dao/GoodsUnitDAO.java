@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.model.GoodsUnit;
+import com.ahjswy.cn.model.Unit;
 import com.ahjswy.cn.utils.Utils;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
@@ -81,9 +83,11 @@ public class GoodsUnitDAO {
 					v0 -= (((double) v6)) * v5.getRatio();
 				}
 			}
-			v2 = String.valueOf(v2)
-					+ Utils.cutLastZero(new StringBuilder(String.valueOf(Utils.normalize(v0, 2))).toString())
-					+ v3.getUnitname();
+			v2 = String.valueOf(v2) + Utils.normalize(v0, 2) + v3.getUnitname();
+			// v2 = String.valueOf(v2)
+			// + Utils.cutLastZero(new
+			// StringBuilder(String.valueOf(Utils.normalize(v0, 2))).toString())
+			// + v3.getUnitname();
 		}
 		return v2;
 	}
@@ -456,4 +460,46 @@ public class GoodsUnitDAO {
 		return null;
 	}
 
+	public List<Unit> queryAll() {
+		db = helper.getReadableDatabase();
+		List<Unit> listUnit = new ArrayList<Unit>();
+		Cursor cursor = null;
+		try {
+
+			String sql = "select id,name from sz_unit where isavailable = '1'";
+			cursor = db.rawQuery(sql, null);
+			while (cursor.moveToNext()) {
+				Unit unit = new Unit();
+				unit.setId(cursor.getString(0));
+				unit.setName(cursor.getString(1));
+				listUnit.add(unit);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return listUnit;
+	}
+
+	/**
+	 * 添加商品单位
+	 * 
+	 * @param fromJson
+	 * @return
+	 */
+	public boolean insetAddGoodUnit(GoodsUnit unit) {
+		this.db = this.helper.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("goodsid", unit.goodsid);
+		values.put("unitid", unit.unitid);
+		values.put("unitname", unit.unitname);
+		values.put("isbasic", unit.isbasic == true ? "1" : "0");
+		values.put("isshow", unit.isshow == true ? "1" : "0");
+		values.put("ratio", unit.ratio + "");
+		long insert = db.insert("sz_goodsunit", null, values);
+		return insert == -1 ? false : true;
+	}
 }

@@ -5,11 +5,14 @@ import java.util.List;
 
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.CustomerFieldsaleGoodsDAO;
+import com.ahjswy.cn.dao.GoodsPriceDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.CustomerRecords;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.GoodsUnit;
+import com.ahjswy.cn.model.UnitidPrice;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
+import com.ahjswy.cn.response.RespGoodsPriceEntity;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 
@@ -18,6 +21,8 @@ import android.text.TextUtils;
 public class DocUtils {
 	private static ServiceStore serviceStore;
 	private static GoodsUnitDAO dao;
+	private static GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
+
 	static {
 		if (serviceStore == null) {
 			serviceStore = new ServiceStore();
@@ -203,5 +208,55 @@ public class DocUtils {
 			return null;
 		}
 		return customerfield.queryUnitidPrice(customerid, goodsid, unitid);
+	}
+
+	/**
+	 * 查询多个商品客史价格
+	 * 
+	 * @param price
+	 * @return
+	 */
+	public static List<UnitidPrice> getCustomerGoodsHistoryPrice(List<UnitidPrice> price) {
+		if (price == null || price.size() == 0) {
+			return null;
+		}
+		return customerfield.queryUnitidPriceList(price);
+	}
+
+	/**
+	 * 查询商品 客史价格 或者 价格体系预设价格
+	 * 
+	 * @param customerid
+	 * @param docItem
+	 * @return
+	 */
+	public static double getGoodsPrice(String customerid, DefDocItemXS docItem) {
+		return getGoodsPrice(customerid, docItem.getGoodsid(), docItem.getUnitid());
+	}
+
+	/**
+	 * 查询商品 客史价格 或者 价格体系预设价格
+	 * 
+	 * @param customerid
+	 * @param goodsid
+	 * @param unitid
+	 * @return
+	 */
+	public static double getGoodsPrice(String customerid, String goodsid, String unitid) {
+		CustomerRecords historyPrice = DocUtils.getCustomerGoodsHistoryPrice(customerid, goodsid, unitid);
+		if (historyPrice != null) {
+			return historyPrice.getPrice();
+		}
+		return goodspricedao.queryPrice(goodsid, unitid, Utils.DEFAULT_PRICESYSTEM);
+	}
+
+	/**
+	 * 查询商品价格体系
+	 * 
+	 * @param goodsid
+	 * @return
+	 */
+	public static List<RespGoodsPriceEntity> queryGoodsPriceList(String goodsid) {
+		return goodspricedao.queryPriceList(goodsid);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.request.ReqCommonPara;
 import com.ahjswy.cn.request.ReqSynQueryRecords;
@@ -252,6 +253,7 @@ public class ServiceSynchronize {
 		localArrayList.add(new ReqSynUpdateInfo("sz_pricesystem", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_unit", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("cu_customerfieldsalegoods", 0L));
+		localArrayList.add(new ReqSynUpdateInfo("sz_goodsprice", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_goodsimage", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("rversion", paramLong));
 		localArrayList.add(new ReqSynUpdateInfo("pagesize", pagesize));
@@ -316,6 +318,22 @@ public class ServiceSynchronize {
 		String serviceInfor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(serviceInfor))
 			return JSONUtil.parse2ListMap(serviceInfor);
+		return null;
+	}
+
+	public List<HashMap<String, String>> syn_QueryGoodsPriceRecords(int pageindex) {
+		String url = Utils.getServiceAddress(this.baseAddress, "querygoodspricerecords");
+		ReqSynQueryRecords localReqSynQueryRecords = new ReqSynQueryRecords();
+		localReqSynQueryRecords.setPageIndex(pageindex);
+		localReqSynQueryRecords.setPageSize(1000);
+		localReqSynQueryRecords.setRVersion(this.rversion);
+		// map.put("usergoodsclassid", new
+		// AccountPreference().getValue("user_goodsclassid"));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
+		String serviceInfor = new Utils_help().getServiceInfor(url, map);
+		if (RequestHelper.isSuccess(serviceInfor)) {
+			return JSONUtil.parse2ListMap(serviceInfor);
+		}
 		return null;
 	}
 

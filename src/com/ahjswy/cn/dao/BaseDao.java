@@ -17,8 +17,10 @@ public class BaseDao {
 		this.db.execSQL("delete from sz_region");
 		this.db.execSQL("delete from sz_visitline");
 		this.db.execSQL("delete from sz_goods");
+		this.db.execSQL("delete from sz_goodsprice");
 		this.db.execSQL("delete from sz_goodsunit");
 		this.db.execSQL("delete from sz_goodsimage");
+		this.db.execSQL("delete from cu_customerfieldsalegoods");
 		return true;
 	}
 }

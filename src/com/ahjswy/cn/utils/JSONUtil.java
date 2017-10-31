@@ -19,7 +19,6 @@ import org.json.JSONObject;
 
 import com.ahjswy.cn.model.DefDocPayType;
 import com.ahjswy.cn.response.RespServiceInfor;
-import com.google.gson.Gson;
 
 public class JSONUtil {
 
@@ -139,7 +138,35 @@ public class JSONUtil {
 			return null;
 		}
 		try {
-			return new Gson().fromJson(json, classOfT);
+			return com.alibaba.fastjson.JSONObject.parseObject(json, classOfT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static <T> T parseObject(String json, Class<T> classOfT) {
+		if (!TextUtils.isEmptyS(json) || classOfT == null) {
+			return null;
+		}
+		try {
+			return com.alibaba.fastjson.JSONObject.parseObject(json, classOfT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static String toJSONString(Object obj) {
+		return com.alibaba.fastjson.JSONObject.toJSONString(obj);
+	}
+
+	public static <T> List<T> parseArray(String json, Class<T> classOfT) {
+		if (!TextUtils.isEmptyS(json) || classOfT == null) {
+			return null;
+		}
+		try {
+			return com.alibaba.fastjson.JSONObject.parseArray(json, classOfT);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -177,12 +204,7 @@ public class JSONUtil {
 			return null;
 		}
 		List<DefDocPayType> paytypeList = new ArrayList<DefDocPayType>();
-		// JSONObject jsonObject;
 		try {
-			// jsonObject = new JSONObject(payType);
-			// String paytyperesult = jsonObject.getString("PayTypeResult");
-			// JSONObject jsonData = new JSONObject(payType);
-			// String dataInfo = jsonData.getString("Data");
 			JSONArray array = new JSONArray(payType);
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject jsonObjectPayType = array.getJSONObject(i);

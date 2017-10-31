@@ -6,17 +6,17 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class GoodsUnit implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String goodsid;
+	public String goodsid;
 
-	private boolean isbasic;
+	public boolean isbasic;
 
-	private boolean isshow;
+	public boolean isshow;
 
-	private double ratio;
+	public double ratio;
 
-	private String unitid;
+	public String unitid;
 
-	private String unitname;
+	public String unitname;
 
 	public String getGoodsid() {
 		return this.goodsid;

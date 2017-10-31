@@ -9,17 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
-import com.ahjswy.cn.app.RequestHelper;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
-import android.app.Activity;
-import android.app.DownloadManager.Request;
 import android.content.Context;
 import android.util.TypedValue;
 
@@ -42,6 +34,7 @@ public class Utils {
 	public static String strBatchSuffix;
 	public static String strCancelWarehouse;
 	static AccountPreference ap = new AccountPreference();
+	public static int DEFAULT_PRICESYSTEM;
 	static {
 		RECEIVE_DEC_NUM = 2;
 		DEFAULT_OutDocUNIT = 0;
@@ -248,51 +241,60 @@ public class Utils {
 	public static void init() {
 		AccountPreference localAccountPreference = new AccountPreference();
 		listbiz = localAccountPreference.getBizInfoMap();
-		int i = 0;
-		String localString1;
-		if (i <= listbiz.size()) {
-			// 商品 检索方式
-			if (!localAccountPreference.getValue("goods_check_select").isEmpty()) {
-				GOODS_CHECK_SELECT = localAccountPreference.getValue("goods_check_select");
+		// localString1 = localAccountPreference.getValue("goods_check_select");
+		try {
+			int i = 0;
+			// String localString1;
+			if (i <= listbiz.size()) {
+				// 商品 检索方式
+				if (!localAccountPreference.getValue("goods_check_select").isEmpty()) {
+					GOODS_CHECK_SELECT = localAccountPreference.getValue("goods_check_select");
+				}
+				// 客户检索方式
+				if (!localAccountPreference.getValue("customer_check_select").isEmpty()) {
+					CUSTOMER_CHECK_SELECT = localAccountPreference.getValue("customer_check_select");
+				}
 			}
-			// 客户检索方式
-			if (!localAccountPreference.getValue("customer_check_select").isEmpty()) {
-				CUSTOMER_CHECK_SELECT = localAccountPreference.getValue("customer_check_select");
-			}
-		}
-		for (i = 0; i < listbiz.size(); i++) {
-			if ("intPricePrecision".equals(listbiz.get(i).get("bpid")))
-				PRICE_DEC_NUM = Integer.parseInt(listbiz.get(i).get("valueint"));
-			if ("intSubtotalPrecision".equals(listbiz.get(i).get("bpid"))) {
-				SUBTOTAL_DEC_NUM = Integer.parseInt(listbiz.get(i).get("valueint"));
-			} else if ("intReceivablePrecision".equals(listbiz.get(i).get("bpid"))) {
-				RECEIVE_DEC_NUM = Integer.parseInt(listbiz.get(i).get("valueint"));
 
-			} else if ("intOutDocUnit".equals(listbiz.get(i).get("bpid"))) {// 获取初始化单位
-				DEFAULT_OutDocUNIT = Integer.parseInt(listbiz.get(i).get("valueint"));
-			} else if ("intTransferDocUnit".equals(listbiz.get(i).get("bpid"))) {
-				DEFAULT_TransferDocUNIT = Integer.parseInt(listbiz.get(i).get("valueint"));
-			} else if ("companyname".equals(listbiz.get(i).get("bpid"))) {
-				companyName = listbiz.get(i).get("valuestring");
-			} else if ("intSubtotalChange".equals(listbiz.get(i).get("bpid"))) {
-				int_subtotal_change = Integer.parseInt(listbiz.get(i).get("valueint"));
-			} else if ("strCancelWarehouse".equals(listbiz.get(i).get("bpid"))) {
-				strCancelWarehouse = listbiz.get(i).get("valuestring");
-			} else if ("isAutoChangeGoodsDiscountAfterDoc".equals(listbiz.get(i).get("bpid"))) {
-				isAutoChangeGoodsDiscountAfterDoc = Boolean.parseBoolean(listbiz.get(i).get("valuebool"));
-			} else if ("intGenerateBatch".equals(listbiz.get(i).get("bpid"))) {
-				intGenerateBatch = Integer.parseInt(listbiz.get(i).get("valueint"));
-			} else if ("strBatchPrefix".equals(listbiz.get(i).get("bpid"))) {
-				strBatchPrefix = listbiz.get(i).get("valuestring");
-				if (TextUtils.isEmptyS(strBatchPrefix))
-					strBatchPrefix = "";
-			} else if ("strBatchSuffix".equals(listbiz.get(i).get("bpid"))) {
-				strBatchSuffix = listbiz.get(i).get("valuestring");
-				if (TextUtils.isEmptyS(strBatchSuffix))
-					strBatchSuffix = "";
+			for (i = 0; i < listbiz.size(); i++) {
+				if ("intPricePrecision".equals(listbiz.get(i).get("bpid")))
+					PRICE_DEC_NUM = Integer.parseInt(listbiz.get(i).get("valueint"));
+				if ("intSubtotalPrecision".equals(listbiz.get(i).get("bpid"))) {
+					SUBTOTAL_DEC_NUM = Integer.parseInt(listbiz.get(i).get("valueint"));
+				} else if ("intReceivablePrecision".equals(listbiz.get(i).get("bpid"))) {
+					RECEIVE_DEC_NUM = Integer.parseInt(listbiz.get(i).get("valueint"));
+
+				} else if ("intOutDocUnit".equals(listbiz.get(i).get("bpid"))) {// 获取初始化单位
+					DEFAULT_OutDocUNIT = Integer.parseInt(listbiz.get(i).get("valueint"));
+				} else if ("intTransferDocUnit".equals(listbiz.get(i).get("bpid"))) {
+					DEFAULT_TransferDocUNIT = Integer.parseInt(listbiz.get(i).get("valueint"));
+				} else if ("companyname".equals(listbiz.get(i).get("bpid"))) {
+					companyName = listbiz.get(i).get("valuestring");
+				} else if ("intSubtotalChange".equals(listbiz.get(i).get("bpid"))) {
+					int_subtotal_change = Integer.parseInt(listbiz.get(i).get("valueint"));
+				} else if ("strCancelWarehouse".equals(listbiz.get(i).get("bpid"))) {
+					strCancelWarehouse = listbiz.get(i).get("valuestring");
+				} else if ("isAutoChangeGoodsDiscountAfterDoc".equals(listbiz.get(i).get("bpid"))) {
+					isAutoChangeGoodsDiscountAfterDoc = Boolean.parseBoolean(listbiz.get(i).get("valuebool"));
+				} else if ("intGenerateBatch".equals(listbiz.get(i).get("bpid"))) {
+					intGenerateBatch = Integer.parseInt(listbiz.get(i).get("valueint"));
+				} else if ("strBatchPrefix".equals(listbiz.get(i).get("bpid"))) {
+					strBatchPrefix = listbiz.get(i).get("valuestring");
+					if (TextUtils.isEmptyS(strBatchPrefix))
+						strBatchPrefix = "";
+				} else if ("strBatchSuffix".equals(listbiz.get(i).get("bpid"))) {
+					strBatchSuffix = listbiz.get(i).get("valuestring");
+					if (TextUtils.isEmptyS(strBatchSuffix))
+						strBatchSuffix = "";
+				} else if ("strPriceSystem".equals(listbiz.get(i).get("bpid"))) {
+					DEFAULT_PRICESYSTEM = Integer.parseInt(listbiz.get(i).get("valueint"));
+				}
 			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		localString1 = localAccountPreference.getValue("goods_check_select");
+
 	}
 
 	public static double normalize(double paramDouble, int paramInt) {

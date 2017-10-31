@@ -2,8 +2,6 @@ package com.ahjswy.cn.model;
 
 import java.io.Serializable;
 
-import com.ahjswy.cn.response.RespGoodsWarehouse;
-
 public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 	private static final long serialVersionUID = 1L;
 	// 条码

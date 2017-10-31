@@ -9,6 +9,7 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.GoodsDAO;
+import com.ahjswy.cn.dao.GoodsPriceDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.CustomerRecords;
 import com.ahjswy.cn.model.DefDocItemXS;
@@ -54,6 +55,8 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	}
 
 	private void intView() {
+		dao = new GoodsUnitDAO();
+		goodspricedao = new GoodsPriceDAO();
 		dialog = new Dialog_listCheckBox(this);
 		serviceGoods = new ServiceGoods();
 		ap = new AccountPreference();
@@ -64,13 +67,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		adapter = new OutDocAddMoreAdapter(this);
 		adapter.setDoc(doc);
 		for (DefDocItemXS item : items) {
-			CustomerRecords historyPrice = DocUtils.getCustomerGoodsHistoryPrice(doc.getCustomerid(), item.getGoodsid(),
-					item.getUnitid());
-			if (historyPrice == null) {
-				showSuccess("商品客史单价没有查询到!");
-			} else {
-				item.setPrice(historyPrice.getPrice());
-			}
+			item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
 			double stocknum = stockwarn.queryStockwarn(item.getWarehouseid(), item.getGoodsid());
 			item.stocknum = stocknum;
 			item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
@@ -78,7 +75,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		adapter.setItem(items);
 		lv_commodity_add.setAdapter(adapter);
 		// setInitItem();
-		dao = new GoodsUnitDAO();
 	}
 
 	@Override
@@ -150,6 +146,13 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		} else {
 			PDH.showFail("没有查找到商品！可以尝试更新数据");
 		}
+		mHandler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				lv_commodity_add.setSelection(items.size());
+			}
+		}, 200);
 
 	}
 
@@ -175,13 +178,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 			public void action() {
 				for (Object objitem : goodsMap.values()) {
 					DefDocItemXS item = (DefDocItemXS) objitem;
-					CustomerRecords historyPrice = DocUtils.getCustomerGoodsHistoryPrice(doc.getCustomerid(),
-							item.getGoodsid(), item.getUnitid());
-					if (historyPrice == null) {
-						showSuccess("商品客史单价没有查询到!");
-					} else {
-						item.setPrice(historyPrice.getPrice());
-					}
+					item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
 					double stocknum = stockwarn.queryStockwarn(item.getWarehouseid(), item.getGoodsid());
 					item.stocknum = stocknum;
 					item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
@@ -359,6 +356,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	private ServiceGoods serviceGoods;
 	private AccountPreference ap;
 	private GoodsUnitDAO dao;
+	private GoodsPriceDAO goodspricedao;
 
 	// 保存输入的值 必须有一个 大于0 的
 	private void tv_title_start() {

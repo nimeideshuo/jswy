@@ -123,6 +123,14 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		} else {
 			PDH.showFail("没有查找到商品！可以尝试更新数据");
 		}
+		mHandler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				listView.setSelection(items.size());
+			}
+		}, 200);
+
 	}
 
 	private void combinationItem(Map<String, Object> goodsMap) {

@@ -26,11 +26,11 @@ public class ServiceUser {
 	}
 
 	// 获取权限
-	public String usr_GetAuthoritys(String paramString) {
+	public String usr_GetAuthoritys(String authority) {
 		String url = Utils.getServiceAddress(this.baseAddress, "getauthoritys");
 		ReqUsrCheckAuthority localReqUsrCheckAuthority = new ReqUsrCheckAuthority();
 		localReqUsrCheckAuthority.setUserid(SystemState.getUser().getId());
-		localReqUsrCheckAuthority.setAuthority(paramString);
+		localReqUsrCheckAuthority.setAuthority(authority);
 		map.put("parameter", JSONUtil.object2Json(localReqUsrCheckAuthority));
 		return new Utils_help().getServiceInfor(url, map);
 	}
@@ -40,23 +40,23 @@ public class ServiceUser {
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
-	public String usr_UploadUserLocation(double paramDouble1, double paramDouble2, String paramString) {
+	public String usr_UploadUserLocation(double longitude, double latitude, String address) {
 		String url = Utils.getServiceAddress(this.baseAddress, "uploaduserlocation");
 		User localUser = (User) SystemState.getObject("cu_user", User.class);
-		ReqUsrUserLocation localReqUsrUserLocation = new ReqUsrUserLocation();
-		localReqUsrUserLocation.setId(localUser.getId());
-		localReqUsrUserLocation.setName(localUser.getName());
-		localReqUsrUserLocation.setLongitude(paramDouble1);
-		localReqUsrUserLocation.setLatitude(paramDouble2);
-		localReqUsrUserLocation.setAddress(paramString);
-		map.put("parameter", JSONUtil.object2Json(localReqUsrUserLocation));
+		ReqUsrUserLocation location = new ReqUsrUserLocation();
+		location.setId(localUser.getId());
+		location.setName(localUser.getName());
+		location.setLongitude(longitude);
+		location.setLatitude(latitude);
+		location.setAddress(address);
+		map.put("parameter", JSONUtil.object2Json(location));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
-	public String usr_UserLogin(String paramString1, String paramString2) {
+	public String usr_UserLogin(String userid, String password) {
 		String url = Utils.getServiceAddress(this.baseAddress, "userlogin");
-		ReqUsrUserLogin localReqUsrUserLogin = new ReqUsrUserLogin(paramString1, paramString2, "mmendianban");
-		map.put("parameter", JSONUtil.object2Json(localReqUsrUserLogin));
+		ReqUsrUserLogin userLogin = new ReqUsrUserLogin(userid, password, "mmendianban");
+		map.put("parameter", JSONUtil.object2Json(userLogin));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 }

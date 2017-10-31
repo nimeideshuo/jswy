@@ -1,11 +1,15 @@
 package com.ahjswy.cn.app;
 
+import java.util.Random;
+
 import com.ahjswy.cn.service.ServiceSystem;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 
 public class RequestHelper {
 	public static RequestHelper helper;
+	private final static String[] RESNET_ERRAY_MESSAGE = { "信号质量不佳  稍后重试!", "信号弱 请等待!", "通讯质量差  请重试!" };
+	private final static Random RANDOM = new Random(2);
 
 	public static RequestHelper get() {
 		try {
@@ -57,7 +61,7 @@ public class RequestHelper {
 			PDH.showFail("请求失败, 服务器异常.");
 			return;
 		}
-		PDH.showFail("网络链接失败，" + str);
+		PDH.showFail(RESNET_ERRAY_MESSAGE[RANDOM.nextInt(3)] + "\n" + str);
 	}
 
 	// 验证 IP 是否正确

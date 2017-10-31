@@ -53,6 +53,7 @@
             android:layout_height="fill_parent"
             android:layout_marginRight="5.0dip"
             android:gravity="left|center"
+            android:singleLine="true"
             android:text="密    码"
             android:textColor="@color/heise"
             android:textSize="@dimen/dialog_label" />
@@ -66,6 +67,7 @@
             android:ems="10"
             android:hint="@string/hint_please_input_password"
             android:imeOptions="actionDone"
+            android:singleLine="true"
             android:textSize="14.0sp" />
     </LinearLayout>
 

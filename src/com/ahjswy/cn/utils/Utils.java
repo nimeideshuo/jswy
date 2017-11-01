@@ -257,13 +257,12 @@ public class Utils {
 			}
 
 			for (i = 0; i < listbiz.size(); i++) {
-				if ("intPricePrecision".equals(listbiz.get(i).get("bpid")))
+				if ("intPricePrecision".equals(listbiz.get(i).get("bpid"))) {
 					PRICE_DEC_NUM = Integer.parseInt(listbiz.get(i).get("valueint"));
-				if ("intSubtotalPrecision".equals(listbiz.get(i).get("bpid"))) {
+				} else if ("intSubtotalPrecision".equals(listbiz.get(i).get("bpid"))) {
 					SUBTOTAL_DEC_NUM = Integer.parseInt(listbiz.get(i).get("valueint"));
 				} else if ("intReceivablePrecision".equals(listbiz.get(i).get("bpid"))) {
 					RECEIVE_DEC_NUM = Integer.parseInt(listbiz.get(i).get("valueint"));
-
 				} else if ("intOutDocUnit".equals(listbiz.get(i).get("bpid"))) {// 获取初始化单位
 					DEFAULT_OutDocUNIT = Integer.parseInt(listbiz.get(i).get("valueint"));
 				} else if ("intTransferDocUnit".equals(listbiz.get(i).get("bpid"))) {
@@ -287,7 +286,7 @@ public class Utils {
 					if (TextUtils.isEmptyS(strBatchSuffix))
 						strBatchSuffix = "";
 				} else if ("strPriceSystem".equals(listbiz.get(i).get("bpid"))) {
-					DEFAULT_PRICESYSTEM = Integer.parseInt(listbiz.get(i).get("valueint"));
+					DEFAULT_PRICESYSTEM = Integer.parseInt(listbiz.get(i).get("valuestring"));
 				}
 			}
 

@@ -492,14 +492,15 @@ public class GoodsUnitDAO {
 	 */
 	public boolean insetAddGoodUnit(GoodsUnit unit) {
 		this.db = this.helper.getWritableDatabase();
-		ContentValues values = new ContentValues();
-		values.put("goodsid", unit.goodsid);
-		values.put("unitid", unit.unitid);
-		values.put("unitname", unit.unitname);
-		values.put("isbasic", unit.isbasic == true ? "1" : "0");
-		values.put("isshow", unit.isshow == true ? "1" : "0");
-		values.put("ratio", unit.ratio + "");
-		long insert = db.insert("sz_goodsunit", null, values);
-		return insert == -1 ? false : true;
+		try {
+
+			String sql = "insert into sz_goodsunit(goodsid,unitid,unitname,isbasic,isshow,ratio) select ?,?,name,?,?,? from sz_unit where id=?";
+			db.execSQL(sql, new String[] { unit.goodsid, unit.unitid, unit.isbasic == true ? "1" : "0",
+					unit.isshow == true ? "1" : "0", unit.ratio + "", unit.getUnitid() });
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

@@ -96,18 +96,18 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	}
 
 	// 测试代码
-	boolean isShow = false;
-	int numsss = 0;
-
-	public class TestUnit {
-		public String goodsid;
-		public String unitid;
-		public boolean isbasic;
-		public boolean isshow;
-		public double ratio;
-		public String remark;
-		public String rversion;
-	}
+	// boolean isShow = false;
+	// int numsss = 0;
+	//
+	// public class TestUnit {
+	// public String goodsid;
+	// public String unitid;
+	// public boolean isbasic;
+	// public boolean isshow;
+	// public double ratio;
+	// public String remark;
+	// public String rversion;
+	// }
 
 	// TODO
 	public void startOpenDoc(View v) {

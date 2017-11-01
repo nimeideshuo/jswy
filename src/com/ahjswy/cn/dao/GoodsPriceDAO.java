@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ahjswy.cn.response.RespGoodsPriceEntity;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -12,6 +13,14 @@ public class GoodsPriceDAO {
 	private SQLiteDatabase db;
 	private DBOpenHelper helper = new DBOpenHelper();
 
+	/**
+	 * 查询商品 预设的价格体系
+	 * 
+	 * @param goodsid
+	 * @param unitid
+	 * @param pricesystemid
+	 * @return
+	 */
 	public double queryPrice(String goodsid, String unitid, int pricesystemid) {
 		this.db = this.helper.getReadableDatabase();
 		String sql = "select price from sz_goodsprice where goodsid=? and unitid=? and pricesystemid=?";
@@ -26,6 +35,12 @@ public class GoodsPriceDAO {
 		return 0.0;
 	}
 
+	/**
+	 * 查询商品价格体系
+	 * 
+	 * @param goodsid
+	 * @return
+	 */
 	public List<RespGoodsPriceEntity> queryPriceList(String goodsid) {
 		this.db = this.helper.getReadableDatabase();
 		String sql = "select goodsid,unitid,unitname,pricesystemid,pricesystemname,price from sz_goodsprice where goodsid=? and price!='0.0' and price is not null ";
@@ -47,5 +62,24 @@ public class GoodsPriceDAO {
 			e.printStackTrace();
 		}
 		return listPriceEntity;
+	}
+
+	/**
+	 * 增加 商品 价格体系
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public boolean insert(RespGoodsPriceEntity entity) {
+		this.db = this.helper.getWritableDatabase();
+		try {
+			String sql = "insert into sz_goodsprice(goodsid,unitid,unitname,pricesystemid,pricesystemname,price) select ?,?,?,?,psname,? from sz_pricesystem where psid=?";
+			db.execSQL(sql, new String[] { entity.getGoodsid(), entity.getUnitid(), entity.getUnitname(),
+					entity.getPricesystemid(), entity.getPrice() + "", entity.getPricesystemid() });
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

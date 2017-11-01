@@ -21,7 +21,6 @@ import com.ahjswy.cn.request.ReqSynUpdateInfo;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.AboutActivity;
 import com.ahjswy.cn.utils.InfoDialog;
-import com.ahjswy.cn.utils.NetUtils;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;

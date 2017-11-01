@@ -103,7 +103,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		tv_dicPrice.setOnClickListener(priceOnClick);
 		tv_dicPrice.setTag(Integer.valueOf(position));
 		tv_Bfci.setText("库存:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" : itemXS.goodStock));
-		// etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
+		etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
 		etNum.setTag(Integer.valueOf(position));
 		btnUnit.setTag(Integer.valueOf(position));
 		etNum.setFocusable(true);

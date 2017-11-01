@@ -25,7 +25,9 @@ public class GoodsPriceDAO {
 		this.db = this.helper.getReadableDatabase();
 		String sql = "select price from sz_goodsprice where goodsid=? and unitid=? and pricesystemid=?";
 		try {
-			Cursor cursor = db.rawQuery(sql, new String[] { goodsid, unitid, pricesystemid + "" });
+			String systemid = String.valueOf(pricesystemid);
+			Cursor cursor = db.rawQuery(sql,
+					new String[] { goodsid, unitid, systemid.length() == 1 ? "0" + systemid : systemid });
 			if (cursor.moveToNext()) {
 				return cursor.getDouble(0);
 			}

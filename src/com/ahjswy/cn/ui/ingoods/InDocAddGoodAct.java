@@ -17,6 +17,7 @@ import com.ahjswy.cn.response.RespGoodsWarehouse;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.outgoods.GoodsWarehouseSearchAct;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
@@ -309,29 +310,58 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
 				goodsUnit = localList.get(which);
-				if (!goodsUnit.getUnitid().equals(btnUnit.getTag()))
-					PDH.show(InDocAddGoodAct.this, new PDH.ProgressCallBack() {
-						public void action() {
-							ArrayList<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
-							ReqStrGetGoodsPrice getgoodsprice = new ReqStrGetGoodsPrice();
-							getgoodsprice.setType(2);
-							getgoodsprice.setCustomerid(customerid);
-							getgoodsprice.setWarehouseid(btnWarehouse.getTag().toString());
-							getgoodsprice.setGoodsid(docitem.getGoodsid());
-							getgoodsprice.setUnitid(goodsUnit.getUnitid());
-							getgoodsprice.setPrice(0.0D);
-							getgoodsprice.setIsdiscount(false);
-							localArrayList.add(getgoodsprice);
-							String localString = new ServiceGoods().gds_GetMultiGoodsPrice(localArrayList, false,
-									docitem.isIsusebatch());
-							handlerGet.sendMessage(handlerGet.obtainMessage(0, localString));
-						}
-					});
+				if (!goodsUnit.getUnitid().equals(btnUnit.getTag())) {
+					double goodsPrice = DocUtils.getGoodsPrice(customerid, goodsUnit.getGoodsid(),
+							goodsUnit.getUnitid());
+					setPrice(goodsPrice);
+				}
+
+				// PDH.show(InDocAddGoodAct.this, new PDH.ProgressCallBack() {
+				// public void action() {
+				// ArrayList<ReqStrGetGoodsPrice> localArrayList =
+				// new ArrayList<ReqStrGetGoodsPrice>();
+				// ReqStrGetGoodsPrice getgoodsprice = new
+				// ReqStrGetGoodsPrice();
+				// getgoodsprice.setType(2);
+				// getgoodsprice.setCustomerid(customerid);
+				// getgoodsprice.setWarehouseid(btnWarehouse.getTag().toString());
+				// getgoodsprice.setGoodsid(docitem.getGoodsid());
+				// getgoodsprice.setUnitid(goodsUnit.getUnitid());
+				// getgoodsprice.setPrice(0.0D);
+				// getgoodsprice.setIsdiscount(false);
+				// localArrayList.add(getgoodsprice);
+				// String localString = new
+				// ServiceGoods().gds_GetMultiGoodsPrice(localArrayList,
+				// false,
+				// docitem.isIsusebatch());
+				// handlerGet.sendMessage(handlerGet.obtainMessage(0,
+				// localString));
+				// }
+				// });
 			}
 		});
 		localBuilder.show();
 		return;
 
+	}
+
+	private void setPrice(double price) {
+		btnUnit.setText(goodsUnit.getUnitname());
+		btnUnit.setTag(goodsUnit.getUnitid());
+		double d1 = Utils.normalize(Utils.getDouble(etNum.getText().toString()).doubleValue(), 2);
+		double d2 = Utils.normalize(Utils.getDouble(etDiscountRatio.getText().toString()).doubleValue(), 2);
+		double d3 = Utils.normalizePrice(price);
+		double d4 = Utils.normalizePrice(d3 * d2);
+		etPrice.setText(price + "");
+		etSubtotal.setText(Utils.normalizeSubtotal(d1 * d3) + "");
+		etDiscountPrice.setText(d4 + "");
+		etDiscountSubtotal.setText(Utils.normalizeSubtotal(d1 * d4) + "");
+		etPrice.setTag(etPrice.getText());
+		etSubtotal.setTag(etSubtotal.getText());
+		etDiscountPrice.setTag(etDiscountPrice.getText());
+		etDiscountSubtotal.setTag(etDiscountSubtotal.getText());
+		docitem.setUnitid(goodsUnit.getUnitid());
+		docitem.setUnitname(goodsUnit.getUnitname());
 	}
 
 	private View.OnClickListener dateClickListener = new View.OnClickListener() {
@@ -359,34 +389,38 @@ public class InDocAddGoodAct extends BaseActivity implements OnClickListener, On
 			new DatePickerDialog(InDocAddGoodAct.this, this.listener, cal.get(1), cal.get(2), cal.get(5)).show();
 		}
 	};
-	Handler handlerGet = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			String localString = msg.obj.toString();
-			if (RequestHelper.isSuccess(localString)) {
-				ReqStrGetGoodsPrice localReqStrGetGoodsPrice = null;
-				localReqStrGetGoodsPrice = (ReqStrGetGoodsPrice) JSONUtil
-						.str2list(localString, ReqStrGetGoodsPrice.class).get(0);
-				btnUnit.setText(goodsUnit.getUnitname());
-				btnUnit.setTag(goodsUnit.getUnitid());
-				double d1 = Utils.normalize(Utils.getDouble(etNum.getText().toString()).doubleValue(), 2);
-				double d2 = Utils.normalize(Utils.getDouble(etDiscountRatio.getText().toString()).doubleValue(), 2);
-				double d3 = Utils.normalizePrice(localReqStrGetGoodsPrice.getPrice());
-				double d4 = Utils.normalizePrice(d3 * d2);
-				etPrice.setText(localReqStrGetGoodsPrice.getPrice() + "");
-				etSubtotal.setText(Utils.normalizeSubtotal(d1 * d3) + "");
-				etDiscountPrice.setText(d4 + "");
-				etDiscountSubtotal.setText(Utils.normalizeSubtotal(d1 * d4) + "");
-				etPrice.setTag(etPrice.getText());
-				etSubtotal.setTag(etSubtotal.getText());
-				etDiscountPrice.setTag(etDiscountPrice.getText());
-				etDiscountSubtotal.setTag(etDiscountSubtotal.getText());
-				docitem.setUnitid(goodsUnit.getUnitid());
-				docitem.setUnitname(goodsUnit.getUnitname());
-				return;
-			}
-			PDH.showFail(localString);
-		};
-	};
+	// Handler handlerGet = new Handler() {
+	// public void handleMessage(android.os.Message msg) {
+	// String localString = msg.obj.toString();
+	// if (RequestHelper.isSuccess(localString)) {
+	// ReqStrGetGoodsPrice localReqStrGetGoodsPrice = null;
+	// localReqStrGetGoodsPrice = (ReqStrGetGoodsPrice) JSONUtil
+	// .str2list(localString, ReqStrGetGoodsPrice.class).get(0);
+	// btnUnit.setText(goodsUnit.getUnitname());
+	// btnUnit.setTag(goodsUnit.getUnitid());
+	// double d1 =
+	// Utils.normalize(Utils.getDouble(etNum.getText().toString()).doubleValue(),
+	// 2);
+	// double d2 =
+	// Utils.normalize(Utils.getDouble(etDiscountRatio.getText().toString()).doubleValue(),
+	// 2);
+	// double d3 = Utils.normalizePrice(localReqStrGetGoodsPrice.getPrice());
+	// double d4 = Utils.normalizePrice(d3 * d2);
+	// etPrice.setText(localReqStrGetGoodsPrice.getPrice() + "");
+	// etSubtotal.setText(Utils.normalizeSubtotal(d1 * d3) + "");
+	// etDiscountPrice.setText(d4 + "");
+	// etDiscountSubtotal.setText(Utils.normalizeSubtotal(d1 * d4) + "");
+	// etPrice.setTag(etPrice.getText());
+	// etSubtotal.setTag(etSubtotal.getText());
+	// etDiscountPrice.setTag(etDiscountPrice.getText());
+	// etDiscountSubtotal.setTag(etDiscountSubtotal.getText());
+	// docitem.setUnitid(goodsUnit.getUnitid());
+	// docitem.setUnitname(goodsUnit.getUnitname());
+	// return;
+	// }
+	// PDH.showFail(localString);
+	// };
+	// };
 	private Button startDate;
 	private Button endDate;
 

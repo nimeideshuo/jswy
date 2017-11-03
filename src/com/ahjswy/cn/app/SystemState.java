@@ -1,5 +1,6 @@
 package com.ahjswy.cn.app;
 
+import com.ahjswy.cn.model.DBUser;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.User;
 import com.ahjswy.cn.model.Warehouse;
@@ -27,7 +28,7 @@ public class SystemState {
 	public static final String[] goods_select_items;
 	public static final String[] goods_select_keys = { "id", "pinyin", "name", "barcode" };
 	public static String random;
-	public static final String defaultTime="2000-01-01";
+	public static final String defaultTime = "2000-01-01";
 	static {
 		goods_select_items = new String[] { "编号", "拼音", "名称", "条形码" };
 		customer_select_keys = new String[] { "id", "pinyin", "name" };
@@ -67,9 +68,14 @@ public class SystemState {
 		return ((Warehouse) getObject("warehouse", Warehouse.class));
 	}
 
-	public static boolean saveObject(String paramString, Object paramObject) {
+	// 获取数据库用户密码
+	public static DBUser getDBUser() {
+		return ((DBUser) getObject("dbUser", DBUser.class));
+	}
+
+	public static boolean saveObject(String key, Object value) {
 		SharedPreferences.Editor localEditor = basic_setting.edit();
-		localEditor.putString(paramString, JSONUtil.object2Json(paramObject));
+		localEditor.putString(key, JSONUtil.object2Json(value));
 		return localEditor.commit();
 	}
 }

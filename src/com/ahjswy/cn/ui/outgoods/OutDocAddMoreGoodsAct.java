@@ -52,6 +52,8 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_out_doc_add_moregoods);
 		intView();
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
 	}
 
 	private void intView() {
@@ -75,13 +77,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		adapter.setItem(items);
 		lv_commodity_add.setAdapter(adapter);
 		// setInitItem();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		scaner = Scaner.factory(this);
-		scaner.setBarcodeListener(barcodeListener);
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {

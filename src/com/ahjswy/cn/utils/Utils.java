@@ -296,8 +296,8 @@ public class Utils {
 
 	}
 
-	public static double normalize(double paramDouble, int paramInt) {
-		int i = (int) Math.pow(10.0D, paramInt);
+	public static double normalize(double paramDouble, int y) {
+		int i = (int) Math.pow(10.0D, y);
 		return (Double.parseDouble(Math.round(paramDouble * i) + "") / i);
 	}
 

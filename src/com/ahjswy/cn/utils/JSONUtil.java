@@ -73,12 +73,12 @@ public class JSONUtil {
 		}
 	}
 
-	public static String object2Json(Object paramObject) {
+	public static String object2Json(Object obj) {
 		ObjectMapper localObjectMapper = new ObjectMapper();
 		StringWriter localStringWriter = new StringWriter();
 		try {
 			JsonGenerator localJsonGenerator = new JsonFactory().createJsonGenerator(localStringWriter);
-			localObjectMapper.writeValue(localJsonGenerator, paramObject);
+			localObjectMapper.writeValue(localJsonGenerator, obj);
 			localJsonGenerator.close();
 			String localString = localStringWriter.toString();
 			return localString;

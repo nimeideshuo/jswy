@@ -63,8 +63,8 @@ public class AccountPreference {
 		return this.setPreferences.edit().putString(value, str).commit();
 	}
 
-	public boolean setValue(String value, String paramString2) {
-		return this.setPreferences.edit().putString(value, paramString2).commit();
+	public boolean setValue(String key, String value) {
+		return this.setPreferences.edit().putString(key, value).commit();
 	}
 
 	public boolean savePrinter(BTPrinter printer) {

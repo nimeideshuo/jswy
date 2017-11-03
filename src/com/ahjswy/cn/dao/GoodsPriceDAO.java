@@ -21,13 +21,12 @@ public class GoodsPriceDAO {
 	 * @param pricesystemid
 	 * @return
 	 */
-	public double queryPrice(String goodsid, String unitid, int pricesystemid) {
+	public double queryBasicPrice(String goodsid, String pricesystemid) {
 		this.db = this.helper.getReadableDatabase();
-		String sql = "select price from sz_goodsprice where goodsid=? and unitid=? and pricesystemid=?";
+		String sql = "select price from sz_goodsprice where goodsid=? and unitid=(select unitid from sz_goodsunit where goodsid=? and isbasic='1') and pricesystemid=?";
 		try {
-			String systemid = String.valueOf(pricesystemid);
-			Cursor cursor = db.rawQuery(sql,
-					new String[] { goodsid, unitid, systemid.length() == 1 ? "0" + systemid : systemid });
+			Cursor cursor = db.rawQuery(sql, new String[] { goodsid, goodsid,
+					pricesystemid.length() == 1 ? "0" + pricesystemid : pricesystemid });
 			if (cursor.moveToNext()) {
 				return cursor.getDouble(0);
 			}

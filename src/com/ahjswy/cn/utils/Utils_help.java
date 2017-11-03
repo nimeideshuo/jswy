@@ -57,14 +57,13 @@ public class Utils_help {
 			URL realUrl = new URL(Service.getIpUrl(ip) + url);
 			// 打开和URL之间的连接
 			URLConnection conn = realUrl.openConnection();
-			MyApplication instance = MyApplication.getInstance();
 			// 设置通用的请求属性 加上http头信息
 			conn.setRequestProperty("accept", "*/*");
 			conn.setRequestProperty("connection", "Keep-Alive");
 			conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			conn.setRequestProperty("key", "mmendianban");
-			conn.setRequestProperty("code", instance.getUniqueCode());
+			conn.setRequestProperty("code", MyApplication.getInstance().getUniqueCode());
 			conn.setConnectTimeout(10000);
 			conn.setReadTimeout(10000);
 			// 发送POST请求必须设置如下两行
@@ -88,9 +87,7 @@ public class Utils_help {
 		} catch (Exception e) {
 			System.out.println("发送 POST 请求出现异常！" + e);
 			e.printStackTrace();
-		}
-		// 使用finally块来关闭输出流、输入流
-		finally {
+		} finally {
 			try {
 				if (out != null) {
 					out.close();

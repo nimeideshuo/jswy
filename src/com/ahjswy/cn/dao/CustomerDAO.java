@@ -13,10 +13,10 @@ public class CustomerDAO {
 	private SQLiteDatabase db;
 	private DBOpenHelper helper = new DBOpenHelper();
 
-	public CustomerThin getCustomer(String paramString) {
+	public CustomerThin getCustomer(String customerid) {
 		List<CustomerThin> queryAllCustomer = queryAllCustomer();
 		for (int i = 0; i < queryAllCustomer.size(); i++) {
-			if (paramString.equals(queryAllCustomer.get(i).getId())) {
+			if (customerid.equals(queryAllCustomer.get(i).getId())) {
 				return queryAllCustomer.get(i);
 			}
 		}
@@ -61,7 +61,6 @@ public class CustomerDAO {
 		Cursor cursor = this.db.rawQuery(
 				"select id, name, pinyin, contactmoblie, address, settleterm, discountratio, promotionid, promotionname, pricesystemid from cu_customer where name=? ",
 				new String[] { customerName });
-		ArrayList<CustomerThin> localArrayList = new ArrayList<CustomerThin>();
 		try {
 			if (cursor.moveToNext()) {
 				CustomerThin localCustomerThin = new CustomerThin();
@@ -84,6 +83,60 @@ public class CustomerDAO {
 				cursor.close();
 			if (this.db != null)
 				this.db.close();
+		}
+		return null;
+	}
+
+	/**
+	 * 根据客户id 查询 客户
+	 * 
+	 * @param customerid
+	 * @return
+	 */
+	public CustomerThin queryCustomerId(String customerid) {
+
+		this.db = this.helper.getReadableDatabase();
+		try {
+
+			Cursor cursor = this.db.rawQuery(
+					"select id, name, pinyin, contactmoblie, address, settleterm, discountratio, promotionid, promotionname, pricesystemid from cu_customer where id=? ",
+					new String[] { customerid });
+			if (cursor.moveToNext()) {
+				CustomerThin customer = new CustomerThin();
+				customer.setId(cursor.getString(0));
+				customer.setName(cursor.getString(1));
+				customer.setPinyin(cursor.getString(2));
+				customer.setContactmoblie(cursor.getString(3));
+				customer.setAddress(cursor.getString(4));
+				customer.setSettleterm(cursor.getInt(5));
+				customer.setDiscountratio(cursor.getDouble(6));
+				customer.setPromotionid(cursor.getString(7));
+				customer.setPromotionname(cursor.getString(8));
+				customer.setPricesystemid(cursor.getString(9));
+				return customer;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 查询客户价格体系
+	 * 
+	 * @param customerid
+	 * @return
+	 */
+	public String queryPricesystemid(String customerid) {
+		this.db = this.helper.getReadableDatabase();
+		try {
+			Cursor cursor = this.db.rawQuery("select  pricesystemid   from cu_customer where id=? ",
+					new String[] { customerid });
+			if (cursor.moveToNext()) {
+				return cursor.getString(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}

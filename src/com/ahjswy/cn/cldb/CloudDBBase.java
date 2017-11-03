@@ -9,8 +9,6 @@ import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.utils.MLog;
 
-import android.widget.Button;
-
 public class CloudDBBase {
 	static {
 		try {
@@ -20,15 +18,18 @@ public class CloudDBBase {
 			e.printStackTrace();
 		}
 	}
-
+	public static AccountPreference ap = new AccountPreference();
 	// jswy cloud database name
 	public String DBNAME = SystemState.getAccountSet().getDatabase();
 	// cloud url
-	String URL = "jdbc:jtds:sqlserver://" + new AccountPreference().getServerIp() + ":1433/" + DBNAME;
+	String URL = "jdbc:jtds:sqlserver://" + ap.getServerIp() + ":1433/" + DBNAME;
 	// cloud databas user name
-	final public String USERNAME = "sa";
+	// final public String USERNAME = "sa";
+	final public String USERNAME = "";// SystemState.getDBUser() == null ? "" :
+										// SystemState.getDBUser().userid;
 	// cloud databas password
-	final public String PASSWROD = "055164312312";
+	final public String PASSWROD ="";// SystemState.getDBUser() == null ? "" :
+									// SystemState.getDBUser().password;
 	Connection conn;
 
 	public ResultSet executeQuery(String url, String userName, String passwrod, String sql) {

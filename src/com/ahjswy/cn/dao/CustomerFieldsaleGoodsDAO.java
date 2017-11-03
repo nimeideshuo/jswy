@@ -58,6 +58,28 @@ public class CustomerFieldsaleGoodsDAO {
 		return null;
 	}
 
+	public CustomerRecords queryUnitidPrice(String customerid, String goodsid) {
+		db = helper.getWritableDatabase();
+		String sql = "select customerid,goodsid,goodsthirdclassid,unitid,price from cu_customerfieldsalegoods where issale = 'true' and customerid=? and goodsid=? ";
+		try {
+			Cursor cursor = db.rawQuery(sql, new String[] { customerid, goodsid });
+			if (cursor.moveToNext()) {
+				CustomerRecords records = new CustomerRecords();
+				records.setCustomerid(cursor.getString(0));
+				records.setGoodsid(cursor.getString(1));
+				records.setGoodsthirdclassid(cursor.getString(2));
+				records.setUnitid(cursor.getString(3));
+				records.setPrice(cursor.getDouble(4));
+				return records;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	/**
 	 * 查询商品客史 价格
 	 * 

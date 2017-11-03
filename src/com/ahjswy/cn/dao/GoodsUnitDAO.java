@@ -19,27 +19,18 @@ public class GoodsUnitDAO {
 	// 基本单位
 	public GoodsUnit getBasicUnit(String goodsid) {
 		this.db = this.helper.getReadableDatabase();
-		String[] arrays = { goodsid };
 		GoodsUnit goodsunit = null;
 		Cursor cursor = this.db.rawQuery(
 				"select goodsid,unitid,unitname,isbasic,isshow,ratio from sz_goodsunit where isbasic=1 and goodsid = ?",
-				arrays);
+				new String[] { goodsid });
 		try {
 			while (cursor.moveToNext()) {
 				goodsunit = new GoodsUnit();
 				goodsunit.setGoodsid(cursor.getString(0));
 				goodsunit.setUnitid(cursor.getString(1));
 				goodsunit.setUnitname(cursor.getString(2));
-				if (cursor.getInt(3) == 1) {
-					goodsunit.setIsbasic(true);
-				} else {
-					goodsunit.setIsbasic(false);
-				}
-				if (cursor.getInt(4) == 1) {
-					goodsunit.setIsshow(true);
-				} else {
-					goodsunit.setIsshow(false);
-				}
+				goodsunit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
+				goodsunit.setIsshow(cursor.getInt(4) == 1 ? true : false);
 				goodsunit.setRatio(cursor.getDouble(5));
 			}
 		} catch (Exception e) {
@@ -106,16 +97,8 @@ public class GoodsUnitDAO {
 				goodsunit.setGoodsid(cursor.getString(0));
 				goodsunit.setUnitid(cursor.getString(1));
 				goodsunit.setUnitname(cursor.getString(2));
-				if (cursor.getInt(3) == 1) {
-					goodsunit.setIsbasic(true);
-				} else {
-					goodsunit.setIsbasic(false);
-				}
-				if (cursor.getInt(4) == 1) {
-					goodsunit.setIsshow(true);
-				} else {
-					goodsunit.setIsshow(false);
-				}
+				goodsunit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
+				goodsunit.setIsshow(cursor.getInt(4) == 1 ? true : false);
 				goodsunit.setRatio(cursor.getDouble(5));
 			}
 		} catch (Exception e) {
@@ -143,12 +126,8 @@ public class GoodsUnitDAO {
 				goodsunit.setGoodsid(cursor.getString(0));
 				goodsunit.setUnitid(cursor.getString(1));
 				goodsunit.setUnitname(cursor.getString(2));
-				if (cursor.getInt(3) != 1) {
-					goodsunit.setIsbasic(true);
-				}
-				if (cursor.getInt(4) != 1) {
-					goodsunit.setIsshow(true);
-				}
+				goodsunit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
+				goodsunit.setIsshow(cursor.getInt(4) == 1 ? true : false);
 				goodsunit.setRatio(cursor.getDouble(5));
 			}
 		} catch (Exception e) {
@@ -198,12 +177,8 @@ public class GoodsUnitDAO {
 				goodsunit.setGoodsid(cursor.getString(0));
 				goodsunit.setUnitid(cursor.getString(1));
 				goodsunit.setUnitname(cursor.getString(2));
-				if (cursor.getInt(3) != 1) {
-					goodsunit.setIsbasic(true);
-				}
-				if (cursor.getInt(4) != 1) {
-					goodsunit.setIsshow(true);
-				}
+				goodsunit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
+				goodsunit.setIsshow(cursor.getInt(4) == 1 ? true : false);
 				goodsunit.setRatio(cursor.getDouble(5));
 			}
 		} catch (Exception e) {
@@ -218,7 +193,7 @@ public class GoodsUnitDAO {
 		return goodsunit;
 	}
 
-	// 获取商品 规格 1*多少
+	// TODO 获取商品 规格 1*多少
 	public double getGoodsUnitRatio(String goodsid, String unitid) {
 		this.db = this.helper.getReadableDatabase();
 		Cursor localCursor = this.db.rawQuery("select ratio from sz_goodsunit where goodsid=? and unitid=?",
@@ -240,6 +215,35 @@ public class GoodsUnitDAO {
 		return d1;
 	}
 
+	// TODO 查询商品换算比例
+	public GoodsUnit queryBigUnitRatio(String goodsId, String unitid) {
+		this.db = this.helper.getReadableDatabase();
+		String[] arrays = { goodsId, unitid };
+		GoodsUnit goodsunit = null;
+		Cursor cursor = this.db.rawQuery(
+				"select goodsid,unitid,unitname,isbasic,isshow,ratio from sz_goodsunit where goodsid =? and unitid=?",
+				arrays);
+		try {
+			while (cursor.moveToNext()) {
+				goodsunit = new GoodsUnit();
+				goodsunit.setGoodsid(cursor.getString(0));
+				goodsunit.setUnitid(cursor.getString(1));
+				goodsunit.setUnitname(cursor.getString(2));
+				goodsunit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
+				goodsunit.setIsshow(cursor.getInt(4) == 1 ? true : false);
+				goodsunit.setRatio(cursor.getDouble(5));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null)
+				cursor.close();
+			if (this.db != null)
+				this.db.close();
+		}
+		return goodsunit;
+	}
+
 	public GoodsUnit getMidUnit(String goodsid) {
 		this.db = this.helper.getReadableDatabase();
 		String[] arrays = { goodsid };
@@ -253,16 +257,8 @@ public class GoodsUnitDAO {
 				goodsunit.setGoodsid(cursor.getString(0));
 				goodsunit.setUnitid(cursor.getString(1));
 				goodsunit.setUnitname(cursor.getString(2));
-				if (cursor.getInt(3) == 1) {
-					goodsunit.setIsbasic(true);
-				} else {
-					goodsunit.setIsbasic(false);
-				}
-				if (cursor.getInt(4) == 1) {
-					goodsunit.setIsshow(true);
-				} else {
-					goodsunit.setIsshow(false);
-				}
+				goodsunit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
+				goodsunit.setIsshow(cursor.getInt(4) == 1 ? true : false);
 				goodsunit.setRatio(cursor.getDouble(5));
 			}
 		} catch (Exception e) {
@@ -312,12 +308,8 @@ public class GoodsUnitDAO {
 				goodsunit.setGoodsid(cursor.getString(0));
 				goodsunit.setUnitid(cursor.getString(1));
 				goodsunit.setUnitname(cursor.getString(2));
-				if (cursor.getInt(3) == 1) {
-					goodsunit.setIsbasic(true);
-				}
-				if (cursor.getInt(4) == 1) {
-					goodsunit.setIsshow(true);
-				}
+				goodsunit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
+				goodsunit.setIsshow(cursor.getInt(4) == 1 ? true : false);
 				goodsunit.setRatio(cursor.getDouble(5));
 			}
 		} catch (Exception e) {
@@ -347,12 +339,8 @@ public class GoodsUnitDAO {
 				goodsunit.setGoodsid(cursor.getString(0));
 				goodsunit.setUnitid(cursor.getString(1));
 				goodsunit.setUnitname(cursor.getString(2));
-				if (cursor.getInt(3) == 1) {
-					goodsunit.setIsbasic(true);
-				}
-				if (cursor.getInt(4) == 1) {
-					goodsunit.setIsshow(true);
-				}
+				goodsunit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
+				goodsunit.setIsshow(cursor.getInt(4) == 1 ? true : false);
 				goodsunit.setRatio(cursor.getDouble(5));
 			}
 		} catch (Exception e) {
@@ -364,70 +352,33 @@ public class GoodsUnitDAO {
 				this.db.close();
 		}
 
-		return goodsunit;
-	}
-
-	// 查询商品换算比例
-	public GoodsUnit queryBigUnitRatio(String goodsId, String unitid) {
-		this.db = this.helper.getReadableDatabase();
-		String[] arrays = { goodsId, unitid };
-		GoodsUnit goodsunit = null;
-		Cursor cursor = this.db.rawQuery(
-				"select goodsid,unitid,unitname,isbasic,isshow,ratio from sz_goodsunit where goodsid =? and unitid=?",
-				arrays);
-		try {
-			while (cursor.moveToNext()) {
-				goodsunit = new GoodsUnit();
-				goodsunit.setGoodsid(cursor.getString(0));
-				goodsunit.setUnitid(cursor.getString(1));
-				goodsunit.setUnitname(cursor.getString(2));
-				if (cursor.getInt(3) == 1) {
-					goodsunit.setIsbasic(true);
-				}
-				if (cursor.getInt(4) != 1) {
-					goodsunit.setIsshow(true);
-				}
-				goodsunit.setRatio(cursor.getDouble(5));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (cursor != null)
-				cursor.close();
-			if (this.db != null)
-				this.db.close();
-		}
 		return goodsunit;
 	}
 
 	// 查询 商品单位
 	public List<GoodsUnit> queryGoodsUnits(String goodsid) {
 		this.db = this.helper.getReadableDatabase();
-		Cursor localCursor = this.db.rawQuery(
+		Cursor cursor = this.db.rawQuery(
 				"select goodsid,unitid,unitname,ratio,isbasic,isshow from sz_goodsunit where goodsid=? order by ratio",
 				new String[] { goodsid });
 		ArrayList<GoodsUnit> localArrayList = new ArrayList<GoodsUnit>();
 		try {
-			while (localCursor.moveToNext()) {
-				GoodsUnit localGoodsUnit = new GoodsUnit();
-				localGoodsUnit.setGoodsid(localCursor.getString(0));
-				localGoodsUnit.setUnitid(localCursor.getString(1));
-				localGoodsUnit.setUnitname(localCursor.getString(2));
-				localGoodsUnit.setRatio(localCursor.getDouble(3));
-				if (localCursor.getInt(4) != 1) {
-					localGoodsUnit.setIsbasic(true);
-				}
-				if (localCursor.getInt(5) != 1) {
-					localGoodsUnit.setIsshow(true);
-				}
-				localArrayList.add(localGoodsUnit);
+			while (cursor.moveToNext()) {
+				GoodsUnit goodsunit = new GoodsUnit();
+				goodsunit.setGoodsid(cursor.getString(0));
+				goodsunit.setUnitid(cursor.getString(1));
+				goodsunit.setUnitname(cursor.getString(2));
+				goodsunit.setRatio(cursor.getDouble(3));
+				goodsunit.setIsbasic(cursor.getInt(4) == 1 ? true : false);
+				goodsunit.setIsshow(cursor.getInt(5) == 1 ? true : false);
+				localArrayList.add(goodsunit);
 			}
-		} catch (Exception localException) {
-			localException.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 
 		} finally {
-			if (localCursor != null)
-				localCursor.close();
+			if (cursor != null)
+				cursor.close();
 			if (this.db != null)
 				this.db.close();
 		}
@@ -446,12 +397,8 @@ public class GoodsUnitDAO {
 				goodsUnit.setUnitid(cursor.getString(1));
 				goodsUnit.setUnitname(cursor.getString(2));
 				goodsUnit.setRatio(cursor.getDouble(3));
-				if (cursor.getInt(4) != 1) {
-					goodsUnit.setIsbasic(true);
-				}
-				if (cursor.getInt(5) != 1) {
-					goodsUnit.setIsshow(true);
-				}
+				goodsUnit.setIsbasic(cursor.getInt(4) == 1 ? true : false);
+				goodsUnit.setIsshow(cursor.getInt(5) == 1 ? true : false);
 				return goodsUnit;
 			}
 		} catch (Exception e) {

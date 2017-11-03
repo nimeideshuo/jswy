@@ -208,7 +208,8 @@ public class OutDocAddGoodAct extends BaseActivity
 				stocknum = stockwarn.queryStockwarn(docitem.getWarehouseid(), docitem.getGoodsid());
 				runOnUiThread(new Runnable() {
 					public void run() {
-						tvStock.setText("库存:" + DocUtils.Stocknum(stocknum, docitem.unit));
+						tvStock.setText("库存:" + DocUtils.Stocknum(stocknum, docitem.getGoodsid(), docitem.getUnitid(),
+								docitem.getUnitname()));
 					}
 				});
 
@@ -364,55 +365,56 @@ public class OutDocAddGoodAct extends BaseActivity
 	private void fillItem() {
 		if (TextUtils.isEmptyS(this.btnWarehouse.getTag().toString())) {
 			docitem.setWarehouseid(this.btnWarehouse.getTag().toString());
-			this.docitem.setWarehousename(this.btnWarehouse.getText().toString());
-			if (TextUtils.isEmptyS(this.btnUnit.getTag().toString())) {
-				this.docitem.setUnitid(this.btnUnit.getTag().toString());
-			}
-			this.docitem.setUnitname(this.btnUnit.getText().toString());
-			this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
-			this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
-					this.docitem.getNum()));
-			this.docitem.setIsexhibition(this.cbExhibition.isChecked());
-			this.docitem.setDiscountratio(
-					Utils.normalize(Utils.getDouble(this.etDiscountRatio.getText().toString()).doubleValue(), 2));
-			if (this.docitem.isIsusebatch()) {
-				// 批次 日期
-				this.docitem.setBatch(this.btnBatch.getText().toString());
-				this.docitem.setProductiondate(this.btnProDate.getText() + " 00:00:00");
-			}
-			if (this.cbExhibition.isChecked()) {
+			docitem.setWarehousename(this.btnWarehouse.getText().toString());
+		} else {
+			this.docitem.setWarehouseid(null);
+			this.docitem.setWarehousename("");
+		}
 
-			}
-			this.docitem
-					.setPrice(Utils.normalizePrice(Utils.getDouble(this.etPrice.getText().toString()).doubleValue()));
-			this.docitem.setSubtotal(
-					Utils.normalizeSubtotal(Utils.getDouble(this.etSubtotal.getText().toString()).doubleValue()));
+		if (TextUtils.isEmptyS(this.btnUnit.getTag().toString())) {
+			docitem.setUnitid(this.btnUnit.getTag().toString());
+			docitem.setUnitname(this.btnUnit.getText().toString());
+		} else {
+			docitem.setUnitid(null);
+			docitem.setUnitname("");
+		}
+
+		this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
+		this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
+				this.docitem.getNum()));
+		this.docitem.setIsexhibition(this.cbExhibition.isChecked());
+		this.docitem.setDiscountratio(
+				Utils.normalize(Utils.getDouble(this.etDiscountRatio.getText().toString()).doubleValue(), 2));
+		if (this.docitem.isIsusebatch()) {
+			// 批次 日期
+			this.docitem.setBatch(this.btnBatch.getText().toString());
+			this.docitem.setProductiondate(this.btnProDate.getText() + " 00:00:00");
+		}
+		this.docitem.setPrice(Utils.normalizePrice(Utils.getDouble(this.etPrice.getText().toString()).doubleValue()));
+		this.docitem.setSubtotal(
+				Utils.normalizeSubtotal(Utils.getDouble(this.etSubtotal.getText().toString()).doubleValue()));
+		this.docitem.setDiscountprice(
+				Utils.normalizePrice(Utils.getDouble(this.etDiscountPrice.getText().toString()).doubleValue()));
+		this.docitem.setDiscountsubtotal(
+				Utils.normalizeSubtotal(Utils.getDouble(this.etDiscountSubtotal.getText().toString()).doubleValue()));
+		this.docitem.setRemark(this.etRemark.getText().toString());
+		docitem.setIsgift(docitem.getPrice() == 0.0D ? true : false);
+		if (docitem.isIsexhibition()) {
+			this.docitemgive = null;
+			this.docitem.setIspromotion(false);
+			this.docitem.setPromotiontype(-1);
+			this.docitem.setPromotiontypename(null);
+			this.docitem.setPrice(0.0D);
+			this.docitem.setSubtotal(0.0D);
 			this.docitem.setDiscountprice(
 					Utils.normalizePrice(Utils.getDouble(this.etDiscountPrice.getText().toString()).doubleValue()));
-			this.docitem.setDiscountsubtotal(Utils
-					.normalizeSubtotal(Utils.getDouble(this.etDiscountSubtotal.getText().toString()).doubleValue()));
-			this.docitem.setRemark(this.etRemark.getText().toString());
-			docitem.setIsgift(docitem.getPrice() == 0.0D ? true : false);
-			if (docitem.isIsexhibition()) {
-				this.docitemgive = null;
-				this.docitem.setIspromotion(false);
-				this.docitem.setPromotiontype(-1);
-				this.docitem.setPromotiontypename(null);
-				this.docitem.setWarehouseid(null);
-				this.docitem.setWarehousename("");
-				this.docitem.setUnitid(null);
-				docitem.setUnitname("");
-				this.docitem.setPrice(0.0D);
-				this.docitem.setSubtotal(0.0D);
-				this.docitem.setDiscountprice(
-						Utils.normalizePrice(Utils.getDouble(this.etDiscountPrice.getText().toString()).doubleValue()));
-				this.docitem.setDiscountsubtotal(0.0D);
-			}
-			if ((this.docitem.isIspromotion()) && (this.docitem.getPromotiontype() == 0)) {
-				this.docitemgive = null;
-				return;
-			}
+			this.docitem.setDiscountsubtotal(0.0D);
 		}
+		if ((this.docitem.isIspromotion()) && (this.docitem.getPromotiontype() == 0)) {
+			this.docitemgive = null;
+			return;
+		}
+
 	}
 
 	private void setUseAble(boolean paramBoolean) {
@@ -464,14 +466,14 @@ public class OutDocAddGoodAct extends BaseActivity
 	}
 
 	private void setPrice(double price) {
-		double d1 = Utils.normalize(Utils.getDouble(etNum.getText().toString()).doubleValue(), 2);
-		double d2 = Utils.normalize(Utils.getDouble(etDiscountRatio.getText().toString()).doubleValue(), 2);
-		double d3 = Utils.normalizePrice(price);
-		double d4 = Utils.normalizePrice(d3 * d2);
+		double num = Utils.normalize(Utils.getDouble(etNum.getText().toString()).doubleValue(), 2);
+		double discountratio = Utils.normalize(Utils.getDouble(etDiscountRatio.getText().toString()).doubleValue(), 2);
+		double prices = Utils.normalizePrice(price);
+		double discountprice = Utils.normalizePrice(prices * discountratio);
 		etPrice.setText(price + "");
-		etSubtotal.setText(Utils.normalizeSubtotal(d1 * d3) + "");
-		etDiscountPrice.setText(d4 + "");
-		etDiscountSubtotal.setText(Utils.normalizeSubtotal(d1 * d4) + "");
+		etSubtotal.setText(Utils.normalizeSubtotal(num * prices) + "");
+		etDiscountPrice.setText(discountprice + "");
+		etDiscountSubtotal.setText(Utils.normalizeSubtotal(num * discountprice) + "");
 		etPrice.setTag(etPrice.getText());
 		etSubtotal.setTag(etSubtotal.getText());
 		etDiscountPrice.setTag(etDiscountPrice.getText());
@@ -571,15 +573,9 @@ public class OutDocAddGoodAct extends BaseActivity
 					btnUnit.setTag(goodsUnit.getUnitid());
 					docitem.unit = goodsUnit;
 					tvStock.setText("库存:" + DocUtils.Stocknum(stocknum, docitem.unit));
-					CustomerRecords historyPrice = DocUtils.getCustomerGoodsHistoryPrice(customerid,
-							goodsUnit.getGoodsid(), goodsUnit.getUnitid());
-					if (historyPrice == null) {
-						showSuccess("商品客史单价没有查询到!");
-					} else {
-						// 单价
-						setPrice(historyPrice.getPrice());
-					}
-
+					double goodsPrice = DocUtils.getGoodsPrice(customerid, goodsUnit.getGoodsid(),
+							goodsUnit.getUnitid());
+					setPrice(goodsPrice);
 					// String stock = setItemStock(docitem.getStocknum(),
 					// goodsUnit.getUnitname());
 					// tvStock.setText("库存:" + stock);

@@ -1,14 +1,12 @@
 package com.ahjswy.cn.app;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.model.DBUser;
 import com.ahjswy.cn.model.User;
 import com.ahjswy.cn.response.RespUserEntity;
+import com.ahjswy.cn.service.ServiceSystem;
 import com.ahjswy.cn.service.ServiceUser;
 import com.ahjswy.cn.ui.BaseActivity;
-import com.ahjswy.cn.utils.AnimationUtil;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
@@ -16,7 +14,6 @@ import com.ahjswy.cn.utils.TextUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -57,48 +54,46 @@ public class Jswy_logUser extends BaseActivity implements OnClickListener {
 		}
 	}
 
-	Handler loginHandler = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			switch (msg.what) {
-			case 0:
-				if (RequestHelper.isSuccess(msg.obj.toString())) {
-					RespUserEntity respUserEntity = (RespUserEntity) JSONUtil.readValue(msg.obj.toString(),
-							RespUserEntity.class);
-					User localUser = new User();
-					localUser.setId(respUserEntity.getId());
-					localUser.setIsaccountmanager(respUserEntity.getIsAccountManager());
-					localUser.setName(respUserEntity.getName());
-					localUser.setPassword("");
-					localUser.setOfflinepassword("");
-					SystemState.saveObject("cu_user", localUser);
-					SystemState.saveObject("gpsinterval", Integer.valueOf(respUserEntity.getGpsInterval()));
-					ap.setValue("pw", "");
-					startActivity(new Intent(Jswy_logUser.this, LoginPassword.class));
-					finish();
-				} else {
-					PDH.showError(msg.obj.toString());
-				}
-				break;
-			case 1:
-				PDH.showError("账号访问失败!" + msg.obj.toString());
-				break;
-			default:
-				break;
-			}
-		};
-	};
+	// @Deprecated // 2017年11月3日 废弃
+	// Handler loginHandler = new Handler() {
+	// public void handleMessage(android.os.Message msg) {
+	// switch (msg.what) {
+	// case 0:
+	// if (RequestHelper.isSuccess(msg.obj.toString())) {
+	// RespUserEntity respUserEntity = (RespUserEntity)
+	// JSONUtil.readValue(msg.obj.toString(),
+	// RespUserEntity.class);
+	// User localUser = new User();
+	// localUser.setId(respUserEntity.getId());
+	// localUser.setIsaccountmanager(respUserEntity.getIsAccountManager());
+	// localUser.setName(respUserEntity.getName());
+	// localUser.setPassword("");
+	// localUser.setOfflinepassword("");
+	// SystemState.saveObject("cu_user", localUser);
+	// SystemState.saveObject("gpsinterval",
+	// Integer.valueOf(respUserEntity.getGpsInterval()));
+	// ap.setValue("pw", "");
+	// startActivity(new Intent(Jswy_logUser.this, LoginPassword.class));
+	// finish();
+	// } else {
+	// PDH.showError(msg.obj.toString());
+	// }
+	// break;
+	// case 1:
+	// RequestHelper.showError(msg.obj.toString());
+	// break;
+	// default:
+	// break;
+	// }
+	// };
+	// };
 
 	public void startIntent() {
-		final String userid = ed_userName.getText().toString();
-		final String password = ed_password.getText().toString();
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("userid", userid);
-		map.put("password", password);
-		if (TextUtils.isEmpty(userid)) {
+		if (TextUtils.isEmpty(ed_userName.getText().toString())) {
 			PDH.showError("请输入用户名");
 			return;
 		}
-		if (TextUtils.isEmpty(password)) {
+		if (TextUtils.isEmpty(ed_password.getText().toString())) {
 			PDH.showError("请输入密码");
 			return;
 		}
@@ -108,27 +103,51 @@ public class Jswy_logUser extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void action() {
+
 				// user 账号验证
-				String infor = new ServiceUser().usr_UserLogin(userid, password);
-				if (infor.length() == 0 || infor.equals(null)) {
-					loginHandler.sendMessage(loginHandler.obtainMessage(1, infor));
+				String infor = new ServiceUser().usr_UserLogin(ed_userName.getText().toString(),
+						ed_password.getText().toString());
+				if (RequestHelper.isSuccess(infor)) {
+					RespUserEntity respUserEntity = (RespUserEntity) JSONUtil.readValue(infor, RespUserEntity.class);
+					User localUser = new User();
+					localUser.setId(respUserEntity.getId());
+					localUser.setIsaccountmanager(respUserEntity.getIsAccountManager());
+					localUser.setName(respUserEntity.getName());
+					localUser.setPassword("");
+					localUser.setOfflinepassword("");
+					SystemState.saveObject("cu_user", localUser);
+					SystemState.saveObject("gpsinterval", Integer.valueOf(respUserEntity.getGpsInterval()));
+					// ap.setValue("pw", "");
+					// 获取数据库链接的账号密码
+					if (SystemState.getDBUser() == null) {
+						String dbinfo = new ServiceSystem().sys_getdbuserinfo();
+						if (RequestHelper.isSuccess(dbinfo)) {
+							DBUser dbUser = JSONUtil.fromJson(dbinfo, DBUser.class);
+							SystemState.saveObject("dbUser", dbUser);
+						} else {
+							showError("数据库链接失败!请登录重试!");
+							return;
+						}
+					}
+					startActivity(new Intent(Jswy_logUser.this, LoginPassword.class));
+					finish();
 				} else {
-					loginHandler.sendMessage(loginHandler.obtainMessage(0, infor));
+					RequestHelper.showError(infor);
 				}
 
 			}
 		});
 	}
 
-	public void intentMain() {
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				startActivity(new Intent(Jswy_logUser.this, LoginPassword.class));
-				AnimationUtil.finishActivityAnimation(Jswy_logUser.this);
-			}
-		}, 2000);
-	}
+	// public void intentMain() {
+	// new Handler().postDelayed(new Runnable() {
+	// @Override
+	// public void run() {
+	// startActivity(new Intent(Jswy_logUser.this, LoginPassword.class));
+	// AnimationUtil.finishActivityAnimation(Jswy_logUser.this);
+	// }
+	// }, 2000);
+	// }
 
 	/**
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *

@@ -58,6 +58,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+/**
+ * 盘点单
+ * 
+ * @author Administrator
+ *
+ */
 public class InventoryEditActivity extends BaseActivity implements OnTouchListener {
 	private RelativeLayout root;
 	private AutoTextView atvSearch;
@@ -189,7 +195,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				if (items1.getItemid() != 0) {
 					listItemDelete.add(items1.getItemid());
 				}
-			}else{
+			} else {
 				listDocItem.add(items1);
 			}
 
@@ -242,17 +248,20 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		System.out.println("onResume");
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
-			scaner.setScanner(false);
-		} else {
-			scaner.setScanner(true);
-		}
+		// if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
+		// scaner.setScanner(false);
+		// } else {
+		// scaner.setScanner(true);
+		// }
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
 
 		@Override
 		public void setBarcode(String barcode) {
+			if (doc.isIsavailable() && doc.isIsposted()) {
+				return;
+			}
 			atvSearch.setText("");
 			readBarcode(barcode);
 		}

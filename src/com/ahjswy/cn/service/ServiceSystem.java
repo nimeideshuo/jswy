@@ -89,4 +89,14 @@ public class ServiceSystem {
 		map.put("parameter", JSONUtil.object2Json(localTerminalEntity));
 		return new Utils_help().getServiceInfor(url, map);
 	}
+
+	/**
+	 * 获取数据库的账号密码
+	 * 
+	 * @return
+	 */
+	public String sys_getdbuserinfo() {
+		String url = Service.getServiceAddress(this.baseAddress, "getdbuserinfo");
+		return new Utils_help().getServiceInfor(url, map);
+	}
 }

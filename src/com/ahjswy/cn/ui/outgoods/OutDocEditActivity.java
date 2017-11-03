@@ -180,7 +180,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		// 设置数据
 		listItem.clear();
 		listItem.addAll(listDocItem);
-		adapter.setData(listItem);
 	}
 
 	/**
@@ -289,17 +288,20 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		super.onResume();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		if (doc.isIsavailable() && doc.isIsposted()) {
-			scaner.setScanner(false);
-		} else {
-			scaner.setScanner(true);
-		}
+		// if (doc.isIsavailable() && doc.isIsposted()) {
+		// scaner.setScanner(false);
+		// } else {
+		// scaner.setScanner(true);
+		// }
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
 
 		@Override
 		public void setBarcode(String barcode) {
+			if (doc.isIsavailable() && doc.isIsposted()) {
+				return;
+			}
 			atvSearch.setText("");
 			if (dialog != null) {
 				dialog.dismiss();
@@ -529,7 +531,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	// return;
 	// }
 	// if (msg.what == 2) {
-	// // TODO AAAAAAAAAAAAAAAAA
 	// DefDocItemXS itemXS2 = (DefDocItemXS) newListItem.get(0);
 	// localList = JSONUtil.str2list(localString1, ReqStrGetGoodsPrice.class);
 	// ReqStrGetGoodsPrice goodsPrice2 = (ReqStrGetGoodsPrice) localList.get(0);
@@ -605,8 +606,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					if (docItem == null) {
 						return;
 					}
-					newListItem = new ArrayList<DefDocItemXS>();
-					newListItem.add(docItem);
+					// ArrayList<DefDocItemXS> newListItem = new
+					// ArrayList<DefDocItemXS>();
+					// newListItem.add(docItem);
 					docItem.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), docItem));
 					// 改动较大 待测试 查询商品单价
 					setAddItem(docItem);
@@ -642,8 +644,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	};
 
 	private void setAddItem(DefDocItemXS docItem) {
-		// TODO 重点查看是否有错误!
+		// 折后小计
+		docItem.setSubtotal(Utils.normalizeSubtotal(docItem.getNum() * docItem.getPrice()));
+		// 折扣
 		docItem.setDiscountratio(doc.getDiscountratio());
+		// 是否赠送
 		docItem.setIsgift(docItem.getPrice() == 0.0D ? true : false);
 		docItem.setDiscountprice(Utils.normalizePrice(docItem.getPrice() * docItem.getDiscountratio()));
 		docItem.setDiscountsubtotal(Utils.normalizeSubtotal(docItem.getNum() * docItem.getDiscountprice()));
@@ -1085,13 +1090,14 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					}
 					adapter.setData(listItem);
 					refreshUI();
-					InfoDialog.showError(OutDocEditActivity.this, dce == null ? "操作失败!请重试!" : dce.getInfo());
+					RequestHelper.showError(dce.getInfo());
 					return;
 				default:
 					break;
 				}
+			} else {
+				RequestHelper.showError(localString);
 			}
-			InfoDialog.showError(OutDocEditActivity.this, TextUtils.isEmpty(localString) ? "请求失败!" : localString);
 		}
 	};
 	private Handler printDocHandler = new Handler() {
@@ -1146,7 +1152,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		return sumMoney;
 	}
 
-	private List<DefDocItemXS> newListItem;
+	// private List<DefDocItemXS> newListItem;
 	private Button bt_sumNumber;
 	private Button bt_totalSum;
 	private Dialog_listCheckBox dialog;
@@ -1161,7 +1167,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private GoodsUnitDAO unitDAO;
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
@@ -1174,12 +1180,12 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				setDBDoc();
 				break;
 			case 1:
-				// TODO
-				newListItem = JSONUtil.str2list(data.getStringExtra("items"), DefDocItemXS.class);
 				PDH.show(this, "数据查询中...", new ProgressCallBack() {
 
 					@Override
 					public void action() {
+						List<DefDocItemXS> newListItem = JSONUtil.str2list(data.getStringExtra("items"),
+								DefDocItemXS.class);
 						for (int i = 0; i < newListItem.size(); i++) {
 							DefDocItemXS itemXS = newListItem.get(i);
 							setAddItem(itemXS);
@@ -1258,14 +1264,14 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						}
 					}
 				}
+				if (Utils.isCombination()) {
+					combinationItem();
+				}
 				this.adapter.setData(listItem);
 				listview_copy_dele.setAdapter(adapter);
 				ishaschanged = true;
 				bottomCount();
 				refreshUI();
-				if (Utils.isCombination()) {
-					combinationItem();
-				}
 				setDBDoc();
 				break;
 			case 3:
@@ -1273,7 +1279,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				setDBDoc();
 				break;
 			case 4:
-				// TODO 数据返回节点 测试
 				DefDocItemXS defDocItemXS4 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				if (Utils.isCombination()) {
 					adapter.addItem(defDocItemXS4);

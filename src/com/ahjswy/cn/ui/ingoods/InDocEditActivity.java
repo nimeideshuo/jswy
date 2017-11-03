@@ -16,7 +16,6 @@ import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsPriceDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.dao.Sv_docitem;
-import com.ahjswy.cn.model.CustomerRecords;
 import com.ahjswy.cn.model.DefDoc;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocPayType;
@@ -87,7 +86,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	private AutoTextView atvSearch;
 	InDocItemAdapter adapter;
 	private InDocEditMenuPopup menuPopup;
-	private ArrayList<DefDocItemXS> newListItem;
+	// private ArrayList<DefDocItemXS> newListItem;
 	Scaner scaner;
 
 	@Override
@@ -132,9 +131,9 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		}
 		maler = new MAlertDialog(this);
 		unitDao = new GoodsUnitDAO();
-		ap = new AccountPreference();
+		// ap = new AccountPreference();
 		sv = new Sv_docitem();
-		goodspricedao = new GoodsPriceDAO();
+		// goodspricedao = new GoodsPriceDAO();
 	}
 
 	private void intDate() {
@@ -211,6 +210,9 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 
 		@Override
 		public void setBarcode(String barcode) {
+			if (doc.isIsavailable() && doc.isIsposted()) {
+				return;
+			}
 			atvSearch.setText("");
 			if (dialog != null) {
 				dialog.dismiss();
@@ -284,8 +286,9 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				@Override
 				public void action() {
 					DefDocItemXS docItem = InDocEditActivity.this.fillItem(localGoodsThin, 0.0D, 0.0D);
-					newListItem = new ArrayList<DefDocItemXS>();
-					newListItem.add(docItem);
+					// ArrayList<DefDocItemXS> newListItem = new
+					// ArrayList<DefDocItemXS>();
+					// newListItem.add(docItem);
 					docItem.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), docItem));
 					setAddItem(docItem);
 					Intent localIntent = new Intent();
@@ -444,11 +447,11 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		super.onResume();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		if (doc.isIsavailable() && doc.isIsposted()) {
-			scaner.setScanner(false);
-		} else {
-			scaner.setScanner(true);
-		}
+		// if (doc.isIsavailable() && doc.isIsposted()) {
+		// scaner.setScanner(false);
+		// } else {
+		// scaner.setScanner(true);
+		// }
 	}
 
 	public void closeInputMethod() {
@@ -789,13 +792,11 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		// 设置数据
 		listItem.clear();
 		listItem.addAll(listDocItem);
-		adapter.setData(listItem);
 		showSuccess("同品增加成功!");
-
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
@@ -810,19 +811,18 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				DBupdataDocItem();
 				break;
 			case 2:
-				newListItem = (ArrayList<DefDocItemXS>) JSONUtil.str2list(data.getStringExtra("items"),
-						DefDocItemXS.class);
-				// TODO 修改 为本地查询客史价格
 
+				// 修改 为本地查询客史价格
 				PDH.show(this, "数据查询中...", new ProgressCallBack() {
 
 					@Override
 					public void action() {
+						ArrayList<DefDocItemXS> newListItem = (ArrayList<DefDocItemXS>) JSONUtil
+								.str2list(data.getStringExtra("items"), DefDocItemXS.class);
 						for (DefDocItemXS itemXS : newListItem) {
 							itemXS.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), itemXS));
 							setAddItem(itemXS);
 						}
-
 						if (Utils.isCombination()) {
 							listItem.addAll(newListItem);
 							combinationItem();
@@ -930,7 +930,9 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	}
 
 	protected void setAddItem(DefDocItemXS docItem) {
-		// TODO 重点查看是否有错误!
+		// 折后小计
+		docItem.setSubtotal(Utils.normalizeSubtotal(docItem.getNum() * docItem.getPrice()));
+		// 重点查看是否有错误!
 		docItem.setDiscountratio(doc.getDiscountratio());
 		docItem.setIsgift(docItem.getPrice() == 0.0D ? true : false);
 		docItem.setDiscountprice(Utils.normalizePrice(docItem.getPrice() * docItem.getDiscountratio()));
@@ -1046,25 +1048,25 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	private MAlertDialog maler;
 	private Button btnGoodClass;
 	private GoodsUnitDAO unitDao;
-	private AccountPreference ap;
+	// private AccountPreference ap;
 	private Sv_docitem sv;
 	private DocContainerEntity docContainerEntity;
-	private GoodsPriceDAO goodspricedao;
+	// private GoodsPriceDAO goodspricedao;
 
-	/**
-	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *
-	 * 
-	 */
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			intenToMain();
-			return false;
-		} else {
-			return super.onKeyDown(keyCode, event);
-		}
-	}
+	// /**
+	// * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *
+	// *
+	// */
+	//
+	// @Override
+	// public boolean onKeyDown(int keyCode, KeyEvent event) {
+	// if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+	// intenToMain();
+	// return false;
+	// } else {
+	// return super.onKeyDown(keyCode, event);
+	// }
+	// }
 
 	protected void DBupdataDocItem() {
 		DocContainerEntity docEntity = new DocContainerEntity();

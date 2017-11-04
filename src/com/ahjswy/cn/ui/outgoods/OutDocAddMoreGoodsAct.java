@@ -70,7 +70,11 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		adapter.setDoc(doc);
 		for (DefDocItemXS item : items) {
 			item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
+			double sumstock = stockwarn.querySumStock(item.getGoodsid());
+			item.stocksumnum = sumstock;
+			item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
 			double stocknum = stockwarn.queryStockwarn(item.getWarehouseid(), item.getGoodsid());
+			// stockwarn.queryStockwarnAll(goodsid);
 			item.stocknum = stocknum;
 			item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
 		}
@@ -174,6 +178,9 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 				for (Object objitem : goodsMap.values()) {
 					DefDocItemXS item = (DefDocItemXS) objitem;
 					item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
+					double sumstock = stockwarn.querySumStock(item.getGoodsid());
+					item.stocksumnum = sumstock;
+					item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
 					double stocknum = stockwarn.queryStockwarn(item.getWarehouseid(), item.getGoodsid());
 					item.stocknum = stocknum;
 					item.goodStock = DocUtils.Stocknum(stocknum, item.unit);

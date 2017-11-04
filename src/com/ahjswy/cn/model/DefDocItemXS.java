@@ -71,7 +71,9 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 	private String warehousename;
 	// private RespGoodsWarehouse stocknum;
 	public double stocknum;
+	public double stocksumnum;
 	public String goodStock;
+	public String goodSumStock;
 	public String buildbegintime;
 	public String buildendtime;
 	public GoodsUnit unit;

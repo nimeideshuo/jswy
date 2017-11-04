@@ -25,11 +25,9 @@ public class CloudDBBase {
 	String URL = "jdbc:jtds:sqlserver://" + ap.getServerIp() + ":1433/" + DBNAME;
 	// cloud databas user name
 	// final public String USERNAME = "sa";
-	final public String USERNAME = "";// SystemState.getDBUser() == null ? "" :
-										// SystemState.getDBUser().userid;
+	final public String USERNAME = SystemState.getDBUser() == null ? "" : SystemState.getDBUser().userid;
 	// cloud databas password
-	final public String PASSWROD ="";// SystemState.getDBUser() == null ? "" :
-									// SystemState.getDBUser().password;
+	final public String PASSWROD = SystemState.getDBUser() == null ? "" : SystemState.getDBUser().password;
 	Connection conn;
 
 	public ResultSet executeQuery(String url, String userName, String passwrod, String sql) {

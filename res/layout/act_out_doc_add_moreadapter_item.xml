@@ -75,13 +75,11 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvBarcode"
-        android:layout_width="150dp"
+        android:id="@+id/tvSumStock"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvName"
-        android:singleLine="true"
-        android:text="123454432"
-        android:textSize="14sp"
-        android:visibility="gone" />
+        android:gravity="right"
+        android:textColor="#cc0000"
+        android:textSize="14sp" />
 
 </LinearLayout>

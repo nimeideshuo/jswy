@@ -132,7 +132,7 @@ public class Jswy_logUser extends BaseActivity implements OnClickListener {
 					startActivity(new Intent(Jswy_logUser.this, LoginPassword.class));
 					finish();
 				} else {
-					RequestHelper.showError(infor);
+					showError("网络异常" + infor);
 				}
 
 			}

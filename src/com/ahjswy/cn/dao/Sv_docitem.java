@@ -35,7 +35,7 @@ public class Sv_docitem {
 
 	public String getLastShowId(String doctype) {
 		this.db = this.helper.getWritableDatabase();
-		String sql = "select showid from sv_docitem where doctype=? order by desc";
+		String sql = "select showid from sv_docitem where doctype=? ";
 		try {
 			Cursor cursor = db.rawQuery(sql, null);
 			if (cursor.moveToNext()) {

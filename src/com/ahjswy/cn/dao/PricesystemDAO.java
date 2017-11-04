@@ -20,11 +20,11 @@ public class PricesystemDAO {
 
 	public List<Pricesystem> queryAll() {
 		db = helper.getReadableDatabase();
-		String sql = "select psid,psname,pinyin from sz_pricesystem where isavailable = '1' ";
-		Cursor cursor = db.rawQuery(sql, null);
-		ArrayList<Pricesystem> listPrice = new ArrayList<Pricesystem>();
+		Cursor cursor = null;
 		try {
-
+			String sql = "select psid,psname,pinyin from sz_pricesystem where isavailable = '1' ";
+			ArrayList<Pricesystem> listPrice = new ArrayList<Pricesystem>();
+			cursor = db.rawQuery(sql, null);
 			while (cursor.moveToNext()) {
 				Pricesystem pricesystem = new Pricesystem();
 				pricesystem.setPsid(cursor.getString(0));

@@ -83,7 +83,8 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		// 商品 name
 		TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
 		// 二维码
-		TextView tvBarcode = (TextView) convertView.findViewById(R.id.tvBarcode);
+		// TextView tvBarcode = (TextView)
+		// convertView.findViewById(R.id.tvBarcode);
 		TextView tv_specification = (TextView) convertView.findViewById(R.id.tv_specification);
 		// 数量
 		final EditText etNum = (EditText) convertView.findViewById(R.id.etNum);
@@ -92,17 +93,18 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		// 本次库存
 		final TextView tv_Bfci = (TextView) convertView.findViewById(R.id.tv_Bfci);
 		final TextView tv_dicPrice = (TextView) convertView.findViewById(R.id.tv_dicPrice);
+		final TextView tvSumStock = (TextView) convertView.findViewById(R.id.tvSumStock);
 		final DefDocItemXS itemXS = listItems.get(position);
 		// 显示上次 采购
-
 		tvName.setText(itemXS.getGoodsname());
 		tv_specification.setText(itemXS.getSpecification() == null ? "" : "规格:" + itemXS.getSpecification());
-		tvBarcode.setText(itemXS.getBarcode());
+		// tvBarcode.setText(itemXS.getBarcode());
 		btnUnit.setText(itemXS.getUnitname());
 		tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
 		tv_dicPrice.setOnClickListener(priceOnClick);
 		tv_dicPrice.setTag(Integer.valueOf(position));
-		tv_Bfci.setText("库存:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" : itemXS.goodStock));
+		tv_Bfci.setText("当前库:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" : itemXS.goodStock));
+		tvSumStock.setText("总库存:" + (TextUtils.isEmpty(itemXS.goodSumStock) ? "?" : itemXS.goodSumStock));
 		etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
 		etNum.setTag(Integer.valueOf(position));
 		btnUnit.setTag(Integer.valueOf(position));
@@ -158,9 +160,13 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 						itemXS.setUnitname(goodsUnit.getUnitname());
 						// 设置当前库存
 						String stocknum = DocUtils.Stocknum(itemXS.stocknum, goodsUnit);
+						String stocksumnum = DocUtils.Stocknum(itemXS.stocksumnum, goodsUnit);
 						itemXS.goodStock = stocknum;
+						itemXS.goodSumStock = stocksumnum;
 						itemXS.unit = goodsUnit;
 						tv_Bfci.setText("库存:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" : itemXS.goodStock));
+						tvSumStock
+								.setText("总库存:" + (TextUtils.isEmpty(itemXS.goodSumStock) ? "?" : itemXS.goodSumStock));
 						itemXS.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), itemXS));
 						tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
 						// PDH.show(context, new PDH.ProgressCallBack() {

@@ -859,6 +859,7 @@ public class PrefsFragment extends PreferenceFragment {
 			new BaseDao().deleteDataBase();
 			ap.setValue("max_rversion", "0");
 		}
+		new BaseDao().deleteData(BaseDao.CU_CUSTOMERFIELDSALEGOODS);
 		long max_rversion = Long.parseLong(new AccountPreference().getValue("max_rversion", "0"));
 		List<ReqSynUpdateInfo> listReqSyn = new ServiceSynchronize().syn_QueryUpdateInfo(max_rversion);
 		if (listReqSyn != null) {

@@ -1,16 +1,13 @@
 package com.ahjswy.cn.ui;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
-import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.dao.Sv_docitem;
-import com.ahjswy.cn.model.DBUser;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
@@ -18,7 +15,6 @@ import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.service.ServiceSynchronize;
-import com.ahjswy.cn.service.ServiceSystem;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
 import com.ahjswy.cn.ui.addgoods.AddNewGoodSAct;
 import com.ahjswy.cn.ui.field.AllGoodsActivity;
@@ -35,7 +31,6 @@ import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.InfoDialog;
-import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -116,6 +111,9 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 
 	// TODO
 	public void startOpenDoc(View v) {
+		// double sumStock = new Sz_stockwarn().querySumStock("1168");
+		// double stockwarnAll = DocUtils.queryStockwarnAll("1168");
+		// System.out.println(">>>>" + sumStock);
 
 		// List<UnitidPrice> price = new ArrayList<UnitidPrice>();
 		// UnitidPrice price2 = new UnitidPrice();

@@ -4,7 +4,6 @@ import com.ahjswy.cn.ui.Swy_splash;
 import com.ahjswy.cn.utils.TextUtils;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.wifi.WifiInfo;

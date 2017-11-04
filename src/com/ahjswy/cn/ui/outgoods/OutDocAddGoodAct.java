@@ -653,10 +653,14 @@ public class OutDocAddGoodAct extends BaseActivity
 				break;
 			case 6:
 				// 仓库
-				RespGoodsWarehouse localRespGoodsWarehouse2 = (RespGoodsWarehouse) data
-						.getSerializableExtra("warehouse");
-				this.btnWarehouse.setTag(localRespGoodsWarehouse2.getWarehouseid());
-				this.btnWarehouse.setText(localRespGoodsWarehouse2.getWarehousename());
+				RespGoodsWarehouse warehouse = (RespGoodsWarehouse) data.getSerializableExtra("warehouse");
+				this.btnWarehouse.setTag(warehouse.getWarehouseid());
+				this.btnWarehouse.setText(warehouse.getWarehousename());
+				//TODO 没有更新  仓库  查询错误
+				stocknum = stockwarn.queryStockwarn(warehouse.getWarehouseid(), docitem.getGoodsid());
+				tvStock.setText("库存:" + DocUtils.Stocknum(stocknum, docitem.getGoodsid(), docitem.getUnitid(),
+						docitem.getUnitname()));
+
 				// this.btnBatch.setText(localRespGoodsWarehouse2.getBatch());
 				// btnProDate
 				// .setText(

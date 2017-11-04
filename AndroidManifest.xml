@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ahjswy.cn"
-    android:versionCode="1"
-    android:versionName="5.0.50" >
+    android:versionCode="2"
+    android:versionName="6.0" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -77,6 +77,7 @@
         </activity>
         <activity
             android:name="com.ahjswy.cn.ui.SwyMain"
+            android:icon="@drawable/logo"
             android:screenOrientation="portrait" >
         </activity>
         <activity

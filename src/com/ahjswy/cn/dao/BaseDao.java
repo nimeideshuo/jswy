@@ -23,4 +23,12 @@ public class BaseDao {
 		this.db.execSQL("delete from cu_customerfieldsalegoods");
 		return true;
 	}
+
+	public static String CU_CUSTOMERFIELDSALEGOODS = "delete from cu_customerfieldsalegoods";
+
+	public boolean deleteData(String db) {
+		this.db = this.helper.getWritableDatabase();
+		this.db.execSQL(db);
+		return true;
+	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.app.RequestHelper;
+import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.CustomerDAO;
 import com.ahjswy.cn.dao.CustomerFieldsaleGoodsDAO;
 import com.ahjswy.cn.dao.GoodsPriceDAO;
@@ -14,6 +15,7 @@ import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.model.UnitidPrice;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespGoodsPriceEntity;
+import com.ahjswy.cn.response.RespStockwarn;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 
@@ -24,6 +26,7 @@ public class DocUtils {
 	private static GoodsUnitDAO dao = new GoodsUnitDAO();
 	private static CustomerDAO customerdao = new CustomerDAO();
 	private static GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
+	private static Sz_stockwarn stockwarn = new Sz_stockwarn();
 
 	static {
 		if (serviceStore == null) {
@@ -133,62 +136,46 @@ public class DocUtils {
 			return stockbigName + (int) num + baseBaseUnit.getUnitname();
 		}
 		return stockbigName + Utils.normalize(num * baseBaseUnit.getRatio(), 2) + baseBaseUnit.getUnitname();
+	}
 
-		// GoodsUnit baseRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(),
-		// goodsUnit.getUnitid());
+	public static String Stocknum(double stocknumber, String goodsid, String unitid, String unitname) {
+		String stockbigName = null;
+		if (TextUtils.isEmpty(goodsid) || TextUtils.isEmpty(unitid) || TextUtils.isEmpty(unitname)) {
+			return "";
+		}
+		// 查询商品比例
+		double ratio = dao.getGoodsUnitRatio(goodsid, unitid);
+		// 判断是否整除
+		double num = stocknumber % ratio;
+		if (num == 0) {
+			return (int) (stocknumber / ratio) + unitname;
+		}
+		GoodsUnit baseBaseUnit = dao.queryBaseUnit(goodsid);
+		stockbigName = (int) (stocknumber / ratio) == 0 ? "" : (int) (stocknumber / ratio) + unitname;
+		if (num % baseBaseUnit.getRatio() == 0) {
+			return stockbigName + (int) num + baseBaseUnit.getUnitname();
+		}
+		return stockbigName + Utils.normalize(num * baseBaseUnit.getRatio(), 2) + baseBaseUnit.getUnitname();
 
-		// double zs = stocknumber % goodsRatio.getRatio();
-		//
-		// if (zs == 0) {
-		// return (int) stocknumber + goodsRatio.getUnitname();
-		// } else {
-		// return (int) stocknumber + goodsRatio.getUnitname() +
-		// Utils.normalize(zs * queryBaseUnit.getRatio(), 2)
-		// + queryBaseUnit.getUnitname();
-		// }
-
-		// if (goodsUnit == null) {
+		// if (TextUtils.isEmpty(goodsid)) {
 		// return "";
 		// }
-		// GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(),
-		// goodsUnit.getUnitid());
-		// GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
+		// GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsid, unitid);
+		// GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsid);
 		// int zs = (int) (stocknumber / goodsRatio.getRatio());
 		// int xs = (int) Utils.normalizePrice(stocknumber %
 		// goodsRatio.getRatio());
 		// String stocknum = "";
 		// if (zs != 0) {
-		// stocknum = stocknum + zs + goodsUnit.getUnitname();
+		// stocknum = stocknum + zs + unitname;
 		// }
 		// if (xs != 0) {
 		// stocknum = stocknum + xs + queryBaseUnit.getUnitname();
 		// }
 		// if (stocknum.length() == 0) {
-		// stocknum = "0" + goodsUnit.getUnitname();
+		// stocknum = "0" + unitname;
 		// }
 		// return stocknum;
-	}
-
-	public static String Stocknum(double stocknumber, String goodsid, String unitid, String unitname) {
-
-		if (TextUtils.isEmpty(goodsid)) {
-			return "";
-		}
-		GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsid, unitid);
-		GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsid);
-		int zs = (int) (stocknumber / goodsRatio.getRatio());
-		int xs = (int) Utils.normalizePrice(stocknumber % goodsRatio.getRatio());
-		String stocknum = "";
-		if (zs != 0) {
-			stocknum = stocknum + zs + unitname;
-		}
-		if (xs != 0) {
-			stocknum = stocknum + xs + queryBaseUnit.getUnitname();
-		}
-		if (stocknum.length() == 0) {
-			stocknum = "0" + unitname;
-		}
-		return stocknum;
 	}
 
 	/**
@@ -372,4 +359,5 @@ public class DocUtils {
 	public static List<RespGoodsPriceEntity> queryGoodsPriceList(String goodsid) {
 		return goodspricedao.queryPriceList(goodsid);
 	}
+
 }

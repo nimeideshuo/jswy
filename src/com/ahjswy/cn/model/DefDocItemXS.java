@@ -69,6 +69,8 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 	private String warehouseid;
 	// 仓库名称
 	private String warehousename;
+	// 辅助计件单位
+	public double assistnum;
 	// private RespGoodsWarehouse stocknum;
 	public double stocknum;
 	public double stocksumnum;

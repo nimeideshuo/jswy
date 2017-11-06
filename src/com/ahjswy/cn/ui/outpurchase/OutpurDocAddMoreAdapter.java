@@ -98,7 +98,8 @@ public class OutpurDocAddMoreAdapter extends BaseAdapter {
 		// 商品 name
 		TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
 		// 二维码
-		TextView tvBarcode = (TextView) convertView.findViewById(R.id.tvBarcode);
+		// TextView tvBarcode = (TextView)
+		// convertView.findViewById(R.id.tvBarcode);
 		// 数量
 		final EditText etNum = (EditText) convertView.findViewById(R.id.etNum);
 		// 单位
@@ -162,7 +163,7 @@ public class OutpurDocAddMoreAdapter extends BaseAdapter {
 
 		});
 		tvName.setText(listItems.get(position).getGoodsname());
-		tvBarcode.setText(listItems.get(position).getBarcode());
+		// tvBarcode.setText(listItems.get(position).getBarcode());
 		btnUnit.setText(listItems.get(position).getUnitname());
 		if (listItems.get(position).getNum() != 0.0d) {
 			String num = Utils.removeZero(listItems.get(position).getNum() + "");

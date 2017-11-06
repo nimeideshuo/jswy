@@ -941,7 +941,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		docItem.setBignum(bigNum);
 	}
 
-	// TODO 价格处理
+	// 价格处理
 	// Handler handlerGet = new Handler() {
 	// public void handleMessage(android.os.Message msg) {
 	// String localString1 = msg.obj.toString();

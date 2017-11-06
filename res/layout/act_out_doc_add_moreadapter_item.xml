@@ -17,7 +17,6 @@
             android:layout_weight="1.7"
             android:maxEms="8"
             android:singleLine="true"
-            android:text="木宜保椰油清透环保木器清底漆（半哑）"
             android:textSize="14sp" />
 
         <Button

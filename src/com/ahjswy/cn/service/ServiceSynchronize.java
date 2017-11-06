@@ -235,7 +235,7 @@ public class ServiceSynchronize {
 	}
 
 	// 查询升级返回值
-	public List<ReqSynUpdateInfo> syn_QueryUpdateInfo(long paramLong) {
+	public List<ReqSynUpdateInfo> syn_QueryUpdateInfo(long rversion) {
 		String url = Utils.getServiceAddress(this.baseAddress, "queryupdateinfo");
 		ArrayList<ReqSynUpdateInfo> localArrayList = new ArrayList<ReqSynUpdateInfo>();
 		localArrayList.add(new ReqSynUpdateInfo("log_deleterecord", 0L));
@@ -255,7 +255,7 @@ public class ServiceSynchronize {
 		localArrayList.add(new ReqSynUpdateInfo("cu_customerfieldsalegoods", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_goodsprice", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("sz_goodsimage", 0L));
-		localArrayList.add(new ReqSynUpdateInfo("rversion", paramLong));
+		localArrayList.add(new ReqSynUpdateInfo("rversion", rversion));
 		localArrayList.add(new ReqSynUpdateInfo("pagesize", pagesize));
 		map.put("parameter", JSONUtil.object2Json(localArrayList));
 		String infor = new Utils_help().getServiceInfor(url, map);
@@ -307,7 +307,7 @@ public class ServiceSynchronize {
 		return null;
 	}
 
-	// 查询商品列表客史
+	// TODO 查询商品列表客史
 	public List<HashMap<String, String>> syn_QueryCustomerGoodsRecords(int pageindex) {
 		String url = Utils.getServiceAddress(this.baseAddress, "querycustomergoodsrecords");
 		ReqSynQueryRecordsByID recordsByID = new ReqSynQueryRecordsByID();

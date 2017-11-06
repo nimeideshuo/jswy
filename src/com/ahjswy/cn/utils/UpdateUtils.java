@@ -210,7 +210,7 @@ public class UpdateUtils {
 				paramHandler.sendEmptyMessage(i);
 			}
 		}
-		// 同步商品有问题
+		// TODO 同步商品有问题
 		int pageindex = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_customerfieldsalegoods");
 		if (pageindex > 0) {
 			for (int j = 1; j <= pageindex; j++) {
@@ -218,6 +218,7 @@ public class UpdateUtils {
 				if (goodsRecords == null) {
 					return false;
 				}
+				System.out.println(goodsRecords);
 				this.saveToLocalDB(goodsRecords);
 				i++;
 				paramHandler.sendEmptyMessage(i);

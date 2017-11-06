@@ -644,6 +644,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	};
 
 	private void setAddItem(DefDocItemXS docItem) {
+		// TODO 辅助计件单位
+		docItem.assistnum = DocUtils.getAssistnum(docItem.getGoodsid(), docItem.getUnitid(), docItem.getNum());
 		// 折后小计
 		docItem.setSubtotal(Utils.normalizeSubtotal(docItem.getNum() * docItem.getPrice()));
 		// 折扣
@@ -784,6 +786,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			InfoDialog.showError(this, "空单不能过账");
 			return;
 		}
+		for (DefDocItemXS item : listItem) {
+			setAddItem(item);
+		}
 		final Dialog_message dialog = new Dialog_message(this);
 		dialog.show();
 		dialog.setTitle("提示");
@@ -849,6 +854,10 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			InfoDialog.showError(this, localString);
 			return;
 		}
+		for (DefDocItemXS item : listItem) {
+			setAddItem(item);
+		}
+
 		PDH.show(this, new PDH.ProgressCallBack() {
 			public void action() {
 				String localString = serviceStore.str_SaveXSDoc(doc, adapter.getData(), listPayType, listItemDelete);

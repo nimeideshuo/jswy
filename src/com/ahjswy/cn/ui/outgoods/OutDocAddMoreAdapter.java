@@ -75,7 +75,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		this.doc = doc;
 	}
 
-	// int selectPosition = -1;
+	 int selectPosition = -1;
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
@@ -110,16 +110,16 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		btnUnit.setTag(Integer.valueOf(position));
 		etNum.setFocusable(true);
 		etNum.setFilterTouchesWhenObscured(true);
-		// if (selectPosition == position) {
-		// etNum.requestFocus();
-		// }
-		// etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
-		//
-		// @Override
-		// public void onFocusChange(View v, boolean hasFocus) {
-		// selectPosition = position;
-		// }
-		// });
+		if (selectPosition == position) {
+			etNum.requestFocus();
+		}
+		etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				selectPosition = position;
+			}
+		});
 		etNum.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {

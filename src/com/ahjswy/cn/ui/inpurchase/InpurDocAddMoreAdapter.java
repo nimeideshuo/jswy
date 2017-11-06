@@ -85,7 +85,8 @@ public class InpurDocAddMoreAdapter extends BaseAdapter {
 		// 商品 name
 		TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
 		// 二维码
-		TextView tvBarcode = (TextView) convertView.findViewById(R.id.tvBarcode);
+		// TextView tvBarcode = (TextView)
+		// convertView.findViewById(R.id.tvBarcode);
 		// 数量
 		final EditText etNum = (EditText) convertView.findViewById(R.id.etNum);
 		// 单位
@@ -127,7 +128,7 @@ public class InpurDocAddMoreAdapter extends BaseAdapter {
 
 		});
 		tvName.setText(docItemCG.getGoodsname());
-		tvBarcode.setText(docItemCG.getBarcode());
+		// tvBarcode.setText(docItemCG.getBarcode());
 		btnUnit.setText(docItemCG.getUnitname());
 		tv_specification.setText(docItemCG.getSpecification() == null ? "" : "规格:" + docItemCG.getSpecification());
 		tv_dicPrice.setText("单价: " + docItemCG.getPrice() + " 元");

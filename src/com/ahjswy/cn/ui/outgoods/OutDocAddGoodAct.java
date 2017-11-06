@@ -352,6 +352,7 @@ public class OutDocAddGoodAct extends BaseActivity
 			PDH.showMessage("数量必须大于0");
 			return;
 		}
+		docitem.assistnum = DocUtils.getAssistnum(docitem.getGoodsid(), docitem.getUnitid(), docitem.getNum());
 		fillItem();
 		Intent localIntent = new Intent();
 		localIntent.putExtra("position", this.position);
@@ -656,10 +657,10 @@ public class OutDocAddGoodAct extends BaseActivity
 				RespGoodsWarehouse warehouse = (RespGoodsWarehouse) data.getSerializableExtra("warehouse");
 				this.btnWarehouse.setTag(warehouse.getWarehouseid());
 				this.btnWarehouse.setText(warehouse.getWarehousename());
-				//TODO 没有更新  仓库  查询错误
+				// TODO 没有更新 仓库 查询错误
 				stocknum = stockwarn.queryStockwarn(warehouse.getWarehouseid(), docitem.getGoodsid());
-				tvStock.setText("库存:" + DocUtils.Stocknum(stocknum, docitem.getGoodsid(), docitem.getUnitid(),
-						docitem.getUnitname()));
+				tvStock.setText("库存:" + DocUtils.Stocknum(stocknum, docitem.getGoodsid(),
+						btnUnit.getTag() != null ? btnUnit.getTag().toString() : "", btnUnit.getText().toString()));
 
 				// this.btnBatch.setText(localRespGoodsWarehouse2.getBatch());
 				// btnProDate

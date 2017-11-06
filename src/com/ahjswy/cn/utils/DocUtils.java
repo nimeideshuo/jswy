@@ -23,7 +23,7 @@ import android.text.TextUtils;
 
 public class DocUtils {
 	private static ServiceStore serviceStore;
-	private static GoodsUnitDAO dao = new GoodsUnitDAO();
+	private static GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 	private static CustomerDAO customerdao = new CustomerDAO();
 	private static GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
 	private static Sz_stockwarn stockwarn = new Sz_stockwarn();
@@ -124,13 +124,13 @@ public class DocUtils {
 			return "";
 		}
 		// 查询商品比例
-		double ratio = dao.getGoodsUnitRatio(goodsUnit.getGoodsid(), goodsUnit.getUnitid());
+		double ratio = unitDAO.getGoodsUnitRatio(goodsUnit.getGoodsid(), goodsUnit.getUnitid());
 		// 判断是否整除
 		double num = stocknumber % ratio;
 		if (num == 0) {
 			return (int) (stocknumber / ratio) + goodsUnit.getUnitname();
 		}
-		GoodsUnit baseBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
+		GoodsUnit baseBaseUnit = unitDAO.queryBaseUnit(goodsUnit.getGoodsid());
 		stockbigName = (int) (stocknumber / ratio) == 0 ? "" : (int) (stocknumber / ratio) + goodsUnit.getUnitname();
 		if (num % baseBaseUnit.getRatio() == 0) {
 			return stockbigName + (int) num + baseBaseUnit.getUnitname();
@@ -144,13 +144,13 @@ public class DocUtils {
 			return "";
 		}
 		// 查询商品比例
-		double ratio = dao.getGoodsUnitRatio(goodsid, unitid);
+		double ratio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
 		// 判断是否整除
 		double num = stocknumber % ratio;
 		if (num == 0) {
 			return (int) (stocknumber / ratio) + unitname;
 		}
-		GoodsUnit baseBaseUnit = dao.queryBaseUnit(goodsid);
+		GoodsUnit baseBaseUnit = unitDAO.queryBaseUnit(goodsid);
 		stockbigName = (int) (stocknumber / ratio) == 0 ? "" : (int) (stocknumber / ratio) + unitname;
 		if (num % baseBaseUnit.getRatio() == 0) {
 			return stockbigName + (int) num + baseBaseUnit.getUnitname();
@@ -215,8 +215,8 @@ public class DocUtils {
 			return "";
 		}
 		String stocknum = "";
-		GoodsUnit goodsRatio = dao.queryBigUnitRatio(unit.getGoodsid(), unit.getUnitid());
-		GoodsUnit queryBaseUnit = dao.queryBaseUnit(unit.getGoodsid());
+		GoodsUnit goodsRatio = unitDAO.queryBigUnitRatio(unit.getGoodsid(), unit.getUnitid());
+		GoodsUnit queryBaseUnit = unitDAO.queryBaseUnit(unit.getGoodsid());
 		int zs = (int) (stockNum / goodsRatio.getRatio());
 		int xs = (int) Utils.normalizePrice(stockNum % goodsRatio.getRatio());
 		if (zs != 0) {
@@ -273,9 +273,9 @@ public class DocUtils {
 	 */
 	public static double getGoodsPrice(String customerid, DefDocItemXS docItem) {
 		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, docItem.getGoodsid());
-		double ratio = dao.getGoodsUnitRatio(docItem.getGoodsid(), docItem.getUnitid());
+		double ratio = unitDAO.getGoodsUnitRatio(docItem.getGoodsid(), docItem.getUnitid());
 		if (historyPrice != null) {
-			double historyratio = dao.getGoodsUnitRatio(docItem.getGoodsid(), historyPrice.getUnitid());
+			double historyratio = unitDAO.getGoodsUnitRatio(docItem.getGoodsid(), historyPrice.getUnitid());
 			return Utils.normalize(historyPrice.getPrice() / historyratio * ratio, 2);
 			// 除以 自身比例 * 与 要换算的比例
 		}
@@ -299,9 +299,9 @@ public class DocUtils {
 	 */
 	public static double getGoodsPrice(String customerid, String goodsid, String unitid) {
 		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, goodsid);
-		double ratio = dao.getGoodsUnitRatio(goodsid, unitid);
+		double ratio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
 		if (historyPrice != null) {
-			double historyratio = dao.getGoodsUnitRatio(goodsid, historyPrice.getUnitid());
+			double historyratio = unitDAO.getGoodsUnitRatio(goodsid, historyPrice.getUnitid());
 			return Utils.normalize(historyPrice.getPrice() / historyratio * ratio, 2);
 			// 除以 自身比例 * 与 要换算的比例
 		}
@@ -323,7 +323,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public static double getGoodsBasicPrice(String customerid, DefDocItemXS docItem) {
-		GoodsUnit basicUnit = dao.getBasicUnit(docItem.getGoodsid());
+		GoodsUnit basicUnit = unitDAO.getBasicUnit(docItem.getGoodsid());
 		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, docItem.getGoodsid());
 		if (historyPrice != null) {
 			return historyPrice.getPrice();
@@ -341,7 +341,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public static double getGoodsBasicPrice(String customerid, String goodsid) {
-		GoodsUnit basicUnit = dao.getBasicUnit(goodsid);
+		GoodsUnit basicUnit = unitDAO.getBasicUnit(goodsid);
 		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, goodsid);
 		if (historyPrice != null) {
 			return historyPrice.getPrice();
@@ -358,6 +358,22 @@ public class DocUtils {
 	 */
 	public static List<RespGoodsPriceEntity> queryGoodsPriceList(String goodsid) {
 		return goodspricedao.queryPriceList(goodsid);
+	}
+
+	/**
+	 * 
+	 * 获取商品的辅助计算件数
+	 * 
+	 * @param goodsid
+	 *            商品 id
+	 * @param num
+	 *            商品数量
+	 * @return
+	 */
+	public static double getAssistnum(String goodsid, String unitid, double num) {
+		double unitRatio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
+		double bigUnitRatio = unitDAO.getBigUnitRatio(goodsid);
+		return Utils.normalize((num * unitRatio) / bigUnitRatio, 4);
 	}
 
 }

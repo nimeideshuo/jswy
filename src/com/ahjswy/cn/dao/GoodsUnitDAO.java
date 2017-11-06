@@ -47,17 +47,14 @@ public class GoodsUnitDAO {
 	// 获取商品的件数
 	public String getBigNum(String goodsid, String unitid, double num) {
 
-		String v2 = null;
-		if (TextUtils.isEmpty(goodsid) || TextUtils.isEmpty(goodsid)) {
-			v2 = "";
-		} else {
+		String v2 = "";
+		if (!(TextUtils.isEmpty(goodsid) || TextUtils.isEmpty(unitid))) {
 			GoodsUnit v4 = this.getBigUnit(goodsid);
 			GoodsUnit v3 = this.getBasicUnit(goodsid);
 			double v0 = num;
 			if (!TextUtils.isEmpty(unitid)) {
 				v0 *= this.getGoodsUnitRatio(goodsid, unitid);
 			}
-			v2 = "";
 			int v6 = ((int) (v0 / v4.getRatio()));
 			if (v6 != 0) {
 				v2 = String.valueOf(v2) + v6 + v4.getUnitname();
@@ -74,13 +71,10 @@ public class GoodsUnitDAO {
 					v0 -= (((double) v6)) * v5.getRatio();
 				}
 			}
-			v2 = String.valueOf(v2) + Utils.normalize(v0, 2) + v3.getUnitname();
-			// v2 = String.valueOf(v2)
-			// + Utils.cutLastZero(new
-			// StringBuilder(String.valueOf(Utils.normalize(v0, 2))).toString())
-			// + v3.getUnitname();
+			v0 = Utils.normalize(v0, 2);
+			return v2 + (v0 % 1 == 0 ? (int) v0 + "" : v0 + "") + v3.getUnitname();
 		}
-		return v2;
+		return "";
 	}
 
 	// 获取大的单位id
@@ -144,34 +138,33 @@ public class GoodsUnitDAO {
 
 	public double getBigUnitRatio(String goodsid) {
 		this.db = this.helper.getReadableDatabase();
-		Cursor localCursor = this.db.rawQuery("select ratio from sz_goodsunit where goodsid=? and isshow='1'",
-				new String[] { goodsid });
-		double d1 = 1.0D;
+		Cursor cursor = null;
 		try {
-			if (localCursor.moveToNext()) {
-				double d2 = localCursor.getDouble(0);
-				d1 = d2;
+			cursor = this.db.rawQuery("select ratio from sz_goodsunit where goodsid=? and isshow='1'",
+					new String[] { goodsid });
+			if (cursor.moveToNext()) {
+				return cursor.getDouble(0);
 			}
-			return d1;
-		} catch (Exception localException) {
-			localException.printStackTrace();
-			return d1;
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
-			if (localCursor != null)
-				localCursor.close();
+			if (cursor != null)
+				cursor.close();
 			if (this.db != null)
 				this.db.close();
 		}
+		return 1.0D;
 	}
 
 	public GoodsUnit getGoodsUnit(String goodsid, String unitid) {
 		this.db = this.helper.getReadableDatabase();
 		String[] arrays = { goodsid, unitid };
 		GoodsUnit goodsunit = null;
-		Cursor cursor = this.db.rawQuery(
-				"select goodsid,unitid,unitname,isbasic,isshow,ratio from sz_goodsunit where goodsid = ? and unitid=?",
-				arrays);
+		Cursor cursor = null;
 		try {
+			cursor = this.db.rawQuery(
+					"select goodsid,unitid,unitname,isbasic,isshow,ratio from sz_goodsunit where goodsid = ? and unitid=?",
+					arrays);
 			while (cursor.moveToNext()) {
 				goodsunit = new GoodsUnit();
 				goodsunit.setGoodsid(cursor.getString(0));
@@ -450,4 +443,5 @@ public class GoodsUnitDAO {
 		}
 		return false;
 	}
+
 }

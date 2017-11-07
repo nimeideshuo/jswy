@@ -2,7 +2,6 @@ package com.ahjswy.cn.ui.inventory;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.model.DefDocPD;
-import com.ahjswy.cn.utils.MLog;
 
 import android.util.DisplayMetrics;
 import android.view.View;

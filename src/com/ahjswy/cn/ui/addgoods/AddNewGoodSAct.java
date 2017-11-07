@@ -27,7 +27,6 @@ import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PinYin4j;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
-import com.alibaba.fastjson.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -278,15 +277,9 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 				linUnit3.findViewById(R.id.rgRoot).setVisibility(View.GONE);
 				ratio3 = (EditText) linUnit3.findViewById(R.id.ratio);
 				btnDelete3 = (Button) linUnit3.findViewById(R.id.btnDelete);
-				// cbBaseUnit3 = (CheckBox)
-				// linUnit3.findViewById(R.id.cbBaseUnit);
-				// cbBigUnit3 = (CheckBox)
-				// linUnit3.findViewById(R.id.cbBigUnit);
 				btnDelete3.setVisibility(View.VISIBLE);
 				btnDelete3.setOnClickListener(deleteItem3);
 				btnDelete3.setTag(linUnit3);
-				// cbBigUnit3.setOnCheckedChangeListener(this);
-				// cbBaseUnit3.setOnCheckedChangeListener(this);
 				Spinner spUnit3 = (Spinner) linUnit3.findViewById(R.id.spUnit);
 				ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(AddNewGoodSAct.this,
 						android.R.layout.simple_list_item_1, arrayUnits);

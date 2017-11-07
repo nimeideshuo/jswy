@@ -9,11 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.dao.GoodsDAO;
-import com.ahjswy.cn.dao.GoodsPriceDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.DefDoc;
@@ -55,7 +53,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -69,6 +66,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+//销售退货单
 public class InDocEditActivity extends BaseActivity implements OnItemClickListener, OnTouchListener, Sum {
 	private ServiceStore serviceStore;
 	private LinearLayout linearSearch;
@@ -447,11 +445,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		super.onResume();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		// if (doc.isIsavailable() && doc.isIsposted()) {
-		// scaner.setScanner(false);
-		// } else {
-		// scaner.setScanner(true);
-		// }
 	}
 
 	public void closeInputMethod() {

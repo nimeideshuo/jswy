@@ -1,18 +1,24 @@
 package com.ahjswy.cn.ui;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.Sv_docitem;
+import com.ahjswy.cn.model.DefDocItemXS;
+import com.ahjswy.cn.model.DefDocPayType;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
+import com.ahjswy.cn.response.RespStockwarn;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
@@ -31,6 +37,7 @@ import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.InfoDialog;
+import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -42,6 +49,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -98,7 +107,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	// 测试代码
 	// boolean isShow = false;
 	// int numsss = 0;
-	//
+
 	// public class TestUnit {
 	// public String goodsid;
 	// public String unitid;
@@ -114,32 +123,30 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		// double sumStock = new Sz_stockwarn().querySumStock("1168");
 		// double stockwarnAll = DocUtils.queryStockwarnAll("1168");
 		// System.out.println(">>>>" + sumStock);
-
-		// List<UnitidPrice> price = new ArrayList<UnitidPrice>();
-		// UnitidPrice price2 = new UnitidPrice();
-		// price2.customerid = "00001";
-		// price2.goodsid = "澳米伽-013";
-		// price2.unitid = "04";
-		// price.add(price2);
-		// UnitidPrice price3 = new UnitidPrice();
-		// price3.customerid = "00001";
-		// price3.goodsid = "卤-025";
-		// price3.unitid = "01";
-		// price.add(price3);
-		// UnitidPrice price4 = new UnitidPrice();
-		// price4.customerid = "00001";
-		// price4.goodsid = "晏子-016";
-		// price4.unitid = "01";
-		// price.add(price4);
-		// List<UnitidPrice> priceLis =
-		// DocUtils.getCustomerGoodsHistoryPrice(price);
-		// if (priceLis != null) {
-		// System.out.println("sssssssssssssss:" + priceLis.toString());
-		// }
-
+		// 测试 数据库查询
+		// final Sz_stockwarn stockwarn = new Sz_stockwarn();
 		// edNum = (EditText) findViewById(R.id.edNum);
 		// edTime = (EditText) findViewById(R.id.edTime);
 		// serviceStore = new ServiceStore();
+		//
+		// PDH.show(this, "库存查询中..", new PDH.ProgressCallBack() {
+		//
+		// @Override
+		// public void action() {
+		// int num = Integer.parseInt(edNum.getText().toString());
+		// int time = Integer.parseInt(edTime.getText().toString());
+		// for (int i = 0; i < num; i++) {
+		// double sumStock = stockwarn.querySumStock("100106");
+		// if (sumStock == 0) {
+		// Log.d("erry", i + "错误!");
+		// } else {
+		// Log.d("ok", i + " " + sumStock);
+		// }
+		// SystemClock.sleep(time);
+		// }
+		// }
+		// });
+		/////////////////////////////
 		// PDH.show(this, "开单中....", new ProgressCallBack() {
 		//
 		// @Override
@@ -168,32 +175,26 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 
 	}
 
-	// protected void openDoc(int position, String localString) {
-	// DocContainerEntity localDocContainerEntity = (DocContainerEntity)
-	// JSONUtil.fromJson(localString,
-	// DocContainerEntity.class);
-	// doc = ((DefDocXS) JSONUtil.fromJson(localDocContainerEntity.getDoc(),
-	// DefDocXS.class));
-	// List<DefDocPayType> listPayType =
-	// JSONUtil.str2list(localDocContainerEntity.getPaytype(),
-	// DefDocPayType.class);
-	// List<DefDocItemXS> listItem =
-	// JSONUtil.str2list(localDocContainerEntity.getItem(), DefDocItemXS.class);
-	// List<Long> listItemDelete = new ArrayList<>();
-	// doc.setPromotionid(null);
-	// doc.setDistributionid(null);
-	// doc.setCustomerid("安康001");
-	// // doc.setCustomername("东至侯结才");
-	// String resFor = serviceStore.str_SaveXSDoc(doc, listItem, listPayType,
-	// listItemDelete);
-	// if (!RequestHelper.isSuccess(resFor)) {
-	// showError("第 " + position + " 次请求错误！" + resFor);
-	// SystemClock.sleep(5000);
-	// return;
-	// }
-	// long long1 = Long.parseLong(edTime.getText().toString());
-	// SystemClock.sleep(long1);
-	// }
+	protected void openDoc(int position, String localString) {
+		DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.fromJson(localString,
+				DocContainerEntity.class);
+		doc = ((DefDocXS) JSONUtil.fromJson(localDocContainerEntity.getDoc(), DefDocXS.class));
+		List<DefDocPayType> listPayType = JSONUtil.str2list(localDocContainerEntity.getPaytype(), DefDocPayType.class);
+		List<DefDocItemXS> listItem = JSONUtil.str2list(localDocContainerEntity.getItem(), DefDocItemXS.class);
+		List<Long> listItemDelete = new ArrayList<>();
+		doc.setPromotionid(null);
+		doc.setDistributionid(null);
+		doc.setCustomerid("安康001");
+		// doc.setCustomername("东至侯结才");
+		String resFor = serviceStore.str_SaveXSDoc(doc, listItem, listPayType, listItemDelete);
+		if (!RequestHelper.isSuccess(resFor)) {
+			showError("第 " + position + " 次请求错误！" + resFor);
+			SystemClock.sleep(5000);
+			return;
+		}
+		long long1 = Long.parseLong(edTime.getText().toString());
+		SystemClock.sleep(long1);
+	}
 
 	private void initDate() {
 		sv = new Sv_docitem();

@@ -288,17 +288,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		super.onResume();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		// if (doc.isIsavailable() && doc.isIsposted()) {
-		// scaner.setScanner(false);
-		// } else {
-		// scaner.setScanner(true);
-		// }
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
 
 		@Override
 		public void setBarcode(String barcode) {
+			// 已经过账的单据 不允许继续扫描开单
 			if (doc.isIsavailable() && doc.isIsposted()) {
 				return;
 			}
@@ -787,7 +783,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			return;
 		}
 		for (DefDocItemXS item : listItem) {
-			setAddItem(item);
+			item.assistnum = DocUtils.getAssistnum(item.getGoodsid(), item.getUnitid(), item.getNum());
 		}
 		final Dialog_message dialog = new Dialog_message(this);
 		dialog.show();
@@ -855,7 +851,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			return;
 		}
 		for (DefDocItemXS item : listItem) {
-			setAddItem(item);
+			if (item.assistnum == 0) {
+				item.assistnum = DocUtils.getAssistnum(item.getGoodsid(), item.getUnitid(), item.getNum());
+			}
 		}
 
 		PDH.show(this, new PDH.ProgressCallBack() {
@@ -1289,6 +1287,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				break;
 			case 4:
 				DefDocItemXS defDocItemXS4 = (DefDocItemXS) data.getSerializableExtra("docitem");
+				defDocItemXS4.assistnum = DocUtils.getAssistnum(defDocItemXS4.getGoodsid(), defDocItemXS4.getUnitid(),
+						defDocItemXS4.getNum());
 				if (Utils.isCombination()) {
 					adapter.addItem(defDocItemXS4);
 					combinationItem();

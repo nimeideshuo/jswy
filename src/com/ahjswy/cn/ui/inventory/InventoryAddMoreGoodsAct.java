@@ -41,9 +41,8 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_inventory_add_more_goods);
-		String stringExtra = getIntent().getStringExtra("items");
 		doc = (DefDocPD) getIntent().getSerializableExtra("doc");
-		items = JSONUtil.str2list(stringExtra, DefDocItemPD.class);
+		items = JSONUtil.str2list(getIntent().getStringExtra("items"), DefDocItemPD.class);
 		listView = ((ListView) findViewById(R.id.listView));
 		adapter = new InventoryAddMoreAdapter(this);
 		this.adapter.setItem(items);
@@ -82,7 +81,6 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 				dialog.dismiss();
 			}
 			readBarcode(barcode);
-			// 代码 等待不全
 		}
 	};
 	private Dialog_listCheckBox dialog;

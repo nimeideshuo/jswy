@@ -65,8 +65,7 @@ import android.widget.LinearLayout;
 /*
  * 采购单开单
  */
-public class InpurchaseEditActivity extends BaseActivity
-		implements OnClickListener, OnTouchListener, OnItemClickListener, Sum, ScanerBarcodeListener {
+public class InpurchaseEditActivity extends BaseActivity implements OnTouchListener, OnItemClickListener, Sum {
 	private SearchHelper searchHelper;
 	private AutoTextView atvSearch;
 	private InpurchaseEditMenuPopup menuPopup;
@@ -86,10 +85,7 @@ public class InpurchaseEditActivity extends BaseActivity
 		setContentView(R.layout.act_inpurchase_edit);
 		initView();
 		initDate();
-		addListener();
 		sum();
-		scaner = Scaner.factory(this);
-		scaner.setBarcodeListener(this);
 	}
 
 	private void initView() {
@@ -103,6 +99,10 @@ public class InpurchaseEditActivity extends BaseActivity
 		btnGoodClass = (Button) findViewById(R.id.btn_goodClass);
 		listview_copy_dele = (SwipeMenuListView) findViewById(R.id.listView_addShop);
 		listItem = new ArrayList<DefDocItemCG>();
+		btnAdd.setOnClickListener(addMoreListener);
+		listview_copy_dele.setOnItemClickListener(this);
+		listview_copy_dele.setOnTouchListener(this);
+		atvSearch.setOnItemClickListener(onItemClickListeners);
 	}
 
 	private void initDate() {
@@ -181,14 +181,6 @@ public class InpurchaseEditActivity extends BaseActivity
 
 	private Dialog_listCheckBox dialog;
 
-	private void addListener() {
-		btnAdd.setOnClickListener(this);
-		listview_copy_dele.setOnItemClickListener(this);
-		listview_copy_dele.setOnTouchListener(this);
-		atvSearch.setOnItemClickListener(onItemClickListeners);
-
-	}
-
 	private void readBarcode(String barcodeStr) {
 
 		// 调用 getBarcode()方法读取条码信息
@@ -239,10 +231,15 @@ public class InpurchaseEditActivity extends BaseActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (scaner == null) {
-			scaner = Scaner.factory(this);
-			scaner.setBarcodeListener(this);
-		}
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(new ScanerBarcodeListener() {
+
+			@Override
+			public void setBarcode(String barcode) {
+				atvSearch.setText("");
+				readBarcode(barcode);
+			}
+		});
 	}
 
 	protected void combinationItem() {
@@ -275,32 +272,6 @@ public class InpurchaseEditActivity extends BaseActivity
 			}
 
 		}
-
-		// for (int i = data.size() - 1; i >= 0; i--) {
-		// DefDocItemCG items1 = data.get(i);
-		// // 没有的商品 缓存
-		// if (map.get(items1.getGoodsid()) == null) {
-		// map.put(items1.getGoodsid(), new DefDocItemCG(items1));
-		// data.remove(items1);
-		// // data2.remove(items1);
-		// continue;
-		// }
-		// DefDocItemCG itemxs2 = (DefDocItemCG) map.get(items1.getGoodsid());
-		// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
-		// items1.getUnitid().equals(itemxs2.getUnitid())
-		// && items1.getPrice() == itemxs2.getPrice()
-		// && items1.getDiscountratio() == itemxs2.getDiscountratio()
-		// && items1.getWarehouseid().equals(itemxs2.getWarehouseid())) {
-		// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
-		// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
-		// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
-		// itemxs2.getDiscountratio());
-		// map.put(itemxs2.getGoodsid(), itemxs2);
-		// // 商品 单位id 单价 相等删除！
-		// data.remove(items1);
-		// }
-		//
-		// }
 		Set<String> keySet = map.keySet();
 		for (String string : keySet) {
 			listDocItem.add((DefDocItemCG) map.get(string));
@@ -398,42 +369,32 @@ public class InpurchaseEditActivity extends BaseActivity
 		return true;
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btnAdd:
-			atvSearch.clearFocus();
-			if (atvSearch.getText().toString().length() > 0) {
-				addMoreListener();
-			} else {
-				PDH.showMessage("请选择商品！");
-			}
-			break;
-		}
-	}
+	public View.OnClickListener addMoreListener = new View.OnClickListener() {
 
-	private void addMoreListener() {
-		onTouch(null, null);
-		List<GoodsThin> localList = searchHelper.getAdapter().getSelect();
-		if ((localList == null) || (localList.size() == 0)) {
-			return;
-		}
-		atvSearch.setText("");
-		ArrayList<DefDocItemCG> localArrayList = new ArrayList<DefDocItemCG>();
-		for (int i = 0; i < localList.size(); i++) {
-			GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
-			int num = Utils.isCombination() ? 1 : 0;
-			DefDocItemCG fillItem = fillItem(localGoodsThin, num, 0.0D, 0);
-			if (fillItem == null) {
-				continue;
+		@Override
+		public void onClick(View v) {
+			onTouch(null, null);
+			List<GoodsThin> localList = searchHelper.getAdapter().getSelect();
+			if ((localList == null) || (localList.size() == 0)) {
+				return;
 			}
-			localArrayList.add(fillItem);
+			atvSearch.setText("");
+			ArrayList<DefDocItemCG> localArrayList = new ArrayList<DefDocItemCG>();
+			for (int i = 0; i < localList.size(); i++) {
+				GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
+				int num = Utils.isCombination() ? 1 : 0;
+				DefDocItemCG fillItem = fillItem(localGoodsThin, num, 0.0D, 0);
+				if (fillItem == null) {
+					continue;
+				}
+				localArrayList.add(fillItem);
+			}
+			Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
+			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("doc", doccg);
+			startActivityForResult(intent, 1);
 		}
-		Intent intent = new Intent(this, InpurDocAddMoreGoodsAct.class);
-		intent.putExtra("items", JSONUtil.object2Json(localArrayList));
-		intent.putExtra("doc", doccg);
-		startActivityForResult(intent, 1);
-	}
+	};
 
 	private DefDocItemCG fillItem(GoodsThin localGoodsThin, double paramDouble1, double paramDouble2, long paramLong) {
 		DefDocItemCG defDocItemCG = new DefDocItemCG();
@@ -731,12 +692,9 @@ public class InpurchaseEditActivity extends BaseActivity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_FIRST_USER) {
-			addListener();
-		} else if (resultCode == RESULT_OK) {
+		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case 0:
-				addListener();
 				doccg = (Def_Doc) data.getSerializableExtra("doc");
 				ishaschanged = true;
 				setActionBarText();
@@ -771,12 +729,10 @@ public class InpurchaseEditActivity extends BaseActivity
 					});
 
 				}
-				addListener();
 				ishaschanged = true;
 				setActionBarText();
 				break;
 			case 2:
-				addListener();
 				int j = data.getIntExtra("position", 0);
 				DefDocItemCG defdocitemCG3 = (DefDocItemCG) data.getSerializableExtra("docitem");
 				adapter.getData().set(j, defdocitemCG3);
@@ -798,7 +754,6 @@ public class InpurchaseEditActivity extends BaseActivity
 				listview_copy_dele.setAdapter(adapter);
 				ishaschanged = true;
 				setActionBarText();
-				addListener();
 				break;
 			case 5:
 				// 收款方式
@@ -807,7 +762,6 @@ public class InpurchaseEditActivity extends BaseActivity
 				received = data.getDoubleExtra("received", 0.0D);// 已收金额
 				receiveable = data.getDoubleExtra("receiveable", 0.0D);
 				doccg.setPreference(preference);
-
 				break;
 			}
 		}
@@ -946,10 +900,4 @@ public class InpurchaseEditActivity extends BaseActivity
 		}
 	}
 
-	@Override
-	public void setBarcode(String barcode) {
-		atvSearch.setText("");
-		readBarcode(barcode);
-
-	}
 }

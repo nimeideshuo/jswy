@@ -188,7 +188,6 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 	protected void onPause() {
 		super.onPause();
 		scaner.removeListener();
-		MLog.d("OutInDocAddMoreGoodsAct    removeListener");
 	}
 
 	private DefDocItemDD fillItem(GoodsThin localGoodsThin, double num, double price, long l) {

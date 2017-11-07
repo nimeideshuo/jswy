@@ -32,7 +32,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 
-public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarcodeListener {
+public class InpurDocAddMoreGoodsAct extends BaseActivity {
 	private ListView lv_commodity_add;
 	private ArrayList<DefDocItemCG> items;
 	private InpurDocAddMoreAdapter adapter;
@@ -44,7 +44,7 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarco
 		setContentView(R.layout.act_out_doc_add_moregoods);
 		intView();
 		scaner = Scaner.factory(this);
-		scaner.setBarcodeListener(this);
+		scaner.setBarcodeListener(barcodeListener);
 	}
 
 	private void intView() {
@@ -58,6 +58,14 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarco
 		setInitItem();
 		ap = new AccountPreference();
 	}
+
+	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
+
+		@Override
+		public void setBarcode(String barcode) {
+			readBarcode(barcode);
+		}
+	};
 
 	ArrayList<DefDocItemCG> Newitems;
 	private Dialog_listCheckBox dialog;
@@ -354,8 +362,4 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity implements ScanerBarco
 		getActionBar().setTitle("添加商品");
 	}
 
-	@Override
-	public void setBarcode(String barcode) {
-		readBarcode(barcode);
-	}
 }

@@ -308,12 +308,33 @@ public class ServiceSynchronize {
 	}
 
 	// TODO 查询商品列表客史
-	public List<HashMap<String, String>> syn_QueryCustomerGoodsRecords(int pageindex) {
+	public List<HashMap<String, String>> syn_Queryallcustomergoodsrecords(int pageindex) {
+		String url = Utils.getServiceAddress(this.baseAddress, "queryallcustomergoodsrecords");
+		ReqSynQueryRecordsByID recordsByID = new ReqSynQueryRecordsByID();
+		// recordsByID.setId(customerid);
+		recordsByID.setPageIndex(pageindex);
+		recordsByID.setPageSize(pagesize);
+		map.put("parameter", JSONUtil.object2Json(recordsByID));
+		String serviceInfor = new Utils_help().getServiceInfor(url, map);
+		if (RequestHelper.isSuccess(serviceInfor))
+			return JSONUtil.parse2ListMap(serviceInfor);
+		return null;
+	}
+
+	/**
+	 * 客户商品客史 增量同步 查询改变后的
+	 * 
+	 * @param pageindex
+	 * @return
+	 */
+	public List<HashMap<String, String>> syn_Querycustomergoodsrecords(int pageindex, long rversion) {
+		// querycustomergoodsrecords
 		String url = Utils.getServiceAddress(this.baseAddress, "querycustomergoodsrecords");
 		ReqSynQueryRecordsByID recordsByID = new ReqSynQueryRecordsByID();
 		// recordsByID.setId(customerid);
 		recordsByID.setPageIndex(pageindex);
 		recordsByID.setPageSize(pagesize);
+		recordsByID.setRVersion(rversion);
 		map.put("parameter", JSONUtil.object2Json(recordsByID));
 		String serviceInfor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(serviceInfor))

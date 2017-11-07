@@ -133,6 +133,10 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 			this.docitem.setUnitid(null);
 			this.docitem.setUnitname("");
 		}
+		if (docitem.getPrice() == 0) {
+			showError("没有查询到成本价格! 或者为0");
+			return;
+		}
 		this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
 		this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
 				this.docitem.getNum()));
@@ -232,10 +236,10 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 				ReqStrGetGoodsPrice goodsPrice = JSONUtil.str2list(message, ReqStrGetGoodsPrice.class).get(0);
 				btnUnit.setText(goodsUnit.getUnitname());
 				btnUnit.setTag(goodsUnit.getUnitid());
-				etNum.setTag(Double.valueOf(goodsPrice.getPrice()));
-
+				docitem.setPrice(goodsPrice.getPrice());
 			} else {
 				PDH.showFail(message);
+				docitem.setPrice(0);
 			}
 		};
 

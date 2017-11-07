@@ -16,7 +16,6 @@ import com.ahjswy.cn.bean.Def_DocDraft;
 import com.ahjswy.cn.bean.SaleEntity;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
-import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.FieldSaleForPrint;
 import com.ahjswy.cn.model.FieldSaleItemForPrint;
 import com.ahjswy.cn.model.GoodsThin;
@@ -37,7 +36,6 @@ import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.ui.out_in_goods.MenuPayPopup.EditMenuPopupListener;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -130,36 +128,11 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
 				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
 				map.put(itemxs2.getGoodsid(), itemxs2);
-			}else{
+			} else {
 				listDocItem.add(items1);
 			}
 
 		}
-
-		// for (int i = data.size() - 1; i >= 0; i--) {
-		// DefDocItemDD items1 = data.get(i);
-		// // 没有的商品 缓存
-		// if (map.get(items1.getGoodsid()) == null) {
-		// map.put(items1.getGoodsid(), new DefDocItemDD(items1));
-		// data.remove(items1);
-		// // data2.remove(items1);
-		// continue;
-		// }
-		// DefDocItemDD itemxs2 = (DefDocItemDD) map.get(items1.getGoodsid());
-		// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
-		// items1.getUnitid().equals(itemxs2.getUnitid())
-		// && items1.getPrice() == itemxs2.getPrice()
-		// && items1.getDiscountratio() == itemxs2.getDiscountratio()) {
-		// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
-		// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
-		// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
-		// itemxs2.getDiscountratio());
-		// map.put(itemxs2.getGoodsid(), itemxs2);
-		// // 商品 单位id 单价 相等删除！
-		// data.remove(items1);
-		// }
-		//
-		// }
 		Set<String> keySet = map.keySet();
 		for (String string : keySet) {
 			listDocItem.add((DefDocItemDD) map.get(string));
@@ -291,7 +264,6 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	protected void onPause() {
 		super.onPause();
 		scaner.removeListener();
-		MLog.d("onPause");
 	}
 
 	@Override
@@ -299,7 +271,6 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		super.onResume();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		MLog.d("onResume");
 	}
 
 	View.OnClickListener addGoodsClick = new View.OnClickListener() {
@@ -994,7 +965,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 		// getActionBar().setTitle("已经保存");
 		// }
 		getActionBar().setTitle("销售订单录入");
-		
+
 	}
 
 }

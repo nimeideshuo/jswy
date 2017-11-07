@@ -13,8 +13,9 @@ public class Sz_stockwarn extends CloudDBBase {
 		stockwarnBuilder.append("select a.warehouseid,a.goodsid,stocknum from sz_stockwarn a where a.warehouseid='");
 		stockwarnBuilder.append(warehouseid).append("' and ");
 		stockwarnBuilder.append("a.goodsid='" + goodsid + "'");
+		ResultSet query = null;
 		try {
-			ResultSet query = executeQuery(stockwarnBuilder.toString());
+			query = executeQuery(stockwarnBuilder.toString());
 			if (query == null) {
 				return -1;
 			}
@@ -24,6 +25,15 @@ public class Sz_stockwarn extends CloudDBBase {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (query != null) {
+				try {
+					query.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
 		}
 		return -1;
 	}
@@ -50,7 +60,9 @@ public class Sz_stockwarn extends CloudDBBase {
 			e.printStackTrace();
 		} finally {
 			try {
-				query.close();
+				if (query != null) {
+					query.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -81,7 +93,9 @@ public class Sz_stockwarn extends CloudDBBase {
 			e.printStackTrace();
 		} finally {
 			try {
-				query.close();
+				if (query != null) {
+					query.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

@@ -660,7 +660,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		}
 		return false;
 	}
-	//TODO
+	// TODO
 	// protected void combinationItem() {
 	// int combinationNum = listItem.size();
 	// ArrayList<DefDocItem> data = new ArrayList<DefDocItem>(listItem);

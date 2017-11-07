@@ -23,5 +23,16 @@ public class BaseDao {
 		this.db.execSQL("delete from cu_customerfieldsalegoods");
 		return true;
 	}
+	/**
+	 * 客史
+	 */
+	public static String DELETE_CUSTOMERFIELDSALE = "delete from cu_customerfieldsalegoods";
+
+	public boolean deleteDB(String table) {
+		this.db = this.helper.getWritableDatabase();
+		this.db.execSQL(table);
+		return true;
+
+	}
 
 }

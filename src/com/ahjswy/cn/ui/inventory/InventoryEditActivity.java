@@ -245,14 +245,8 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 	@Override
 	protected void onResume() {
 		super.onResume();
-		System.out.println("onResume");
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-		// if ((this.doc.isIsavailable()) && (this.doc.isIsposted())) {
-		// scaner.setScanner(false);
-		// } else {
-		// scaner.setScanner(true);
-		// }
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {

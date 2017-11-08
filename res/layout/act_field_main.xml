@@ -404,7 +404,7 @@
                 android:layout_height="1.0dip"
                 android:background="@color/bg_main_divder" />
 
-           <!--  <EditText
+           <!-- --> <EditText
                 android:id="@+id/edNum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -423,7 +423,7 @@
                 android:layout_height="wrap_content"
                 android:onClick="startOpenDoc"
                 android:text="开单" />
-            -->
+            
         </LinearLayout>
     </ScrollView>
 

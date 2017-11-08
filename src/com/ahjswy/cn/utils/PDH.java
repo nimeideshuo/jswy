@@ -27,6 +27,7 @@ public class PDH {
 	private static ImageView toastImage;
 	private static TextView toastText;
 	private static View toastView;
+	public static LoadingDialog dialog;
 
 	private static String getText(int paramInt) {
 		return MyApplication.getInstance().getResources().getString(paramInt);
@@ -47,15 +48,15 @@ public class PDH {
 		}.start();
 	}
 
-	public static void show(final Activity activity, final String text, final ProgressCallBack progressCallBack) {
-		final LoadingDialog localLoadingDialog = new LoadingDialog(activity);
-		localLoadingDialog.show(text);
+	public static void show(final Activity activity,final String text, final ProgressCallBack callBack) {
+		dialog = new LoadingDialog(activity);
+		dialog.show(text);
 		new Thread() {
 			public void run() {
-				progressCallBack.action();
+				callBack.action();
 				PDH.handler.post(new Runnable() {
 					public void run() {
-						localLoadingDialog.dismiss();
+						dialog.dismiss();
 					}
 				});
 			}
@@ -102,7 +103,7 @@ public class PDH {
 		}
 	}
 
-	public static void showToast(String paramString, int paramInt1, int imView) {
+	public static void showToast(String strText, int duration, int imView) {
 		try {
 			if (toastView == null) {
 				toastView = LayoutInflater.from(MyApplication.getInstance()).inflate(R.layout.toast, null);
@@ -112,12 +113,12 @@ public class PDH {
 				toast.setView(toastView);
 				toast.setGravity(17, 0, 0);
 			}
-			toastText.setText(paramString);
+			toastText.setText(strText);
 			toastImage.setImageResource(icons[imView]);
-			toast.setDuration(paramInt1);
+			toast.setDuration(duration);
 			toast.show();
-			return;
-		} finally {
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

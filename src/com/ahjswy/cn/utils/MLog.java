@@ -27,7 +27,7 @@ public class MLog {
 
 	public static void d(Object value) {
 		if (isPrint) {
-			Log.d("TEST", value + "");
+			Log.d(TAG, value + "");
 		}
 
 	}

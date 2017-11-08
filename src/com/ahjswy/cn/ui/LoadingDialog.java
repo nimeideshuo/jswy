@@ -8,6 +8,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.widget.TextView;
 
 public class LoadingDialog extends Dialog {
+	public TextView textView;
+
 	public LoadingDialog(Activity activity) {
 		super(activity, R.style.Transparent);
 		setCanceledOnTouchOutside(false);
@@ -15,13 +17,15 @@ public class LoadingDialog extends Dialog {
 		getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 	}
 
-	public void setText(String paramString) {
-		((TextView) findViewById(R.id.textView)).setText(paramString);
+	public void setText(String strText) {
+		textView = (TextView) findViewById(R.id.textView);
+		textView.setText(strText);
 	}
 
-	public void show(String paramString) {
+	public void show(String strText) {
 		super.show();
-		((TextView) findViewById(R.id.textView)).setText(paramString);
+		textView = (TextView) findViewById(R.id.textView);
+		textView.setText(strText);
 		((AnimationDrawable) findViewById(R.id.imageView).getBackground()).stop();
 		((AnimationDrawable) findViewById(R.id.imageView).getBackground()).start();
 	}

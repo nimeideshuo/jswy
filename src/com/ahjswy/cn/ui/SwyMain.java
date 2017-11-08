@@ -9,7 +9,6 @@ import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
-import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocPayType;
@@ -18,7 +17,6 @@ import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
-import com.ahjswy.cn.response.RespStockwarn;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
@@ -50,7 +48,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -104,30 +101,14 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		ap = new AccountPreference();
 	}
 
-	// 测试代码
-	// boolean isShow = false;
-	// int numsss = 0;
+	int startNum = 0;
 
-	// public class TestUnit {
-	// public String goodsid;
-	// public String unitid;
-	// public boolean isbasic;
-	// public boolean isshow;
-	// public double ratio;
-	// public String remark;
-	// public String rversion;
-	// }
-
-	// TODO
+	// TODO startOpenDoc
 	public void startOpenDoc(View v) {
-		// double sumStock = new Sz_stockwarn().querySumStock("1168");
-		// double stockwarnAll = DocUtils.queryStockwarnAll("1168");
-		// System.out.println(">>>>" + sumStock);
 		// 测试 数据库查询
-		// final Sz_stockwarn stockwarn = new Sz_stockwarn();
-		// edNum = (EditText) findViewById(R.id.edNum);
-		// edTime = (EditText) findViewById(R.id.edTime);
-		// serviceStore = new ServiceStore();
+		edNum = (EditText) findViewById(R.id.edNum);
+		edTime = (EditText) findViewById(R.id.edTime);
+		serviceStore = new ServiceStore();
 		//
 		// PDH.show(this, "库存查询中..", new PDH.ProgressCallBack() {
 		//
@@ -147,31 +128,43 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		// }
 		// });
 		/////////////////////////////
-		// PDH.show(this, "开单中....", new ProgressCallBack() {
-		//
-		// @Override
-		// public void action() {
-		// int num = Integer.parseInt(edNum.getText().toString());
-		// for (int i = 0; i < num; i++) {
-		// String localString = new ServiceStore().str_InitXSDoc("01", "01");
-		// if (RequestHelper.isSuccess(localString)) {
-		// openDoc(i, localString);
-		// } else {
-		// showError("没有获取到数据!失败!等待。。。" + localString);
-		// SystemClock.sleep(5000);
-		// String res = new ServiceStore().str_InitXSDoc("01", "01");
-		// if (RequestHelper.isSuccess(localString)) {
-		// openDoc(i, res);
-		// } else {
-		// showError(i + "没有获取到数据!失败!等待。。。" + res);
-		// SystemClock.sleep(5000);
-		// }
-		//
-		// }
-		// }
-		//
-		// }
-		// });
+
+		PDH.show(this, "开单中。。。 ", new ProgressCallBack() {
+
+			@Override
+			public void action() {
+				int num = Integer.parseInt(edNum.getText().toString());
+				for (int i = 0; i < num; i++) {
+					startNum = i;
+					handler.post(new Runnable() {
+
+						@Override
+						public void run() {
+
+							if (PDH.dialog.textView != null) {
+								PDH.dialog.textView.setText("第  " + startNum + " 次开单");
+							}
+						}
+					});
+					String localString = new ServiceStore().str_InitXSDoc("01", "01");
+					if (RequestHelper.isSuccess(localString)) {
+						openDoc(i, localString);
+					} else {
+						showError("没有获取到数据!失败!等待。。。" + localString);
+						SystemClock.sleep(5000);
+						String res = new ServiceStore().str_InitXSDoc("01", "01");
+						if (RequestHelper.isSuccess(localString)) {
+							openDoc(i, res);
+						} else {
+							showError(i + "没有获取到数据!失败!等待。。。" + res);
+							SystemClock.sleep(5000);
+						}
+
+					}
+				}
+
+			}
+		});
 
 	}
 
@@ -180,13 +173,15 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				DocContainerEntity.class);
 		doc = ((DefDocXS) JSONUtil.fromJson(localDocContainerEntity.getDoc(), DefDocXS.class));
 		List<DefDocPayType> listPayType = JSONUtil.str2list(localDocContainerEntity.getPaytype(), DefDocPayType.class);
-		List<DefDocItemXS> listItem = JSONUtil.str2list(localDocContainerEntity.getItem(), DefDocItemXS.class);
+		// List<DefDocItemXS> listItem =
+		// JSONUtil.str2list(localDocContainerEntity.getItem(),
+		// DefDocItemXS.class);
 		List<Long> listItemDelete = new ArrayList<>();
 		doc.setPromotionid(null);
 		doc.setDistributionid(null);
 		doc.setCustomerid("安康001");
 		// doc.setCustomername("东至侯结才");
-		String resFor = serviceStore.str_SaveXSDoc(doc, listItem, listPayType, listItemDelete);
+		String resFor = serviceStore.str_SaveXSDoc(doc, getGoodsItem(), listPayType, listItemDelete);
 		if (!RequestHelper.isSuccess(resFor)) {
 			showError("第 " + position + " 次请求错误！" + resFor);
 			SystemClock.sleep(5000);
@@ -194,6 +189,89 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		}
 		long long1 = Long.parseLong(edTime.getText().toString());
 		SystemClock.sleep(long1);
+	}
+
+	public List<DefDocItemXS> getGoodsItem() {
+		List<DefDocItemXS> listItem = new ArrayList<DefDocItemXS>();
+		for (int i = 0; i < 100; i++) {
+			DefDocItemXS item1 = new DefDocItemXS();
+			item1.setBarcode("199170304828");
+			item1.assistnum = 1;
+			item1.setBignum("1袋");
+			item1.setCostprice(0);
+			item1.setDiscountprice(3);
+			item1.setDiscountratio(1);
+			item1.setDiscountsubtotal(3);
+			item1.setDocid(0);
+			item1.setGoodsid("1161");
+			item1.setGoodsname("jmg");
+			item1.setIsdiscount(false);
+			item1.setIsgift(false);
+			item1.setIspromotion(false);
+			item1.setItemid(i);
+			item1.setNum(1);
+			item1.setPrice(3);
+			item1.setSubtotal(3);
+			item1.setTempitemid(1);
+			item1.setUnitid("01");
+			item1.setUnitname("袋");
+			item1.setWarehouseid("01");
+			item1.setWarehousename("亚希富环南总仓储");
+			listItem.add(item1);
+		}
+		for (int i = 0; i < 100; i++) {
+			DefDocItemXS item1 = new DefDocItemXS();
+			item1.setBarcode("6948972968666");
+			item1.assistnum = 1;
+			item1.setBignum("1袋");
+			item1.setCostprice(0);
+			item1.setDiscountprice(3);
+			item1.setDiscountratio(1);
+			item1.setDiscountsubtotal(3);
+			item1.setDocid(0);
+			item1.setGoodsid("1167");
+			item1.setGoodsname("决明子");
+			item1.setIsdiscount(false);
+			item1.setIsgift(false);
+			item1.setIspromotion(false);
+			item1.setItemid(100 + i);
+			item1.setNum(1);
+			item1.setPrice(3);
+			item1.setSubtotal(3);
+			item1.setTempitemid(1);
+			item1.setUnitid("01");
+			item1.setUnitname("袋");
+			item1.setWarehouseid("01");
+			item1.setWarehousename("亚希富环南总仓储");
+			listItem.add(item1);
+		}
+		for (int i = 0; i < 100; i++) {
+			DefDocItemXS item1 = new DefDocItemXS();
+			item1.setBarcode("61101530346219");
+			item1.assistnum = 0.05;
+			item1.setBignum("1袋");
+			item1.setCostprice(0);
+			item1.setDiscountprice(3);
+			item1.setDiscountratio(1);
+			item1.setDiscountsubtotal(3);
+			item1.setDocid(0);
+			item1.setGoodsid("1168");
+			item1.setGoodsname("test2");
+			item1.setIsdiscount(false);
+			item1.setIsgift(false);
+			item1.setIspromotion(false);
+			item1.setItemid(200 + i);
+			item1.setNum(1);
+			item1.setPrice(3);
+			item1.setSubtotal(3);
+			item1.setTempitemid(1);
+			item1.setUnitid("01");
+			item1.setUnitname("袋");
+			item1.setWarehouseid("01");
+			item1.setWarehousename("亚希富环南总仓储");
+			listItem.add(item1);
+		}
+		return listItem;
 	}
 
 	private void initDate() {

@@ -17,7 +17,7 @@ public class Sz_stockwarn extends CloudDBBase {
 		try {
 			query = executeQuery(stockwarnBuilder.toString());
 			if (query == null) {
-				return -1;
+				return 0;
 			}
 
 			while (query.next()) {
@@ -35,7 +35,7 @@ public class Sz_stockwarn extends CloudDBBase {
 			}
 
 		}
-		return -1;
+		return 0;
 	}
 
 	/**

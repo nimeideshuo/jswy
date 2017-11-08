@@ -106,8 +106,8 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	// TODO startOpenDoc
 	public void startOpenDoc(View v) {
 		// 测试 数据库查询
-		edNum = (EditText) findViewById(R.id.edNum);
-		edTime = (EditText) findViewById(R.id.edTime);
+		// edNum = (EditText) findViewById(R.id.edNum);
+		// edTime = (EditText) findViewById(R.id.edTime);
 		serviceStore = new ServiceStore();
 		//
 		// PDH.show(this, "库存查询中..", new PDH.ProgressCallBack() {

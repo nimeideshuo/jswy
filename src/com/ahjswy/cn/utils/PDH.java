@@ -28,20 +28,24 @@ public class PDH {
 	private static TextView toastText;
 	private static View toastView;
 	public static LoadingDialog dialog;
+	private static WaitingDialog waitingDialog;
 
 	private static String getText(int paramInt) {
 		return MyApplication.getInstance().getResources().getString(paramInt);
 	}
 
 	public static void show(final Activity activity, final ProgressCallBack paCallBack) {
-		final WaitingDialog localWaitingDialog = new WaitingDialog(activity);
-		localWaitingDialog.show();
+		if (waitingDialog != null && waitingDialog.isShowing()) {
+			waitingDialog.dismiss();
+		}
+		waitingDialog = new WaitingDialog(activity);
+		waitingDialog.show();
 		new Thread() {
 			public void run() {
 				paCallBack.action();
 				PDH.handler.post(new Runnable() {
 					public void run() {
-						localWaitingDialog.dismiss();
+						waitingDialog.dismiss();
 					}
 				});
 			}
@@ -49,6 +53,9 @@ public class PDH {
 	}
 
 	public static void show(final Activity activity, final String text, final ProgressCallBack callBack) {
+		if (dialog != null && dialog.isShowing()) {
+			dialog.dismiss();
+		}
 		dialog = new LoadingDialog(activity);
 		dialog.show(text);
 		new Thread() {

@@ -44,6 +44,8 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_indoc_add_more_goods);
 		initView();
+		scaner = Scaner.factory(this);
+		scaner.setBarcodeListener(barcodeListener);
 	}
 
 	private void initView() {
@@ -60,8 +62,6 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		scaner = Scaner.factory(this);
-		scaner.setBarcodeListener(barcodeListener);
 	}
 
 	@Override
@@ -83,9 +83,6 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 
 	private void readBarcode(String barcode) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
-		// final ArrayList<DefDocItemXS> localArrayList = new
-		// ArrayList<DefDocItemXS>();
-
 		final Map<String, Object> goodsMap = new HashMap<String, Object>();
 		if (goodsThinList.size() == 1) {
 			int num = Utils.isCombination() ? 1 : 0;

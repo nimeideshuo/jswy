@@ -1,5 +1,6 @@
 package com.ahjswy.cn.scaner;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 
 public class Scaner {
@@ -33,6 +34,10 @@ public class Scaner {
 
 	public void defaultSetting() {
 
+	}
+
+	public BroadcastReceiver getMScanReceiver() {
+		return null;
 	}
 
 	ScanerBarcodeListener barcodeListener;

@@ -130,7 +130,7 @@ public class CustomerDAO {
 	public String queryPricesystemid(String customerid) {
 		this.db = this.helper.getReadableDatabase();
 		try {
-			Cursor cursor = this.db.rawQuery("select  pricesystemid   from cu_customer where id=? ",
+			Cursor cursor = this.db.rawQuery("select  a.pricesystemid   from cu_customer a where id=? ",
 					new String[] { customerid });
 			if (cursor.moveToNext()) {
 				return cursor.getString(0);

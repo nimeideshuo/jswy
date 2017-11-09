@@ -131,6 +131,9 @@ public class DocUtils {
 			return (int) (stocknumber / ratio) + goodsUnit.getUnitname();
 		}
 		GoodsUnit baseBaseUnit = unitDAO.queryBaseUnit(goodsUnit.getGoodsid());
+		if (baseBaseUnit == null) {
+			return "";
+		}
 		stockbigName = (int) (stocknumber / ratio) == 0 ? "" : (int) (stocknumber / ratio) + goodsUnit.getUnitname();
 		if (num % baseBaseUnit.getRatio() == 0) {
 			return stockbigName + (int) num + baseBaseUnit.getUnitname();

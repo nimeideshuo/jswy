@@ -13,7 +13,6 @@ import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.Def_DocDraft;
 import com.ahjswy.cn.dao.GoodsDAO;
-import com.ahjswy.cn.dao.GoodsPriceDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.DefDocItemXS;
@@ -41,6 +40,7 @@ import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
@@ -71,7 +71,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -257,6 +256,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 							setActionBarText();
 							bottomCount();
 							setDBDoc();
+							adapter.notifyDataSetChanged();
 						}
 					}, 180L);
 					break;
@@ -275,6 +275,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 							setActionBarText();
 							bottomCount();
 							setDBDoc();
+							adapter.notifyDataSetChanged();
 						}
 					}, 180L);
 					break;
@@ -1077,6 +1078,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					PDH.showSuccess("保存成功");
 					ishaschanged = false;
 					setActionBarText();
+					adapter.notifyDataSetChanged();
 					if (check) {
 						printDocHandler.sendEmptyMessage(0);
 					}
@@ -1204,10 +1206,10 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						} else {
 							listItem.addAll(0, newListItem);
 						}
+						adapter.setData(listItem);
 						runOnUiThread(new Runnable() {
 							public void run() {
-								adapter.setData(listItem);
-								listview_copy_dele.setAdapter(adapter);
+								adapter.notifyDataSetChanged();
 								ishaschanged = true;
 								setActionBarText();
 								bottomCount();
@@ -1281,6 +1283,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				bottomCount();
 				refreshUI();
 				setDBDoc();
+				adapter.notifyDataSetChanged();
 				break;
 			case 3:
 				doc = (DefDocXS) data.getSerializableExtra("doc");

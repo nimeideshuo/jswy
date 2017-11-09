@@ -189,23 +189,22 @@ public class GoodsUnitDAO {
 	// TODO 获取商品 规格 1*多少
 	public double getGoodsUnitRatio(String goodsid, String unitid) {
 		this.db = this.helper.getReadableDatabase();
-		Cursor localCursor = this.db.rawQuery("select ratio from sz_goodsunit where goodsid=? and unitid=?",
-				new String[] { goodsid, unitid });
-		double d1 = 1.0D;
+		Cursor cursor = null;
 		try {
-			if (localCursor.moveToNext()) {
-				d1 = localCursor.getDouble(0);
+			cursor = this.db.rawQuery("select a.ratio from sz_goodsunit a where goodsid=? and unitid=?",
+					new String[] { goodsid, unitid });
+			if (cursor.moveToNext()) {
+				return cursor.getDouble(0);
 			}
-			return d1;
 		} catch (Exception localException) {
 			localException.printStackTrace();
 		} finally {
-			if (localCursor != null)
-				localCursor.close();
+			if (cursor != null)
+				cursor.close();
 			if (this.db != null)
 				this.db.close();
 		}
-		return d1;
+		return 1.0D;
 	}
 
 	// TODO 查询商品换算比例
@@ -291,19 +290,20 @@ public class GoodsUnitDAO {
 	public GoodsUnit queryBaseUnit(String goodsid) {
 		this.db = this.helper.getReadableDatabase();
 		String[] arrays = { goodsid };
-		GoodsUnit goodsunit = null;
-		Cursor cursor = this.db.rawQuery(
-				"select goodsid,unitid,unitname,isbasic,isshow,ratio from sz_goodsunit where isbasic=1 and goodsid =? ",
-				arrays);
+		Cursor cursor = null;
 		try {
+			cursor = this.db.rawQuery(
+					"select a.goodsid,a.unitid,a.unitname,a.isbasic,a.isshow,a.ratio from sz_goodsunit a where isbasic=1 and goodsid =? ",
+					arrays);
 			while (cursor.moveToNext()) {
-				goodsunit = new GoodsUnit();
+				GoodsUnit goodsunit = new GoodsUnit();
 				goodsunit.setGoodsid(cursor.getString(0));
 				goodsunit.setUnitid(cursor.getString(1));
 				goodsunit.setUnitname(cursor.getString(2));
 				goodsunit.setIsbasic(cursor.getInt(3) == 1 ? true : false);
 				goodsunit.setIsshow(cursor.getInt(4) == 1 ? true : false);
 				goodsunit.setRatio(cursor.getDouble(5));
+				return goodsunit;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -313,8 +313,7 @@ public class GoodsUnitDAO {
 			if (this.db != null)
 				this.db.close();
 		}
-
-		return goodsunit;
+		return null;
 
 	}
 

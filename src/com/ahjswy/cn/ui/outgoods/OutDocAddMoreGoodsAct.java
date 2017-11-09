@@ -22,6 +22,7 @@ import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.Dialog_listCheckBox;
@@ -90,14 +91,21 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 			if (dialog != null) {
 				dialog.dismiss();
 			}
-			readBarcode(barcode);
+			try {
+				readBarcode(barcode);
+			} catch (Exception e) {
+				e.printStackTrace();
+
+			}
 		}
 	};
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		scaner.removeListener();
+		if (scaner != null) {
+			scaner.removeListener();
+		}
 	}
 
 	protected void readBarcode(String barcode) {
@@ -116,7 +124,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 				combinationItem(goodsMap);
 			}
 			addItems(goodsMap);
-			adapter.notifyDataSetInvalidated();
 		} else if (goodsThinList.size() > 1) {
 
 			dialog.setGoods(goodsThinList);
@@ -139,7 +146,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 						combinationItem(goodsMap);
 					}
 					addItems(goodsMap);
-					adapter.notifyDataSetInvalidated();
 				}
 			});
 		} else {

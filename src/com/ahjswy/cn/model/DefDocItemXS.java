@@ -192,14 +192,6 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 
 	}
 
-	// public RespGoodsWarehouse getStocknum() {
-	// return stocknum;
-	// }
-	//
-	// public void setStocknum(RespGoodsWarehouse stocknum) {
-	// this.stocknum = stocknum;
-	// }
-
 	public String getBarcode() {
 		return this.barcode;
 	}

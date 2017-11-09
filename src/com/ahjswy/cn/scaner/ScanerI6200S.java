@@ -1,5 +1,7 @@
 package com.ahjswy.cn.scaner;
 
+import com.ahjswy.cn.utils.MLog;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,9 +26,10 @@ public class ScanerI6200S extends Scaner {
 	 * 初始化 I6000S
 	 */
 	private void initScan() {
+		MLog.tag("initScan");
 		try {
 			mScanManager = new ScanManager();
-			mScanManager.openScanner();
+			// mScanManager.openScanner();
 			soundpool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 100);
 			IntentFilter filter = new IntentFilter();
 			filter.addAction(SCAN_ACTION);
@@ -35,6 +38,10 @@ public class ScanerI6200S extends Scaner {
 			e.printStackTrace();
 		}
 
+	}
+
+	public BroadcastReceiver getMScanReceiver() {
+		return mScanReceiver;
 	}
 
 	BroadcastReceiver mScanReceiver = new BroadcastReceiver() {
@@ -84,7 +91,6 @@ public class ScanerI6200S extends Scaner {
 
 	@Override
 	public void setBarcodeListener(ScanerBarcodeListener barcodeListener) {
-		// TODO Auto-generated method stub
 		super.setBarcodeListener(barcodeListener);
 	}
 
@@ -113,7 +119,6 @@ public class ScanerI6200S extends Scaner {
 
 	@Override
 	public void setDecodeAimIlluminiation(boolean state) {
-		// TODO Auto-generated method stub
 		super.setDecodeAimIlluminiation(state);
 	}
 

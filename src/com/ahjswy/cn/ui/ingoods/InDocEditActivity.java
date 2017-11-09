@@ -257,12 +257,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			});
 		} else {
 			PDH.showFail("没有查找到商品！可以尝试更新数据");
-			// EditText edErroy = (EditText) findViewById(R.id.edErroy);
-			// edErroy.setVisibility(View.VISIBLE);
-			// edErroy.setText("条码:[" + barcode + "]" + "账套:[" +
-			// SystemState.getAccountSet().getDatabase() + "]部门:["
-			// + SystemState.getDepartment().getDname() + "]仓库:[" +
-			// SystemState.getWarehouse().getName() + "]");
 		}
 	}
 

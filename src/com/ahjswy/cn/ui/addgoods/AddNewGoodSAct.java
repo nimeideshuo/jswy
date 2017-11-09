@@ -126,7 +126,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		listPrice = new ArrayList<Pricesystem>();
 		cbIsusebatch.setClickable(false);
 		goodsDAO = new GoodsDAO();
-		etBarcode.setText("694892968666");
 	}
 
 	private void initUnit1() {

@@ -64,9 +64,8 @@ public class OutDocItemAdapter extends BaseAdapter {
 		return this.items;
 	}
 
-	public void setData(List<DefDocItemXS> paramList) {
-		this.items = paramList;
-		notifyDataSetChanged();
+	public void setData(List<DefDocItemXS> items) {
+		this.items = items;
 	}
 
 	public ArrayList<Long> getListItemDelete() {

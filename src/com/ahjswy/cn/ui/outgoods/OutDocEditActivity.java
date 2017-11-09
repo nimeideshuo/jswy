@@ -60,6 +60,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -70,6 +71,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -135,7 +137,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		sv = new Sv_docitem();
 		unitDAO = new GoodsUnitDAO();
 		serviceStore = new ServiceStore();
-		goodspricedao = new GoodsPriceDAO();
 	}
 
 	protected void combinationItem() {
@@ -1343,18 +1344,16 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 		};
 	};
-	private GoodsPriceDAO goodspricedao;
 
 	private void intenToMain() {
 		if (ishaschanged) {
-			final MAlertDialog maler = new MAlertDialog(this);
+			MAlertDialog maler = new MAlertDialog(this);
 			maler.setMessage("是否保存当前单据?");
-			maler.show();
-			maler.setCancelListener(new OnClickListener() {
+			maler.setNeutralButton(new MAlertDialog.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
-					maler.dismiss();
+				public void onClick(MAlertDialog dialog) {
+					dialog.dismiss();
 					String localString = validateDoc();
 					if (localString != null) {
 						InfoDialog.showError(OutDocEditActivity.this, localString);
@@ -1383,11 +1382,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					});
 				}
 			});
-			maler.setComfirmListener(new OnClickListener() {
+			maler.setNegativeButton(new MAlertDialog.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
-					maler.dismiss();
+				public void onClick(MAlertDialog dialog) {
+					dialog.dismiss();
 					sv.deleteDoc(docContainerEntity.getDoctype());
 					Intent intent = new Intent(OutDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
@@ -1395,6 +1394,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 				}
 			});
+			maler.show();
 			return;
 		}
 		Intent intent = new Intent(OutDocEditActivity.this, SwyMain.class);
@@ -1417,7 +1417,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			if (this.menuPopup == null) {
 				this.menuPopup = new OutDocEditMenuPopup(this);
 			}
-			this.menuPopup.showAtLocation(listview_copy_dele, 80, 0, 0);
+			this.menuPopup.showAtLocation(listview_copy_dele, Gravity.BOTTOM, 0, 0);
 			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
 			localLayoutParams.alpha = 0.8F;
 			getWindow().setAttributes(localLayoutParams);

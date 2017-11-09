@@ -43,6 +43,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -437,27 +438,27 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			if (this.menuPopup == null) {
 				this.menuPopup = new InventoryEditMenuPopup(this);
 			}
-			menuPopup.showAtLocation(this.root, 80, 0, 0);
+			menuPopup.showAtLocation(this.root, Gravity.BOTTOM, 0, 0);
 			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
 			localLayoutParams.alpha = 0.8F;
 			getWindow().setAttributes(localLayoutParams);
 			break;
 		case android.R.id.home:
 			if (ishaschanged) {
-				final MAlertDialog dialog = new MAlertDialog(this);
+				MAlertDialog dialog = new MAlertDialog(this);
 				dialog.setMessage("是否保存当前单据？");
-				dialog.setCancelListener(new OnClickListener() {
+				dialog.setNeutralButton(new MAlertDialog.OnClickListener() {
 
 					@Override
-					public void onClick(View v) {
+					public void onClick(MAlertDialog dialog) {
 						dialog.dismiss();
 						save();
 					}
 				});
-				dialog.setComfirmListener(new OnClickListener() {
+				dialog.setNegativeButton(new MAlertDialog.OnClickListener() {
 
 					@Override
-					public void onClick(View v) {
+					public void onClick(MAlertDialog dialog) {
 						dialog.dismiss();
 						finish();
 					}
@@ -754,20 +755,20 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 	// private FieldSaleItemDAO fileDao;
 
 	private void saveDoc() {
-		final MAlertDialog dialog = new MAlertDialog(this);
+		MAlertDialog dialog = new MAlertDialog(this);
 		dialog.setMessage("是否保存当前单据？");
-		dialog.setCancelListener(new OnClickListener() {
+		dialog.setNeutralButton(new MAlertDialog.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(MAlertDialog dialog) {
 				dialog.dismiss();
 				save();
 			}
 		});
-		dialog.setComfirmListener(new OnClickListener() {
+		dialog.setNegativeButton(new MAlertDialog.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(MAlertDialog dialog) {
 				dialog.dismiss();
 				finish();
 			}
@@ -812,22 +813,21 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 
 	@Override
 	public void onBackPressed() {
-		System.out.println("onBackPressed");
 		if (ishaschanged) {
-			final MAlertDialog dialog = new MAlertDialog(this);
+			MAlertDialog dialog = new MAlertDialog(this);
 			dialog.setMessage("是否保存当前单据？");
-			dialog.setCancelListener(new OnClickListener() {
+			dialog.setNeutralButton(new MAlertDialog.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
+				public void onClick(MAlertDialog dialog) {
 					dialog.dismiss();
 					save();
 				}
 			});
-			dialog.setComfirmListener(new OnClickListener() {
+			dialog.setNegativeButton(new MAlertDialog.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
+				public void onClick(MAlertDialog dialog) {
 					dialog.dismiss();
 					finish();
 				}
@@ -836,7 +836,6 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			return;
 		}
 
-		// super.onBackPressed();
 	}
 
 	@Override

@@ -47,6 +47,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -223,7 +224,7 @@ public class OutpurchaseEditActivity extends BaseActivity
 			if (this.menuPopup == null) {
 				menuPopup = new OutpurchaseEditMenuPopup(this);
 			}
-			menuPopup.showAtLocation(listview_copy_dele, 80, 0, 0);
+			menuPopup.showAtLocation(listview_copy_dele, Gravity.BOTTOM, 0, 0);
 			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
 			localLayoutParams.alpha = 0.8F;
 			getWindow().setAttributes(localLayoutParams);
@@ -275,14 +276,13 @@ public class OutpurchaseEditActivity extends BaseActivity
 	private void intenToMain() {
 
 		if (ishaschanged) {
-			final MAlertDialog maler = new MAlertDialog(this);
-			maler.show();
+			MAlertDialog maler = new MAlertDialog(this);
 			maler.setMessage("是否保存当前单据?");
-			maler.setCancelListener(new OnClickListener() {
+			maler.setNeutralButton(new MAlertDialog.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
-					maler.dismiss();
+				public void onClick(MAlertDialog dialog) {
+					dialog.dismiss();
 					String localString = validateDoc();
 					if (localString != null) {
 						InfoDialog.showError(OutpurchaseEditActivity.this, localString);
@@ -311,17 +311,17 @@ public class OutpurchaseEditActivity extends BaseActivity
 						}
 					});
 				}
-
 			});
-			maler.setComfirmListener(new OnClickListener() {
+			maler.setNegativeButton(new MAlertDialog.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
+				public void onClick(MAlertDialog dialog) {
 					Intent intent = new Intent(OutpurchaseEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
 				}
 			});
+			maler.show();
 			return;
 		}
 		Intent intent = new Intent(OutpurchaseEditActivity.this, SwyMain.class);

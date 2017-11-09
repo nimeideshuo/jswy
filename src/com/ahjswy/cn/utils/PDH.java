@@ -48,7 +48,7 @@ public class PDH {
 		}.start();
 	}
 
-	public static void show(final Activity activity,final String text, final ProgressCallBack callBack) {
+	public static void show(final Activity activity, final String text, final ProgressCallBack callBack) {
 		dialog = new LoadingDialog(activity);
 		dialog.show(text);
 		new Thread() {
@@ -98,8 +98,8 @@ public class PDH {
 	public static void showToast(int paramInt1, int paramInt2, int paramInt3) {
 		try {
 			showToast(getText(paramInt1), paramInt2, paramInt3);
-			return;
-		} finally {
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

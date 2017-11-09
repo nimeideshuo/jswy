@@ -64,11 +64,13 @@ public class GoodsWarehouseSearchAct extends BaseActivity implements AdapterView
 	private ListView listview;
 	private String position;
 
-	private void loadData(final Goods paramGoods) {
+	private void loadData(final Goods goods) {
+		if (goods == null) {
+			return;
+		}
 		PDH.show(this, "正在查询仓库...", new PDH.ProgressCallBack() {
 			public void action() {
-				String localString = new ServiceGoods().gds_GetGoodsWarehouses(paramGoods.getId(),
-						paramGoods.isIsusebatch());
+				String localString = new ServiceGoods().gds_GetGoodsWarehouses(goods.getId(), goods.isIsusebatch());
 				// 成功走此方法
 				if (RequestHelper.isSuccess(localString)) {
 					handler.sendMessage(handler.obtainMessage(0, localString));

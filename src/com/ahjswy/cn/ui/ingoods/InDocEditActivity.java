@@ -53,6 +53,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -336,7 +337,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			if (this.menuPopup == null) {
 				this.menuPopup = new InDocEditMenuPopup(this);
 			}
-			this.menuPopup.showAtLocation(listView, 80, 0, 0);
+			this.menuPopup.showAtLocation(listView, Gravity.BOTTOM, 0, 0);
 			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
 			localLayoutParams.alpha = 0.8F;
 			getWindow().setAttributes(localLayoutParams);
@@ -598,11 +599,11 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		if (ishaschanged) {
 			maler.show();
 			maler.setMessage("是否保存当前单据?");
-			maler.setCancelListener(new OnClickListener() {
+			maler.setNeutralButton(new MAlertDialog.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
-					maler.dismiss();
+				public void onClick(MAlertDialog dialog) {
+					dialog.dismiss();
 					String localString = validateDoc();
 					if (localString != null) {
 						InfoDialog.showError(InDocEditActivity.this, localString);
@@ -631,11 +632,11 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					});
 				}
 			});
-			maler.setComfirmListener(new OnClickListener() {
+			maler.setNegativeButton(new MAlertDialog.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
-					maler.dismiss();
+				public void onClick(MAlertDialog dialog) {
+					dialog.dismiss();
 					Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
@@ -1038,7 +1039,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	// };
 	// private BarcodeManager bm;
 	private Dialog_listCheckBox dialog;
-	private MAlertDialog maler;
+	MAlertDialog maler;
 	private Button btnGoodClass;
 	private GoodsUnitDAO unitDao;
 	// private AccountPreference ap;

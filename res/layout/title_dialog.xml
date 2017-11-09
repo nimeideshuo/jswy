@@ -38,20 +38,21 @@
             android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/btn_dialg_true"
+                android:id="@+id/btn_Neutral"
                 style="@style/m_dialog_button"
-                android:layout_marginRight="1.0dip"
+                android:layout_weight="1"
                 android:text="是" />
 
             <Button
-                android:id="@+id/btn_dialg_false"
+                android:id="@+id/btn_Negative"
                 style="@style/m_dialog_button"
-                android:layout_marginRight="1.0dip"
+                android:layout_marginLeft="3dp"
                 android:text="否" />
 
             <Button
                 android:id="@+id/btn_dialg_back"
                 style="@style/m_dialog_button"
+                android:layout_marginLeft="3dp"
                 android:text="取消" />
         </LinearLayout>
     </LinearLayout>

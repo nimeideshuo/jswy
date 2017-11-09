@@ -175,53 +175,46 @@ public class NewCustomerAddAct extends BaseActivity implements OnClickListener {
 
 			if ("samename".equals(localString)) {
 
-				final MAlertDialog localMAlertDialog1 = new MAlertDialog(NewCustomerAddAct.this);
-				localMAlertDialog1.simpleShow("服务器存在同名客户，是否继续提交？");
-				localMAlertDialog1.setCancelListener("提交");
-				localMAlertDialog1.setComfirmListener("取消");
-				localMAlertDialog1.setCancelListener(new OnClickListener() {
+				MAlertDialog dialog = new MAlertDialog(NewCustomerAddAct.this);
+				dialog.setTitle("服务器存在同名客户，是否继续提交？");
+				dialog.setNeutralButton("提交", new MAlertDialog.OnClickListener() {
 
 					@Override
-					public void onClick(View v) {
-						localMAlertDialog1.dismiss();
+					public void onClick(MAlertDialog dialog) {
+						dialog.dismiss();
 						saveCustomer(true, false);
-
 					}
 				});
-				localMAlertDialog1.setComfirmListener(new OnClickListener() {
+				dialog.setNegativeButton("取消", new MAlertDialog.OnClickListener() {
 
 					@Override
-					public void onClick(View v) {
-						localMAlertDialog1.dismiss();
+					public void onClick(MAlertDialog dialog) {
+						dialog.dismiss();
 					}
 				});
-				localMAlertDialog1.show();
+				dialog.show();
 				return;
 			}
 
 			if ("sametel".equals(localString)) {
-
-				final MAlertDialog localMAlertDialog1 = new MAlertDialog(NewCustomerAddAct.this);
-				localMAlertDialog1.simpleShow("服务器存在相同电话的客户，是否继续提交？");
-				localMAlertDialog1.setCancelListener("提交");
-				localMAlertDialog1.setComfirmListener("取消");
-				localMAlertDialog1.setCancelListener(new OnClickListener() {
+				MAlertDialog dialog = new MAlertDialog(NewCustomerAddAct.this);
+				dialog.setMessage("服务器存在相同电话的客户，是否继续提交？");
+				dialog.setNegativeButton("取消", new MAlertDialog.OnClickListener() {
 
 					@Override
-					public void onClick(View v) {
-						localMAlertDialog1.dismiss();
+					public void onClick(MAlertDialog dialog) {
+						dialog.dismiss();
+					}
+				});
+				dialog.setNeutralButton("提交", new MAlertDialog.OnClickListener() {
+
+					@Override
+					public void onClick(MAlertDialog dialog) {
+						dialog.dismiss();
 						saveCustomer(true, true);
-
 					}
 				});
-				localMAlertDialog1.setComfirmListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						localMAlertDialog1.dismiss();
-					}
-				});
-				localMAlertDialog1.show();
+				dialog.show();
 				return;
 
 			}

@@ -12,6 +12,7 @@ import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.dao.PricesystemDAO;
 import com.ahjswy.cn.model.Goods;
 import com.ahjswy.cn.model.GoodsClass;
+import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.model.Pricesystem;
 import com.ahjswy.cn.model.Unit;
@@ -20,15 +21,20 @@ import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
+import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchGoodsClassAct;
 import com.ahjswy.cn.ui.SwyMain;
+import com.ahjswy.cn.utils.Dialog_utils;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PinYin4j;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -119,7 +125,8 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		listGoodUnit = new ArrayList<GoodsUnit>();
 		listPrice = new ArrayList<Pricesystem>();
 		cbIsusebatch.setClickable(false);
-
+		goodsDAO = new GoodsDAO();
+		etBarcode.setText("694892968666");
 	}
 
 	private void initUnit1() {
@@ -139,8 +146,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		ratio1.setEnabled(false);
 		cbBigUnit1.setClickable(false);
 		cbBaseUnit1.setClickable(false);
-		// cbBaseUnit1.setOnCheckedChangeListener(this);
-		// cbBigUnit1.setOnCheckedChangeListener(this);
 		priceAdapter = new PriceAdapter();
 		listAdapterPrice = dao.queryAll();
 		lvPrices.setAdapter(priceAdapter);
@@ -339,13 +344,17 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	private ArrayList<Pricesystem> listPrice;
 	private EditText guaranteeearlier;
 	private EditText guaranteeperiod;
+	private GoodsDAO goodsDAO;
 
 	private void submit() {
+		listGoodUnit.clear();
+		listPrice.clear();
 		String validateDoc = validateDoc();
 		if (validateDoc != null) {
 			InfoDialog.showError(this, validateDoc);
 			return;
 		}
+
 		for (Pricesystem price : listAdapterPrice) {
 			price.setUnitid(unit1.getUnitid());
 			price.setPricesystemid(price.getPsid());
@@ -381,6 +390,42 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			unit3.setRatio(Utils.getDouble(ratio3.getText().toString()));
 			listGoodUnit.add(unit3);
 		}
+		// 1、商品编号不能重复；2、商品名称 + 规格不能重复
+		GoodsThin isCheckNameSpecification = goodsDAO.queryGoodsNameANDSpecification(etName.getText().toString(),
+				etSpecification.getText().toString());
+		if (isCheckNameSpecification != null) {
+			showError("当前商品名称、规格已存在，请修改商品名称或规格后再试！");
+			return;
+		}
+		// TODO
+		Goods goods = goodsDAO.getGoods(etBarcode.getText().toString());
+		if (goods != null) {
+			MAlertDialog maler = new MAlertDialog(this);
+			maler.btn_dialg_back.setVisibility(View.GONE);
+			maler.setMessage("该商品条码已经存在是否继续?");
+			maler.setNeutralButton(new MAlertDialog.OnClickListener() {
+
+				@Override
+				public void onClick(MAlertDialog dialog) {
+					dialog.dismiss();
+					submitGood();
+				}
+			});
+			maler.setNegativeButton(new MAlertDialog.OnClickListener() {
+
+				@Override
+				public void onClick(MAlertDialog dialog) {
+					dialog.dismiss();
+				}
+			});
+			maler.show();
+			return;
+		} else {
+			submitGood();
+		}
+	}
+
+	protected void submitGood() {
 		// 提交
 		Goods goods = new Goods();
 		goods.name = etName.getText().toString();
@@ -404,7 +449,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 				// private ArrayList<Pricesystem> listPrice;
 
 				// sql insert addgood
-				GoodsDAO goodsDAO = new GoodsDAO();
+
 				boolean insertAddGood = goodsDAO.insertAddGood(JSONUtil.parseObject(respGood.getGoods(), Goods.class));
 				if (!insertAddGood) {
 					showError("商品本地写入失败!");
@@ -430,8 +475,6 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 			finish();
 		} else {
 			showError(TextUtils.isEmpty(addGood) ? "添加商品失败!" : addGood);
-			listGoodUnit.clear();
-			listPrice.clear();
 		}
 
 	}

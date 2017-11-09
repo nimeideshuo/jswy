@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ahjswy.cn.model.Good;
 import com.ahjswy.cn.model.Goods;
 import com.ahjswy.cn.model.GoodsInfo;
 import com.ahjswy.cn.model.GoodsThin;
@@ -38,15 +39,16 @@ public class GoodsDAO {
 	}
 
 	// 获取商品
-	public Goods getGoods(String paramString) {
-		Goods goods = new Goods();
+	public Goods getGoods(String str) {
+
 		Cursor cursor = null;
-		String array[] = { paramString, paramString };
+		String array[] = { str, str };
 		String localString1 = "select id,name,pinyin,barcode,salecue,specification,model,goodsclassid,goodsclassname,stocknumber,bigstocknumber,getstocktime, isusebatch from sz_goods g where g.id=? or g.barcode=? ";
 		this.db = this.helper.getReadableDatabase();
 		cursor = this.db.rawQuery(localString1, array);
 		try {
 			while (cursor.moveToNext()) {
+				Goods goods = new Goods();
 				goods.setId(cursor.getString(0));
 				goods.setName(cursor.getString(1));
 				goods.setPinyin(cursor.getString(2));
@@ -59,11 +61,8 @@ public class GoodsDAO {
 				goods.setStocknumber(cursor.getString(9));
 				goods.setBigstocknumber(cursor.getString(10));
 				goods.setGetstocktime(new Timestamp(cursor.getLong(11)));
-				if (cursor.getInt(12) == 1) {
-					goods.setIsusebatch(true);
-				} else {
-					goods.setIsusebatch(false);
-				}
+				goods.setIsusebatch(cursor.getInt(12) == 1 ? true : false);
+				return goods;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,19 +72,19 @@ public class GoodsDAO {
 			if (this.db != null)
 				this.db.close();
 		}
-		return goods;
+		return null;
 
 	}
 
 	// 获取商品 薄
-	public GoodsThin getGoodsThin(String paramString) {
+	public GoodsThin getGoodsThin(String str) {
 		Cursor cursor = null;
 		GoodsThin goodsthin = new GoodsThin();
-		String array[] = { paramString, paramString };
+		String array[] = { str, str };
 		String localString1 = "select g.id,g.name,g.pinyin,g.barcode,g.specification,g.model, g.isusebatch from sz_goods g where  g.id=? or g.barcode=?";
 		this.db = this.helper.getReadableDatabase();
-		cursor = this.db.rawQuery(localString1, array);
 		try {
+			cursor = this.db.rawQuery(localString1, array);
 			while (cursor.moveToNext()) {
 				goodsthin.setId(cursor.getString(0));
 				goodsthin.setName(cursor.getString(1));
@@ -124,9 +123,7 @@ public class GoodsDAO {
 				goodsthin.setBarcode(cursor.getString(3));
 				goodsthin.setSpecification(cursor.getString(4));
 				goodsthin.setModel(cursor.getString(5));
-				if (cursor.getInt(6) == 1) {
-					goodsthin.setIsusebatch(true);
-				}
+				goodsthin.setIsusebatch(cursor.getInt(6) == 1 ? true : false);
 				list.add(goodsthin);
 			}
 		} catch (Exception e) {
@@ -196,74 +193,81 @@ public class GoodsDAO {
 
 	}
 
-	public String queryGoodsBigStockNumber(String paramString) {
+	/**
+	 * 查询商品 名称 和 规格 是否存在
+	 * 
+	 * @return
+	 */
+	public GoodsThin queryGoodsNameANDSpecification(String name, String specification) {
 		this.db = this.helper.getReadableDatabase();
-		Cursor localCursor = this.db.rawQuery("select bigstocknumber,getstocktime from sz_goods where id=?",
-				new String[] { paramString });
-		Object localObject1 = "";
+		String sql = "select g.id,g.name,g.pinyin,g.barcode,g.specification,g.model, g.isusebatch from sz_goods g where isavailable='1' and  name=? and  specification=?";
 		try {
-			if (localCursor.moveToNext())
-				;
-			// if (!TextUtils.isEmptyS(localCursor.getString(0)))
-			// String localString2;
-			// for (Object localObject3 = "无库存"; ; localObject3 = localString2)
-			// {
-			// String localString1 = localObject3 + " [更新:" +
-			// Utils.formatDate(String.valueOf(localCursor.getLong(1)), "MM-dd
-			// HH:mm") + "]";
-			// localObject1 = localString1;
-			//// localString2 = localCursor.getString(0);
-			// }
-		} catch (Exception localException) {
-			localException.printStackTrace();
-		} finally {
-			if (localCursor != null)
-				localCursor.close();
-			if (this.db != null)
-				this.db.close();
+			Cursor cursor = db.rawQuery(sql, new String[] { name, specification });
+			if (cursor.moveToNext()) {
+				GoodsThin goodsThin = new GoodsThin();
+				goodsThin.setId(cursor.getString(0));
+				goodsThin.setName(cursor.getString(1));
+				goodsThin.setPinyin(cursor.getString(2));
+				goodsThin.setBarcode(cursor.getString(3));
+				goodsThin.setSpecification(cursor.getString(4));
+				goodsThin.setModel(cursor.getString(5));
+				goodsThin.setIsusebatch(cursor.getInt(6) == 1 ? true : false);
+				return goodsThin;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
+		return null;
+	}
+
+	public String queryGoodsBigStockNumber(String paramString) {
 		return paramString;
 	}
 
 	public List queryGoodsByBarcode(String paramString, long paramLong) {
-		this.db = this.helper.getReadableDatabase();
-		SQLiteDatabase localSQLiteDatabase = this.db;
-		String[] arrayOfString = new String[2];
-		arrayOfString[0] = paramString;
-		// arrayOfString[1] = paramLong;
-		Cursor localCursor = localSQLiteDatabase.rawQuery(
-				"select g.id,g.name,g.pinyin,g.barcode,g.specification,g.model, isusebatch from sz_goods g where g.isavailable='1' and g.barcode=? and g.id not in (select f.goodsid from kf_fieldsaleitem f where f.fieldsaleid=?) order by lower(g.pinyin)",
-				arrayOfString);
-		ArrayList localArrayList = new ArrayList();
-		try {
-			while (true) {
-				boolean bool1 = localCursor.moveToNext();
-				if (!bool1)
-					return localArrayList;
-				GoodsThin localGoodsThin = new GoodsThin();
-				localGoodsThin.setId(localCursor.getString(0));
-				localGoodsThin.setName(localCursor.getString(1));
-				localGoodsThin.setPinyin(localCursor.getString(2));
-				localGoodsThin.setBarcode(localCursor.getString(3));
-				localGoodsThin.setSpecification(localCursor.getString(4));
-				localGoodsThin.setModel(localCursor.getString(5));
-				if (localCursor.getInt(6) != 1) {
-					localGoodsThin.setIsusebatch(false);
-				}
-
-				localArrayList.add(localGoodsThin);
-			}
-		} catch (Exception localException) {
-			while (true) {
-				localException.printStackTrace();
-				boolean bool2 = false;
-			}
-		} finally {
-			if (localCursor != null)
-				localCursor.close();
-			if (this.db != null)
-				this.db.close();
-		}
+		return null;
+		// this.db = this.helper.getReadableDatabase();
+		// SQLiteDatabase localSQLiteDatabase = this.db;
+		// String[] arrayOfString = new String[2];
+		// arrayOfString[0] = paramString;
+		// // arrayOfString[1] = paramLong;
+		// Cursor localCursor = localSQLiteDatabase.rawQuery(
+		// "select g.id,g.name,g.pinyin,g.barcode,g.specification,g.model,
+		// isusebatch from sz_goods g where g.isavailable='1' and g.barcode=?
+		// and g.id not in (select f.goodsid from kf_fieldsaleitem f where
+		// f.fieldsaleid=?) order by lower(g.pinyin)",
+		// arrayOfString);
+		// ArrayList localArrayList = new ArrayList();
+		// try {
+		// while (true) {
+		// boolean bool1 = localCursor.moveToNext();
+		// if (!bool1)
+		// return localArrayList;
+		// GoodsThin localGoodsThin = new GoodsThin();
+		// localGoodsThin.setId(localCursor.getString(0));
+		// localGoodsThin.setName(localCursor.getString(1));
+		// localGoodsThin.setPinyin(localCursor.getString(2));
+		// localGoodsThin.setBarcode(localCursor.getString(3));
+		// localGoodsThin.setSpecification(localCursor.getString(4));
+		// localGoodsThin.setModel(localCursor.getString(5));
+		// if (localCursor.getInt(6) != 1) {
+		// localGoodsThin.setIsusebatch(false);
+		// }
+		//
+		// localArrayList.add(localGoodsThin);
+		// }
+		// } catch (Exception localException) {
+		// while (true) {
+		// localException.printStackTrace();
+		// boolean bool2 = false;
+		// }
+		// } finally {
+		// if (localCursor != null)
+		// localCursor.close();
+		// if (this.db != null)
+		// this.db.close();
+		// }
 	}
 
 	public int queryGoodsIndexByPinyin(String paramString) {

@@ -43,6 +43,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -354,13 +355,12 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 			InfoDialog.showError(this, "空单不能过账");
 			return;
 		}
-		final MAlertDialog localObject = new MAlertDialog(this);
-		localObject.setMessage("过账后的单据不能修改。\n确定过账？");
-		localObject.setCancelListener(new View.OnClickListener() {
+		MAlertDialog dialog = new MAlertDialog(this);
+		dialog.setMessage("过账后的单据不能修改。\n确定过账？");
+		dialog.setNeutralButton(new MAlertDialog.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				localObject.dismiss();
+			public void onClick(MAlertDialog dialog) {
 				PDH.show(TransferEditActivity.this, new PDH.ProgressCallBack() {
 					public void action() {
 						String str = serviceStore.str_CheckDBDoc(doc, listItem, listItemDelete, isPrint);
@@ -369,7 +369,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 				});
 			}
 		});
-		localObject.show();
+		dialog.show();
 	}
 
 	public void docProperty() {
@@ -380,13 +380,12 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 
 	public void delete() {
 		if (this.doc.getDocid() > 0L) {
-			final MAlertDialog localMAlertDialog = new MAlertDialog(this);
-			localMAlertDialog.setMessage("确定删除？");
-			localMAlertDialog.setCancelListener(new View.OnClickListener() {
+			MAlertDialog dialog = new MAlertDialog(this);
+			dialog.setMessage("确定删除？");
+			dialog.setNeutralButton(new MAlertDialog.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
-					localMAlertDialog.dismiss();
+				public void onClick(MAlertDialog dialog) {
 					PDH.show(TransferEditActivity.this, new PDH.ProgressCallBack() {
 
 						@Override
@@ -398,7 +397,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 					});
 				}
 			});
-			localMAlertDialog.show();
+			dialog.show();
 			return;
 		}
 		finish();
@@ -430,24 +429,24 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 			if (menuPopup == null) {
 				menuPopup = new TransferEditMenuPopup(this);
 			}
-			menuPopup.showAtLocation(listView, 80, 0, 0);
+			menuPopup.showAtLocation(listView, Gravity.BOTTOM, 0, 0);
 		}
 		if (menu.getItemId() == android.R.id.home) {
 			if (ishaschanged) {
-				final MAlertDialog dialog = new MAlertDialog(this);
+				MAlertDialog dialog = new MAlertDialog(this);
 				dialog.setMessage("是否保存当前单据？");
-				dialog.setCancelListener(new OnClickListener() {
+				dialog.setNeutralButton(new MAlertDialog.OnClickListener() {
 
 					@Override
-					public void onClick(View v) {
+					public void onClick(MAlertDialog dialog) {
 						dialog.dismiss();
 						save();
 					}
 				});
-				dialog.setComfirmListener(new OnClickListener() {
+				dialog.setNegativeButton(new MAlertDialog.OnClickListener() {
 
 					@Override
-					public void onClick(View v) {
+					public void onClick(MAlertDialog dialog) {
 						dialog.dismiss();
 						finish();
 					}

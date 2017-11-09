@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lin_popup"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/btn_dialog_nor"
-    android:paddingBottom="5.0dip"
-    android:paddingLeft="5.0dip"
-    android:id="@+id/lin_popup"
-    android:paddingRight="5.0dip"
-    android:paddingTop="3.0dip" >
+    android:padding="3.0dip" >
 
     <Button
         android:id="@+id/btnIp"

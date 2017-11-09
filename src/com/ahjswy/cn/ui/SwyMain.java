@@ -48,6 +48,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -423,7 +424,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			if (this.menuPopup == null) {
 				this.menuPopup = new MainMenuPopup(this);
 			}
-			this.menuPopup.showAtLocation(this.root, 80, 0, 0);
+			this.menuPopup.showAtLocation(this.root, Gravity.BOTTOM, 0, 0);
 			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
 			localLayoutParams.alpha = 0.8F;
 			getWindow().setAttributes(localLayoutParams);

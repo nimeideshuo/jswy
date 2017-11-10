@@ -151,6 +151,7 @@ public class UpdateUtils {
 				if (localList9 == null) {
 					return false;
 				}
+				MLog.tag(localList9);
 				saveToLocalDB(localList9);
 				i++;
 				paramHandler.sendEmptyMessage(i);

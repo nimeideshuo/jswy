@@ -24,17 +24,13 @@ import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchGoodsClassAct;
 import com.ahjswy.cn.ui.SwyMain;
-import com.ahjswy.cn.utils.Dialog_utils;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PinYin4j;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -438,9 +434,13 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		goods.isusebatch = cbIsusebatch.isChecked();
 		goods.goodsclassid = btnGoodsClass.getTag().toString();
 		// 保质期
-		goods.guaranteeperiod = guaranteeperiod.getText().toString();
+		if (TextUtils.isEmptyS(guaranteeperiod.getText().toString())) {
+			goods.guaranteeperiod = Integer.parseInt(guaranteeperiod.getText().toString());
+		}
 		// 临期报警
-		goods.guaranteeearlier = guaranteeearlier.getText().toString();
+		if (TextUtils.isEmptyS(guaranteeearlier.getText().toString())) {
+			goods.guaranteeearlier = Integer.parseInt(guaranteeearlier.getText().toString());
+		}
 		String addGood = new ServiceGoods().gds_AddGood(goods, listPrice, listGoodUnit);
 		if (RequestHelper.isSuccess(addGood)) {
 			GoodEntity respGood = JSONUtil.fromJson(addGood, GoodEntity.class);

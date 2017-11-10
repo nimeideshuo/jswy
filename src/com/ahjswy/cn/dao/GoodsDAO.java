@@ -220,11 +220,11 @@ public class GoodsDAO {
 
 		return null;
 	}
-
+	@Deprecated
 	public String queryGoodsBigStockNumber(String paramString) {
 		return paramString;
 	}
-
+	@Deprecated
 	public List queryGoodsByBarcode(String paramString, long paramLong) {
 		return null;
 		// this.db = this.helper.getReadableDatabase();
@@ -269,7 +269,7 @@ public class GoodsDAO {
 		// this.db.close();
 		// }
 	}
-
+	@Deprecated
 	public int queryGoodsIndexByPinyin(String paramString) {
 		this.db = this.helper.getReadableDatabase();
 		Cursor localCursor = this.db.rawQuery(
@@ -301,7 +301,7 @@ public class GoodsDAO {
 				this.db.close();
 		}
 	}
-
+	@Deprecated
 	public List<GoodsInfo> queryGoodsInfos(String paramString) {
 		this.db = this.helper.getReadableDatabase();
 		String localString1 = "SELECT g.id,g.name,g.pinyin,g.barcode,g.salecue,g.specification,g.model,g.goodsclassid,g.goodsclassname,g.stocknumber,g.bigstocknumber,g.getstocktime, isusebatch  FROM sz_goods g WHERE g.isavailable='1' and (";

@@ -123,7 +123,7 @@
             <com.ahjswy.cn.views.EditTextWithDel
                 android:id="@+id/guaranteeperiod"
                 style="@style/m_edtext"
-                android:inputType="numberDecimal" />
+                android:inputType="number" />
         </LinearLayout>
 
         <LinearLayout
@@ -138,7 +138,7 @@
             <com.ahjswy.cn.views.EditTextWithDel
                 android:id="@+id/guaranteeearlier"
                 style="@style/m_edtext"
-                android:inputType="numberDecimal" />
+                android:inputType="number" />
         </LinearLayout>
 
         <LinearLayout

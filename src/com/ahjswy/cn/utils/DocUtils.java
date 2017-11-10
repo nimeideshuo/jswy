@@ -123,7 +123,7 @@ public class DocUtils {
 		if (goodsUnit == null) {
 			return "";
 		}
-		// 查询商品比例
+		// TODO 查询商品比例
 		double ratio = unitDAO.getGoodsUnitRatio(goodsUnit.getGoodsid(), goodsUnit.getUnitid());
 		// 判断是否整除
 		double num = stocknumber % ratio;
@@ -154,6 +154,9 @@ public class DocUtils {
 			return (int) (stocknumber / ratio) + unitname;
 		}
 		GoodsUnit baseBaseUnit = unitDAO.queryBaseUnit(goodsid);
+		if (baseBaseUnit == null) {
+			return "";
+		}
 		stockbigName = (int) (stocknumber / ratio) == 0 ? "" : (int) (stocknumber / ratio) + unitname;
 		if (num % baseBaseUnit.getRatio() == 0) {
 			return stockbigName + (int) num + baseBaseUnit.getUnitname();
@@ -220,6 +223,9 @@ public class DocUtils {
 		String stocknum = "";
 		GoodsUnit goodsRatio = unitDAO.queryBigUnitRatio(unit.getGoodsid(), unit.getUnitid());
 		GoodsUnit queryBaseUnit = unitDAO.queryBaseUnit(unit.getGoodsid());
+		if (goodsRatio == null || queryBaseUnit == null) {
+			return "";
+		}
 		int zs = (int) (stockNum / goodsRatio.getRatio());
 		int xs = (int) Utils.normalizePrice(stockNum % goodsRatio.getRatio());
 		if (zs != 0) {

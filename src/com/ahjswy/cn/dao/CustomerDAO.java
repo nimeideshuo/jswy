@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ahjswy.cn.model.CustomerThin;
 import com.ahjswy.cn.model.SupplierThin;
+import com.ahjswy.cn.utils.TextUtils;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -128,9 +129,13 @@ public class CustomerDAO {
 	 * @return
 	 */
 	public String queryPricesystemid(String customerid) {
+		if (TextUtils.isEmpty(customerid)) {
+			return null;
+		}
 		this.db = this.helper.getReadableDatabase();
 		try {
-			Cursor cursor = this.db.rawQuery("select  a.pricesystemid   from cu_customer a where id=? ",
+			Cursor cursor = this.db.rawQuery(
+					"select  a.pricesystemid   from cu_customer a where id is not null and id=? ",
 					new String[] { customerid });
 			if (cursor.moveToNext()) {
 				return cursor.getString(0);

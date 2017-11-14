@@ -48,6 +48,7 @@ public class PrefsFragment extends PreferenceFragment {
 	final String[] net_setting = { "不允许(推荐)", "允许" };
 	final String[] goods_select_more = { "自由输入", "统一输入" };
 	final String[] orders = { "默认", "编号", "名称", "条码", "类别" };
+	String[] printModeitems = { "模板58", "模板80" };
 	private String netSelectTitle;
 	private String lastTime;
 	private String goodsSelectTitle;
@@ -182,6 +183,10 @@ public class PrefsFragment extends PreferenceFragment {
 		String printerModel = ap.getValue("printermodel_default", "epson").equals("epson") ? "标准型号" : "打印机型号一";
 		getMyPreference(R.string.printer_model).setSummary(
 				TextUtils.setTextStyle(getResources().getString(R.string.printer_model_select), printerModel));
+		// 选择打印模板
+		int printModeType = Integer.parseInt(ap.getValue("printModeType", "0"));
+		getMyPreference(R.string.print_mode).setSummary(TextUtils
+				.setTextStyle(getResources().getString(R.string.printer_type_select), printModeitems[printModeType]));
 		String isShow = Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow")) == true ? "显示" : "不显示";
 		getMyPreference(R.string.bluetoothPrintIsShow)
 
@@ -364,8 +369,22 @@ public class PrefsFragment extends PreferenceFragment {
 	 * 设置小票打印模板
 	 */
 	protected void printMode() {
-		// 设置小票打印模板
 
+		// 设置小票打印模板
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle("设置小票打印模板");
+		int checkedItem = Integer.parseInt(ap.getValue("printModeType", "0"));
+		builder.setSingleChoiceItems(printModeitems, checkedItem, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				ap.setValue("printModeType", which);
+				getMyPreference(R.string.print_mode).setSummary(TextUtils
+						.setTextStyle(getResources().getString(R.string.printer_type_select), printModeitems[which]));
+			}
+		});
+		builder.show();
 	}
 
 	/**
@@ -859,8 +878,6 @@ public class PrefsFragment extends PreferenceFragment {
 			new BaseDao().deleteDataBase();
 			ap.setValue("max_rversion", "0");
 		}
-		// TODO 客户商品客史 删除表 PC bug 等待修改
-		// new BaseDao().deleteDB(BaseDao.DELETE_CUSTOMERFIELDSALE);
 		long max_rversion = Long.parseLong(new AccountPreference().getValue("max_rversion", "0"));
 		List<ReqSynUpdateInfo> listReqSyn = new ServiceSynchronize().syn_QueryUpdateInfo(max_rversion);
 		if (listReqSyn != null) {

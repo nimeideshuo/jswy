@@ -1,10 +1,6 @@
 package com.ahjswy.cn.ui.ingoods;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import com.ahjswy.cn.R;
@@ -14,31 +10,30 @@ import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.utils.Utils;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnFocusChangeListener;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
 public class InDocAddMoreAdapter extends BaseAdapter {
-	private Calendar cal;
+	// private Calendar cal;
 	private Context context;
 	private List<DefDocItemXS> listItems;
 	private int selectPosition = -1;// 记住选中的edtitext
 
-	public InDocAddMoreAdapter(Context paramContext) {
-		this.context = paramContext;
-		this.listItems = new ArrayList<DefDocItemXS>();
-		cal = Calendar.getInstance();
+	public InDocAddMoreAdapter(Context context) {
+		this.context = context;
+		if (this.listItems == null) {
+			this.listItems = new ArrayList<DefDocItemXS>();
+		}
+		// cal = Calendar.getInstance();
 	}
 
 	@Override
@@ -56,14 +51,14 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 	}
 
 	// 添加一个
-	public void addData(DefDocItemXS item) {
-		listItems.add(item);
-	}
+	// public void addData(DefDocItemXS item) {
+	// listItems.add(item);
+	// }
 
-	public void addItemDate(ArrayList<DefDocItemXS> listItem) {
-		listItems.addAll(listItem);
-		notifyDataSetChanged();
-	}
+	// public void addItemDate(ArrayList<DefDocItemXS> listItem) {
+	// listItems.addAll(listItem);
+	// notifyDataSetChanged();
+	// }
 
 	@Override
 	public long getItemId(int position) {
@@ -90,7 +85,7 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 				selectPosition = position;
 			}
 		});
-		btnUnit.setTag(position);
+		btnUnit.setTag(Integer.valueOf(position));
 		etNum.setTag(Integer.valueOf(position));
 		btnUnit.setOnClickListener(onClickListener);
 		etNum.addTextChangedListener(new TextWatcher() {
@@ -108,22 +103,18 @@ public class InDocAddMoreAdapter extends BaseAdapter {
 			@Override
 			public void afterTextChanged(Editable s) {
 				int i = ((Integer) etNum.getTag()).intValue();
-				try {
-					listItems.get(i).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				listItems.get(i).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
 			}
 		});
 		tvName.setText(itemXS.getGoodsname());
 		btnUnit.setText(itemXS.getUnitname());
 		etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
-
 		return convertView;
 	}
 
 	public void setData(List<DefDocItemXS> listItems) {
-		this.listItems = listItems;
+		this.listItems.clear();
+		this.listItems.addAll(listItems);
 	}
 
 	// 设置单位

@@ -3,6 +3,7 @@ package com.ahjswy.cn.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.CustomerDAO;
@@ -27,6 +28,7 @@ public class DocUtils {
 	private static CustomerDAO customerdao = new CustomerDAO();
 	private static GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
 	private static Sz_stockwarn stockwarn = new Sz_stockwarn();
+	private static AccountPreference ap = new AccountPreference();
 
 	static {
 		if (serviceStore == null) {
@@ -332,7 +334,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public static double getGoodsBasicPrice(String customerid, DefDocItemXS docItem) {
-		GoodsUnit basicUnit = unitDAO.getBasicUnit(docItem.getGoodsid());
+		// GoodsUnit basicUnit = unitDAO.getBasicUnit(docItem.getGoodsid());
 		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, docItem.getGoodsid());
 		if (historyPrice != null) {
 			return historyPrice.getPrice();
@@ -385,4 +387,12 @@ public class DocUtils {
 		return Utils.normalize((num * unitRatio) / bigUnitRatio, 4);
 	}
 
+	/**
+	 * 蓝牙开关是否打开
+	 * 
+	 * @return
+	 */
+	public static boolean isBluetoothPrint() {
+		return Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow", "false"));
+	}
 }

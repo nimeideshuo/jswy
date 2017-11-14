@@ -9,9 +9,6 @@ import com.ahjswy.cn.model.FieldSaleItemForPrint;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
-import android.os.SystemClock;
-import android.util.Log;
-
 /**
  * 有单价的 打印模板
  * 
@@ -36,7 +33,7 @@ public class PrintMode1 extends PrintMode {
 		for (int i = 0; i < this.datainfo.size(); i++) {
 			this.printItem(this.datainfo.get(i));
 		}
-		this.println("-------------------------------");
+		println("-------------------------------");
 		this.printFoot();
 		this.tear_off();
 		datainfo.clear();
@@ -44,9 +41,9 @@ public class PrintMode1 extends PrintMode {
 	}
 
 	private void printItem(FieldSaleItemForPrint arg13) {
-		int v11 = 22;
-		int v10 = 12;
-		String v3 = "";
+		int leftToPadding = 24;
+		int leftPadding = 15;
+		String v3 = "";//去掉小数点
 		if (!arg13.getItemtype().equals("销") && !"销售退货单".equals(this.docInfo.getDoctype())) {
 			v3 = "[" + arg13.getItemtype() + "]";
 		}
@@ -61,28 +58,30 @@ public class PrintMode1 extends PrintMode {
 				v0 = String.valueOf(v0) + "\n" + arg13.getRemark();
 			}
 		}
-		String v2 = Utils.getNumber(arg13.getNum());
-		String v4 = Utils.getSubtotalMoney(arg13.getPrice());
-		String v5 = Utils.getSubtotalMoney(arg13.getDiscountsubtotal());
+		// 计件单位
+		String bigNumber = Utils.getNumber(arg13.getNum());
+		// 单价
+		String price = Utils.getSubtotalMoney(arg13.getPrice());
+		// 折扣小计
+		String discountsubtotal = Utils.getSubtotalMoney(arg13.getDiscountsubtotal());
 		if ("0".equals(new AccountPreference().getValue("clearlastzero", "0"))) {
-			v2 = Utils.cutLastZero(v2);
-			v4 = Utils.cutLastZero(v4);
-			v5 = Utils.cutLastZero(v5);
+			bigNumber = Utils.cutLastZero(bigNumber);
+			price = Utils.cutLastZero(price);
+			discountsubtotal = Utils.cutLastZero(discountsubtotal);
 		}
 		if (("0".equals(new AccountPreference().getValue("minustuihuo", "0")))
 				&& ((arg13.getItemtype().equals("退")) || (arg13.getItemtype().equals("入")))
 				&& !"销售退货单".equals(this.docInfo.getDoctype())) {
-			v2 = "-" + Utils.cutLastZero(v2);
-			v5 = "-" + Utils.cutLastZero(v5);
+			bigNumber = "-" + Utils.cutLastZero(bigNumber);
+			discountsubtotal = "-" + Utils.cutLastZero(discountsubtotal);
 		}
-		v2 = String.valueOf(v2) + arg13.getUnitname();
+		bigNumber = String.valueOf(bigNumber) + arg13.getUnitname();
 		try {
 			this.print_left(v0);
-
 			this.enter();
-			this.print_base(this.print_left("   "), v10, v2);
-			this.print_base(v10, v11, v4);
-			this.print_base(v11, 32, v5);
+			this.print_base(this.print_left(""), leftPadding, bigNumber);
+			this.print_base(leftPadding, leftToPadding, price);
+			this.print_base(leftToPadding, 34, discountsubtotal);
 			this.enter();
 		} catch (IOException e) {
 			e.printStackTrace();

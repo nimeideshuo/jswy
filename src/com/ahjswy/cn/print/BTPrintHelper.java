@@ -48,7 +48,6 @@ public class BTPrintHelper {
 			@Override
 			public void action() {
 				try {
-					SystemClock.sleep(1000);
 					connecting(printer);
 					doPrint();
 				} catch (Exception e) {
@@ -67,7 +66,7 @@ public class BTPrintHelper {
 
 	}
 
-	protected void doPrint() throws IOException {
+	synchronized protected void doPrint() throws IOException {
 		this.mmOutputStream = this.bluetoothSocket.getOutputStream();
 		this.mmInputStream = this.bluetoothSocket.getInputStream();
 		this.connectThread = new ConnectThread();
@@ -75,6 +74,7 @@ public class BTPrintHelper {
 		this.mode.setOutputStream(this.mmOutputStream);
 		this.mode.setCallback(printCallback);
 		this.mode.printDoc();
+		MLog.d(getClass().getName() + ":doPrint()");
 	}
 
 	protected void connecting(BTPrinter printer) throws IOException {

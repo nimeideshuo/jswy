@@ -83,8 +83,8 @@ public class FieldSaleItemForPrint {
 		this.itemtype = itemtype;
 	}
 
-	public void setNum(double paramDouble) {
-		this.num = paramDouble;
+	public void setNum(double num) {
+		this.num = num;
 	}
 
 	public void setPrice(double price) {

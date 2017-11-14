@@ -250,12 +250,12 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					handler.postDelayed(new Runnable() {
 						public void run() {
 							adapter.setData(listItem);
+							adapter.notifyDataSetChanged();
 							refreshUI();
 							ishaschanged = true;
 							setActionBarText();
 							bottomCount();
 							setDBDoc();
-							adapter.notifyDataSetChanged();
 						}
 					}, 180L);
 					break;
@@ -269,12 +269,13 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					handler.postDelayed(new Runnable() {
 						public void run() {
 							adapter.setData(listItem);
+							adapter.notifyDataSetChanged();
 							refreshUI();
 							ishaschanged = true;
 							setActionBarText();
 							bottomCount();
 							setDBDoc();
-							adapter.notifyDataSetChanged();
+
 						}
 					}, 180L);
 					break;
@@ -641,7 +642,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	};
 
 	private void setAddItem(DefDocItemXS docItem) {
-		// TODO 辅助计件单位
+		// 辅助计件单位
 		docItem.assistnum = DocUtils.getAssistnum(docItem.getGoodsid(), docItem.getUnitid(), docItem.getNum());
 		// 折后小计
 		docItem.setSubtotal(Utils.normalizeSubtotal(docItem.getNum() * docItem.getPrice()));
@@ -865,8 +866,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		});
 	}
 
-	private int BLUE_STATE = 0;
-	private int BLUE_Print = 1;
+	// private int BLUE_STATE = 0;
+	// private int BLUE_Print = 1;
 
 	// 蓝牙过账/打印
 	public void blueDevicePrint() {
@@ -874,7 +875,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			bluePrint();
 		} else {
 			check(false);
-			BLUE_STATE = BLUE_Print;
 		}
 	}
 
@@ -897,14 +897,15 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 	public List<FieldSaleItemForPrint> getDocPrintData() {
 		List<FieldSaleItemForPrint> datainfo = new ArrayList<FieldSaleItemForPrint>();
-		for (DefDocItemXS item : listItem) {
+		for (int i = 0; i < listItem.size(); i++) {
+			DefDocItemXS item = listItem.get(i);
 			FieldSaleItemForPrint itemForPrint = new FieldSaleItemForPrint();
 			itemForPrint.setBarcode(item.getBarcode());
 			itemForPrint.setDiscountratio(item.getDiscountprice());
 			itemForPrint.setDiscountsubtotal(item.getDiscountsubtotal());
 			itemForPrint.setGoodsid(item.getGoodsid());
 			itemForPrint.setGoodsname(item.getGoodsname());
-			itemForPrint.setItemtype("13");
+			itemForPrint.setItemtype(i + 1 + "");
 			itemForPrint.setNum(item.getNum());
 			itemForPrint.setPrice(item.getPrice());
 			itemForPrint.setRemark(item.getRemark());
@@ -916,21 +917,21 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	}
 
 	public FieldSaleForPrint getDocPrintInfo() {
-		FieldSaleForPrint v2 = new FieldSaleForPrint();
+		FieldSaleForPrint printItem = new FieldSaleForPrint();
 		// v2.setId(doc.getId());
-		v2.setDoctype("销售单");
-		v2.setShowid(doc.getShowid());
-		v2.setCustomername(this.doc.getCustomername());
-		v2.setDepartmentname(this.doc.getDepartmentname());
-		v2.setBuildername(this.doc.getBuildername());
-		v2.setBuildtime(Utils.formatDate(this.doc.getBuildtime(), "yyyy-MM-dd HH:mm:ss"));
-		v2.setSumamount("合计:" + getSumMoney());
-		v2.setPreference("优惠:" + this.doc.getPreference());
-		v2.setReceivable("应收:" + Utils.getSubtotalMoney(getSumMoney() - doc.getPreference()));
-		v2.setReceived("已收:" + Utils.getRecvableMoney(received));
-		v2.setNum("数量:" + String.valueOf(0));
-		v2.setRemark(doc.getRemark());
-		return v2;
+		printItem.setDoctype("销售单");
+		printItem.setShowid(doc.getShowid());
+		printItem.setCustomername(this.doc.getCustomername());
+		printItem.setDepartmentname(this.doc.getDepartmentname());
+		printItem.setBuildername(this.doc.getBuildername());
+		printItem.setBuildtime(Utils.formatDate(this.doc.getBuildtime(), "yyyy-MM-dd HH:mm:ss"));
+		printItem.setSumamount("合计:" + getSumMoney());
+		printItem.setPreference("优惠:" + this.doc.getPreference());
+		printItem.setReceivable("应收:" + Utils.getSubtotalMoney(getSumMoney() - doc.getPreference()));
+		printItem.setReceived("已收:" + Utils.getRecvableMoney(received));
+		printItem.setNum("数量:" + String.valueOf(0));
+		printItem.setRemark(doc.getRemark());
+		return printItem;
 	}
 
 	private RespServiceInfor printDoc() {
@@ -1089,11 +1090,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				case 1:
 					if ((doc.isIsavailable()) && (doc.isIsposted())) {
 						PDH.showSuccess("过账成功");
-						if (BLUE_STATE == BLUE_Print) {
+						if (DocUtils.isBluetoothPrint()) {
 							bluePrint();
 						}
 						startActivity(new Intent(OutDocEditActivity.this, SwyMain.class));
-						finish();
+						// finish();
 						sv.deleteDoc(docContainerEntity.getDoctype());
 						return;
 					}
@@ -1206,8 +1207,10 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 							listItem.addAll(0, newListItem);
 						}
 						adapter.setData(listItem);
+
 						runOnUiThread(new Runnable() {
 							public void run() {
+								listview_copy_dele.setAdapter(adapter);
 								adapter.notifyDataSetChanged();
 								ishaschanged = true;
 								setActionBarText();
@@ -1261,28 +1264,32 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			case 2:
 				int j = data.getIntExtra("position", 0);
 				DefDocItemXS localDefDocItemXS3 = (DefDocItemXS) data.getSerializableExtra("docitem");
-				listItem = adapter.getData();
+				// listItem = adapter.getData();
 				listItem.set(j, localDefDocItemXS3);
-				int k = data.getIntExtra("positiongive", -1);
-				DefDocItemXS localDefDocItemXS4;
-				if ((localDefDocItemXS3.isIspromotion()) && (localDefDocItemXS3.getPromotiontype() == 1)) {
-					localDefDocItemXS4 = (DefDocItemXS) data.getSerializableExtra("docitemgive");
-					if (k >= 0) {
-						if ((localDefDocItemXS4 != null) && (localDefDocItemXS4.getNum() > 0.0D)) {
-							this.listItem.set(k, localDefDocItemXS4);
-						}
-					}
-				}
+				// int k = data.getIntExtra("positiongive", -1);
+				// DefDocItemXS localDefDocItemXS4;
+				// if ((localDefDocItemXS3.isIspromotion()) &&
+				// (localDefDocItemXS3.getPromotiontype() == 1)) {
+				// localDefDocItemXS4 = (DefDocItemXS)
+				// data.getSerializableExtra("docitemgive");
+				// if (k >= 0) {
+				// if ((localDefDocItemXS4 != null) &&
+				// (localDefDocItemXS4.getNum() > 0.0D)) {
+				// this.listItem.set(k, localDefDocItemXS4);
+				// }
+				// }
+				// }
 				if (Utils.isCombination()) {
 					combinationItem();
 				}
 				this.adapter.setData(listItem);
-				listview_copy_dele.setAdapter(adapter);
+				adapter.notifyDataSetChanged();
+				// listview_copy_dele.setAdapter(adapter);
 				ishaschanged = true;
 				bottomCount();
 				refreshUI();
 				setDBDoc();
-				adapter.notifyDataSetChanged();
+
 				break;
 			case 3:
 				doc = (DefDocXS) data.getSerializableExtra("doc");
@@ -1341,11 +1348,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		}
 	}
 
-	Handler handlerItem = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-
-		};
-	};
+	// Handler handlerItem = new Handler() {
+	// public void handleMessage(android.os.Message msg) {
+	//
+	// };
+	// };
 
 	private void intenToMain() {
 		if (ishaschanged) {

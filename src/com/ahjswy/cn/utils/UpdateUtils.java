@@ -211,7 +211,7 @@ public class UpdateUtils {
 				paramHandler.sendEmptyMessage(i);
 			}
 		}
-		// 同步商品有问题
+		// 同步商品客史
 		int pageindex = (int) localSwyUtils.getPagesFromUpdateInfo(paramList, "cu_customerfieldsalegoods");
 		if (pageindex > 0 && rversion == 0) {
 			for (int j = 1; j <= pageindex; j++) {

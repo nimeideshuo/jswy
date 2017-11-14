@@ -42,15 +42,15 @@ public class OutDocItemAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
-	public void addZeroItemList(DefDocItemXS paramDefDocItemXS) {
-		this.items.add(0, paramDefDocItemXS);
-		notifyDataSetChanged();
-	}
+	// public void addZeroItemList(DefDocItemXS paramDefDocItemXS) {
+	// this.items.add(0, paramDefDocItemXS);
+	// notifyDataSetChanged();
+	// }
 
-	public void addItemlist(List<DefDocItemXS> newListItem) {
-		this.items.addAll(newListItem);
-		notifyDataSetChanged();
-	}
+	// public void addItemlist(List<DefDocItemXS> newListItem) {
+	// this.items.addAll(newListItem);
+	// notifyDataSetChanged();
+	// }
 
 	@Override
 	public int getCount() {
@@ -65,7 +65,8 @@ public class OutDocItemAdapter extends BaseAdapter {
 	}
 
 	public void setData(List<DefDocItemXS> items) {
-		this.items = items;
+		this.items.clear();
+		this.items.addAll(items);
 	}
 
 	public ArrayList<Long> getListItemDelete() {
@@ -73,7 +74,7 @@ public class OutDocItemAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public DefDocItemXS getItem(int position) {
 		return this.items.get(position);
 	}
 
@@ -82,10 +83,10 @@ public class OutDocItemAdapter extends BaseAdapter {
 		return ((DefDocItemXS) this.items.get(position)).getItemid();
 	}
 
-	public void remove(DefDocItemXS paramDefDocItemXS) {
-		this.items.remove(paramDefDocItemXS);
-		notifyDataSetChanged();
-	}
+	// public void remove(DefDocItemXS paramDefDocItemXS) {
+	// this.items.remove(paramDefDocItemXS);
+	// notifyDataSetChanged();
+	// }
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {

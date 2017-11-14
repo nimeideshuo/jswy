@@ -32,6 +32,7 @@ public abstract class PrintMode {
 	byte[] r_line;
 	protected final int swidth = 48;
 	protected final int width = 32;
+	static AccountPreference ap = new AccountPreference();
 
 	public PrintMode(List<HashMap<String, String>> pageinfo) {
 		super();
@@ -40,7 +41,7 @@ public abstract class PrintMode {
 		garity[1] = 45;
 		r_line = garity;
 		index = 0;
-		printermodel = new AccountPreference().getValue("printermodel_default", "epson");
+		printermodel = ap.getValue("printermodel_default", "epson");
 		this.pageinfo = pageinfo;
 	}
 
@@ -284,8 +285,14 @@ public abstract class PrintMode {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		int bodytype = modehelper.getBodytype();
 		List<HashMap<String, String>> listTextView = modehelper.getTextViews();
+		// 模板类型
+		int printModeType = Integer.parseInt(ap.getValue("printModeType", "0"));
+		if (printModeType == 1) {
+			return new PrintMode80(listTextView);
+		}
 		if (bodytype == 0) {
 			// 0 是有单价 模板
 			return new PrintMode1(listTextView);

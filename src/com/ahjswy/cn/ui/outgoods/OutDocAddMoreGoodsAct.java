@@ -6,23 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.GoodsDAO;
-import com.ahjswy.cn.dao.GoodsPriceDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
-import com.ahjswy.cn.model.CustomerRecords;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
-import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.Dialog_listCheckBox;
@@ -47,6 +42,11 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	private OutDocAddMoreAdapter adapter;
 	private DefDocXS doc;
 	private Sz_stockwarn stockwarn;
+	private List<DefDocItemXS> listDe;
+	private ListView listview;
+	private Dialog_listCheckBox dialog;
+	private Scaner scaner;
+	private GoodsUnitDAO dao;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +59,9 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 
 	private void intView() {
 		dao = new GoodsUnitDAO();
-		goodspricedao = new GoodsPriceDAO();
 		dialog = new Dialog_listCheckBox(this);
-		serviceGoods = new ServiceGoods();
-		ap = new AccountPreference();
 		stockwarn = new Sz_stockwarn();
-		lv_commodity_add = (ListView) findViewById(R.id.lv_commodity_add);
+		listview = (ListView) findViewById(R.id.lv_commodity_add);
 		items = JSONUtil.str2list(getIntent().getStringExtra("items"), DefDocItemXS.class);
 		doc = (DefDocXS) getIntent().getSerializableExtra("doc");
 		adapter = new OutDocAddMoreAdapter(this);
@@ -75,13 +72,11 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 			item.stocksumnum = sumstock;
 			item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
 			double stocknum = stockwarn.queryStockwarn(item.getWarehouseid(), item.getGoodsid());
-			// stockwarn.queryStockwarnAll(goodsid);
 			item.stocknum = stocknum;
 			item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
 		}
 		adapter.setItem(items);
-		lv_commodity_add.setAdapter(adapter);
-		// setInitItem();
+		listview.setAdapter(adapter);
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
@@ -95,7 +90,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 				readBarcode(barcode);
 			} catch (Exception e) {
 				e.printStackTrace();
-
 			}
 		}
 	};
@@ -151,14 +145,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		} else {
 			PDH.showFail("没有查找到商品！可以尝试更新数据");
 		}
-		mHandler.postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				lv_commodity_add.setSelection(items.size());
-			}
-		}, 200);
-
 	}
 
 	private void combinationItem(Map<String, Object> goodsMap) {
@@ -192,14 +178,16 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 					item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
 					items.add(item);
 				}
-				adapter.setItem(items);
 				runOnUiThread(new Runnable() {
 					public void run() {
-						adapter.notifyDataSetInvalidated();
+						adapter.setItem(items);
+						adapter.notifyDataSetChanged();
 					}
 				});
 			}
 		});
+
+		// listview.setSelection(items.size());
 	}
 
 	// String localString =
@@ -355,17 +343,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	//
 	// }
 
-	private List<DefDocItemXS> listDe;
-	private ListView lv_commodity_add;
-	// private BarcodeManager bm;
-	// private BarcodeConfig barcodeConfig;
-	private Dialog_listCheckBox dialog;
-	private Scaner scaner;
-	private ServiceGoods serviceGoods;
-	private AccountPreference ap;
-	private GoodsUnitDAO dao;
-	private GoodsPriceDAO goodspricedao;
-
 	// 保存输入的值 必须有一个 大于0 的
 	private void tv_title_start() {
 		List<DefDocItemXS> data = adapter.getData();
@@ -399,27 +376,27 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		return l1;
 	}
 
-	DefDocItemXS fillItem(GoodsThin paramGoodsThin, double paramDouble1, double paramDouble2, long paramLong) {
+	DefDocItemXS fillItem(GoodsThin goodsThin, double paramDouble1, double paramDouble2, long paramLong) {
 		DefDocItemXS itemXS = new DefDocItemXS();
 		itemXS.setItemid(0L);
 		itemXS.setTempitemid(paramLong);
 		itemXS.setDocid(this.doc.getDocid());
-		itemXS.setGoodsid(paramGoodsThin.getId());
-		itemXS.setGoodsname(paramGoodsThin.getName());
-		itemXS.setBarcode(paramGoodsThin.getBarcode());
-		itemXS.setSpecification(paramGoodsThin.getSpecification());
-		itemXS.setModel(paramGoodsThin.getModel());
+		itemXS.setGoodsid(goodsThin.getId());
+		itemXS.setGoodsname(goodsThin.getName());
+		itemXS.setBarcode(goodsThin.getBarcode());
+		itemXS.setSpecification(goodsThin.getSpecification());
+		itemXS.setModel(goodsThin.getModel());
 		itemXS.setWarehouseid(this.doc.getWarehouseid());
 		itemXS.setWarehousename(this.doc.getWarehousename());
-		GoodsUnit localGoodsUnit = null;
+		GoodsUnit goodsUnit = null;
 		if (Utils.DEFAULT_OutDocUNIT == 0) {
-			localGoodsUnit = dao.queryBaseUnit(paramGoodsThin.getId());
+			goodsUnit = dao.queryBaseUnit(goodsThin.getId());
 		} else {
-			localGoodsUnit = dao.queryBigUnit(paramGoodsThin.getId());
+			goodsUnit = dao.queryBigUnit(goodsThin.getId());
 		}
-		itemXS.setUnitid(localGoodsUnit.getUnitid());
-		itemXS.setUnitname(localGoodsUnit.getUnitname());
-		itemXS.unit = localGoodsUnit;
+		itemXS.setUnitid(goodsUnit.getUnitid());
+		itemXS.setUnitname(goodsUnit.getUnitname());
+		itemXS.unit = goodsUnit;
 		itemXS.setNum(Utils.normalize(paramDouble1, 2));
 		itemXS.setBignum(dao.getBigNum(itemXS.getGoodsid(), itemXS.getUnitid(), itemXS.getNum()));
 		// 价格
@@ -447,8 +424,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 			itemXS.setOutorderdocshowid(null);
 			itemXS.setOutorderitemid(0L);
 			// 是否显示批次
-			itemXS.setIsusebatch(paramGoodsThin.isIsusebatch());
-			localGoodsUnit = dao.queryBigUnit(paramGoodsThin.getId());
+			itemXS.setIsusebatch(goodsThin.isIsusebatch());
 		}
 		return itemXS;
 	}

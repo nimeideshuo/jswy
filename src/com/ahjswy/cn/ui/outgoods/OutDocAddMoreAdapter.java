@@ -35,7 +35,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 
 	public OutDocAddMoreAdapter(Activity context) {
 		this.context = context;
-		if (listItems == null) {
+		if (this.listItems == null) {
 			this.listItems = new ArrayList<DefDocItemXS>();
 		}
 	}
@@ -60,13 +60,8 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 	}
 
 	public void setItem(List<DefDocItemXS> listItems) {
-		this.listItems = listItems;
-	}
-
-	public void setData(List<DefDocItemXS> listItems) {
 		this.listItems.clear();
 		this.listItems.addAll(listItems);
-		notifyDataSetChanged();
 	}
 
 	public DefDocXS doc;
@@ -146,11 +141,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 			@Override
 			public void afterTextChanged(Editable s) {
 				int i = ((Integer) etNum.getTag()).intValue();
-				try {
-					listItems.get(i).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				listItems.get(i).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
 			}
 		});
 		btnUnit.setOnClickListener(new OnClickListener() {

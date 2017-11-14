@@ -103,12 +103,12 @@ public class Utils {
 
 	}
 
-	private static String formatDouble(double paramDouble, int paramInt) {
-		return formatDouble(paramDouble, new String[] { "0", "0.0", "0.00", "0.000", "0.0000" }[paramInt]);
+	private static String formatDouble(double value, int paramInt) {
+		return formatDouble(value, new String[] { "0", "0.0", "0.00", "0.000", "0.0000" }[paramInt]);
 	}
 
-	private static String formatDouble(double paramDouble, String paramString) {
-		return new DecimalFormat(paramString).format(paramDouble);
+	private static String formatDouble(double value, String paramString) {
+		return new DecimalFormat(paramString).format(value);
 	}
 
 	public static String formatDouble(String paramString, int paramInt) {
@@ -204,8 +204,8 @@ public class Utils {
 		return Long.valueOf(localCalendar.getTime().getTime());
 	}
 
-	public static String getSubtotalMoney(double paramDouble) {
-		return formatDouble(paramDouble, SUBTOTAL_DEC_NUM);
+	public static String getSubtotalMoney(double value) {
+		return formatDouble(value, SUBTOTAL_DEC_NUM);
 	}
 
 	/**

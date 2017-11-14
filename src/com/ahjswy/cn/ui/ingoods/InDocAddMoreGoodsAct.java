@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDoc;
@@ -56,7 +55,6 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		adapter.setData(items);
 		listView.setAdapter(adapter);
 		dialog = new Dialog_listCheckBox(this);
-		ap = new AccountPreference();
 	}
 
 	@Override
@@ -91,9 +89,11 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 				goodsMap.put(defdocitem.getGoodsid(), defdocitem);
 				combinationItem(goodsMap);
 			} else {
-				adapter.addData(defdocitem);
+				items.add(defdocitem);
 			}
-			adapter.notifyDataSetInvalidated();
+			adapter.setData(items);
+			adapter.notifyDataSetChanged();
+			// listView.setSelection(items.size());
 		} else if (goodsThinList.size() > 1) {
 			dialog.setGoods(goodsThinList);
 			dialog.setTempGoods(goodsThinList);
@@ -111,22 +111,17 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 							goodsMap.put(defdocitem.getGoodsid(), defdocitem);
 							combinationItem(goodsMap);
 						} else {
-							adapter.addData(defdocitem);
+							items.add(defdocitem);
 						}
 					}
-					adapter.notifyDataSetInvalidated();
+					adapter.setData(items);
+					adapter.notifyDataSetChanged();
+					// listView.setSelection(items.size());
 				}
 			});
 		} else {
 			PDH.showFail("没有查找到商品！可以尝试更新数据");
 		}
-		mHandler.postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				listView.setSelection(items.size());
-			}
-		}, 200);
 
 	}
 
@@ -141,7 +136,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 			}
 		}
 		for (Object item : goodsMap.values()) {
-			adapter.addData((DefDocItemXS) item);
+			items.add((DefDocItemXS) item);
 		}
 	}
 
@@ -235,50 +230,46 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 	// };
 	// };
 	private Dialog_listCheckBox dialog;
-	private AccountPreference ap;
 
 	private DefDocItemXS fillItem(GoodsThin goodsThin, double num, double price) {
 		GoodsUnitDAO localGoodsUnitDAO = new GoodsUnitDAO();
-		DefDocItemXS localDefDocItem = new DefDocItemXS();
-		localDefDocItem.setItemid(0L);
-		localDefDocItem.setDocid(this.doc.getDocid());
-		localDefDocItem.setGoodsid(goodsThin.getId());
-		localDefDocItem.setGoodsname(goodsThin.getName());
-		localDefDocItem.setBarcode(goodsThin.getBarcode());
-		localDefDocItem.setSpecification(goodsThin.getSpecification());
-		localDefDocItem.setModel(goodsThin.getModel());
-		localDefDocItem.setWarehouseid(this.doc.getWarehouseid());
-		localDefDocItem.setWarehousename(this.doc.getWarehousename());
+		DefDocItemXS itemXS = new DefDocItemXS();
+		itemXS.setItemid(0L);
+		itemXS.setDocid(this.doc.getDocid());
+		itemXS.setGoodsid(goodsThin.getId());
+		itemXS.setGoodsname(goodsThin.getName());
+		itemXS.setBarcode(goodsThin.getBarcode());
+		itemXS.setSpecification(goodsThin.getSpecification());
+		itemXS.setModel(goodsThin.getModel());
+		itemXS.setWarehouseid(this.doc.getWarehouseid());
+		itemXS.setWarehousename(this.doc.getWarehousename());
 		GoodsUnit localGoodsUnit = null;
 		if (Utils.DEFAULT_OutDocUNIT == 0) {
 			localGoodsUnit = localGoodsUnitDAO.queryBaseUnit(goodsThin.getId());
 		} else {
 			localGoodsUnit = localGoodsUnitDAO.queryBigUnit(goodsThin.getId());
 		}
-		localDefDocItem.setUnitid(localGoodsUnit.getUnitid());
-		localDefDocItem.setUnitname(localGoodsUnit.getUnitname());
-		localDefDocItem.setNum(Utils.normalize(num, 2));
-		localDefDocItem.setBignum(localGoodsUnitDAO.getBigNum(localDefDocItem.getGoodsid(), localDefDocItem.getUnitid(),
-				localDefDocItem.getNum()));
-		localDefDocItem.setPrice(Utils.normalizePrice(price));
-		localDefDocItem.setSubtotal(Utils.normalizeSubtotal(localDefDocItem.getNum() * localDefDocItem.getPrice()));
-		localDefDocItem.setDiscountratio(this.doc.getDiscountratio());
-		localDefDocItem
-				.setDiscountprice(Utils.normalizePrice(localDefDocItem.getPrice() * this.doc.getDiscountratio()));
-		localDefDocItem.setDiscountsubtotal(
-				Utils.normalizeSubtotal(localDefDocItem.getNum() * localDefDocItem.getDiscountprice()));
+		itemXS.setUnitid(localGoodsUnit.getUnitid());
+		itemXS.setUnitname(localGoodsUnit.getUnitname());
+		itemXS.setNum(Utils.normalize(num, 2));
+		itemXS.setBignum(localGoodsUnitDAO.getBigNum(itemXS.getGoodsid(), itemXS.getUnitid(), itemXS.getNum()));
+		itemXS.setPrice(Utils.normalizePrice(price));
+		itemXS.setSubtotal(Utils.normalizeSubtotal(itemXS.getNum() * itemXS.getPrice()));
+		itemXS.setDiscountratio(this.doc.getDiscountratio());
+		itemXS.setDiscountprice(Utils.normalizePrice(itemXS.getPrice() * this.doc.getDiscountratio()));
+		itemXS.setDiscountsubtotal(Utils.normalizeSubtotal(itemXS.getNum() * itemXS.getDiscountprice()));
 		boolean isgift = false;
-		if (localDefDocItem.getPrice() == 0.0D) {
+		if (itemXS.getPrice() == 0.0D) {
 			isgift = true;
 		}
-		localDefDocItem.setIsgift(isgift);
-		localDefDocItem.setCostprice(0.0D);
-		localDefDocItem.setRemark("");
-		localDefDocItem.setRversion(0L);
-		localDefDocItem.setIsdiscount(false);
-		localDefDocItem.setIsusebatch(goodsThin.isIsusebatch());
+		itemXS.setIsgift(isgift);
+		itemXS.setCostprice(0.0D);
+		itemXS.setRemark("");
+		itemXS.setRversion(0L);
+		itemXS.setIsdiscount(false);
+		itemXS.setIsusebatch(goodsThin.isIsusebatch());
 
-		return localDefDocItem;
+		return itemXS;
 	}
 
 	@Override

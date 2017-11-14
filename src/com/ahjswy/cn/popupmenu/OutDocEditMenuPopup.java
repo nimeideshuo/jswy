@@ -4,6 +4,7 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.ui.outgoods.OutDocEditActivity;
+import com.ahjswy.cn.utils.DocUtils;
 
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -76,12 +77,6 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 		ll_BlueDevicesPrint.setOnClickListener(this);
 	}
 
-	private void isShowBluetoothPrint(boolean isShow) {
-		if (!isShow) {
-			ll_BlueDevicesPrint.setVisibility(View.GONE);
-		}
-	}
-
 	@Override
 	public void onClick(View v) {
 		dismiss();
@@ -147,10 +142,6 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 		// return;
 		// }
 		// btnPromotion.setVisibility(0);
-		boolean bluetoothPrintIsShow = Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow", "false"));
-		if (!bluetoothPrintIsShow) {
-			ll_BlueDevicesPrint.setVisibility(View.GONE);
-		}
 		if (activity.doc.isIsposted()) {
 			ll_SavePrint.setVisibility(View.GONE);
 			TextView tv_bluePrint = (TextView) root.findViewById(R.id.tv_bluePrint);
@@ -160,6 +151,8 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 			TextView tv_Pay = (TextView) root.findViewById(R.id.tv_Pay);
 			tv_Pay.setText("收款状态");
 		}
-		isShowBluetoothPrint(Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow")));
+		if (!DocUtils.isBluetoothPrint()) {
+			ll_BlueDevicesPrint.setVisibility(View.GONE);
+		}
 	}
 }

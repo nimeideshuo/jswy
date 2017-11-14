@@ -28,6 +28,7 @@
     <string name="cancel_goods_show">打印时退货商品数量显示为负数。当前设置：</string>
     <string name="print_barcode_set">打印商品条码和备注信息，商品名称单独一行打印时有效。当前设置：</string>
     <string name="printer_model_select">打印机型号：</string>
+    <string name="printer_type_select">打印机模板：</string>
     <string name="k_0">0</string>
     <string name="k_1">1</string>
     <string name="k_2">2</string>

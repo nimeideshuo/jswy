@@ -131,7 +131,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		if (doc.isIsavailable() && !doc.isIsposted()) {
 			queryCustomerdebt();
 		}
-		ap = new AccountPreference();
 		sv = new Sv_docitem();
 		unitDAO = new GoodsUnitDAO();
 		serviceStore = new ServiceStore();
@@ -185,20 +184,24 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	 * 本地 sql 写入 与 更新
 	 */
 	public void setDBDoc() {
-		DocContainerEntity docEntity = new DocContainerEntity();
-		// 保存到本地
-		docEntity.setDeleteinitem(docContainerEntity.getDeleteinitem());
-		docEntity.setDeleteitem(JSONUtil.object2Json(listItemDelete));
-		docEntity.setDoc(JSONUtil.object2Json(doc));
-		docEntity.setItem(JSONUtil.object2Json(listItem));
-		docEntity.setDoctype(docContainerEntity.getDoctype());
-		docEntity.setPaytype(JSONUtil.object2Json(listPayType));
-		if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
-			sv.insetDocItem(docEntity);
-		} else {
-			sv.updataDocItem(docEntity);
+		try {
+			DocContainerEntity docEntity = new DocContainerEntity();
+			// 保存到本地
+			docEntity.setDeleteinitem(docContainerEntity.getDeleteinitem());
+			docEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
+			docEntity.setDoc(JSONUtil.toJSONString(doc));
+			docEntity.setItem(JSONUtil.toJSONString(listItem));
+			docEntity.setDoctype(docContainerEntity.getDoctype());
+			docEntity.setPaytype(JSONUtil.toJSONString(listPayType));
+			if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
+				sv.insetDocItem(docEntity);
+			} else {
+				sv.updataDocItem(docEntity);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			showError("网络链接不稳定!");
 		}
-
 	}
 
 	private void queryCustomerdebt() {
@@ -241,15 +244,18 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 			@Override
 			public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+				if (listItem.size() == 0) {
+					return false;
+				}
 				switch (index) {
 				case 0:
 					DefDocItemXS defdocitemxs = new DefDocItemXS(listItem.get(position));
 					defdocitemxs.setItemid(0L);
 					defdocitemxs.setTempitemid(1L + getMaxTempItemId());
 					listItem.add(defdocitemxs);
+					adapter.setData(listItem);
 					handler.postDelayed(new Runnable() {
 						public void run() {
-							adapter.setData(listItem);
 							adapter.notifyDataSetChanged();
 							refreshUI();
 							ishaschanged = true;
@@ -266,9 +272,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						listItemDelete.add(Long.valueOf(itemdel.getItemid()));
 					}
 					listItem.remove(position);
+					adapter.setData(listItem);
 					handler.postDelayed(new Runnable() {
 						public void run() {
-							adapter.setData(listItem);
 							adapter.notifyDataSetChanged();
 							refreshUI();
 							ishaschanged = true;
@@ -296,6 +302,10 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 		@Override
 		public void setBarcode(String barcode) {
+			if (isScanerBarcode) {
+				showError("数据处理中....");
+				return;
+			}
 			// 已经过账的单据 不允许继续扫描开单
 			if (doc.isIsavailable() && doc.isIsposted()) {
 				return;
@@ -307,8 +317,10 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			readBarcode(barcode);
 		}
 	};
+	boolean isScanerBarcode = false;
 
 	private void readBarcode(String barcode) {
+
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
 		final ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
 		if (goodsThinList.size() == 1) {
@@ -317,7 +329,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), num, 0.0D, l + 1L);
 			localArrayList.add(fillItem);
 			Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
-			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 			intent.putExtra("doc", doc);
 			startActivityForResult(intent, 1);
 		} else if (goodsThinList.size() > 1) {
@@ -336,11 +348,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						DefDocItemXS fillItem = fillItem(select.get(i), num, 0.0D, l);
 						localArrayList.add(fillItem);
 					}
-					if (localArrayList.size() == 0) {
+					if (localArrayList.isEmpty()) {
 						return;
 					}
 					Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
-					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+					intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 					intent.putExtra("doc", doc);
 					startActivityForResult(intent, 1);
 				}
@@ -404,7 +416,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				}
 			}
 			Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
-			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 			intent.putExtra("doc", doc);
 			startActivityForResult(intent, 1);
 			// }
@@ -825,7 +837,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		localIntent.putExtra("discountsubtotal", Utils.normalizeSubtotal(discountsubtotal));
 		localIntent.putExtra("isreadonly", isreadonly);
 		localIntent.putExtra("preference", this.doc.getPreference());
-		localIntent.putExtra("listpaytype", JSONUtil.object2Json(this.listPayType));
+		localIntent.putExtra("listpaytype", JSONUtil.toJSONString(this.listPayType));
 		startActivityForResult(localIntent.setClass(this, OutDocPayAct.class), 8);
 	}
 
@@ -980,19 +992,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 	// 属性
 	public void docProperty() {
-		int k = 0;
-		for (int i = 0; i < listItem.size(); i++) {
-			DefDocItemXS localDefDocItemXS = (DefDocItemXS) this.listItem.get(i);
-			if (localDefDocItemXS.isIspromotion()) {
-				k = 1;
-			} else {
-				if (localDefDocItemXS.getOutorderdocid() <= 0L) {
-					k = 2;
-				}
-			}
-		}
 		Intent localIntent = new Intent(this, OutDocOpenActivity.class);
-		localIntent.putExtra("typechangecustomer", k);// typechangecustomer表示单据返回信息
 		localIntent.putExtra("doc", doc);
 		startActivityForResult(localIntent, 0);
 	}
@@ -1171,7 +1171,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private double received;// 已收
 	private Scaner scaner;
 	private TextView tv_Customer;
-	private AccountPreference ap;
 	private Sv_docitem sv;
 	private DocContainerEntity docContainerEntity;
 	private GoodsUnitDAO unitDAO;
@@ -1190,6 +1189,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				setDBDoc();
 				break;
 			case 1:
+				isScanerBarcode = true;
 				PDH.show(this, "数据查询中...", new ProgressCallBack() {
 
 					@Override
@@ -1207,18 +1207,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 							listItem.addAll(0, newListItem);
 						}
 						adapter.setData(listItem);
-
-						runOnUiThread(new Runnable() {
-							public void run() {
-								listview_copy_dele.setAdapter(adapter);
-								adapter.notifyDataSetChanged();
-								ishaschanged = true;
-								setActionBarText();
-								bottomCount();
-								refreshUI();
-								setDBDoc();
-							}
-						});
+						handlerItem.sendEmptyMessage(0);
 					}
 				});
 
@@ -1348,11 +1337,24 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		}
 	}
 
-	// Handler handlerItem = new Handler() {
-	// public void handleMessage(android.os.Message msg) {
-	//
-	// };
-	// };
+	Handler handlerItem = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case 0:
+				ishaschanged = true;
+				setActionBarText();
+				bottomCount();
+				refreshUI();
+				setDBDoc();
+				adapter.notifyDataSetChanged();
+				isScanerBarcode = false;
+				break;
+
+			default:
+				break;
+			}
+		};
+	};
 
 	private void intenToMain() {
 		if (ishaschanged) {

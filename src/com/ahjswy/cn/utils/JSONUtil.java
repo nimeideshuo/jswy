@@ -2,6 +2,7 @@ package com.ahjswy.cn.utils;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.annotation.Documented;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,6 +74,14 @@ public class JSONUtil {
 		}
 	}
 
+	/**
+	 * 废弃 请使用 toJSONString();
+	 * 
+	 * @param obj
+	 * @return
+	 * 
+	 */
+	@Deprecated
 	public static String object2Json(Object obj) {
 		ObjectMapper localObjectMapper = new ObjectMapper();
 		StringWriter localStringWriter = new StringWriter();

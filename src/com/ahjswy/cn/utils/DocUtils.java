@@ -283,6 +283,9 @@ public class DocUtils {
 	 * @return
 	 */
 	public static double getGoodsPrice(String customerid, DefDocItemXS docItem) {
+		if (customerid == null || docItem == null) {
+			return 0;
+		}
 		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, docItem.getGoodsid());
 		double ratio = unitDAO.getGoodsUnitRatio(docItem.getGoodsid(), docItem.getUnitid());
 		if (historyPrice != null) {

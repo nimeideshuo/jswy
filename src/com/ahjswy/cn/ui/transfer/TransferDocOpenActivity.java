@@ -27,6 +27,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * 调拨开单
+ * 
+ * @author Administrator
+ *
+ */
 public class TransferDocOpenActivity extends BaseActivity implements OnClickListener {
 	private DefDocTransfer doc;
 	boolean isReadOnly;
@@ -201,7 +207,7 @@ public class TransferDocOpenActivity extends BaseActivity implements OnClickList
 				doc = ((DefDocTransfer) JSONUtil.readValue(doccontainer.getDoc(), DefDocTransfer.class));
 				fillDoc();
 				doccontainer.setDoc(JSONUtil.object2Json(doc));
-				//TODO
+				// TODO
 				Intent intent = new Intent(TransferDocOpenActivity.this, TransferEditActivity.class);
 				intent.putExtra("docContainer", doccontainer);
 				intent.putExtra("ishaschaned", true);

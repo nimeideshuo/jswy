@@ -87,6 +87,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	private InDocEditMenuPopup menuPopup;
 	// private ArrayList<DefDocItemXS> newListItem;
 	Scaner scaner;
+	boolean isScanerBarcode = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -209,6 +210,10 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 
 		@Override
 		public void setBarcode(String barcode) {
+			if (isScanerBarcode) {
+				showError("数据处理中...");
+				return;
+			}
 			if (doc.isIsavailable() && doc.isIsposted()) {
 				return;
 			}
@@ -226,10 +231,10 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 
 		if (goodsThinList.size() == 1) {
 			int num = Utils.isCombination() ? 1 : 0;
-			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), num, 0.0D);
+			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), 1, 0.0D);
 			localArrayList.add(defdocitem);
 			Intent intent = new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
-			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 			intent.putExtra("doc", doc);
 			startActivityForResult(intent, 2);
 		} else if (goodsThinList.size() > 1) {
@@ -250,7 +255,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 						return;
 					}
 					Intent intent = new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
-					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+					intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 					intent.putExtra("doc", doc);
 					startActivityForResult(intent, 2);
 				}
@@ -431,7 +436,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				localArrayList.add(fillItem(localGoodsThin, num, 0.0D));
 			}
 			startActivityForResult(new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class)
-					.putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc", doc), 2);
+					.putExtra("items", JSONUtil.toJSONString(localArrayList)).putExtra("doc", doc), 2);
 		}
 	};
 
@@ -522,7 +527,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		localIntent.putExtra("isreceive", false);
 		localIntent.putExtra("isreadonly", isreadonly);
 		localIntent.putExtra("preference", this.doc.getPreference());
-		localIntent.putExtra("listpaytype", JSONUtil.object2Json(this.listPayType));
+		localIntent.putExtra("listpaytype", JSONUtil.toJSONString(this.listPayType));
 		startActivityForResult(localIntent.setClass(this, OutDocPayAct.class), 8);
 	}
 
@@ -799,7 +804,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				DBupdataDocItem();
 				break;
 			case 2:
-
+				isScanerBarcode = true;
 				// 修改 为本地查询客史价格
 				PDH.show(this, "数据查询中...", new ProgressCallBack() {
 
@@ -817,16 +822,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 						} else {
 							listItem.addAll(0, newListItem);
 						}
-						runOnUiThread(new Runnable() {
-							public void run() {
-								adapter.setData(listItem);
-								listView.setAdapter(adapter);
-								ishaschanged = true;
-								setActionBarText();
-								refreshUI();
-								DBupdataDocItem();
-							}
-						});
+						handlerItem.sendEmptyMessage(0);
 					}
 				});
 
@@ -916,6 +912,24 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		}
 
 	}
+
+	Handler handlerItem = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case 0:
+				adapter.setData(listItem);
+				ishaschanged = true;
+				setActionBarText();
+				refreshUI();
+				DBupdataDocItem();
+				isScanerBarcode = false;
+				break;
+
+			default:
+				break;
+			}
+		};
+	};
 
 	protected void setAddItem(DefDocItemXS docItem) {
 		// 折后小计
@@ -1057,18 +1071,23 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	// }
 
 	protected void DBupdataDocItem() {
-		DocContainerEntity docEntity = new DocContainerEntity();
-		// 保存到本地
-		docEntity.setDeleteinitem(docContainerEntity.getDeleteinitem());
-		docEntity.setDeleteitem(JSONUtil.object2Json(listItemDelete));
-		docEntity.setDoc(JSONUtil.object2Json(doc));
-		docEntity.setItem(JSONUtil.object2Json(listItem));
-		docEntity.setDoctype(docContainerEntity.getDoctype());
-		docEntity.setPaytype(JSONUtil.object2Json(listPayType));
-		if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
-			sv.insetDocItem(docEntity);
-		} else {
-			sv.updataDocItem(docEntity);
+		try {
+			DocContainerEntity docEntity = new DocContainerEntity();
+			// 保存到本地
+			docEntity.setDeleteinitem(docContainerEntity.getDeleteinitem());
+			docEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
+			docEntity.setDoc(JSONUtil.toJSONString(doc));
+			docEntity.setItem(JSONUtil.toJSONString(listItem));
+			docEntity.setDoctype(docContainerEntity.getDoctype());
+			docEntity.setPaytype(JSONUtil.toJSONString(listPayType));
+			if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
+				sv.insetDocItem(docEntity);
+			} else {
+				sv.updataDocItem(docEntity);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			showError("网络链接不稳定!");
 		}
 
 	}

@@ -15,7 +15,6 @@ import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.outgoods.GoodsWarehouseSearchAct;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -34,6 +33,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * 调拨开单
+ * 
+ * @author Administrator
+ *
+ */
 public class TransferAddGoodAct extends BaseActivity implements OnClickListener {
 	private Button btnBatch;
 	private Button btnDate;
@@ -99,11 +104,11 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menu) {
 		if (menu.getItemId() == 0) {
-			if (!TextUtils.isEmptyS(this.btnWarehouse.getTag().toString())) {
+			if (!TextUtils.isEmptyS(this.btnWarehouse.getText().toString())) {
 				PDH.showMessage("仓库不能为空");
 				return false;
 			}
-			if (Utils.getDouble(this.etNum.getText().toString()).doubleValue() <= 0.0D) {
+			if (Utils.getDouble(this.etNum.getText().toString()).doubleValue() == 0.0D) {
 				PDH.showMessage("数量必须大于0");
 				return false;
 			}

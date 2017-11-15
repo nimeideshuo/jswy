@@ -46,11 +46,13 @@ public class GoodsUnitDAO {
 
 	// 获取商品的件数
 	public String getBigNum(String goodsid, String unitid, double num) {
-
-		String v2 = "";
-		if (!(TextUtils.isEmpty(goodsid) || TextUtils.isEmpty(unitid))) {
+		if (!(TextUtils.isEmpty(goodsid) && !TextUtils.isEmpty(unitid))) {
+			String v2 = "";
 			GoodsUnit v4 = this.getBigUnit(goodsid);
 			GoodsUnit v3 = this.getBasicUnit(goodsid);
+			if (v4 == null || v3 == null) {
+				return "";
+			}
 			double v0 = num;
 			if (!TextUtils.isEmpty(unitid)) {
 				v0 *= this.getGoodsUnitRatio(goodsid, unitid);

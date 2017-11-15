@@ -24,6 +24,7 @@ import com.ahjswy.cn.views.Dialog_listCheckBox;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,6 +48,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	private Dialog_listCheckBox dialog;
 	private Scaner scaner;
 	private GoodsUnitDAO dao;
+	boolean isScanerBarcode = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,10 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 
 		@Override
 		public void setBarcode(String barcode) {
+			if (isScanerBarcode) {
+				showError("数据处理中...");
+				return;
+			}
 			if (dialog != null) {
 				dialog.dismiss();
 			}
@@ -163,6 +169,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		if (goodsMap.isEmpty()) {
 			return;
 		}
+		isScanerBarcode = true;
 		PDH.show(this, "库存查询中...", new PDH.ProgressCallBack() {
 
 			@Override
@@ -178,17 +185,22 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 					item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
 					items.add(item);
 				}
-				runOnUiThread(new Runnable() {
-					public void run() {
-						adapter.setItem(items);
-						adapter.notifyDataSetChanged();
-					}
-				});
+				adapter.setItem(items);
+				handler.sendEmptyMessage(0);
 			}
 		});
 
 		// listview.setSelection(items.size());
 	}
+
+	Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			if (msg.what == 0) {
+				adapter.notifyDataSetChanged();
+				isScanerBarcode = false;
+			}
+		};
+	};
 
 	// String localString =
 	// serviceGoods.gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
@@ -357,7 +369,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 			return;
 		}
 		Intent intent = new Intent();
-		intent.putExtra("items", JSONUtil.object2Json(listDe));
+		intent.putExtra("items", JSONUtil.toJSONString(listDe));
 		setResult(RESULT_OK, intent);
 		finish();
 	}

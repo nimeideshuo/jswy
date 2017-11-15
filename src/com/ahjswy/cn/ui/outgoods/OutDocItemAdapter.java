@@ -54,10 +54,7 @@ public class OutDocItemAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		if (this.items != null) {
-			return items.size();
-		}
-		return 0;
+		return items.size();
 	}
 
 	public List<DefDocItemXS> getData() {

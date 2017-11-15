@@ -45,7 +45,9 @@ public class PDH {
 				paCallBack.action();
 				PDH.handler.post(new Runnable() {
 					public void run() {
-						waitingDialog.dismiss();
+						if (waitingDialog != null && waitingDialog.isShowing()) {
+							waitingDialog.dismiss();
+						}
 					}
 				});
 			}
@@ -63,7 +65,9 @@ public class PDH {
 				callBack.action();
 				PDH.handler.post(new Runnable() {
 					public void run() {
-						dialog.dismiss();
+						if (dialog != null && dialog.isShowing()) {
+							dialog.dismiss();
+						}
 					}
 				});
 			}

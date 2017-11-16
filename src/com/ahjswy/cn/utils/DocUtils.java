@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
-import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.CustomerDAO;
 import com.ahjswy.cn.dao.CustomerFieldsaleGoodsDAO;
 import com.ahjswy.cn.dao.GoodsPriceDAO;
@@ -16,7 +15,6 @@ import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.model.UnitidPrice;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespGoodsPriceEntity;
-import com.ahjswy.cn.response.RespStockwarn;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 
@@ -27,7 +25,6 @@ public class DocUtils {
 	private static GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 	private static CustomerDAO customerdao = new CustomerDAO();
 	private static GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
-	private static Sz_stockwarn stockwarn = new Sz_stockwarn();
 	private static AccountPreference ap = new AccountPreference();
 
 	static {
@@ -125,7 +122,7 @@ public class DocUtils {
 		if (goodsUnit == null) {
 			return "";
 		}
-		// TODO 查询商品比例
+		// 查询商品比例
 		double ratio = unitDAO.getGoodsUnitRatio(goodsUnit.getGoodsid(), goodsUnit.getUnitid());
 		// 判断是否整除
 		double num = stocknumber % ratio;
@@ -355,7 +352,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public static double getGoodsBasicPrice(String customerid, String goodsid) {
-		GoodsUnit basicUnit = unitDAO.getBasicUnit(goodsid);
+		// GoodsUnit basicUnit = unitDAO.getBasicUnit(goodsid);
 		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, goodsid);
 		if (historyPrice != null) {
 			return historyPrice.getPrice();

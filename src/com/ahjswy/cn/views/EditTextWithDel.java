@@ -1,7 +1,6 @@
 ﻿package com.ahjswy.cn.views;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.utils.MLog;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -11,7 +10,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
 
 /**
@@ -21,7 +19,7 @@ import android.widget.EditText;
  * @time: 23:34
  */
 public class EditTextWithDel extends EditText {
-	private final static String TAG = "EditTextWithDel";
+	// private final static String TAG = "EditTextWithDel";
 	private Drawable imgAble;
 	private Context mContext;
 

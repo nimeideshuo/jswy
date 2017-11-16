@@ -1,18 +1,12 @@
 package com.ahjswy.cn.ui.outgoods;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.JsonProcessingException;
-
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.A;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
-import com.ahjswy.cn.utils.TextUtils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -81,7 +75,7 @@ public class SaleCustomerHistoryItemActivity extends BaseActivity {
 					}
 				}
 				Intent intent = new Intent();
-				intent.putExtra("selecteditem", JSONUtil.object2Json(itemxs));
+				intent.putExtra("selecteditem", JSONUtil.toJSONString(itemxs));
 				setResult(Activity.RESULT_OK, intent);
 				finish();
 				mode.finish();
@@ -116,7 +110,7 @@ public class SaleCustomerHistoryItemActivity extends BaseActivity {
 				break;
 			case 1:
 				Intent intent = new Intent();
-				intent.putExtra("selecteditem", JSONUtil.object2Json(listItem));
+				intent.putExtra("selecteditem", JSONUtil.toJSONString(listItem));
 				setResult(Activity.RESULT_OK, intent);
 				finish();
 				break;
@@ -137,7 +131,7 @@ public class SaleCustomerHistoryItemActivity extends BaseActivity {
 		switch (item.getItemId()) {
 		case 0:
 			Intent intent = new Intent();
-			intent.putExtra("selecteditem", JSONUtil.object2Json(this.listItem));
+			intent.putExtra("selecteditem", JSONUtil.toJSONString(this.listItem));
 			this.setResult(Activity.RESULT_OK, intent);
 			this.finish();
 			break;

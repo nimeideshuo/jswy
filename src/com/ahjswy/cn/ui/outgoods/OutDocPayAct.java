@@ -144,7 +144,7 @@ public class OutDocPayAct extends BaseActivity implements OnFocusChangeListener,
 				localIntent.putExtra("preference",
 						Utils.normalize(Utils.getDouble(etPreference.getText().toString()).doubleValue(), 2));
 				localIntent.putExtra("received", tvReceived.getText().toString());
-				localIntent.putExtra("listpaytype", JSONUtil.object2Json(listPayType));
+				localIntent.putExtra("listpaytype", JSONUtil.toJSONString(listPayType));
 				setResult(RESULT_OK, localIntent);
 				finish();
 				break;
@@ -171,7 +171,7 @@ public class OutDocPayAct extends BaseActivity implements OnFocusChangeListener,
 			Intent localIntent = new Intent();
 			localIntent.putExtra("preference",
 					Utils.normalize(Utils.getDouble(etPreference.getText().toString()).doubleValue(), 2));
-			localIntent.putExtra("listpaytype", JSONUtil.object2Json(listPayType));
+			localIntent.putExtra("listpaytype", JSONUtil.toJSONString(listPayType));
 			setResult(RESULT_OK, localIntent);
 			finish();
 			break;
@@ -258,7 +258,7 @@ public class OutDocPayAct extends BaseActivity implements OnFocusChangeListener,
 			Intent localIntent = new Intent();
 			localIntent.putExtra("preference",
 					Utils.normalize(Utils.getDouble(etPreference.getText().toString()).doubleValue(), 2));
-			localIntent.putExtra("listpaytype", JSONUtil.object2Json(listPayType));
+			localIntent.putExtra("listpaytype", JSONUtil.toJSONString(listPayType));
 			setResult(RESULT_OK, localIntent);
 			finish();
 			break;

@@ -14,7 +14,6 @@ import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.DepartmentSearchAct;
 import com.ahjswy.cn.ui.WarehouseSearchAct;
 import com.ahjswy.cn.utils.PDH;
-import com.ahjswy.cn.utils.TextUtils;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -110,7 +109,6 @@ public class TransferDocSearchAct extends BaseActivity implements OnClickListene
 	public boolean onOptionsItemSelected(MenuItem menu) {
 
 		if (menu.getItemId() == 0) {
-			Object tag = btnInWarehouse.getTag();
 			if ((btnInWarehouse.getTag() != null) && (btnOutWarehouse.getTag() != null)
 					&& (this.btnInWarehouse.getTag().toString().equals(this.btnOutWarehouse.getTag().toString()))) {
 				PDH.showMessage("调入仓库与调出仓库不能相同");

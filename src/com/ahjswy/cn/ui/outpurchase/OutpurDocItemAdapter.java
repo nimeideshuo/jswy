@@ -6,7 +6,6 @@ import java.util.List;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.model.DefDocItemCG;
 import com.ahjswy.cn.model.DefDocItemTH;
-import com.ahjswy.cn.response.RespGoodsWarehouse;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 

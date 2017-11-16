@@ -18,7 +18,6 @@ import com.ahjswy.cn.service.ServiceSupport;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -137,7 +136,7 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 			return;
 		}
 		Intent localIntent = new Intent();
-		localIntent.putExtra("items", JSONUtil.object2Json(listItemDD));
+		localIntent.putExtra("items", JSONUtil.toJSONString(listItemDD));
 		setResult(RESULT_OK, localIntent);
 		finish();
 	}

@@ -338,7 +338,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		// req.startDataTime = "2017-9-1";
 		// req.endDataTime = "2017-9-15";
 		// req.goodsId = "00001";
-		// String object2Json = JSONUtil.object2Json(req);
+		// String object2Json = JSONUtil.toJSONString(req);
 		// map.put("parameter", object2Json);
 		// new Utils_help().getServiceInfor(url, map);
 

@@ -50,11 +50,11 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(this.baseAddress, "checkdbdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("43");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
-		// localDocContainerEntity.setItem(JSONUtil.object2Json(item));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(doc));
+		// localDocContainerEntity.setItem(JSONUtil.toJSONString(item));
 		localDocContainerEntity.setItem(JSONUtil.toJSONString(item));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(deleteitem));
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(deleteitem));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		map.put("proposerid", SystemState.getUser().getId());
 		map.put("isprint", isprint + "");
 		return new Utils_help().getServiceInfor(url, map);
@@ -65,11 +65,11 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(this.baseAddress, "checkpddoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("49");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(paramDefDocPD));
-		// localDocContainerEntity.setItem(JSONUtil.object2Json(paramList));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(paramDefDocPD));
+		// localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
 		localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(paramList1));
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(paramList1));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		map.put("proposerid", SystemState.getUser().getId());
 		map.put("isprint", paramBoolean + "");
 		return new Utils_help().getServiceInfor(url, map);
@@ -81,13 +81,13 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(this.baseAddress, "checkxhdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("15");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(paramDefDocExchange));
-		localDocContainerEntity.setItem(JSONUtil.object2Json(paramList1));
-		localDocContainerEntity.setInitem(JSONUtil.object2Json(paramList2));
-		localDocContainerEntity.setPaytype(JSONUtil.object2Json(paramList));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(paramList3));
-		localDocContainerEntity.setDeleteinitem(JSONUtil.object2Json(paramList4));
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(paramDefDocExchange));
+		localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList1));
+		localDocContainerEntity.setInitem(JSONUtil.toJSONString(paramList2));
+		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(paramList3));
+		localDocContainerEntity.setDeleteinitem(JSONUtil.toJSONString(paramList4));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		map.put("proposerid", SystemState.getUser().getId());
 		map.put("isprint", paramBoolean + "");
 		return new Utils_help().getServiceInfor(url, map);
@@ -100,13 +100,13 @@ public class ServiceStore {
 		DocContainerEntity docc = new DocContainerEntity();
 		defDocXS.setDoctypeid("13");
 		docc.setDoctype("13");
-		docc.setDoc(JSONUtil.object2Json(defDocXS));
-		// docc.setItem(JSONUtil.object2Json(listItem));
+		docc.setDoc(JSONUtil.toJSONString(defDocXS));
+		// docc.setItem(JSONUtil.toJSONString(listItem));
 		docc.setItem(JSONUtil.toJSONString(listItem));
-		docc.setPaytype(JSONUtil.object2Json(paytype));
-		docc.setDeleteitem(JSONUtil.object2Json(deleteitem));
+		docc.setPaytype(JSONUtil.toJSONString(paytype));
+		docc.setDeleteitem(JSONUtil.toJSONString(deleteitem));
 		map.put("proposerid", SystemState.getUser().getId());
-		map.put("parameter", JSONUtil.object2Json(docc));
+		map.put("parameter", JSONUtil.toJSONString(docc));
 		map.put("isprint", isprint + "");
 		return new Utils_help().getServiceInfor(url, map);
 	}
@@ -129,10 +129,10 @@ public class ServiceStore {
 		doccg.setPrinttemplate("2014采购单模板");
 		PurchaseEntity entity = new PurchaseEntity();
 		entity.setUserid(SystemState.getUser().getId());
-		entity.setDocjson(JSONUtil.object2Json(doccg));
-		entity.setGoodsitemjson(JSONUtil.object2Json(goodsitemjson));
-		entity.setTypelistjson(JSONUtil.object2Json(listPayType));
-		return new HttpRequestUtils().Post(url, JSONUtil.object2Json(entity));
+		entity.setDocjson(JSONUtil.toJSONString(doccg));
+		entity.setGoodsitemjson(JSONUtil.toJSONString(goodsitemjson));
+		entity.setTypelistjson(JSONUtil.toJSONString(listPayType));
+		return new HttpRequestUtils().Post(url, JSONUtil.toJSONString(entity));
 	}
 
 	/**
@@ -157,9 +157,9 @@ public class ServiceStore {
 		doccg.setIssettleup(true);
 		SaleEntity entity = new SaleEntity();
 		entity.setUserid(SystemState.getUser().getId());
-		entity.setDocjson(JSONUtil.object2Json(doccg));
-		entity.setDocddjson(JSONUtil.object2Json(listItem));
-		return new HttpRequestUtils().Post(url, JSONUtil.object2Json(entity));
+		entity.setDocjson(JSONUtil.toJSONString(doccg));
+		entity.setDocddjson(JSONUtil.toJSONString(listItem));
+		return new HttpRequestUtils().Post(url, JSONUtil.toJSONString(entity));
 	}
 
 	// 打印单据
@@ -173,9 +173,9 @@ public class ServiceStore {
 		draft.setObjectname(SystemState.getUser().getName());// 对象人名称
 		draft.setBuildtime(Utils.getDataTime());// 创建的时间
 		PrintEntity entity = new PrintEntity();
-		entity.setDocdraftjson(JSONUtil.object2Json(draft));
+		entity.setDocdraftjson(JSONUtil.toJSONString(draft));
 		entity.setUserid(SystemState.getUser().getId());// 用户id
-		return new HttpRequestUtils().Post(url, JSONUtil.object2Json(entity));
+		return new HttpRequestUtils().Post(url, JSONUtil.toJSONString(entity));
 	}
 
 	/*
@@ -188,9 +188,9 @@ public class ServiceStore {
 		}
 		PurchaseEntity pur = new PurchaseEntity();
 		pur.setUserid(SystemState.getUser().getId());
-		pur.setDocjson(JSONUtil.object2Json(doccg));
+		pur.setDocjson(JSONUtil.toJSONString(doccg));
 		pur.setGoodsitemjson(defdocitem);
-		return new HttpRequestUtils().Post(url, JSONUtil.object2Json(pur));
+		return new HttpRequestUtils().Post(url, JSONUtil.toJSONString(pur));
 	}
 
 	// TODO 添加商品
@@ -200,10 +200,10 @@ public class ServiceStore {
 			throw new RuntimeException("ReqAddGoods is null");
 		}
 		GoodEntity goodEntity = new GoodEntity();
-		goodEntity.setGoods(JSONUtil.object2Json(goods));
-		goodEntity.setGoodsPrice(JSONUtil.object2Json(listPrice));
-		goodEntity.setGoodsunit(JSONUtil.object2Json(listGoodUnit));
-		map.put("parameter", JSONUtil.object2Json(goodEntity));
+		goodEntity.setGoods(JSONUtil.toJSONString(goods));
+		goodEntity.setGoodsPrice(JSONUtil.toJSONString(listPrice));
+		goodEntity.setGoodsunit(JSONUtil.toJSONString(listGoodUnit));
+		map.put("parameter", JSONUtil.toJSONString(goodEntity));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -233,8 +233,8 @@ public class ServiceStore {
 		PurchaseEntity pur = new PurchaseEntity();
 		pur.setUserid(SystemState.getUser().getId());
 		pur.setDocjson(customer);
-		pur.setGoodsitemjson(JSONUtil.object2Json(list));
-		return new HttpRequestUtils().Post(url, JSONUtil.object2Json(pur));
+		pur.setGoodsitemjson(JSONUtil.toJSONString(list));
+		return new HttpRequestUtils().Post(url, JSONUtil.toJSONString(pur));
 	}
 
 	public String GetCustomerPrices(String customerid, String goodsid, String unitid) {
@@ -251,8 +251,8 @@ public class ServiceStore {
 		PurchaseEntity pur = new PurchaseEntity();
 		pur.setUserid(SystemState.getUser().getId());
 		pur.setDocjson(customer);
-		pur.setGoodsitemjson(JSONUtil.object2Json(list));
-		return new HttpRequestUtils().Posts(url, JSONUtil.object2Json(pur));
+		pur.setGoodsitemjson(JSONUtil.toJSONString(list));
+		return new HttpRequestUtils().Posts(url, JSONUtil.toJSONString(pur));
 	}
 
 	/**
@@ -273,7 +273,7 @@ public class ServiceStore {
 		drafts.setMakerid(makerid);
 		drafts.setDoctypeid(doctypeid);
 		drafts.setDocid(docid + "");
-		return new HttpRequestUtils().Post(url, JSONUtil.object2Json(drafts));
+		return new HttpRequestUtils().Post(url, JSONUtil.toJSONString(drafts));
 	}
 
 	/**
@@ -292,7 +292,7 @@ public class ServiceStore {
 	// queryentity.setIndex(index);
 	// queryentity.setLength(length);
 	// return new HttpRequestUtils().Post(url,
-	// JSONUtil.object2Json(queryentity));
+	// JSONUtil.toJSONString(queryentity));
 	// }
 
 	/**
@@ -324,13 +324,13 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(this.baseAddress, "checkxtdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("14");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(paramDefDoc));
-		// localDocContainerEntity.setItem(JSONUtil.object2Json(paramList));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(paramDefDoc));
+		// localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
 		localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-		localDocContainerEntity.setPaytype(JSONUtil.object2Json(paramList1));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(paramList2));
+		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList1));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(paramList2));
 		map.put("proposerid", SystemState.getUser().getId());
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		map.put("isprint", paramBoolean + "");
 		return new Utils_help().getServiceInfor(url, map);
 	}
@@ -369,7 +369,7 @@ public class ServiceStore {
 		ReqStrGetDocDetail localReqStrGetDocDetail = new ReqStrGetDocDetail();
 		localReqStrGetDocDetail.setDoctype("43");
 		localReqStrGetDocDetail.setDocid(paramLong);
-		map.put("parameter", JSONUtil.object2Json(localReqStrGetDocDetail));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrGetDocDetail));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -384,7 +384,7 @@ public class ServiceStore {
 		ReqStrGetDocDetail localReqStrGetDocDetail = new ReqStrGetDocDetail();
 		localReqStrGetDocDetail.setDoctype("49");
 		localReqStrGetDocDetail.setDocid(paramLong);
-		map.put("parameter", JSONUtil.object2Json(localReqStrGetDocDetail));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrGetDocDetail));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -400,7 +400,7 @@ public class ServiceStore {
 		ReqStrGetDocDetail localReqStrGetDocDetail = new ReqStrGetDocDetail();
 		localReqStrGetDocDetail.setDoctype("15");
 		localReqStrGetDocDetail.setDocid(paramLong);
-		map.put("parameter", JSONUtil.object2Json(localReqStrGetDocDetail));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrGetDocDetail));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -409,7 +409,7 @@ public class ServiceStore {
 		ReqStrGetDocDetail localReqStrGetDocDetail = new ReqStrGetDocDetail();
 		localReqStrGetDocDetail.setDoctype("13");
 		localReqStrGetDocDetail.setDocid(paramLong);
-		map.put("parameter", JSONUtil.object2Json(localReqStrGetDocDetail));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrGetDocDetail));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -418,7 +418,7 @@ public class ServiceStore {
 		ReqStrGetDocDetail localReqStrGetDocDetail = new ReqStrGetDocDetail();
 		localReqStrGetDocDetail.setDoctype("14");
 		localReqStrGetDocDetail.setDocid(paramLong);
-		map.put("parameter", JSONUtil.object2Json(localReqStrGetDocDetail));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrGetDocDetail));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -431,7 +431,7 @@ public class ServiceStore {
 		User user = SystemState.getUser();
 		initDoc.setMakerID(user.getId());
 		initDoc.setMakerName(user.getName());
-		map.put("parameter", JSONUtil.object2Json(initDoc));
+		map.put("parameter", JSONUtil.toJSONString(initDoc));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -443,7 +443,7 @@ public class ServiceStore {
 		User localUser = SystemState.getUser();
 		localReqStrInitDoc.setMakerID(localUser.getId());
 		localReqStrInitDoc.setMakerName(localUser.getName());
-		map.put("parameter", JSONUtil.object2Json(localReqStrInitDoc));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrInitDoc));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -456,7 +456,7 @@ public class ServiceStore {
 		User localUser = SystemState.getUser();
 		localReqStrInitDoc.setMakerID(localUser.getId());
 		localReqStrInitDoc.setMakerName(localUser.getName());
-		map.put("parameter", JSONUtil.object2Json(localReqStrInitDoc));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrInitDoc));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -469,7 +469,7 @@ public class ServiceStore {
 		User localUser = SystemState.getUser();
 		localReqStrInitDoc.setMakerID(localUser.getId());
 		localReqStrInitDoc.setMakerName(localUser.getName());
-		map.put("parameter", JSONUtil.object2Json(localReqStrInitDoc));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrInitDoc));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -481,7 +481,7 @@ public class ServiceStore {
 		User localUser = SystemState.getUser();
 		localReqStrInitDoc.setMakerID(localUser.getId());
 		localReqStrInitDoc.setMakerName(localUser.getName());
-		map.put("parameter", JSONUtil.object2Json(localReqStrInitDoc));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrInitDoc));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -494,7 +494,7 @@ public class ServiceStore {
 		User localUser = SystemState.getUser();
 		localReqStrInitDoc.setMakerID(localUser.getId());
 		localReqStrInitDoc.setMakerName(localUser.getName());
-		map.put("parameter", JSONUtil.object2Json(localReqStrInitDoc));
+		map.put("parameter", JSONUtil.toJSONString(localReqStrInitDoc));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -510,11 +510,11 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(this.baseAddress, "savedbdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("43");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(doc));
-		// localDocContainerEntity.setItem(JSONUtil.object2Json(item));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(doc));
+		// localDocContainerEntity.setItem(JSONUtil.toJSONString(item));
 		localDocContainerEntity.setItem(JSONUtil.toJSONString(item));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(deleteitem));
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(deleteitem));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		map.put("proposerid", SystemState.getUser().getId());
 		return new Utils_help().getServiceInfor(url, map);
 	}
@@ -523,11 +523,11 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(this.baseAddress, "savepddoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("49");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(paramDefDocPD));
-		localDocContainerEntity.setItem(JSONUtil.object2Json(paramList));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(paramDefDocPD));
 		localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-		// localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(paramList1));
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
+		// localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(paramList1));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		map.put("proposerid", SystemState.getUser().getId());
 		return new Utils_help().getServiceInfor(url, map);
 	}
@@ -538,13 +538,13 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(this.baseAddress, "savexhdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("15");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(paramDefDocExchange));
-		localDocContainerEntity.setItem(JSONUtil.object2Json(paramList1));
-		localDocContainerEntity.setInitem(JSONUtil.object2Json(paramList2));
-		localDocContainerEntity.setPaytype(JSONUtil.object2Json(paramList));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(paramList3));
-		localDocContainerEntity.setDeleteinitem(JSONUtil.object2Json(paramList4));
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(paramDefDocExchange));
+		localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList1));
+		localDocContainerEntity.setInitem(JSONUtil.toJSONString(paramList2));
+		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(paramList3));
+		localDocContainerEntity.setDeleteinitem(JSONUtil.toJSONString(paramList4));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		map.put("proposerid", SystemState.getUser().getId());
 		return new Utils_help().getServiceInfor(url, map);
 	}
@@ -557,14 +557,14 @@ public class ServiceStore {
 		defdocxs.setIssettleup(false);
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("13");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(defdocxs));
-		// localDocContainerEntity.setItem(JSONUtil.object2Json(listItem));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdocxs));
+		// localDocContainerEntity.setItem(JSONUtil.toJSONString(listItem));
 		localDocContainerEntity.setItem(JSONUtil.toJSONString(listItem));
-		localDocContainerEntity.setPaytype(JSONUtil.object2Json(paramList1));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(listItemDelete));
+		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList1));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
 		// 申请人id（那个人保存）
 		map.put("proposerid", SystemState.getUser().getId());
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -573,12 +573,12 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(baseAddress, "savecgdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("101");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(defdoccg));
-		localDocContainerEntity.setItem(JSONUtil.object2Json(defdocitemcgList));
-		localDocContainerEntity.setPaytype(JSONUtil.object2Json(defdocpaytype));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(deleteitem));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdoccg));
+		localDocContainerEntity.setItem(JSONUtil.toJSONString(defdocitemcgList));
+		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(defdocpaytype));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(deleteitem));
 		map.put("proposerid", SystemState.getUser().getId());
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -588,12 +588,12 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(baseAddress, "savecgdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("101");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(defdoccg));
-		localDocContainerEntity.setItem(JSONUtil.object2Json(defdocitemcgList));
-		localDocContainerEntity.setPaytype(JSONUtil.object2Json(defdocpaytype));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(deleteitem));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdoccg));
+		localDocContainerEntity.setItem(JSONUtil.toJSONString(defdocitemcgList));
+		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(defdocpaytype));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(deleteitem));
 		map.put("proposerid", SystemState.getUser().getId());
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -602,15 +602,15 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(this.baseAddress, "savextdoc");
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("14");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(paramDefDoc));
-		// localDocContainerEntity.setItem(JSONUtil.object2Json(paramList));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(paramDefDoc));
+		// localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
 		localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-		localDocContainerEntity.setPaytype(JSONUtil.object2Json(paramList1));
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(paramList2));
+		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList1));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(paramList2));
 		localDocContainerEntity.setDeleteinitem("");
 		localDocContainerEntity.setInfo("");
 		localDocContainerEntity.setInitem("");
-		map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
+		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
 		map.put("proposerid", SystemState.getUser().getId());
 		return new Utils_help().getServiceInfor(url, map);
 	}
@@ -618,7 +618,7 @@ public class ServiceStore {
 	public String str_SearchDBDoc(ReqStrSearchDoc paramReqStrSearchDoc) {
 		String url = Utils.getServiceAddress(this.baseAddress, "searchdbdoc");
 		paramReqStrSearchDoc.setDoctype("43");
-		map.put("parameter", JSONUtil.object2Json(paramReqStrSearchDoc));
+		map.put("parameter", JSONUtil.toJSONString(paramReqStrSearchDoc));
 		map.put("proposerid", SystemState.getUser().getId());
 		return new Utils_help().getServiceInfor(url, map);
 	}
@@ -626,14 +626,14 @@ public class ServiceStore {
 	public String str_SearchPDDoc(ReqStrSearchDoc paramReqStrSearchDoc) {
 		String url = Utils.getServiceAddress(this.baseAddress, "searchpddoc");
 		paramReqStrSearchDoc.setDoctype("49");
-		map.put("parameter", JSONUtil.object2Json(paramReqStrSearchDoc));
+		map.put("parameter", JSONUtil.toJSONString(paramReqStrSearchDoc));
 		map.put("proposerid", SystemState.getUser().getId());
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
 	public String str_SearchXSDoc(ReqStrSearchDoc paramReqStrSearchDoc) {
 		String url = Utils.getServiceAddress(this.baseAddress, "searchxsdoc");
-		map.put("parameter", JSONUtil.object2Json(paramReqStrSearchDoc));
+		map.put("parameter", JSONUtil.toJSONString(paramReqStrSearchDoc));
 		map.put("proposerid", SystemState.getUser().getId());
 		return new Utils_help().getServiceInfor(url, map);
 	}

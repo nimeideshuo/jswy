@@ -243,10 +243,10 @@ public class OutpurchaseOpenActivity extends BaseActivity implements OnClickList
 		arrayList.add(defDocPayType5);
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("101");
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(defdoccg));
-		localDocContainerEntity.setPaytype(JSONUtil.object2Json(arrayList));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdoccg));
+		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(arrayList));
 		localDocContainerEntity.setInfo("");
-		handler.sendMessage(handler.obtainMessage(0, JSONUtil.object2Json(localDocContainerEntity)));
+		handler.sendMessage(handler.obtainMessage(0, JSONUtil.toJSONString(localDocContainerEntity)));
 
 	}
 
@@ -260,11 +260,11 @@ public class OutpurchaseOpenActivity extends BaseActivity implements OnClickList
 				defdoccg = ((DefDocCG) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDocCG.class));
 				// 保存基本数据
 				fillDoc();
-				localDocContainerEntity.setDoc(JSONUtil.object2Json(defdoccg));
+				localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdoccg));
 				Intent localIntent = new Intent(OutpurchaseOpenActivity.this, OutpurchaseEditActivity.class);
 				localIntent.putExtra("docContainer", localDocContainerEntity);
 				localIntent.putExtra("ishaschanged", true);
-				System.out.println("res>>>" + JSONUtil.object2Json(localDocContainerEntity));
+				System.out.println("res>>>" + JSONUtil.toJSONString(localDocContainerEntity));
 				startActivity(localIntent);
 				finish();
 			} else {

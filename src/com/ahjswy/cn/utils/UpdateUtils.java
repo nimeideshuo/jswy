@@ -14,7 +14,6 @@ import com.ahjswy.cn.service.ServiceSynchronize;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
-import android.util.Log;
 
 public class UpdateUtils {
 

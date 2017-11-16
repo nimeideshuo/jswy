@@ -1,10 +1,7 @@
 package com.ahjswy.cn.ui.outpurchase;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.jackson.JsonProcessingException;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
@@ -319,7 +316,7 @@ public class OutpurDocAddMoreGoodsAct extends BaseActivity {
 		}
 		deleBm();
 		Intent intent = new Intent();
-		intent.putExtra("items", JSONUtil.object2Json(listDe));
+		intent.putExtra("items", JSONUtil.toJSONString(listDe));
 		setResult(RESULT_OK, intent);
 		finish();
 

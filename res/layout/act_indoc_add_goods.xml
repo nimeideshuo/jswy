@@ -335,6 +335,7 @@
                         android:layout_height="40.0dip"
                         android:layout_weight="3.0"
                         android:background="@drawable/login_panel_edit_bg"
+                        android:hint=""
                         android:imeOptions="actionDone"
                         android:textSize="@dimen/dialog_edit" />
                 </LinearLayout>

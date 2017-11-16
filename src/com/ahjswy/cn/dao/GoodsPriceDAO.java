@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.ahjswy.cn.response.RespGoodsPriceEntity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 

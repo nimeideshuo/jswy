@@ -29,7 +29,6 @@ import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.views.Dialog_message;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -45,7 +44,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class GoodDetailAct extends BaseActivity {

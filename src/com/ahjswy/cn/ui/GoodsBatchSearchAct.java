@@ -1,10 +1,7 @@
 package com.ahjswy.cn.ui;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
-
-import org.codehaus.jackson.JsonProcessingException;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
@@ -27,7 +24,7 @@ import android.widget.ListView;
 public class GoodsBatchSearchAct extends BaseActivity implements OnItemClickListener {
 	private String warehouseid;
 	private String warehousename;
-	private boolean all = false;
+	public boolean all = false;
 	private ListView listview;
 
 	@Override

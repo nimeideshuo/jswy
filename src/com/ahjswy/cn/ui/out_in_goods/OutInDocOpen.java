@@ -137,7 +137,7 @@ public class OutInDocOpen extends BaseActivity implements OnClickListener {
 			doccg.setBuildtime(Utils.getDataTime());
 			doccg.setDeliverytime(btnSettleTime.getText().toString());
 			SaleEntity entity = new SaleEntity();
-			entity.setDocjson(JSONUtil.object2Json(doccg));
+			entity.setDocjson(JSONUtil.toJSONString(doccg));
 			//TODO
 			Intent intent = new Intent(OutInDocOpen.this, OutInDocEditActivity.class);
 			intent.putExtra("entity", entity);

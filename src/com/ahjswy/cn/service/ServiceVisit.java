@@ -13,7 +13,7 @@ public class ServiceVisit {
 	
 	public String vst_UploadVisitImage(ReqVstAddVisitCustomerJobImage image) {
 		String url = Utils.getServiceAddress(this.baseAddress, "uploadvisitimage");
-		map.put("parameter", JSONUtil.object2Json(image));
+		map.put("parameter", JSONUtil.toJSONString(image));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 }

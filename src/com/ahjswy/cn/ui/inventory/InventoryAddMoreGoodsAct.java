@@ -9,9 +9,7 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemPD;
-import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocPD;
-import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.scaner.Scaner;
@@ -64,7 +62,7 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 			PDH.show(this, new PDH.ProgressCallBack() {
 				public void action() {
 					Intent intent = new Intent();
-					intent.putExtra("items", JSONUtil.object2Json(items));
+					intent.putExtra("items", JSONUtil.toJSONString(items));
 					setResult(Activity.RESULT_OK, intent);
 					finish();
 				}

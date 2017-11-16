@@ -21,7 +21,7 @@ public class ServiceUser {
 		ReqUsrCheckAuthority localReqUsrCheckAuthority = new ReqUsrCheckAuthority();
 		localReqUsrCheckAuthority.setUserid(SystemState.getUser().getId());
 		localReqUsrCheckAuthority.setAuthority(paramString);
-		map.put("parameter", JSONUtil.object2Json(localReqUsrCheckAuthority));
+		map.put("parameter", JSONUtil.toJSONString(localReqUsrCheckAuthority));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -31,7 +31,7 @@ public class ServiceUser {
 		ReqUsrCheckAuthority localReqUsrCheckAuthority = new ReqUsrCheckAuthority();
 		localReqUsrCheckAuthority.setUserid(SystemState.getUser().getId());
 		localReqUsrCheckAuthority.setAuthority(authority);
-		map.put("parameter", JSONUtil.object2Json(localReqUsrCheckAuthority));
+		map.put("parameter", JSONUtil.toJSONString(localReqUsrCheckAuthority));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -49,14 +49,14 @@ public class ServiceUser {
 		location.setLongitude(longitude);
 		location.setLatitude(latitude);
 		location.setAddress(address);
-		map.put("parameter", JSONUtil.object2Json(location));
+		map.put("parameter", JSONUtil.toJSONString(location));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
 	public String usr_UserLogin(String userid, String password) {
 		String url = Utils.getServiceAddress(this.baseAddress, "userlogin");
 		ReqUsrUserLogin userLogin = new ReqUsrUserLogin(userid, password, "mmendianban");
-		map.put("parameter", JSONUtil.object2Json(userLogin));
+		map.put("parameter", JSONUtil.toJSONString(userLogin));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 }

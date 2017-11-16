@@ -9,7 +9,6 @@ import com.ahjswy.cn.model.FieldSaleForPrint;
 import com.ahjswy.cn.model.FieldSaleItemForPrint;
 import com.ahjswy.cn.print.BTPrintHelper.PrintOverCall;
 import com.ahjswy.cn.ui.BaseActivity;
-import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 
 import android.bluetooth.BluetoothAdapter;

@@ -342,7 +342,7 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 						DocContainerEntity.class);
 				doc = ((DefDoc) JSONUtil.readValue(docEntity.getDoc(), DefDoc.class));
 				fillDoc();
-				docEntity.setDoc(JSONUtil.object2Json(doc));
+				docEntity.setDoc(JSONUtil.toJSONString(doc));
 				Intent localIntent = new Intent();
 				// TODO
 				localIntent.setClass(InDocOpenActivity.this, InDocEditActivity.class);

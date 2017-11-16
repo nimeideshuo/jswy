@@ -12,7 +12,6 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
-import android.os.SystemClock;
 
 public class BTPrintHelper {
 	private Activity activity;

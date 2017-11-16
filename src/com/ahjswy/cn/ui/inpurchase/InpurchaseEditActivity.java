@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.Def_Doc;
 import com.ahjswy.cn.bean.Def_DocDraft;
@@ -115,7 +114,6 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 		mGoodsUnitDAO = new GoodsUnitDAO();
 		adapter = new InpurDocItemAdapter(this);
 		adapter.setSum(this);
-		ap = new AccountPreference();
 		dialog = new Dialog_listCheckBox(InpurchaseEditActivity.this);
 
 		SwipeMenuCreator local5 = new SwipeMenuCreator() {
@@ -193,7 +191,7 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), num, 0.0D, maxTempItemId + 1L);
 			localArrayList.add(fillItem);
 			Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
-			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 			intent.putExtra("doc", doccg);
 			startActivityForResult(intent, 1);
 		} else if (goodsThinList.size() > 1) {
@@ -212,7 +210,7 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 						localArrayList.add(fillItem);
 					}
 					Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
-					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+					intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 					intent.putExtra("doc", doccg);
 					startActivityForResult(intent, 1);
 				}
@@ -324,7 +322,7 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 	private boolean setItemsGoods(DefDocItemCG defdocitemcg) {
 		List<DefDocItemCG> itemCGs = new ArrayList<DefDocItemCG>();
 		itemCGs.add(defdocitemcg);
-		String goodsPrice = new ServiceStore().GetGoodsPrice(doccg, JSONUtil.object2Json(itemCGs));
+		String goodsPrice = new ServiceStore().GetGoodsPrice(doccg, JSONUtil.toJSONString(itemCGs));
 		if (TextUtils.isEmptyS(goodsPrice)) {
 			RespServiceInfor infor = JSONUtil.readValue3(goodsPrice);
 			double price = Double.parseDouble(TextUtils.isEmptyS(infor.Json.Data) == true ? infor.Json.Data : "0");
@@ -391,7 +389,7 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 				localArrayList.add(fillItem);
 			}
 			Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
-			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 			intent.putExtra("doc", doccg);
 			startActivityForResult(intent, 1);
 		}
@@ -634,7 +632,7 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 	public void pay() {
 		Intent localIntent = new Intent(this, InpurDocPayAct.class);
 		localIntent.putExtra("discountsubtotal", discountsubtotal);// 折后合计
-		localIntent.putExtra("listpaytype", JSONUtil.object2Json(listPayType));// 支付类型集合
+		localIntent.putExtra("listpaytype", JSONUtil.toJSONString(listPayType));// 支付类型集合
 		localIntent.putExtra("preference", doccg.getPreference());// .getPreference()
 		startActivityForResult(localIntent, 5);
 	}
@@ -786,7 +784,6 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 	private ArrayList<DefDocItemCG> localArrayList;
 	private Scaner scaner;
 	private Button btnGoodClass;
-	private AccountPreference ap;
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {

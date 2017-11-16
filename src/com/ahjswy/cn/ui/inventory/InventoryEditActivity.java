@@ -307,7 +307,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 			ArrayList<DefDocItemPD> localArrayList = new ArrayList<DefDocItemPD>();
 			localArrayList.add(itemPD);
 			Intent intent = new Intent(InventoryEditActivity.this, InventoryAddMoreGoodsAct.class);
-			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 			intent.putExtra("warehouseid", doc.getWarehouseid());
 			intent.putExtra("doc", doc);
 			startActivityForResult(intent, 2);
@@ -415,7 +415,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 					localArrayList.add(fillItem(localGoodsThin, 0.0D, 0.0D, 1));
 				}
 				startActivityForResult(new Intent(InventoryEditActivity.this, InventoryAddMoreGoodsAct.class)
-						.putExtra("items", JSONUtil.object2Json(localArrayList))
+						.putExtra("items", JSONUtil.toJSONString(localArrayList))
 						.putExtra("warehouseid", doc.getWarehouseid()), 2);
 			}
 		}

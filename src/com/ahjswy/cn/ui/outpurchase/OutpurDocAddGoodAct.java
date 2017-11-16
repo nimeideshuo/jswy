@@ -1,10 +1,7 @@
 package com.ahjswy.cn.ui.outpurchase;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.jackson.JsonProcessingException;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
@@ -26,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,6 +96,7 @@ public class OutpurDocAddGoodAct extends BaseActivity implements OnClickListener
 		defdocitemth = ((DefDocItemTH) getIntent().getSerializableExtra("docitem"));
 		positiongive = getIntent().getIntExtra("positiongive", -1);
 		tvBarcode.setText(defdocitemth.getBarcode());
+		tvSpecification.setText(defdocitemth.getSpecification());
 		btnWarehouse.setText(defdocitemth.getWarehousename());
 		btnWarehouse.setTag(defdocitemth.getWarehouseid());
 		btnUnit.setText(defdocitemth.getUnitname());
@@ -171,7 +168,6 @@ public class OutpurDocAddGoodAct extends BaseActivity implements OnClickListener
 	}
 
 	private void fillItem() {
-		DefDocItemTH defdocitem1;
 		if (TextUtils.isEmptyS(this.btnWarehouse.getTag().toString())) {
 			defdocitemth.setWarehouseid(this.btnWarehouse.getTag().toString());
 			defdocitemth.setWarehousename(this.btnWarehouse.getText().toString());
@@ -281,7 +277,6 @@ public class OutpurDocAddGoodAct extends BaseActivity implements OnClickListener
 	}
 
 	Handler handlerGet = new Handler() {
-		@SuppressWarnings("null")
 		public void handleMessage(android.os.Message msg) {
 			String message = msg.obj.toString();
 			ReqStrGetGoodsPrice goodsprice = null;
@@ -292,8 +287,7 @@ public class OutpurDocAddGoodAct extends BaseActivity implements OnClickListener
 					btnUnit.setText(goodsUnit.getUnitname());
 					btnUnit.setTag(goodsUnit.getUnitid());
 					double d1 = Utils.normalize(Utils.getDouble(etNum.getText().toString()).doubleValue(), 2);
-					double d2 = Utils.normalize(Utils.getDouble(etDiscountRatio.getText().toString()).doubleValue(),
-							2);
+					double d2 = Utils.normalize(Utils.getDouble(etDiscountRatio.getText().toString()).doubleValue(), 2);
 					double d3 = Utils.normalizePrice(goodsprice.getPrice());
 					double d4 = Utils.normalizePrice(d3 * d2);
 					etPrice.setText(goodsprice.getPrice() + "");

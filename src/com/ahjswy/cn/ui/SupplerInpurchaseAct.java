@@ -1,12 +1,10 @@
 package com.ahjswy.cn.ui;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.dao.CustomerDAO;
-import com.ahjswy.cn.model.CustomerThin;
 import com.ahjswy.cn.model.SupplierThin;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;

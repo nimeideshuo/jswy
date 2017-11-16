@@ -4,7 +4,6 @@ import com.ahjswy.cn.R;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;

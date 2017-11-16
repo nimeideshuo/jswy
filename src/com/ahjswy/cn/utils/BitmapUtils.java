@@ -27,7 +27,7 @@ public class BitmapUtils {
 
 	}
 
-	private static BitmapFactory.Options setBitmapOption(String paramString, int paramInt1, int paramInt2) {
+	public static BitmapFactory.Options setBitmapOption(String paramString, int paramInt1, int paramInt2) {
 		BitmapFactory.Options localOptions = new BitmapFactory.Options();
 		localOptions.inJustDecodeBounds = true;
 		BitmapFactory.decodeFile(paramString, localOptions);

@@ -1,7 +1,6 @@
 package com.ahjswy.cn.model;
 
 import java.io.Serializable;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 public class GoodsUnit implements Serializable {
 	private static final long serialVersionUID = 1L;

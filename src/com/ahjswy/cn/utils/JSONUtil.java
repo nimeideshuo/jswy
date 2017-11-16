@@ -2,12 +2,10 @@ package com.ahjswy.cn.utils;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.annotation.Documented;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -42,37 +40,41 @@ public class JSONUtil {
 		return false;
 	}
 
-	public static String makeJsonStr(Map<String, Object> paramMap) {
-		if ((paramMap == null) || (paramMap.size() == 0))
-			return "{}";
-		StringBuilder localStringBuilder = new StringBuilder("{");
-		Iterator localIterator = paramMap.keySet().iterator();
-		while (true) {
-			if (!(localIterator.hasNext()))
-				return localStringBuilder.substring(0, -1 + localStringBuilder.length()).toString() + "}";
-			String str1 = (String) localIterator.next();
-			String str2 = (String) paramMap.get(str1);
-			if ((TextUtils.isEmpty(str2)) || ("null".equals(str2)))
-				continue;
-			localStringBuilder.append("\"" + str1 + "\":\"" + str2.replaceAll("\\\"", "\\\\\"") + "\",");
-		}
-	}
+	// public static String makeJsonStr(Map<String, Object> paramMap) {
+	// if ((paramMap == null) || (paramMap.size() == 0))
+	// return "{}";
+	// StringBuilder localStringBuilder = new StringBuilder("{");
+	// Iterator localIterator = paramMap.keySet().iterator();
+	// while (true) {
+	// if (!(localIterator.hasNext()))
+	// return localStringBuilder.substring(0, -1 +
+	// localStringBuilder.length()).toString() + "}";
+	// String str1 = (String) localIterator.next();
+	// String str2 = (String) paramMap.get(str1);
+	// if ((TextUtils.isEmpty(str2)) || ("null".equals(str2)))
+	// continue;
+	// localStringBuilder.append("\"" + str1 + "\":\"" + str2.replaceAll("\\\"",
+	// "\\\\\"") + "\",");
+	// }
+	// }
 
-	public static String makeJsonStr2(Map<String, String> paramMap) {
-		if ((paramMap == null) || (paramMap.size() == 0))
-			return "{}";
-		StringBuilder localStringBuilder = new StringBuilder("{");
-		Iterator localIterator = paramMap.keySet().iterator();
-		while (true) {
-			if (!(localIterator.hasNext()))
-				return localStringBuilder.substring(0, -1 + localStringBuilder.length()).toString() + "}";
-			String str1 = (String) localIterator.next();
-			String str2 = (String) paramMap.get(str1);
-			if ((TextUtils.isEmpty(str2)) || ("null".equals(str2)))
-				continue;
-			localStringBuilder.append("\"" + str1 + "\":\"" + str2.replaceAll("\\\"", "\\\\\"") + "\",");
-		}
-	}
+	// public static String makeJsonStr2(Map<String, String> paramMap) {
+	// if ((paramMap == null) || (paramMap.size() == 0))
+	// return "{}";
+	// StringBuilder localStringBuilder = new StringBuilder("{");
+	// Iterator localIterator = paramMap.keySet().iterator();
+	// while (true) {
+	// if (!(localIterator.hasNext()))
+	// return localStringBuilder.substring(0, -1 +
+	// localStringBuilder.length()).toString() + "}";
+	// String str1 = (String) localIterator.next();
+	// String str2 = (String) paramMap.get(str1);
+	// if ((TextUtils.isEmpty(str2)) || ("null".equals(str2)))
+	// continue;
+	// localStringBuilder.append("\"" + str1 + "\":\"" + str2.replaceAll("\\\"",
+	// "\\\\\"") + "\",");
+	// }
+	// }
 
 	/**
 	 * 废弃 请使用 toJSONString();
@@ -118,7 +120,7 @@ public class JSONUtil {
 		HashMap<String, String> localHashMap = new HashMap<String, String>();
 		try {
 			JSONObject localJSONObject = new JSONObject(paramString);
-			Iterator localIterator = localJSONObject.keys();
+			Iterator<String> localIterator = localJSONObject.keys();
 			while ((localIterator.hasNext())) {
 				String str = (String) localIterator.next();
 				localHashMap.put(str, localJSONObject.getString(str));

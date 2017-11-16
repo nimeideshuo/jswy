@@ -69,10 +69,6 @@ public class MyApplication extends Application {
 		return localWifiInfo.getMacAddress();
 	}
 
-	public Bean getVersionBean() {
-		return new Bean().put("key", "mmendianban");
-	}
-
 	// Android Id
 	public static String getAndroidId() {
 		String androidId = Settings.Secure.getString(MyApplication.getInstance().getContentResolver(),

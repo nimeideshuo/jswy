@@ -18,7 +18,6 @@ import com.ahjswy.cn.utils.Dialog_utils;
 import com.ahjswy.cn.utils.Dialog_utils.setDuoXuanCallBack;
 import com.ahjswy.cn.utils.Dialog_utils.setTingCallBack;
 import com.ahjswy.cn.utils.InfoDialog;
-import com.ahjswy.cn.utils.NetUtils;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;

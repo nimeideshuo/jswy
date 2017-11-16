@@ -231,7 +231,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 
 		if (goodsThinList.size() == 1) {
 			int num = Utils.isCombination() ? 1 : 0;
-			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), 1, 0.0D);
+			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), num, 0.0D);
 			localArrayList.add(defdocitem);
 			Intent intent = new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));

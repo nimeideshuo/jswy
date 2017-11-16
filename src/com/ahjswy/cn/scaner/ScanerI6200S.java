@@ -25,6 +25,7 @@ public class ScanerI6200S extends Scaner {
 	/**
 	 * 初始化 I6000S
 	 */
+	@SuppressWarnings("deprecation")
 	private void initScan() {
 		MLog.tag("initScan");
 		try {

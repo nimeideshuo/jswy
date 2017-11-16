@@ -3,14 +3,14 @@ package com.ahjswy.cn.ui;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.dao.CustomerDAO;
 import com.ahjswy.cn.dao.RegionDAO;
-import com.ahjswy.cn.model.CustomerThin;
 import com.ahjswy.cn.model.Region;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextViews;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;

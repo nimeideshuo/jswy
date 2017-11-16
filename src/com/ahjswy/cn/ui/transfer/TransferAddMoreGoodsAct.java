@@ -51,7 +51,7 @@ public class TransferAddMoreGoodsAct extends BaseActivity {
 				return false;
 			}
 			Intent localObject = new Intent();
-			localObject.putExtra("items", JSONUtil.object2Json(localArrayList));
+			localObject.putExtra("items", JSONUtil.toJSONString(localArrayList));
 			setResult(Activity.RESULT_OK, localObject);
 			finish();
 		}

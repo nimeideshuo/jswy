@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import com.ahjswy.cn.bean.QueryEntity;
 import com.ahjswy.cn.model.DefDocPayType;
-import com.ahjswy.cn.model.PayType;
 import com.ahjswy.cn.utils.HttpRequestUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.TextUtils;
@@ -34,7 +33,7 @@ public class ServicePayType {
 		if (payTypelist == null) {
 			payTypelist = new ArrayList<DefDocPayType>();
 		}
-		String payType = new HttpRequestUtils().Post(baseAddress, JSONUtil.object2Json(entity));
+		String payType = new HttpRequestUtils().Post(baseAddress, JSONUtil.toJSONString(entity));
 		try {
 			if (TextUtils.isEmpty(payType)) {
 				return null;

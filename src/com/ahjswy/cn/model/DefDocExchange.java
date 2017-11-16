@@ -2,8 +2,6 @@ package com.ahjswy.cn.model;
 
 import java.io.Serializable;
 
-import com.ahjswy.cn.utils.TextUtils;
-
 public class DefDocExchange
   implements Serializable
 {

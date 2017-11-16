@@ -5,15 +5,11 @@ import java.util.List;
 import java.util.Locale;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.model.GoodsThin;
-import com.ahjswy.cn.response.RespGoodsPriceEntity;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
-import com.ahjswy.cn.service.ServiceSupport;
 import com.ahjswy.cn.ui.BaseActivity;
-import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
@@ -25,7 +21,6 @@ import com.ahjswy.cn.views.BounceListView;
 import com.ahjswy.cn.views.MyLetterListView;
 import com.ahjswy.cn.views.MyLetterListView.OnTouchingLetterChangedListener;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;

@@ -234,7 +234,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 			DefDocItemDD itemDD = fillItem(goodsThinList.get(0), 1, 0.0D, 0);
 			localArrayList.add(itemDD);
 			Intent intent = new Intent(OutInDocEditActivity.this, OutInDocAddMoreGoodsAct.class);
-			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 			intent.putExtra("doc", doccg);
 			startActivityForResult(intent, 1);
 		} else if (goodsThinList.size() > 1) {
@@ -251,7 +251,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 						localArrayList.add(fillItem);
 					}
 					Intent intent = new Intent(OutInDocEditActivity.this, OutInDocAddMoreGoodsAct.class);
-					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
+					intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 					intent.putExtra("doc", doccg);
 					startActivityForResult(intent, 1);
 				}
@@ -297,7 +297,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 					localArrayList.add(fillItem(localGoodsThin, 1, 0.0D, 0));
 				}
 				startActivityForResult(new Intent(OutInDocEditActivity.this, OutInDocAddMoreGoodsAct.class)
-						.putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc", doccg), 1);
+						.putExtra("items", JSONUtil.toJSONString(localArrayList)).putExtra("doc", doccg), 1);
 			}
 		}
 	};
@@ -324,7 +324,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	// }
 	// startActivityForResult(new Intent().setClass(this,
 	// OutInDocAddMoreGoodsAct.class)
-	// .putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc",
+	// .putExtra("items", JSONUtil.toJSONString(localArrayList)).putExtra("doc",
 	// doccg), 1);
 	// }
 	//

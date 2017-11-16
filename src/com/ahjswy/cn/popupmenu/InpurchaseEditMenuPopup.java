@@ -11,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.Toast;
 
 public class InpurchaseEditMenuPopup extends PopupWindow implements OnClickListener {
 	InpurchaseEditActivity activity;

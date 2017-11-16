@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class XListViewHeader extends LinearLayout {
 	public static final int STATE_NORMAL = 0;
@@ -44,7 +43,7 @@ public class XListViewHeader extends LinearLayout {
 		System.out.println("XListViewHeader>>>initView");
 		// 初始情况，设置下拉刷新view高度为0
 		this.context = context;
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 0);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0);
 		mContainer = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.xlistview_header, null);
 		mArrowImageView = (ImageView) findViewById(R.id.xlistview_header_arrow);
 		mHintTextView = (TextView) findViewById(R.id.xlistview_header_hint_textview);

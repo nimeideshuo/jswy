@@ -339,7 +339,7 @@ public class OutDocOpenActivity extends BaseActivity
 				// 保存基本数据
 				fillDoc();
 				// doc.setShowid("销售开单");
-				entity.setDoc(JSONUtil.object2Json(doc));
+				entity.setDoc(JSONUtil.toJSONString(doc));
 				// TODO
 				Intent localIntent = new Intent(OutDocOpenActivity.this, OutDocEditActivity.class);
 				localIntent.putExtra("docContainer", entity);

@@ -7,7 +7,6 @@ import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.model.Unit;
 import com.ahjswy.cn.utils.Utils;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;

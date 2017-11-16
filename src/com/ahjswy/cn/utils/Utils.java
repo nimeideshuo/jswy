@@ -359,25 +359,26 @@ public class Utils {
 		return (int) (0.5F + paramFloat / paramContext.getResources().getDisplayMetrics().density);
 	}
 
-	public static boolean validNAMAndShow(String paramString, int paramInt, double[] paramArrayOfDouble) {
-		double d1;
-		while (true) {
-			int j;
-			try {
-				d1 = Double.parseDouble(paramString);
-				if (paramArrayOfDouble.length > 0) {
-					int i = paramArrayOfDouble.length;
-					j = 0;
-				}
-				if (d1 <= 100000000.0D)
-					PDH.showError("输入的值过大");
-				return false;
-			} catch (NumberFormatException localNumberFormatException) {
-				PDH.showError("输入不正确");
-				return false;
-			}
-		}
-	}
+	// public static boolean validNAMAndShow(String paramString, int paramInt,
+	// double[] paramArrayOfDouble) {
+	// double d1;
+	// while (true) {
+	// int j;
+	// try {
+	// d1 = Double.parseDouble(paramString);
+	// if (paramArrayOfDouble.length > 0) {
+	// int i = paramArrayOfDouble.length;
+	// j = 0;
+	// }
+	// if (d1 <= 100000000.0D)
+	// PDH.showError("输入的值过大");
+	// return false;
+	// } catch (NumberFormatException localNumberFormatException) {
+	// PDH.showError("输入不正确");
+	// return false;
+	// }
+	// }
+	// }
 
 	/* 获取Context对象 */
 	public static Context getContext() {

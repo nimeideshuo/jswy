@@ -1,6 +1,5 @@
 package com.ahjswy.cn.ui.outgoods;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.ahjswy.cn.R;
@@ -62,7 +61,7 @@ public class GoodsWarehouseSearchAct extends BaseActivity implements AdapterView
 		}
 	};
 	private ListView listview;
-	private String position;
+	public String position;
 
 	private void loadData(final Goods goods) {
 		if (goods == null) {

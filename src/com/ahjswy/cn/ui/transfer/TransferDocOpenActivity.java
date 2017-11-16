@@ -206,7 +206,7 @@ public class TransferDocOpenActivity extends BaseActivity implements OnClickList
 						DocContainerEntity.class);
 				doc = ((DefDocTransfer) JSONUtil.readValue(doccontainer.getDoc(), DefDocTransfer.class));
 				fillDoc();
-				doccontainer.setDoc(JSONUtil.object2Json(doc));
+				doccontainer.setDoc(JSONUtil.toJSONString(doc));
 				// TODO
 				Intent intent = new Intent(TransferDocOpenActivity.this, TransferEditActivity.class);
 				intent.putExtra("docContainer", doccontainer);

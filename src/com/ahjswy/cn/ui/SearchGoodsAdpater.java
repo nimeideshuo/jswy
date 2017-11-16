@@ -10,7 +10,6 @@ import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,6 @@ import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SearchGoodsAdpater extends BaseAdapter implements Filterable {
 	private Context context;

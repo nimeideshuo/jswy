@@ -17,7 +17,6 @@ import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.utils.MLog;
 
 import android.os.Environment;
-import android.util.Log;
 import android.util.Xml;
 
 public class ModeHelper {

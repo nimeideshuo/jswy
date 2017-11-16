@@ -29,7 +29,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class InPurchaseDocAddGoodAct extends BaseActivity implements OnClickListener, OnFocusChangeListener {
@@ -57,11 +56,11 @@ public class InPurchaseDocAddGoodAct extends BaseActivity implements OnClickList
 	private EditText etDiscountSubtotal;
 	// 备注
 	private EditText etRemark;
-	private LinearLayout ll_PrmomotionGoods;
+	// private LinearLayout ll_PrmomotionGoods;
 	private int position;
 	private int positiongive;
-	private String customerid;
-	private Button btnPromotionProDate;
+	// private String customerid;
+	// private Button btnPromotionProDate;
 
 	@Override
 	protected void onCreate(Bundle paramBundle) {
@@ -93,7 +92,7 @@ public class InPurchaseDocAddGoodAct extends BaseActivity implements OnClickList
 	DefDocItemCG defdocitemCG;
 
 	private void initDate() {
-		customerid = getIntent().getStringExtra("customerid");
+		// customerid = getIntent().getStringExtra("customerid");
 		position = getIntent().getIntExtra("position", -1);
 		defdocitemCG = ((DefDocItemCG) getIntent().getSerializableExtra("docitem"));
 		positiongive = getIntent().getIntExtra("positiongive", -1);
@@ -303,7 +302,7 @@ public class InPurchaseDocAddGoodAct extends BaseActivity implements OnClickList
 	private boolean setItemsGoods(DefDocItemCG defdocitemcg) {
 		List<DefDocItemCG> itemCGs = new ArrayList<DefDocItemCG>();
 		itemCGs.add(defdocitemcg);
-		String goodsPrice = new ServiceStore().GetGoodsPrice(doccg, JSONUtil.object2Json(itemCGs));
+		String goodsPrice = new ServiceStore().GetGoodsPrice(doccg, JSONUtil.toJSONString(itemCGs));
 		if (TextUtils.isEmptyS(goodsPrice)) {
 			JSONUtil.readValue2(goodsPrice);
 			double price = Double.parseDouble(JSONUtil.Data);

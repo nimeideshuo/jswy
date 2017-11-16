@@ -75,7 +75,7 @@ public class SystemState {
 
 	public static boolean saveObject(String key, Object value) {
 		SharedPreferences.Editor localEditor = basic_setting.edit();
-		localEditor.putString(key, JSONUtil.object2Json(value));
+		localEditor.putString(key, JSONUtil.toJSONString(value));
 		return localEditor.commit();
 	}
 }

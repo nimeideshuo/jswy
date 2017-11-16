@@ -42,7 +42,7 @@ public class Popup_menu_main extends PopupWindow {
 		// 设置SelectPicPopupWindow的View
 		this.setContentView(mMenuView);
 		// 设置SelectPicPopupWindow弹出窗体的宽
-		this.setWidth(LayoutParams.FILL_PARENT);
+		this.setWidth(LayoutParams.MATCH_PARENT);
 		// 设置SelectPicPopupWindow弹出窗体的高
 		this.setHeight(LayoutParams.WRAP_CONTENT);
 		// 设置SelectPicPopupWindow弹出窗体可点击

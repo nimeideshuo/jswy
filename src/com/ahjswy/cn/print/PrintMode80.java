@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.model.FieldSaleItemForPrint;
-import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
 /**

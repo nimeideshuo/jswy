@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -20,7 +19,6 @@ import org.apache.http.util.EntityUtils;
 import com.ahjswy.cn.app.AccountPreference;
 
 import android.os.SystemClock;
-import android.util.Log;
 
 public class HttpRequestUtils {
 	private static AccountPreference ap = new AccountPreference();

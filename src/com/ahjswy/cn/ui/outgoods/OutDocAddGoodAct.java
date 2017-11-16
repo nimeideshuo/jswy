@@ -2,7 +2,6 @@ package com.ahjswy.cn.ui.outgoods;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
@@ -10,16 +9,13 @@ import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.dao.WarehouseDAO;
-import com.ahjswy.cn.model.CustomerRecords;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespGoodsBatchEntity;
 import com.ahjswy.cn.response.RespGoodsWarehouse;
-import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.GoodsBatchSearchAct;
-import com.ahjswy.cn.ui.GoodsSearchAct;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
@@ -301,7 +297,8 @@ public class OutDocAddGoodAct extends BaseActivity
 			break;
 		// 搭赠 赠品
 		case R.id.btnGoodsGive:
-			startActivityForResult(new Intent().setClass(this, GoodsSearchAct.class), 0);
+			// startActivityForResult(new Intent().setClass(this,
+			// GoodsSearchAct.class), 0);
 			break;
 		// 搭赠批次
 		case R.id.btnProBatch:

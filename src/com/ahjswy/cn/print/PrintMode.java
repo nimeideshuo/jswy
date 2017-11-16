@@ -13,8 +13,6 @@ import com.ahjswy.cn.utils.SortUtils;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 
-import android.util.Log;
-
 public abstract class PrintMode {
 	protected final String CHARSET = "gbk";
 	public static final int ERROR = 1;

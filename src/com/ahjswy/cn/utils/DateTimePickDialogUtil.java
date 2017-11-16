@@ -8,7 +8,6 @@ import com.ahjswy.cn.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
@@ -129,7 +128,7 @@ public class DateTimePickDialogUtil implements OnDateChangedListener, OnTimeChan
 
 		// 将初始日期时间2012年07月02日 16:45 拆分成年 月 日 时 分 秒
 		String date = spliteString(initDateTime, "日", "index", "front"); // 日期
-		String time = spliteString(initDateTime, "日", "index", "back"); // 时间
+		// String time = spliteString(initDateTime, "日", "index", "back"); // 时间
 
 		String yearStr = spliteString(date, "年", "index", "front"); // 年份
 		String monthAndDay = spliteString(date, "年", "index", "back"); // 月日

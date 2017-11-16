@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.bean.Def_Doc;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
@@ -56,7 +55,6 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 		support = new ServiceSupport();
 		Newitems = new ArrayList<DefDocItemCG>();
 		setInitItem();
-		ap = new AccountPreference();
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
@@ -182,7 +180,7 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 	private void setItemsGoodsPrice(DefDocItemCG defdocitemcg) {
 		List<DefDocItemCG> itemCGs = new ArrayList<DefDocItemCG>();
 		itemCGs.add(defdocitemcg);
-		String goodsPrice = new ServiceStore().GetGoodsPrice(doccg, JSONUtil.object2Json(itemCGs));
+		String goodsPrice = new ServiceStore().GetGoodsPrice(doccg, JSONUtil.toJSONString(itemCGs));
 		if (TextUtils.isEmpty(goodsPrice)) {
 			defdocitemcg.setIsgift(true);
 			defdocitemcg.setPrice(0);
@@ -295,14 +293,13 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 		}
 		// deleBm();
 		Intent intent = new Intent();
-		intent.putExtra("items", JSONUtil.object2Json(listDe));
+		intent.putExtra("items", JSONUtil.toJSONString(listDe));
 		setResult(RESULT_OK, intent);
 		finish();
 	}
 
 	private ServiceSupport support;
 	private Scaner scaner;
-	private AccountPreference ap;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

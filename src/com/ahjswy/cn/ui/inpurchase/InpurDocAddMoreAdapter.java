@@ -1,14 +1,12 @@
 package com.ahjswy.cn.ui.inpurchase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemCG;
 import com.ahjswy.cn.model.GoodsUnit;
-import com.ahjswy.cn.response.RespGoodsWarehouse;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.Utils;
 

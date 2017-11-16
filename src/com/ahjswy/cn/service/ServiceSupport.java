@@ -18,7 +18,7 @@ public class ServiceSupport {
 		String url = Service.getServiceAddress(this.baseAddress, "queryregioncustomers");
 		ReqCommonPara localReqCommonPara = new ReqCommonPara();
 		localReqCommonPara.setStringValue(paramString);
-		map.put("parameter", JSONUtil.object2Json(localReqCommonPara));
+		map.put("parameter", JSONUtil.toJSONString(localReqCommonPara));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -26,7 +26,7 @@ public class ServiceSupport {
 		String url = Utils.getServiceAddress(this.baseAddress, "queryvisitlinecustomers");
 		ReqCommonPara localReqCommonPara = new ReqCommonPara();
 		localReqCommonPara.setStringValue(paramString);
-		map.put("parameter", JSONUtil.object2Json(localReqCommonPara));
+		map.put("parameter", JSONUtil.toJSONString(localReqCommonPara));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -39,7 +39,7 @@ public class ServiceSupport {
 	public String sup_QueryDepartment(String paramString, boolean paramBoolean) {
 		String url = Utils.getServiceAddress(this.baseAddress, "querydepartment");
 		ReqSupQueryDepartment localReqSupQueryDepartment = new ReqSupQueryDepartment(paramString, paramBoolean);
-		map.put("parameter", JSONUtil.object2Json(localReqSupQueryDepartment));
+		map.put("parameter", JSONUtil.toJSONString(localReqSupQueryDepartment));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -74,7 +74,7 @@ public class ServiceSupport {
 		supQueryStockNum.setGoodsId(goodsid);
 		supQueryStockNum.setWarehouseId(warehouseid);
 		supQueryStockNum.setIsIncludeTruck(false);
-		map.put("parameter", JSONUtil.object2Json(supQueryStockNum));
+		map.put("parameter", JSONUtil.toJSONString(supQueryStockNum));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 

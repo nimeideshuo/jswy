@@ -276,8 +276,8 @@ public class InpurchaseOpenActivity extends BaseActivity implements OnClickListe
 			doccg.setShowid("采购入库单");
 			PurchaseEntity entity = new PurchaseEntity();
 			Collections.sort(payTypes);
-			entity.setTypelistjson(JSONUtil.object2Json(payTypes));
-			entity.setDocjson(JSONUtil.object2Json(doccg));
+			entity.setTypelistjson(JSONUtil.toJSONString(payTypes));
+			entity.setDocjson(JSONUtil.toJSONString(doccg));
 
 			// TODO
 			Intent intent = new Intent(InpurchaseOpenActivity.this, InpurchaseEditActivity.class);

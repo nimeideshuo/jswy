@@ -49,7 +49,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
@@ -212,7 +211,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 					localArrayList.add(fillItem(goodsthin, 0.0D, 0.0D));
 				}
 				startActivityForResult(new Intent().setClass(TransferEditActivity.this, TransferAddMoreGoodsAct.class)
-						.putExtra("items", JSONUtil.object2Json(localArrayList)), 2);
+						.putExtra("items", JSONUtil.toJSONString(localArrayList)), 2);
 			}
 		}
 

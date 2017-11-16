@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ahjswy.cn.model.Good;
 import com.ahjswy.cn.model.Goods;
 import com.ahjswy.cn.model.GoodsInfo;
 import com.ahjswy.cn.model.GoodsThin;
@@ -220,12 +219,14 @@ public class GoodsDAO {
 
 		return null;
 	}
+
 	@Deprecated
 	public String queryGoodsBigStockNumber(String paramString) {
 		return paramString;
 	}
+
 	@Deprecated
-	public List queryGoodsByBarcode(String paramString, long paramLong) {
+	public List<GoodsThin> queryGoodsByBarcode(String paramString, long paramLong) {
 		return null;
 		// this.db = this.helper.getReadableDatabase();
 		// SQLiteDatabase localSQLiteDatabase = this.db;
@@ -269,98 +270,90 @@ public class GoodsDAO {
 		// this.db.close();
 		// }
 	}
-	@Deprecated
-	public int queryGoodsIndexByPinyin(String paramString) {
+
+	public int queryGoodsIndexByPinyin(String str) {
 		this.db = this.helper.getReadableDatabase();
-		Cursor localCursor = this.db.rawQuery(
+		Cursor cursor = this.db.rawQuery(
 				"select count(*) from sz_goods where lower(substr(pinyin, 1, 1)) < lower(substr(?, 1, 1))",
-				new String[] { paramString });
+				new String[] { str });
 		try {
-			boolean bool = localCursor.moveToNext();
-			int i = 0;
-			if (bool) {
-				int j = localCursor.getInt(0);
-				i = j;
+			if (cursor.moveToNext()) {
+				return cursor.getInt(0);
 			}
-			return i;
 		} catch (Exception localException) {
-			SQLiteDatabase localSQLiteDatabase;
-			do {
-				localException.printStackTrace();
-				if (localCursor != null)
-					localCursor.close();
-				localSQLiteDatabase = this.db;
-				int i = 0;
-			} while (localSQLiteDatabase == null);
-			this.db.close();
-			return 0;
 		} finally {
-			if (localCursor != null)
-				localCursor.close();
+			if (cursor != null)
+				cursor.close();
 			if (this.db != null)
 				this.db.close();
 		}
+		return 0;
 	}
+
 	@Deprecated
 	public List<GoodsInfo> queryGoodsInfos(String paramString) {
-		this.db = this.helper.getReadableDatabase();
-		String localString1 = "SELECT g.id,g.name,g.pinyin,g.barcode,g.salecue,g.specification,g.model,g.goodsclassid,g.goodsclassname,g.stocknumber,g.bigstocknumber,g.getstocktime, isusebatch  FROM sz_goods g WHERE g.isavailable='1' and (";
-		String[] arrayOfString1 = Utils.GOODS_CHECK_SELECT.split(",");
-		int i = 0;
-		while (true) {
-			String[] arrayOfString2;
-			int j = 0;
-			Cursor localCursor = null;
-			ArrayList localArrayList;
-			if (i >= arrayOfString1.length) {
-				String localString2 = localString1 + ") order by g.id asc";
-				arrayOfString2 = new String[arrayOfString1.length];
-				j = 0;
-				if (j < arrayOfString2.length)
-					localCursor = this.db.rawQuery(localString2, arrayOfString2);
-				localArrayList = new ArrayList();
-			}
-			try {
-				while (true) {
-					boolean bool1 = localCursor.moveToNext();
-					if (!bool1) {
-						localString1 = localString1 + "g." + arrayOfString1[i] + " like ? ";
-						if (i != -1 + arrayOfString1.length)
-							localString1 = localString1 + " or ";
-						i++;
-						// arrayOfString2[j] = ("%" + paramString + "%");
-						j++;
-					}
-					GoodsInfo localGoodsInfo = new GoodsInfo();
-					localGoodsInfo.setId(localCursor.getString(0));
-					localGoodsInfo.setName(localCursor.getString(1));
-					localGoodsInfo.setPinyin(localCursor.getString(2));
-					localGoodsInfo.setBarcode(localCursor.getString(3));
-					localGoodsInfo.setSalecue(localCursor.getString(4));
-					localGoodsInfo.setSpecification(localCursor.getString(5));
-					localGoodsInfo.setModel(localCursor.getString(6));
-					localGoodsInfo.setGoodsclassid(localCursor.getString(7));
-					localGoodsInfo.setGoodsclassname(localCursor.getString(8));
-					localGoodsInfo.setStocknumber(localCursor.getString(9));
-					localGoodsInfo.setBigstocknumber(localCursor.getString(10));
-					localGoodsInfo.setGetstocktime(new Timestamp(localCursor.getLong(11)));
-					if (localCursor.getInt(12) != 1)
-						;
-					// localGoodsInfo.setIsusebatch(bool2);
-					// localArrayList.add(localGoodsInfo);
-				}
-			} catch (Exception localException) {
-				while (true) {
-					localException.printStackTrace();
-					boolean bool2 = false;
-				}
-			} finally {
-				if (localCursor != null)
-					localCursor.close();
-				if (this.db != null)
-					this.db.close();
-			}
-		}
+		return null;
+		// this.db = this.helper.getReadableDatabase();
+		// String localString1 = "SELECT
+		// g.id,g.name,g.pinyin,g.barcode,g.salecue,g.specification,g.model,g.goodsclassid,g.goodsclassname,g.stocknumber,g.bigstocknumber,g.getstocktime,
+		// isusebatch FROM sz_goods g WHERE g.isavailable='1' and (";
+		// String[] arrayOfString1 = Utils.GOODS_CHECK_SELECT.split(",");
+		// int i = 0;
+		// while (true) {
+		// String[] arrayOfString2;
+		// int j = 0;
+		// Cursor localCursor = null;
+		// ArrayList localArrayList;
+		// if (i >= arrayOfString1.length) {
+		// String localString2 = localString1 + ") order by g.id asc";
+		// arrayOfString2 = new String[arrayOfString1.length];
+		// j = 0;
+		// if (j < arrayOfString2.length)
+		// localCursor = this.db.rawQuery(localString2, arrayOfString2);
+		// localArrayList = new ArrayList();
+		// }
+		// try {
+		// while (true) {
+		// boolean bool1 = localCursor.moveToNext();
+		// if (!bool1) {
+		// localString1 = localString1 + "g." + arrayOfString1[i] + " like ? ";
+		// if (i != -1 + arrayOfString1.length)
+		// localString1 = localString1 + " or ";
+		// i++;
+		// // arrayOfString2[j] = ("%" + paramString + "%");
+		// j++;
+		// }
+		// GoodsInfo localGoodsInfo = new GoodsInfo();
+		// localGoodsInfo.setId(localCursor.getString(0));
+		// localGoodsInfo.setName(localCursor.getString(1));
+		// localGoodsInfo.setPinyin(localCursor.getString(2));
+		// localGoodsInfo.setBarcode(localCursor.getString(3));
+		// localGoodsInfo.setSalecue(localCursor.getString(4));
+		// localGoodsInfo.setSpecification(localCursor.getString(5));
+		// localGoodsInfo.setModel(localCursor.getString(6));
+		// localGoodsInfo.setGoodsclassid(localCursor.getString(7));
+		// localGoodsInfo.setGoodsclassname(localCursor.getString(8));
+		// localGoodsInfo.setStocknumber(localCursor.getString(9));
+		// localGoodsInfo.setBigstocknumber(localCursor.getString(10));
+		// localGoodsInfo.setGetstocktime(new
+		// Timestamp(localCursor.getLong(11)));
+		// if (localCursor.getInt(12) != 1)
+		// ;
+		// // localGoodsInfo.setIsusebatch(bool2);
+		// // localArrayList.add(localGoodsInfo);
+		// }
+		// } catch (Exception localException) {
+		// while (true) {
+		// localException.printStackTrace();
+		// boolean bool2 = false;
+		// }
+		// } finally {
+		// if (localCursor != null)
+		// localCursor.close();
+		// if (this.db != null)
+		// this.db.close();
+		// }
+		// }
 	}
 
 	/**
@@ -419,7 +412,7 @@ public class GoodsDAO {
 
 	// TODO 添加商品
 	public boolean insertAddGood(Goods goods) {
-		if (goods == null && TextUtils.isEmpty(goods.getId())) {
+		if (goods == null || TextUtils.isEmpty(goods.getId())) {
 			return false;
 		}
 		this.db = this.helper.getWritableDatabase();

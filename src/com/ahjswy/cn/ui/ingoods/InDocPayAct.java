@@ -1,9 +1,6 @@
 package com.ahjswy.cn.ui.ingoods;
 
-import java.io.IOException;
 import java.util.List;
-
-import org.codehaus.jackson.JsonProcessingException;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.model.DefDocPayType;
@@ -40,7 +37,7 @@ public class InDocPayAct extends BaseActivity implements OnFocusChangeListener, 
 	// 优惠
 	private EditTextWithDel etPreference;
 	private ListView listView;
-	private boolean isReadOnly;
+	// private boolean isReadOnly;
 	private boolean isReceive;
 	private double discountsubtotal;
 	private List<DefDocPayType> listPayType;
@@ -65,7 +62,7 @@ public class InDocPayAct extends BaseActivity implements OnFocusChangeListener, 
 		btnSave.setOnClickListener(this);
 		listView = (ListView) findViewById(R.id.listView);
 		isReceive = getIntent().getBooleanExtra("isreceive", true);
-		this.isReadOnly = getIntent().getBooleanExtra("isreadonly", true);
+		// this.isReadOnly = getIntent().getBooleanExtra("isreadonly", true);
 		this.discountsubtotal = getIntent().getDoubleExtra("discountsubtotal", 0.0D);
 		// 折扣合计
 		tvDiscountSubtotal.setText(discountsubtotal + "");
@@ -114,7 +111,7 @@ public class InDocPayAct extends BaseActivity implements OnFocusChangeListener, 
 				Intent localIntent = new Intent();
 				localIntent.putExtra("preference",
 						Utils.normalize(Utils.getDouble(etPreference.getText().toString()).doubleValue(), 2));
-				localIntent.putExtra("listpaytype", JSONUtil.object2Json(listPayType));
+				localIntent.putExtra("listpaytype", JSONUtil.toJSONString(listPayType));
 				setResult(RESULT_OK, localIntent);
 				finish();
 
@@ -142,7 +139,7 @@ public class InDocPayAct extends BaseActivity implements OnFocusChangeListener, 
 			Intent localIntent = new Intent();
 			localIntent.putExtra("preference",
 					Utils.normalize(Utils.getDouble(etPreference.getText().toString()).doubleValue(), 2));
-			localIntent.putExtra("listpaytype", JSONUtil.object2Json(listPayType));
+			localIntent.putExtra("listpaytype", JSONUtil.toJSONString(listPayType));
 			setResult(RESULT_OK, localIntent);
 			finish();
 			break;
@@ -228,7 +225,7 @@ public class InDocPayAct extends BaseActivity implements OnFocusChangeListener, 
 			Intent localIntent = new Intent();
 			localIntent.putExtra("preference",
 					Utils.normalize(Utils.getDouble(etPreference.getText().toString()).doubleValue(), 2));
-			localIntent.putExtra("listpaytype", JSONUtil.object2Json(listPayType));
+			localIntent.putExtra("listpaytype", JSONUtil.toJSONString(listPayType));
 			setResult(RESULT_OK, localIntent);
 			finish();
 			break;

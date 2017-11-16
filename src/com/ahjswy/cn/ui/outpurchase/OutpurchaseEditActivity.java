@@ -198,7 +198,7 @@ public class OutpurchaseEditActivity extends BaseActivity
 				@SuppressWarnings("unchecked")
 				ArrayList<DefDocItemCG> defdocitem = (ArrayList<DefDocItemCG>) msg.obj;
 				Intent intent = new Intent().setClass(OutpurchaseEditActivity.this, OutpurDocAddMoreGoodsAct.class);
-				intent.putExtra("items", JSONUtil.object2Json(defdocitem));
+				intent.putExtra("items", JSONUtil.toJSONString(defdocitem));
 				intent.putExtra("doc", defdoccg);
 				startActivityForResult(intent, 1);
 
@@ -339,12 +339,12 @@ public class OutpurchaseEditActivity extends BaseActivity
 		}
 		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setPaytype("101");
-		localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(listItemDelete));
-		localDocContainerEntity.setDoc(JSONUtil.object2Json(defdoccg));
-		localDocContainerEntity.setDoctype(JSONUtil.object2Json(listPayType));
-		localDocContainerEntity.setItem(JSONUtil.object2Json(adapter.getData()));
+		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
+		localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdoccg));
+		localDocContainerEntity.setDoctype(JSONUtil.toJSONString(listPayType));
+		localDocContainerEntity.setItem(JSONUtil.toJSONString(adapter.getData()));
 		localDocContainerEntity.setInfo("");
-		return JSONUtil.object2Json(localDocContainerEntity);
+		return JSONUtil.toJSONString(localDocContainerEntity);
 	}
 
 	private String validateDoc() {
@@ -409,7 +409,7 @@ public class OutpurchaseEditActivity extends BaseActivity
 						DefDocItemTH.class);
 				listItemDelete.clear();
 				listItemDelete = new ArrayList<Long>();
-				System.out.println("res>>>>" + JSONUtil.object2Json(localDocContainerEntity));
+				System.out.println("res>>>>" + JSONUtil.toJSONString(localDocContainerEntity));
 				switch (msg.what) {
 				case 0:
 					adapter.setData(newListItem);
@@ -479,7 +479,7 @@ public class OutpurchaseEditActivity extends BaseActivity
 			localArrayList.add(fillItem(localGoodsThin, 0.0D, 0));
 		}
 		startActivityForResult(new Intent().setClass(OutpurchaseEditActivity.this, OutpurDocAddMoreGoodsAct.class)
-				.putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc", defdoccg), 1);
+				.putExtra("items", JSONUtil.toJSONString(localArrayList)).putExtra("doc", defdoccg), 1);
 	}
 
 	private DefDocItemTH fillItem(GoodsThin localGoodsThin, double num, long itemid) {
@@ -923,7 +923,7 @@ public class OutpurchaseEditActivity extends BaseActivity
 		Intent localIntent = new Intent(this, OutpurDocPayAct.class);
 		localIntent.putExtra("discountsubtotal", discountsubtotal);
 		localIntent.putExtra("preference", defdoccg.getPreference());
-		localIntent.putExtra("listpaytype", JSONUtil.object2Json(listPayType));
+		localIntent.putExtra("listpaytype", JSONUtil.toJSONString(listPayType));
 		startActivityForResult(localIntent, 5);
 	}
 

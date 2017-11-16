@@ -1,7 +1,6 @@
 package com.ahjswy.cn.ui.inpurchase;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 
 import com.ahjswy.cn.R;
@@ -22,9 +21,9 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 
 public class InpurDocPayAct extends BaseActivity implements Clean, OnClickListener, OnFocusChangeListener, Amount {
 	// 折后合计

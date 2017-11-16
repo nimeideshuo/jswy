@@ -22,7 +22,7 @@ public class ServiceSystem {
 		String url = Service.getServiceAddress(this.baseAddress, "checkregister");
 		TerminalEntity localTerminalEntity = new TerminalEntity(MyApplication.getInstance().getUniqueCode(),
 				"mmendianban");
-		map.put("parameter", JSONUtil.object2Json(localTerminalEntity));
+		map.put("parameter", JSONUtil.toJSONString(localTerminalEntity));
 		return new Utils_help().getServiceInfor(ip, url, map);
 	}
 
@@ -30,7 +30,7 @@ public class ServiceSystem {
 		String url = Service.getServiceAddress(this.baseAddress, "checkversion");
 		ReqCommonPara localReqCommonPara = new ReqCommonPara();
 		localReqCommonPara.setStringValue("mmendianban");
-		map.put("parameter", JSONUtil.object2Json(localReqCommonPara));
+		map.put("parameter", JSONUtil.toJSONString(localReqCommonPara));
 		String version = new Utils_help().getServiceInfor(url, map);
 		if (A.isFail(version)) {
 			return null;
@@ -48,7 +48,7 @@ public class ServiceSystem {
 		ReqCommonPara localReqCommonPara = new ReqCommonPara();
 		localReqCommonPara.setStringValue(
 				"'intPricePrecision','intSubtotalPrecision','intReceivablePrecision','intSubtotalChange','intOutDocUnit','intTransferDocUnit','strCancelWarehouse','isAutoChangeGoodsDiscountAfterDoc','companyname','intGenerateBatch','strBatchPrefix','strBatchSuffix','strPriceSystem'");
-		map.put("parameter", JSONUtil.object2Json(localReqCommonPara));
+		map.put("parameter", JSONUtil.toJSONString(localReqCommonPara));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -59,7 +59,7 @@ public class ServiceSystem {
 		ReqCommonPara localReqCommonPara = new ReqCommonPara();
 		localReqCommonPara.setStringValue(paramString);
 
-		map.put("parameter", JSONUtil.object2Json(localReqCommonPara));
+		map.put("parameter", JSONUtil.toJSONString(localReqCommonPara));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		// 判断加密狗?
 		if (RequestHelper.isSuccess(infor))
@@ -86,7 +86,7 @@ public class ServiceSystem {
 		localTerminalEntity.setRegistrationCode(regis_id);
 		localTerminalEntity.setOwner(padUser);
 		localTerminalEntity.setIsPC(false);
-		map.put("parameter", JSONUtil.object2Json(localTerminalEntity));
+		map.put("parameter", JSONUtil.toJSONString(localTerminalEntity));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 

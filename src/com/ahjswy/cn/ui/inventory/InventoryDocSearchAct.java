@@ -12,9 +12,7 @@ import com.ahjswy.cn.model.Warehouse;
 import com.ahjswy.cn.request.ReqStrSearchDoc;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.DepartmentSearchAct;
-import com.ahjswy.cn.ui.DocTypeListAct;
 import com.ahjswy.cn.ui.WarehouseSearchAct;
-import com.ahjswy.cn.utils.TextUtils;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;

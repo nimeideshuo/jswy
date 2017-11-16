@@ -13,34 +13,37 @@ public class GoodsImageDAO {
 	private SQLiteDatabase db;
 	private DBOpenHelper helper = new DBOpenHelper();
 
-	public List get() {
-		db = helper.getWritableDatabase();
-		Cursor localCursor = this.db.rawQuery("select * from sz_goodsimage", null);
-		ArrayList localArrayList = new ArrayList();
-		try {
-			boolean bool1 = localCursor.moveToNext();
-			if (!bool1) {
-				GoodsImage localGoodsImage = new GoodsImage();
-				localGoodsImage.setSerialid(localCursor.getLong(localCursor.getColumnIndex("serialid")));
-				localGoodsImage.setGoodsId(localCursor.getString(localCursor.getColumnIndex("goodsid")));
-				localGoodsImage.setImagePath(localCursor.getString(localCursor.getColumnIndex("imagepath")));
-				if (localCursor.getInt(localCursor.getColumnIndex("isgot")) == 0) {
-					Boolean bool2 = true;
-					localGoodsImage.setIsGot(bool2);
-					localArrayList.add(localGoodsImage);
-					return localArrayList;
-				}
-
-			}
-		} catch (Exception localException) {
-			localException.printStackTrace();
-		} finally {
-			if (localCursor != null)
-				localCursor.close();
-			if (this.db != null)
-				this.db.close();
-		}
-		return localArrayList;
+	@Deprecated
+	public List<GoodsImage> get() {
+		return null;
+		// db = helper.getWritableDatabase();
+		// Cursor localCursor = this.db.rawQuery("select * from sz_goodsimage",
+		// null);
+		// ArrayList localArrayList = new ArrayList();
+		// try {
+		// boolean bool1 = localCursor.moveToNext();
+		// if (!bool1) {
+		// GoodsImage localGoodsImage = new GoodsImage();
+		// localGoodsImage.setSerialid(localCursor.getLong(localCursor.getColumnIndex("serialid")));
+		// localGoodsImage.setGoodsId(localCursor.getString(localCursor.getColumnIndex("goodsid")));
+		// localGoodsImage.setImagePath(localCursor.getString(localCursor.getColumnIndex("imagepath")));
+		// if (localCursor.getInt(localCursor.getColumnIndex("isgot")) == 0) {
+		// Boolean bool2 = true;
+		// localGoodsImage.setIsGot(bool2);
+		// localArrayList.add(localGoodsImage);
+		// return localArrayList;
+		// }
+		//
+		// }
+		// } catch (Exception localException) {
+		// localException.printStackTrace();
+		// } finally {
+		// if (localCursor != null)
+		// localCursor.close();
+		// if (this.db != null)
+		// this.db.close();
+		// }
+		// return localArrayList;
 	}
 
 	/**
@@ -73,34 +76,37 @@ public class GoodsImageDAO {
 		return null;
 	}
 
+	@Deprecated
 	public int getCount() {
-		this.db = this.helper.getWritableDatabase();
-		Cursor localCursor = this.db.rawQuery("select count(*) from sz_goodsimage", null);
-		try {
-			boolean bool = localCursor.moveToNext();
-			int i = 0;
-			if (bool) {
-				int j = localCursor.getInt(0);
-				i = j;
-			}
-			return i;
-		} catch (Exception localException) {
-			SQLiteDatabase localSQLiteDatabase;
-			do {
-				localException.printStackTrace();
-				if (localCursor != null)
-					localCursor.close();
-				localSQLiteDatabase = this.db;
-				int i = 0;
-			} while (localSQLiteDatabase == null);
-			this.db.close();
-			return 0;
-		} finally {
-			if (localCursor != null)
-				localCursor.close();
-			if (this.db != null)
-				this.db.close();
-		}
+		return 0;
+		// this.db = this.helper.getWritableDatabase();
+		// Cursor localCursor = this.db.rawQuery("select count(*) from
+		// sz_goodsimage", null);
+		// try {
+		// boolean bool = localCursor.moveToNext();
+		// int i = 0;
+		// if (bool) {
+		// int j = localCursor.getInt(0);
+		// i = j;
+		// }
+		// return i;
+		// } catch (Exception localException) {
+		// SQLiteDatabase localSQLiteDatabase;
+		// do {
+		// localException.printStackTrace();
+		// if (localCursor != null)
+		// localCursor.close();
+		// localSQLiteDatabase = this.db;
+		// int i = 0;
+		// } while (localSQLiteDatabase == null);
+		// this.db.close();
+		// return 0;
+		// } finally {
+		// if (localCursor != null)
+		// localCursor.close();
+		// if (this.db != null)
+		// this.db.close();
+		// }
 	}
 
 	// 查询 sz_goodsimage 数据

@@ -283,12 +283,14 @@ public class DocUtils {
 		if (customerid == null || docItem == null) {
 			return 0;
 		}
-		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, docItem.getGoodsid());
 		double ratio = unitDAO.getGoodsUnitRatio(docItem.getGoodsid(), docItem.getUnitid());
-		if (historyPrice != null) {
-			double historyratio = unitDAO.getGoodsUnitRatio(docItem.getGoodsid(), historyPrice.getUnitid());
-			return Utils.normalize(historyPrice.getPrice() / historyratio * ratio, 2);
-			// 除以 自身比例 * 与 要换算的比例
+		if (customerdao.isUseCustomerprice(customerid)) {
+			CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, docItem.getGoodsid());
+			if (historyPrice != null) {
+				double historyratio = unitDAO.getGoodsUnitRatio(docItem.getGoodsid(), historyPrice.getUnitid());
+				// 除以 自身比例 * 与 要换算的比例
+				return Utils.normalize(historyPrice.getPrice() / historyratio * ratio, 2);
+			}
 		}
 		// 客户价格体系 中的设置
 		String pricesystemid = customerdao.queryPricesystemid(customerid);

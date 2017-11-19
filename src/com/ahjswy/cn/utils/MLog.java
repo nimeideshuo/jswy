@@ -17,7 +17,7 @@ public class MLog {
 		devices.put("BlueStacks", "f3abcf1effec8b17");
 		devices.put("MX5020", "86bf794d381818a2");
 		devices.put("MX5020d", "70a646d72958b915");
-		devices.put("Al00", "f8945dd90ddf6393");
+		devices.put("testDevice", "43f75538184812d7");
 		isPrint = IsDevices(devices);
 	}
 
@@ -46,7 +46,7 @@ public class MLog {
 	}
 
 	public static boolean IsDevices(Map<String, String> devices) {
-		String androidId = MyApplication.getAndroidId();
+		String androidId = MyApplication.getInstance().getAndroidId();
 		Iterator<String> iterator = devices.values().iterator();
 		while (iterator.hasNext()) {
 			if (iterator.next().equals(androidId)) {

@@ -1271,9 +1271,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				if (Utils.isCombination()) {
 					combinationItem();
 				}
-				this.adapter.setData(listItem);
-				adapter.notifyDataSetChanged();
+				adapter.setData(listItem);
 				// listview_copy_dele.setAdapter(adapter);
+				adapter.notifyDataSetChanged();
 				ishaschanged = true;
 				bottomCount();
 				refreshUI();

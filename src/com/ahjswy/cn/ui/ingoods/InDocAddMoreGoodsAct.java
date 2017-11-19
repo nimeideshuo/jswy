@@ -52,12 +52,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		doc = (DefDoc) getIntent().getSerializableExtra("doc");
 		listView = ((ListView) findViewById(R.id.listView));
 		adapter = new InDocAddMoreAdapter(this);
-		// TODO测试代码
-		for (int i = 0; i < 50; i++) {
-			DefDocItemXS itemXS = items.get(i);
-			DefDocItemXS itemXS2 = new DefDocItemXS(itemXS);
-			items.add(itemXS2);
-		}
+		// 测试代码
 		adapter.setData(items);
 		listView.setAdapter(adapter);
 		dialog = new Dialog_listCheckBox(this);

@@ -38,8 +38,8 @@ public class OutpurDocPayAct extends BaseActivity implements Clean, OnClickListe
 	private Button btnSave;
 
 	private ListView listView;
-	private boolean isReadOnly;
-	private boolean isReceive;
+	// private boolean isReadOnly;
+	// private boolean isReceive;
 	private double discountsubtotal;
 	private List<DefDocPayType> listPayType;
 	private double preference;
@@ -62,8 +62,8 @@ public class OutpurDocPayAct extends BaseActivity implements Clean, OnClickListe
 		btnSave = (Button) findViewById(R.id.btnSave);
 		listView = (ListView) findViewById(R.id.listView);
 		// 已收
-		isReceive = getIntent().getBooleanExtra("isreceive", true);
-		isReadOnly = getIntent().getBooleanExtra("isreadonly", true);
+		// isReceive = getIntent().getBooleanExtra("isreceive", true);
+		// isReadOnly = getIntent().getBooleanExtra("isreadonly", true);
 		// 折扣合计
 		discountsubtotal = getIntent().getDoubleExtra("discountsubtotal", 0.0D);
 		// 优惠

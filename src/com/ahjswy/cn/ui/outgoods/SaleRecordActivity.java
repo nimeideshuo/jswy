@@ -146,19 +146,19 @@ public class SaleRecordActivity extends BaseActivity {
 				final RespStrDocThinEntity respStrDocThinEntity = listDoc.get(position);
 				PDH.show(SaleRecordActivity.this, new PDH.ProgressCallBack() {
 					public void action() {
-						String str = new ServiceStore().str_GetXHDocDetail(respStrDocThinEntity.getDocid());
 						if ("13".equals(respStrDocThinEntity.getDoctypeid())) {
-							str = new ServiceStore().str_GetXSDocDetail(respStrDocThinEntity.getDocid());
+							String str = new ServiceStore().str_GetXSDocDetail(respStrDocThinEntity.getDocid());
 							handlerEdit.sendMessage(handlerEdit.obtainMessage(0, str));
 							return;
 						}
 
 						if ("14".equals(respStrDocThinEntity.getDoctypeid())) {
-							str = new ServiceStore().str_GetXTDocDetail(respStrDocThinEntity.getDocid());
+							String str = new ServiceStore().str_GetXTDocDetail(respStrDocThinEntity.getDocid());
 							handlerEdit.sendMessage(handlerEdit.obtainMessage(1, str));
 							return;
 						}
 						if ("15".equals(respStrDocThinEntity.getDoctypeid())) {
+							String str = new ServiceStore().str_GetXHDocDetail(respStrDocThinEntity.getDocid());
 							handlerEdit.sendMessage(handlerEdit.obtainMessage(2, str));
 							return;
 						}
@@ -244,8 +244,10 @@ public class SaleRecordActivity extends BaseActivity {
 					// localObject).putExtra("ishaschanged", false), 1);
 					// return;
 				}
+			}else{
+				PDH.showFail(message);
 			}
-			PDH.showFail(message);
+			
 		}
 	};
 

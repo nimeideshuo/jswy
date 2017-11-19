@@ -28,7 +28,7 @@ public class CustomerDAO {
 	public List<CustomerThin> queryAllCustomer() {
 		this.db = this.helper.getWritableDatabase();
 		Cursor cursor = this.db.rawQuery(
-				"select id, name, pinyin, contactmoblie, address, settleterm, discountratio, promotionid, promotionname, pricesystemid from cu_customer where isavailable='1' and issupplier is  null order by name",
+				"select id, name, pinyin, contactmoblie, address, settleterm, discountratio, promotionid, promotionname, pricesystemid from cu_customer where isavailable='1' and iscustomer=1 order by name",
 				null);
 		ArrayList<CustomerThin> localArrayList = new ArrayList<CustomerThin>();
 		try {
@@ -55,6 +55,27 @@ public class CustomerDAO {
 				this.db.close();
 		}
 		return localArrayList;
+	}
+
+	/**
+	 * 客户是否使用客史价格
+	 * 
+	 * @param customerid
+	 * @return
+	 */
+	public boolean isUseCustomerprice(String customerid) {
+		this.db = this.helper.getReadableDatabase();
+		String sql = "select isusecustomerprice from cu_customer where id=? ";
+		try {
+			Cursor cursor = db.rawQuery(sql, new String[] { customerid });
+			if (cursor.moveToNext()) {
+				return cursor.getInt(0) == 0 ? false : true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	public CustomerThin queryCustomer(String customerName) {
@@ -146,7 +167,7 @@ public class CustomerDAO {
 		return null;
 	}
 
-	// 查找所有SQL 客户
+	// 查找所有SQL 客户供应商
 	public List<SupplierThin> queryAllSupplier() {
 		this.db = this.helper.getWritableDatabase();
 		Cursor cursor = this.db.rawQuery(

@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS "cu_customer"(
 "isavailable" 		TEXT(1),
 "iscustomer" 	TEXT(50),
 "issupplier" 	TEXT(50),
+"isusecustomerprice" 	TEXT(50),
 PRIMARY KEY("id")
 );
 
@@ -186,5 +187,18 @@ CREATE TABLE IF NOT EXISTS "sv_docitem" (
 "item"  TEXT(100),
 "doctype"  TEXT(20),
 "paytype"  TEXT(100)
+);
+CREATE TABLE IF NOT EXISTS "exception_log" (
+"id"  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+"userid"  TEXT(50),
+"username"  TEXT(50),
+"deviceid"  TEXT(50),
+"devicename"  TEXT(50),
+"model"  TEXT(50),
+"versionname"  TEXT(50),
+"message"  TEXT(50),
+"log"  TEXT(50),
+"datetime"  TEXT(50),
+"isupdata"  INTEGER(1)
 );
 

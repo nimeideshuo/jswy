@@ -104,12 +104,13 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 
 	int startNum = 0;
 
+	// private ServiceStore serviceStore;
 	// TODO startOpenDoc
 	public void startOpenDoc(View v) {
 		// 测试 数据库查询
 		// edNum = (EditText) findViewById(R.id.edNum);
 		// edTime = (EditText) findViewById(R.id.edTime);
-		serviceStore = new ServiceStore();
+		// serviceStore = new ServiceStore();
 		//
 		// PDH.show(this, "库存查询中..", new PDH.ProgressCallBack() {
 		//
@@ -182,7 +183,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		doc.setDistributionid(null);
 		doc.setCustomerid("安康001");
 		// doc.setCustomername("东至侯结才");
-		String resFor = serviceStore.str_SaveXSDoc(doc, getGoodsItem(), listPayType, listItemDelete);
+		String resFor = new ServiceStore().str_SaveXSDoc(doc, getGoodsItem(), listPayType, listItemDelete);
 		if (!RequestHelper.isSuccess(resFor)) {
 			showError("第 " + position + " 次请求错误！" + resFor);
 			SystemClock.sleep(5000);
@@ -582,7 +583,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			}
 		};
 	};
-	private ServiceStore serviceStore;
+
 	private Sv_docitem sv;
 	private EditText edTime;
 	private EditText edNum;

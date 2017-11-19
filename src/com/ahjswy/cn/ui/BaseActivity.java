@@ -3,6 +3,7 @@ package com.ahjswy.cn.ui;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.crash.CrashHandler;
 import com.ahjswy.cn.utils.PDH;
 
 import android.app.ActionBar;
@@ -63,7 +64,7 @@ public class BaseActivity extends Activity {
 	}
 
 	public void refreshUI() {
-		
+
 	}
 
 	public void setActionBarText() {

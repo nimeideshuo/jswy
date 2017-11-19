@@ -42,16 +42,6 @@ public class OutDocItemAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
-	// public void addZeroItemList(DefDocItemXS paramDefDocItemXS) {
-	// this.items.add(0, paramDefDocItemXS);
-	// notifyDataSetChanged();
-	// }
-
-	// public void addItemlist(List<DefDocItemXS> newListItem) {
-	// this.items.addAll(newListItem);
-	// notifyDataSetChanged();
-	// }
-
 	@Override
 	public int getCount() {
 		return items.size();

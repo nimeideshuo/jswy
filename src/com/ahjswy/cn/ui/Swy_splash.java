@@ -1,13 +1,17 @@
 package com.ahjswy.cn.ui;
 
+import java.util.List;
+
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.Jswy_logUser;
 import com.ahjswy.cn.app.LoginPassword;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.dao.Exception_logDAO;
 import com.ahjswy.cn.model.User;
 import com.ahjswy.cn.service.ServiceSystem;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.views.Dialog_ed_message;
@@ -15,8 +19,6 @@ import com.ahjswy.cn.views.Dialog_work_zt;
 import com.ahjswy.cn.views.Dialog_work_zt.Dialog_work_zt_callBack;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +27,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+import cn.bmob.v3.BmobBatch;
+import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BatchResult;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListListener;
 
 public class Swy_splash extends BaseActivity {
 	private Dialog_ed_message serviceips;
@@ -40,17 +47,6 @@ public class Swy_splash extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.swy_splash);
 		initview();
-		initVersion();
-
-	}
-
-	private void initVersion() {
-		try {
-			PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
-			tv_Version.setText("版本:" + pi.versionName);
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void initview() {
@@ -61,6 +57,7 @@ public class Swy_splash extends BaseActivity {
 		getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
 		width = localDisplayMetrics.widthPixels;
 		height = localDisplayMetrics.heightPixels;
+		tv_Version.setText("版本:" + MyApplication.getInstance().getVersionName());
 		System.out.println("width:" + width + "   height:" + height);
 		serviceips = new Dialog_ed_message(Swy_splash.this);
 		loading.setOnClickListener(new OnClickListener() {
@@ -70,7 +67,39 @@ public class Swy_splash extends BaseActivity {
 				registerCheckHandler.sendEmptyMessage(1);
 			}
 		});
+		// TODO 上传错误日志
 
+		logDAO = new Exception_logDAO();
+		List<BmobObject> listexception = logDAO.queryBmobAll();
+		if (!listexception.isEmpty()) {
+			new BmobBatch().insertBatch(listexception).doBatch(new QueryListListener<BatchResult>() {
+
+				@Override
+				public void done(List<BatchResult> o, BmobException e) {
+					if (e == null) {
+						for (int i = 0; i < o.size(); i++) {
+							BatchResult result = o.get(i);
+							BmobException ex = result.getError();
+							if (ex == null) {
+								if (logDAO.deleteRow(i)) {
+									MLog.d("删除" + i);
+								}
+
+								// TODO 删除成功的
+								MLog.d("第" + i + "个数据批量添加成功：" + result.getCreatedAt() + "," + result.getObjectId() + ","
+										+ result.getUpdatedAt());
+							} else {
+								MLog.d("第" + i + "个数据批量添加失败：" + ex.getMessage() + "," + ex.getErrorCode());
+							}
+
+						}
+
+					} else {
+						MLog.d("上传云日志 失败 ");
+					}
+				}
+			});
+		}
 		new Thread() {
 			@Override
 			public void run() {
@@ -221,6 +250,7 @@ public class Swy_splash extends BaseActivity {
 	};
 	private TextView loading;
 	private TextView tv_Version;
+	private Exception_logDAO logDAO;
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

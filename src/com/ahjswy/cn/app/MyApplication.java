@@ -1,5 +1,6 @@
 package com.ahjswy.cn.app;
 
+import com.ahjswy.cn.crash.CrashHandler;
 import com.ahjswy.cn.ui.Swy_splash;
 import com.ahjswy.cn.utils.TextUtils;
 
@@ -10,6 +11,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Process;
 import android.provider.Settings;
+import cn.bmob.v3.Bmob;
 
 public class MyApplication extends Application {
 	private static MyApplication instance;
@@ -20,6 +22,8 @@ public class MyApplication extends Application {
 		super.onCreate();
 		instance = this;
 		activityManager = ActivityManager.getScreenManager();
+		 CrashHandler.getInstance().init(this);
+		 Bmob.initialize(this, "11482f9fcef5806efdf3f4a3f908048d");
 	}
 
 	public synchronized static MyApplication getInstance() {
@@ -70,10 +74,8 @@ public class MyApplication extends Application {
 	}
 
 	// Android Id
-	public static String getAndroidId() {
-		String androidId = Settings.Secure.getString(MyApplication.getInstance().getContentResolver(),
-				Settings.Secure.ANDROID_ID);
-		return androidId;
+	public String getAndroidId() {
+		return Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 	}
 
 	// 得到本机Mac地址
@@ -95,10 +97,14 @@ public class MyApplication extends Application {
 		main();
 	}
 
+	/**
+	 * 获取 版本名称
+	 * 
+	 * @return
+	 */
 	public String getVersionName() {
 		try {
-			String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-			return versionName;
+			return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}

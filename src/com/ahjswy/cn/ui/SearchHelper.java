@@ -23,10 +23,10 @@ import android.widget.Button;
 
 public class SearchHelper implements View.OnClickListener, OnTextChangeListener {
 	private static ArrayList<GoodsThin> listGoods;
-	private final int DOUBLE_CLICK = 2;
+	// private final int DOUBLE_CLICK = 2;
 	private int LOADING = 1;
 	private int SEARCH = 0;
-	private final int SIMPLE_CLICK = 1;
+	// private final int SIMPLE_CLICK = 1;
 	private ActionDo actionDo;
 	private SearchGoodsAdpater adapter;
 	private AutoTextView autoTextView;

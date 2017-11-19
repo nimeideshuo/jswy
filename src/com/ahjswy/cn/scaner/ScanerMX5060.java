@@ -48,6 +48,9 @@ public class ScanerMX5060 extends Scaner {
 		if (bc == null) {
 			return;
 		}
+		if (!bc.isScannerOn()) {
+			bc.setScanner(true);
+		}
 		bc.setOutputMode(BarcodeConfig.PLAYTONE_MODE_SOUND_AND_VIBRATE);
 	}
 

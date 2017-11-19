@@ -18,7 +18,7 @@ public class ExceptionLog extends BmobObject {
 	public String log;
 	public String datetime;
 	public String accountset;
-	public transient String id;
+	public transient int id;
 	public transient boolean isupdata;
 
 	public String getAccountset() {
@@ -29,11 +29,11 @@ public class ExceptionLog extends BmobObject {
 		this.accountset = accountset;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

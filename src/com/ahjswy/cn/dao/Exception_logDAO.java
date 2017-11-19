@@ -15,26 +15,28 @@ public class Exception_logDAO {
 	private SQLiteDatabase db;
 
 	/**
-	 * 查询所有的 没有上传的 日志
+	 * 查询所有
 	 * 
 	 * @return
 	 */
 	public List<ExceptionLog> queryAll() {
 		db = helper.getReadableDatabase();
-		String sql = "select id,userid,username,deviceid,model,message,log,datetime from exception_log where isupdata=1";
+		String sql = "select id,accountset,userid,username,deviceid,model,versionname,message,log,datetime from exception_log ";
 		ArrayList<ExceptionLog> listReqLog = new ArrayList<ExceptionLog>();
 		try {
 			Cursor cursor = db.rawQuery(sql, null);
 			while (cursor.moveToNext()) {
 				ExceptionLog reqLog = new ExceptionLog();
-				reqLog.id = cursor.getString(0);
-				reqLog.userid = cursor.getString(1);
-				reqLog.username = cursor.getString(2);
-				reqLog.deviceid = cursor.getString(3);
-				reqLog.model = cursor.getString(4);
-				reqLog.message = cursor.getString(5);
-				reqLog.log = cursor.getString(6);
-				reqLog.datetime = cursor.getString(7);
+				reqLog.id = cursor.getInt(0);
+				reqLog.accountset = cursor.getString(1);
+				reqLog.userid = cursor.getString(2);
+				reqLog.username = cursor.getString(3);
+				reqLog.deviceid = cursor.getString(4);
+				reqLog.model = cursor.getString(5);
+				reqLog.versionname = cursor.getString(6);
+				reqLog.message = cursor.getString(7);
+				reqLog.log = cursor.getString(8);
+				reqLog.datetime = cursor.getString(9);
 				listReqLog.add(reqLog);
 			}
 			return listReqLog;
@@ -46,20 +48,22 @@ public class Exception_logDAO {
 
 	public List<BmobObject> queryBmobAll() {
 		db = helper.getReadableDatabase();
-		String sql = "select id,userid,username,deviceid,model,message,log,datetime from exception_log where isupdata=1";
+		String sql = "select id,accountset,userid,username,deviceid,model,versionname,message,log,datetime from exception_log where isupdata=0";
 		ArrayList<BmobObject> listReqLog = new ArrayList<BmobObject>();
 		try {
 			Cursor cursor = db.rawQuery(sql, null);
 			while (cursor.moveToNext()) {
 				ExceptionLog reqLog = new ExceptionLog();
-				reqLog.id = cursor.getString(0);
-				reqLog.userid = cursor.getString(1);
-				reqLog.username = cursor.getString(2);
-				reqLog.deviceid = cursor.getString(3);
-				reqLog.model = cursor.getString(4);
-				reqLog.message = cursor.getString(5);
-				reqLog.log = cursor.getString(6);
-				reqLog.datetime = cursor.getString(7);
+				reqLog.id = cursor.getInt(0);
+				reqLog.accountset = cursor.getString(1);
+				reqLog.userid = cursor.getString(2);
+				reqLog.username = cursor.getString(3);
+				reqLog.deviceid = cursor.getString(4);
+				reqLog.model = cursor.getString(5);
+				reqLog.versionname = cursor.getString(6);
+				reqLog.message = cursor.getString(7);
+				reqLog.log = cursor.getString(8);
+				reqLog.datetime = cursor.getString(9);
 				listReqLog.add(reqLog);
 			}
 			return listReqLog;
@@ -78,9 +82,11 @@ public class Exception_logDAO {
 		db = helper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put("userid", log.userid);
+		values.put("accountset", log.accountset);
 		values.put("username", log.username);
 		values.put("deviceid", log.deviceid);
 		values.put("model", log.model);
+		values.put("versionname", log.versionname);
 		values.put("message", log.message);
 		values.put("log", log.log);
 		values.put("datetime", log.datetime);

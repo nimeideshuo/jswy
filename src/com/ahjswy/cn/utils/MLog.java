@@ -13,11 +13,13 @@ public class MLog {
 	static boolean isPrint = false;
 	static {
 		Map<String, String> devices = new HashMap<String, String>();
+		devices.put("Al00", "f8945dd90ddf6393");
 		devices.put("i6200S", "75673d09d9812c80");
 		devices.put("BlueStacks", "f3abcf1effec8b17");
 		devices.put("MX5020", "86bf794d381818a2");
 		devices.put("MX5020d", "70a646d72958b915");
 		devices.put("testDevice", "43f75538184812d7");
+
 		isPrint = IsDevices(devices);
 	}
 

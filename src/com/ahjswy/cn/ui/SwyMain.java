@@ -463,6 +463,9 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			break;
 		// 退货
 		case R.id.ll_return_goods:
+			if (true) {
+				throw new NullPointerException("ffffffffff");
+			}
 			if (SystemState.getWarehouse() == null) {
 				PDH.showMessage("请设置默认仓库");
 				return;

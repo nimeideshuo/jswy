@@ -8,6 +8,7 @@ import com.ahjswy.cn.app.Jswy_logUser;
 import com.ahjswy.cn.app.LoginPassword;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.bean.bmob.ExceptionLog;
 import com.ahjswy.cn.dao.Exception_logDAO;
 import com.ahjswy.cn.model.User;
 import com.ahjswy.cn.service.ServiceSystem;
@@ -59,6 +60,7 @@ public class Swy_splash extends BaseActivity {
 		height = localDisplayMetrics.heightPixels;
 		tv_Version.setText("版本:" + MyApplication.getInstance().getVersionName());
 		System.out.println("width:" + width + "   height:" + height);
+		System.out.println("id:" + MyApplication.getInstance().getAndroidId());
 		serviceips = new Dialog_ed_message(Swy_splash.this);
 		loading.setOnClickListener(new OnClickListener() {
 
@@ -70,7 +72,7 @@ public class Swy_splash extends BaseActivity {
 		// TODO 上传错误日志
 
 		logDAO = new Exception_logDAO();
-		List<BmobObject> listexception = logDAO.queryBmobAll();
+		listexception = logDAO.queryBmobAll();
 		if (!listexception.isEmpty()) {
 			new BmobBatch().insertBatch(listexception).doBatch(new QueryListListener<BatchResult>() {
 
@@ -79,12 +81,12 @@ public class Swy_splash extends BaseActivity {
 					if (e == null) {
 						for (int i = 0; i < o.size(); i++) {
 							BatchResult result = o.get(i);
+							ExceptionLog objectlog = (ExceptionLog) listexception.get(i);
 							BmobException ex = result.getError();
 							if (ex == null) {
-								if (logDAO.deleteRow(i)) {
-									MLog.d("删除" + i);
+								if (logDAO.deleteRow(objectlog.id)) {
+									MLog.d("删除" + objectlog.id);
 								}
-
 								// TODO 删除成功的
 								MLog.d("第" + i + "个数据批量添加成功：" + result.getCreatedAt() + "," + result.getObjectId() + ","
 										+ result.getUpdatedAt());
@@ -251,6 +253,7 @@ public class Swy_splash extends BaseActivity {
 	private TextView loading;
 	private TextView tv_Version;
 	private Exception_logDAO logDAO;
+	private List<BmobObject> listexception;
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

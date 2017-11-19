@@ -54,12 +54,11 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		this.ex = ex;
 		this.thread = thread;
 		ex.printStackTrace();
-		handlelException(ex);
 		// 我们没有处理异常 并且默认异常处理不为空 则交给系统处理
-		// if (!handlelException(ex) && mDefaultHandler != null) {
-		// // 系统处理
-		// mDefaultHandler.uncaughtException(thread, ex);
-		// }
+		if (!handlelException(ex) && mDefaultHandler != null) {
+			// 系统处理
+			mDefaultHandler.uncaughtException(thread, ex);
+		}
 	}
 
 	/**
@@ -82,7 +81,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			reqLog = getDefaultReqLog();
 			reqLog.message = ex.getMessage();
 			reqLog.log = buffer.toString();
-			reqLog.save(listener);
+			logdao.insertLog(reqLog);
+			// reqLog.save(listener);
 			// MAlertDialog dialog = new MAlertDialog(context);
 			// dialog.setTitle("网络质量差");
 			// dialog.setMessage("是否重新打开软件?否(退出!)");
@@ -109,23 +109,20 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		}
 	}
 
-	SaveListener<String> listener = new SaveListener<String>() {
-
-		@Override
-		public void done(String objectId, BmobException e) {
-			if (e != null) {
-				// 写入本地数据库
-				logdao.insertLog(reqLog);
-				MLog.d(this, e.getMessage());
-			} else {
-				// 上传云端成功
-				MLog.d("上传成功!");
-			}
-			if (mDefaultHandler != null) {
-				mDefaultHandler.uncaughtException(thread, ex);
-			}
-		}
-	};
+	// SaveListener<String> listener = new SaveListener<String>() {
+	//
+	// @Override
+	// public void done(String objectId, BmobException e) {
+	// if (e != null) {
+	// // 写入本地数据库
+	// logdao.insertLog(reqLog);
+	// MLog.d(this, e.getMessage());
+	// } else {
+	// // 上传云端成功
+	// MLog.d("上传成功!");
+	// }
+	// }
+	// };
 	private ExceptionLog reqLog;
 
 	public ExceptionLog getDefaultReqLog() {

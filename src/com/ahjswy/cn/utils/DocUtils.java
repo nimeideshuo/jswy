@@ -295,11 +295,23 @@ public class DocUtils {
 		// 客户价格体系 中的设置
 		String pricesystemid = customerdao.queryPricesystemid(customerid);
 		if (!TextUtils.isEmpty(pricesystemid)) {
+			// 使用客户的 价格体系的计件单价
+			double bigPrice = goodspricedao.queryBasicPrice(docItem.getGoodsid(), docItem.getUnitid(), pricesystemid);
+			if (bigPrice != 0) {
+				return bigPrice;
+			}
+
 			double price = goodspricedao.queryBasicPrice(docItem.getGoodsid(), pricesystemid);
 			return price * ratio;
 		}
+		// 使用默认的的 价格体系的计件单价
+		double bigPrice = goodspricedao.queryBasicPrice(docItem.getGoodsid(), docItem.getUnitid(),
+				Utils.DEFAULT_PRICESYSTEM + "");
+		if (bigPrice != 0) {
+			return bigPrice;
+		}
 		// 价格体系默认设置
-		double basicPrice = getGoodsBasicPrice(customerid, docItem);
+		double basicPrice = getGoodsBasicPrice(docItem);
 		return Utils.normalize(basicPrice * ratio, 2);
 	}
 
@@ -313,18 +325,32 @@ public class DocUtils {
 	public static double getGoodsPrice(String customerid, String goodsid, String unitid) {
 		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, goodsid);
 		double ratio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
-		if (historyPrice != null) {
-			double historyratio = unitDAO.getGoodsUnitRatio(goodsid, historyPrice.getUnitid());
-			return Utils.normalize(historyPrice.getPrice() / historyratio * ratio, 2);
-			// 除以 自身比例 * 与 要换算的比例
+		if (customerdao.isUseCustomerprice(customerid)) {
+			// 是否使用客户客史单价
+			if (historyPrice != null) {
+				double historyratio = unitDAO.getGoodsUnitRatio(goodsid, historyPrice.getUnitid());
+				return Utils.normalize(historyPrice.getPrice() / historyratio * ratio, 2);
+				// 除以 自身比例 * 与 要换算的比例
+			}
 		}
+		// 使用客户价格体系
 		String pricesystemid = customerdao.queryPricesystemid(customerid);
 		if (!TextUtils.isEmpty(pricesystemid)) {// 查询客户 价格体系 比对 基本单位的价格，计件单位 比例*
+			// 使用客户的 价格体系的计件单价
+			double bigPrice = goodspricedao.queryBasicPrice(goodsid, unitid, pricesystemid);
+			if (bigPrice != 0) {
+				return bigPrice;
+			}
 			double price = goodspricedao.queryBasicPrice(goodsid, pricesystemid);
 			return price * ratio;
 		}
+		// 使用默认的的 价格体系的计件单价
+		double bigPrice = goodspricedao.queryBasicPrice(goodsid, unitid, Utils.DEFAULT_PRICESYSTEM + "");
+		if (bigPrice != 0) {
+			return bigPrice;
+		}
 		// 客户 价格体系
-		double basicPrice = getGoodsBasicPrice(customerid, goodsid);
+		double basicPrice = getGoodsBasicPrice(goodsid, unitid);
 		return Utils.normalize(basicPrice * ratio, 2);
 	}
 
@@ -335,11 +361,11 @@ public class DocUtils {
 	 * @param docItem
 	 * @return
 	 */
-	public static double getGoodsBasicPrice(String customerid, DefDocItemXS docItem) {
-		// GoodsUnit basicUnit = unitDAO.getBasicUnit(docItem.getGoodsid());
-		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, docItem.getGoodsid());
-		if (historyPrice != null) {
-			return historyPrice.getPrice();
+	public static double getGoodsBasicPrice(DefDocItemXS docItem) {
+		double basicPrice = goodspricedao.queryBasicPrice(docItem.getGoodsid(), docItem.getUnitid(),
+				Utils.DEFAULT_PRICESYSTEM + "");
+		if (basicPrice != 0) {
+			return basicPrice;
 		}
 		// 显示价格体系查询的默认价格
 		return goodspricedao.queryBasicPrice(docItem.getGoodsid(), Utils.DEFAULT_PRICESYSTEM + "");
@@ -353,11 +379,10 @@ public class DocUtils {
 	 * @param goodsid
 	 * @return
 	 */
-	public static double getGoodsBasicPrice(String customerid, String goodsid) {
-		// GoodsUnit basicUnit = unitDAO.getBasicUnit(goodsid);
-		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, goodsid);
-		if (historyPrice != null) {
-			return historyPrice.getPrice();
+	public static double getGoodsBasicPrice(String goodsid, String unitid) {
+		double basicPrice = goodspricedao.queryBasicPrice(goodsid, unitid, Utils.DEFAULT_PRICESYSTEM + "");
+		if (basicPrice != 0) {
+			return basicPrice;
 		}
 		// 显示价格体系查询的默认价格
 		return goodspricedao.queryBasicPrice(goodsid, Utils.DEFAULT_PRICESYSTEM + "");

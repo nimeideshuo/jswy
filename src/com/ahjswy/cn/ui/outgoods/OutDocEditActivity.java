@@ -1289,11 +1289,12 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				defDocItemXS4.assistnum = DocUtils.getAssistnum(defDocItemXS4.getGoodsid(), defDocItemXS4.getUnitid(),
 						defDocItemXS4.getNum());
 				if (Utils.isCombination()) {
-					adapter.addItem(defDocItemXS4);
+					listItem.add(defDocItemXS4);
 					combinationItem();
 				} else {
-					adapter.addItem(0, defDocItemXS4);
+					listItem.add(0, defDocItemXS4);
 				}
+				adapter.setData(listItem);
 				listview_copy_dele.setAdapter(adapter);
 				ishaschanged = true;
 				refreshUI();

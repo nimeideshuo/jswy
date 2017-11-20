@@ -36,6 +36,30 @@ public class GoodsPriceDAO {
 	}
 
 	/**
+	 * 查询商品 预设的价格体系
+	 * 
+	 * @param goodsid
+	 * @param unitid
+	 * @param pricesystemid
+	 *            价格体系id
+	 * @return
+	 */
+	public double queryBasicPrice(String goodsid, String unitid, String pricesystemid) {
+		this.db = this.helper.getReadableDatabase();
+		String sql = "select price from sz_goodsprice where goodsid=? and unitid=? and pricesystemid=?";
+		try {
+			Cursor cursor = db.rawQuery(sql, new String[] { goodsid, unitid,
+					pricesystemid.length() == 1 ? "0" + pricesystemid : pricesystemid });
+			if (cursor.moveToNext()) {
+				return cursor.getDouble(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0.0;
+	}
+
+	/**
 	 * 查询商品价格体系
 	 * 
 	 * @param goodsid

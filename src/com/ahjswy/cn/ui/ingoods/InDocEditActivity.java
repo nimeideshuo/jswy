@@ -869,7 +869,8 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				break;
 			case 4:
 				DefDocItemXS localDefDocItem4 = (DefDocItemXS) data.getSerializableExtra("docitem");
-				adapter.addItem(localDefDocItem4);
+				listItem.add(localDefDocItem4);
+				adapter.setData(listItem);
 				listView.setAdapter(adapter);
 				refreshUI();
 				if (Utils.isCombination()) {

@@ -56,6 +56,7 @@ public class HttpRequestUtils {
 		return request;
 	}
 
+	@SuppressWarnings("deprecation")
 	public String Posts(String url, String json) {
 		// String urls = "http://" + ap.getServerIp() + ":3721/" + url;
 		String urls = "http://192.168.3.106:3721/" + url;

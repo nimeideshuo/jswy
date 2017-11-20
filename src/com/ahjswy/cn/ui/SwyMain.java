@@ -107,9 +107,10 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	// private ServiceStore serviceStore;
 	// TODO startOpenDoc
 	public void startOpenDoc(View v) {
-		// 测试 数据库查询
+		// TODO 测试 数据库查询
 		// edNum = (EditText) findViewById(R.id.edNum);
 		// edTime = (EditText) findViewById(R.id.edTime);
+		time = Long.parseLong(edTime.getText().toString());
 		// serviceStore = new ServiceStore();
 		//
 		// PDH.show(this, "库存查询中..", new PDH.ProgressCallBack() {
@@ -189,8 +190,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			SystemClock.sleep(5000);
 			return;
 		}
-		long long1 = Long.parseLong(edTime.getText().toString());
-		SystemClock.sleep(long1);
+		SystemClock.sleep(time);
 	}
 
 	public List<DefDocItemXS> getGoodsItem() {
@@ -221,58 +221,58 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			item1.setWarehousename("亚希富环南总仓储");
 			listItem.add(item1);
 		}
-		for (int i = 0; i < 100; i++) {
-			DefDocItemXS item1 = new DefDocItemXS();
-			item1.setBarcode("6948972968666");
-			item1.assistnum = 1;
-			item1.setBignum("1袋");
-			item1.setCostprice(0);
-			item1.setDiscountprice(3);
-			item1.setDiscountratio(1);
-			item1.setDiscountsubtotal(3);
-			item1.setDocid(0);
-			item1.setGoodsid("1167");
-			item1.setGoodsname("决明子");
-			item1.setIsdiscount(false);
-			item1.setIsgift(false);
-			item1.setIspromotion(false);
-			item1.setItemid(100 + i);
-			item1.setNum(1);
-			item1.setPrice(3);
-			item1.setSubtotal(3);
-			item1.setTempitemid(1);
-			item1.setUnitid("01");
-			item1.setUnitname("袋");
-			item1.setWarehouseid("01");
-			item1.setWarehousename("亚希富环南总仓储");
-			listItem.add(item1);
-		}
-		for (int i = 0; i < 100; i++) {
-			DefDocItemXS item1 = new DefDocItemXS();
-			item1.setBarcode("61101530346219");
-			item1.assistnum = 0.05;
-			item1.setBignum("1袋");
-			item1.setCostprice(0);
-			item1.setDiscountprice(3);
-			item1.setDiscountratio(1);
-			item1.setDiscountsubtotal(3);
-			item1.setDocid(0);
-			item1.setGoodsid("1168");
-			item1.setGoodsname("test2");
-			item1.setIsdiscount(false);
-			item1.setIsgift(false);
-			item1.setIspromotion(false);
-			item1.setItemid(200 + i);
-			item1.setNum(1);
-			item1.setPrice(3);
-			item1.setSubtotal(3);
-			item1.setTempitemid(1);
-			item1.setUnitid("01");
-			item1.setUnitname("袋");
-			item1.setWarehouseid("01");
-			item1.setWarehousename("亚希富环南总仓储");
-			listItem.add(item1);
-		}
+		// for (int i = 0; i < 100; i++) {
+		// DefDocItemXS item1 = new DefDocItemXS();
+		// item1.setBarcode("6948972968666");
+		// item1.assistnum = 1;
+		// item1.setBignum("1袋");
+		// item1.setCostprice(0);
+		// item1.setDiscountprice(3);
+		// item1.setDiscountratio(1);
+		// item1.setDiscountsubtotal(3);
+		// item1.setDocid(0);
+		// item1.setGoodsid("1167");
+		// item1.setGoodsname("决明子");
+		// item1.setIsdiscount(false);
+		// item1.setIsgift(false);
+		// item1.setIspromotion(false);
+		// item1.setItemid(100 + i);
+		// item1.setNum(1);
+		// item1.setPrice(3);
+		// item1.setSubtotal(3);
+		// item1.setTempitemid(1);
+		// item1.setUnitid("01");
+		// item1.setUnitname("袋");
+		// item1.setWarehouseid("01");
+		// item1.setWarehousename("亚希富环南总仓储");
+		// listItem.add(item1);
+		// }
+		// for (int i = 0; i < 100; i++) {
+		// DefDocItemXS item1 = new DefDocItemXS();
+		// item1.setBarcode("61101530346219");
+		// item1.assistnum = 0.05;
+		// item1.setBignum("1袋");
+		// item1.setCostprice(0);
+		// item1.setDiscountprice(3);
+		// item1.setDiscountratio(1);
+		// item1.setDiscountsubtotal(3);
+		// item1.setDocid(0);
+		// item1.setGoodsid("1168");
+		// item1.setGoodsname("test2");
+		// item1.setIsdiscount(false);
+		// item1.setIsgift(false);
+		// item1.setIspromotion(false);
+		// item1.setItemid(200 + i);
+		// item1.setNum(1);
+		// item1.setPrice(3);
+		// item1.setSubtotal(3);
+		// item1.setTempitemid(1);
+		// item1.setUnitid("01");
+		// item1.setUnitname("袋");
+		// item1.setWarehouseid("01");
+		// item1.setWarehousename("亚希富环南总仓储");
+		// listItem.add(item1);
+		// }
 		return listItem;
 	}
 
@@ -588,6 +588,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	private EditText edTime;
 	private EditText edNum;
 	private DefDocXS doc;
+	private long time;
 
 	/**
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *

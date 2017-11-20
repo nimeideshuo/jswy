@@ -64,8 +64,8 @@ public class Utils_help {
 			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			conn.setRequestProperty("key", "mmendianban");
 			conn.setRequestProperty("code", MyApplication.getInstance().getUniqueCode());
-			conn.setConnectTimeout(10*1000);
-			conn.setReadTimeout(30*1000);
+			conn.setConnectTimeout(10 * 1000);
+			conn.setReadTimeout(30 * 1000);
 			// 发送POST请求必须设置如下两行
 			conn.setDoOutput(true);
 			conn.setDoInput(true);

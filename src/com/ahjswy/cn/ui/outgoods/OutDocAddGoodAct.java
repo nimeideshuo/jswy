@@ -552,7 +552,7 @@ public class OutDocAddGoodAct extends BaseActivity
 	// return stocknum;
 	// }
 
-	// 选择单位
+	//TODO 选择单位
 	private void unitSelect() {
 		final List<GoodsUnit> localList = new GoodsUnitDAO().queryGoodsUnits(this.docitem.getGoodsid());
 		String[] arrayOfString = new String[localList.size()];

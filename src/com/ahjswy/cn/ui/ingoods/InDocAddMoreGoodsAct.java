@@ -132,9 +132,12 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 			DefDocItemXS itemXS = data.get(i);
 			if (goodsMap.get(itemXS.getGoodsid()) != null) {
 				itemXS.setNum(itemXS.getNum() + 1);
-				showError("相同商品数量+1");
 				goodsMap.remove(itemXS.getGoodsid());
+				showError("相同商品数量+1");
 			}
+		}
+		if (goodsMap.isEmpty()) {
+			return;
 		}
 		for (Object item : goodsMap.values()) {
 			items.add((DefDocItemXS) item);
@@ -211,8 +214,6 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 					}
 				}
 				if (localArrayList.size() <= 0) {
-					// handler.sendMessage(handler.obtainMessage(0,
-					// "必需至少有一条商品数量大于0"));
 					showError("必需至少有一条商品数量大于0");
 					return;
 				}

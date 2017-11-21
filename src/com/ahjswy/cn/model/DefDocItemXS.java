@@ -2,7 +2,7 @@ package com.ahjswy.cn.model;
 
 import java.io.Serializable;
 
-public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
+public class DefDocItemXS implements Serializable {
 	private static final long serialVersionUID = 1L;
 	// 条码
 	private String barcode;
@@ -502,14 +502,6 @@ public class DefDocItemXS implements Serializable, Comparable<DefDocItemXS> {
 
 	public void setWarehousename(String warehousename) {
 		this.warehousename = warehousename;
-	}
-
-	@Override
-	public int compareTo(DefDocItemXS another) {
-		if (this.tempitemid < another.getTempitemid()) {
-			return 1;
-		}
-		return -1;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.ahjswy.cn.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
@@ -422,4 +423,39 @@ public class DocUtils {
 	public static boolean isBluetoothPrint() {
 		return Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow", "false"));
 	}
+
+	/**
+	 * 合并相同商品
+	 * 
+	 * @param item
+	 */
+	public static void combinationItem(List<DefDocItemXS> item) {
+		int size = item.size();
+		for (int i = 0; i < item.size(); i++) {
+			DefDocItemXS items1 = item.get(i);
+			for (int j = 0; j < item.size(); j++) {
+				if (i == j) {
+					continue;
+				}
+				DefDocItemXS itemxs2 = item.get(j);
+				boolean isgoodsid = items1.getGoodsid().equals(itemxs2.getGoodsid());
+				boolean isunid = items1.getUnitid().equals(itemxs2.getUnitid());
+				boolean isprice = items1.getPrice() == itemxs2.getPrice();
+				boolean isratio = items1.getDiscountratio() == itemxs2.getDiscountratio();
+				boolean isWarehouseid = items1.getWarehouseid().equals(itemxs2.getWarehouseid());
+				if (isgoodsid && isunid && isprice && isratio && isWarehouseid) {
+					items1.setNum(items1.getNum() + itemxs2.getNum());
+					items1.setBignum(unitDAO.getBigNum(items1.getGoodsid(), items1.getUnitid(), items1.getNum()));
+					items1.setSubtotal(items1.getNum() * items1.getPrice());
+					items1.setDiscountsubtotal(items1.getNum() * items1.getPrice() * items1.getDiscountratio());
+					item.remove(j);
+					break;
+				}
+			}
+		}
+		if (size != item.size()) {
+			combinationItem(item);
+		}
+	}
+
 }

@@ -160,6 +160,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 				itemXS.setNum(itemXS.getNum() + 1);
 				goodsMap.remove(itemXS.getGoodsid());
 				showError("相同商品数量+1");
+				adapter.notifyDataSetChanged();
 			}
 		}
 	}
@@ -185,7 +186,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 					item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
 					items.add(item);
 				}
-				adapter.setItem(items);
 				handler.sendEmptyMessage(0);
 			}
 		});
@@ -196,6 +196,8 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			if (msg.what == 0) {
+				System.out.println(items);
+				adapter.setItem(items);
 				adapter.notifyDataSetChanged();
 				isScanerBarcode = false;
 			}

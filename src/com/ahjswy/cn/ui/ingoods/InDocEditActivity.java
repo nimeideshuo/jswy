@@ -3,10 +3,8 @@ package com.ahjswy.cn.ui.ingoods;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
@@ -85,7 +83,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	private AutoTextView atvSearch;
 	InDocItemAdapter adapter;
 	private InDocEditMenuPopup menuPopup;
-	// private ArrayList<DefDocItemXS> newListItem;
 	Scaner scaner;
 	boolean isScanerBarcode = false;
 
@@ -131,9 +128,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		}
 		maler = new MAlertDialog(this);
 		unitDao = new GoodsUnitDAO();
-		// ap = new AccountPreference();
 		sv = new Sv_docitem();
-		// goodspricedao = new GoodsPriceDAO();
 	}
 
 	private void intDate() {
@@ -254,7 +249,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					if (localArrayList.size() == 0) {
 						return;
 					}
-					Intent intent = new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
+					Intent intent = new Intent(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
 					intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
 					intent.putExtra("doc", doc);
 					startActivityForResult(intent, 2);
@@ -284,38 +279,13 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				@Override
 				public void action() {
 					DefDocItemXS docItem = InDocEditActivity.this.fillItem(localGoodsThin, 0.0D, 0.0D);
-					// ArrayList<DefDocItemXS> newListItem = new
-					// ArrayList<DefDocItemXS>();
-					// newListItem.add(docItem);
 					docItem.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), docItem));
 					setAddItem(docItem);
 					Intent localIntent = new Intent();
 					localIntent.putExtra("docitem", docItem);
 					localIntent.putExtra("customerid", doc.getCustomerid());
 					startActivityForResult(localIntent.setClass(InDocEditActivity.this, InDocAddGoodAct.class), 4);
-					// if (!TextUtils.isEmpty(doc.getOpendate())) {
-					// return;
-					// }
-					// ArrayList<ReqStrGetGoodsPrice> localArrayList = new
-					// ArrayList<ReqStrGetGoodsPrice>();
-					// ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new
-					// ReqStrGetGoodsPrice();
-					// localReqStrGetGoodsPrice.setType(2);
-					// localReqStrGetGoodsPrice.setCustomerid(InDocEditActivity.this.doc.getCustomerid());
-					// localReqStrGetGoodsPrice.setWarehouseid(localDefDocItem.getWarehouseid());
-					// localReqStrGetGoodsPrice.setGoodsid(localDefDocItem.getGoodsid());
-					// localReqStrGetGoodsPrice.setUnitid(localDefDocItem.getUnitid());
-					// localReqStrGetGoodsPrice.setPrice(0.0D);
-					// localReqStrGetGoodsPrice.setIsdiscount(false);
-					// localArrayList.add(localReqStrGetGoodsPrice);
-					// String localString = new
-					// ServiceGoods().gds_GetMultiGoodsPrice(localArrayList,
-					// true,
-					// localDefDocItem.isIsusebatch());
-					// handlerGet.sendMessage(handlerGet.obtainMessage(2,
-					// localString));
 				}
-
 			});
 		}
 	};
@@ -340,7 +310,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
 			localLayoutParams.alpha = 0.8F;
 			getWindow().setAttributes(localLayoutParams);
-			closeInputMethod();
 			break;
 		}
 		return true;
@@ -428,7 +397,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				return;
 			}
 			atvSearch.setText("");
-			// if (!"1".equals(ap.getValue("goods_select_more"))) {
 			ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
 			int num = Utils.isCombination() ? 1 : 0;
 			for (int i = 0; i < localList.size(); i++) {
@@ -445,18 +413,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		super.onResume();
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
-	}
-
-	public void closeInputMethod() {
-		// 获取当前输入法状态
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		boolean isOpen = imm.isActive();
-		// true 显示
-		if (isOpen) {
-			// 关闭输入法
-			((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
-					this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-		}
 	}
 
 	// 过账
@@ -661,12 +617,11 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					sv.deleteDoc(docContainerEntity.getDoctype());
 					return;
 				}
-				DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.fromJson(localString,
+				DocContainerEntity entity = (DocContainerEntity) JSONUtil.fromJson(localString,
 						DocContainerEntity.class);
-				doc = ((DefDoc) JSONUtil.readValue(localDocContainerEntity.getDoc(), DefDoc.class));
-				listItem = (ArrayList<DefDocItemXS>) JSONUtil.str2list(localDocContainerEntity.getItem(),
-						DefDocItemXS.class);
-				listPayType = JSONUtil.str2list(localDocContainerEntity.getPaytype(), DefDocPayType.class);
+				doc = ((DefDoc) JSONUtil.readValue(entity.getDoc(), DefDoc.class));
+				listItem = (ArrayList<DefDocItemXS>) JSONUtil.str2list(entity.getItem(), DefDocItemXS.class);
+				listPayType = JSONUtil.str2list(entity.getPaytype(), DefDocPayType.class);
 				listItemDelete = new ArrayList<Long>();
 				switch (msg.what) {
 				case 0:
@@ -682,15 +637,15 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				case 1:
 					if ((InDocEditActivity.this.doc.isIsavailable()) && (InDocEditActivity.this.doc.isIsposted())) {
 						PDH.showSuccess("过账成功");
+						sv.deleteDoc(docContainerEntity.getDoctype());
 						Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 						startActivity(intent);
 						finish();
-						sv.deleteDoc(docContainerEntity.getDoctype());
 						return;
 					}
 					adapter.setData(listItem);
 					refreshUI();
-					InfoDialog.showError(InDocEditActivity.this, localDocContainerEntity.getInfo());
+					InfoDialog.showError(InDocEditActivity.this, entity.getInfo());
 					return;
 				}
 			}
@@ -745,48 +700,51 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		return localDefDocItem;
 	}
 
-	protected void combinationItem() {
-		int combinationNum = listItem.size();
-		ArrayList<DefDocItemXS> data = new ArrayList<DefDocItemXS>(adapter.getData());
-		ArrayList<DefDocItemXS> listDocItem = new ArrayList<DefDocItemXS>();
-		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-		for (int i = 0; i < data.size(); i++) {
-			DefDocItemXS items1 = data.get(i);
-			if (map.get(items1.getGoodsid()) == null) {
-				map.put(items1.getGoodsid(), new DefDocItemXS(items1));
-				continue;
-			}
-			DefDocItemXS itemxs2 = (DefDocItemXS) map.get(items1.getGoodsid());
-			if (items1.getGoodsid().equals(itemxs2.getGoodsid()) && items1.getUnitid().equals(itemxs2.getUnitid())
-					&& items1.getPrice() == itemxs2.getPrice()
-					&& items1.getDiscountratio() == itemxs2.getDiscountratio()
-					&& items1.getWarehouseid().equals(itemxs2.getWarehouseid())) {
-				itemxs2.setNum(itemxs2.getNum() + items1.getNum());
-				itemxs2.setBignum(unitDao.getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
-				itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
-				itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() * itemxs2.getDiscountratio());
-				map.put(itemxs2.getGoodsid(), itemxs2);
-				if (items1.getItemid() != 0) {
-					listItemDelete.add(items1.getItemid());
-				}
-			} else {
-				listDocItem.add(items1);
-			}
-
-		}
-		Set<String> keySet = map.keySet();
-		for (String string : keySet) {
-			listDocItem.add((DefDocItemXS) map.get(string));
-		}
-		if ((combinationNum - listDocItem.size()) == 0) {
-			// 没有要合并的商品!
-			return;
-		}
-		// 设置数据
-		listItem.clear();
-		listItem.addAll(listDocItem);
-		showSuccess("同品增加成功!");
-	}
+	// protected void combinationItem() {
+	// int combinationNum = listItem.size();
+	// ArrayList<DefDocItemXS> data = new ArrayList<DefDocItemXS>(listItem);
+	// ArrayList<DefDocItemXS> listDocItem = new ArrayList<DefDocItemXS>();
+	// LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+	// for (int i = 0; i < data.size(); i++) {
+	// DefDocItemXS items1 = data.get(i);
+	// if (map.get(items1.getGoodsid()) == null) {
+	// map.put(items1.getGoodsid(), new DefDocItemXS(items1));
+	// continue;
+	// }
+	// DefDocItemXS itemxs2 = (DefDocItemXS) map.get(items1.getGoodsid());
+	// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
+	// items1.getUnitid().equals(itemxs2.getUnitid())
+	// && items1.getPrice() == itemxs2.getPrice()
+	// && items1.getDiscountratio() == itemxs2.getDiscountratio()
+	// && items1.getWarehouseid().equals(itemxs2.getWarehouseid())) {
+	// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+	// itemxs2.setBignum(unitDao.getBigNum(itemxs2.getGoodsid(),
+	// itemxs2.getUnitid(), itemxs2.getNum()));
+	// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
+	// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
+	// itemxs2.getDiscountratio());
+	// map.put(itemxs2.getGoodsid(), itemxs2);
+	// if (items1.getItemid() != 0) {
+	// listItemDelete.add(items1.getItemid());
+	// }
+	// } else {
+	// listDocItem.add(items1);
+	// }
+	//
+	// }
+	// Set<String> keySet = map.keySet();
+	// for (String string : keySet) {
+	// listDocItem.add((DefDocItemXS) map.get(string));
+	// }
+	// if ((combinationNum - listDocItem.size()) == 0) {
+	// // 没有要合并的商品!
+	// return;
+	// }
+	// // 设置数据
+	// listItem.clear();
+	// listItem.addAll(listDocItem);
+	// showSuccess("同品增加成功!");
+	// }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
@@ -818,7 +776,8 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 						}
 						if (Utils.isCombination()) {
 							listItem.addAll(newListItem);
-							combinationItem();
+							DocUtils.combinationItem(listItem);
+							showSuccess("同品增加成功!");
 						} else {
 							listItem.addAll(0, newListItem);
 						}
@@ -853,8 +812,8 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				// localString2));
 				// }
 				// });
-				ishaschanged = true;
-				setActionBarText();
+				// ishaschanged = true;
+				// setActionBarText();
 				break;
 			case 3:
 				int j = data.getIntExtra("position", 0);
@@ -863,19 +822,21 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				adapter.setData(listItem);
 				refreshUI();
 				if (Utils.isCombination()) {
-					combinationItem();
+					DocUtils.combinationItem(listItem);
+					showSuccess("同品增加成功!");
 				}
 				DBupdataDocItem();
 				break;
 			case 4:
 				DefDocItemXS localDefDocItem4 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				listItem.add(localDefDocItem4);
-				adapter.setData(listItem);
-				listView.setAdapter(adapter);
 				refreshUI();
 				if (Utils.isCombination()) {
-					combinationItem();
+					DocUtils.combinationItem(listItem);
+					showSuccess("同品增加成功!");
 				}
+				adapter.setData(listItem);
+				listView.setAdapter(adapter);
 				DBupdataDocItem();
 				break;
 
@@ -888,13 +849,14 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					item.setItemid(0);
 					listItem.add(item);
 				}
+				if (Utils.isCombination()) {
+					DocUtils.combinationItem(listItem);
+					showSuccess("同品增加成功!");
+				}
 				this.adapter.setData(this.listItem);
 				listView.setAdapter(adapter);
-				this.refreshUI();
+				refreshUI();
 				sum();
-				if (Utils.isCombination()) {
-					combinationItem();
-				}
 				DBupdataDocItem();
 				break;
 			case 8:
@@ -919,6 +881,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			switch (msg.what) {
 			case 0:
 				adapter.setData(listItem);
+				adapter.notifyDataSetChanged();
 				ishaschanged = true;
 				setActionBarText();
 				refreshUI();
@@ -944,109 +907,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		docItem.setBignum(bigNum);
 	}
 
-	// 价格处理
-	// Handler handlerGet = new Handler() {
-	// public void handleMessage(android.os.Message msg) {
-	// String localString1 = msg.obj.toString();
-	// List<ReqStrGetGoodsPrice> localList = null;
-	// if (RequestHelper.isSuccess(localString1)) {
-	// if (msg.what == 1) {
-	// // 单价list
-	// localList = JSONUtil.str2list(localString1,
-	// ReqStrGetGoodsPrice.class);
-	// for (int j = 0; j < newListItem.size(); j++) {
-	// DefDocItemXS defDocItem = (DefDocItemXS) newListItem.get(j);
-	// ReqStrGetGoodsPrice getGoodsPrice = (ReqStrGetGoodsPrice)
-	// localList.get(j);
-	// if
-	// ((defDocItem.getGoodsid().equals(getGoodsPrice.getGoodsid()))
-	// &&
-	// (defDocItem.getUnitid().equals(getGoodsPrice.getUnitid()))) {
-	// String localString2 = getGoodsPrice.getWarehouseid();
-	// if ((TextUtils.isEmptyS(localString2))
-	// && (localString2.equals(defDocItem.getWarehouseid()))) {
-	// defDocItem.setWarehouseid(localString2);
-	// defDocItem.setWarehousename(new
-	// WarehouseDAO().getWarehouse(localString2).getName());
-	// }
-	// defDocItem.setPrice(Utils.normalizePrice(getGoodsPrice.getPrice()));
-	// defDocItem
-	// .setSubtotal(Utils.normalizeSubtotal(defDocItem.getNum() *
-	// defDocItem.getPrice()));
-	// defDocItem.setDiscountratio(doc.getDiscountratio());
-	// defDocItem.setDiscountprice(
-	// Utils.normalizePrice(defDocItem.getPrice() *
-	// defDocItem.getDiscountratio()));
-	// defDocItem.setDiscountsubtotal(
-	// Utils.normalizeSubtotal(defDocItem.getNum() *
-	// defDocItem.getDiscountprice()));
-	// defDocItem.setIsgift(defDocItem.getPrice() == 0.0D ? true :
-	// false);
-	// String bigNum = unitDao.getBigNum(defDocItem.getGoodsid(),
-	// defDocItem.getUnitid(),
-	// defDocItem.getNum());
-	// defDocItem.setBignum(bigNum);
-	// defDocItem.setIsdiscount(getGoodsPrice.getIsdiscount());
-	// }
-	// }
-	// if (Utils.isCombination()) {
-	// listItem.addAll(newListItem);
-	// combinationItem();
-	// } else {
-	// listItem.addAll(0, newListItem);
-	// }
-	// adapter.setData(listItem);
-	// listView.setAdapter(adapter);
-	// ishaschanged = true;
-	// setActionBarText();
-	// refreshUI();
-	// DBupdataDocItem();
-	// return;
-	// }
-	// if (msg.what == 2) {
-	// DefDocItemXS localDefDocItem2 = (DefDocItemXS)
-	// InDocEditActivity.this.newListItem.get(0);
-	// localList = JSONUtil.str2list(localString1,
-	// ReqStrGetGoodsPrice.class);
-	// ReqStrGetGoodsPrice localReqStrGetGoodsPrice2 =
-	// (ReqStrGetGoodsPrice) localList.get(0);
-	// String localString3 =
-	// localReqStrGetGoodsPrice2.getWarehouseid();
-	// if ((!TextUtils.isEmptyS(localString3))
-	// && (!localString3.equals(localDefDocItem2.getWarehouseid())))
-	// {
-	// localDefDocItem2.setWarehouseid(localString3);
-	// localDefDocItem2.setWarehousename(new
-	// WarehouseDAO().getWarehouse(localString3).getName());
-	// }
-	// localDefDocItem2.setPrice(Utils.normalizePrice(localReqStrGetGoodsPrice2.getPrice()));
-	// localDefDocItem2.setSubtotal(
-	// Utils.normalizeSubtotal(localDefDocItem2.getNum() *
-	// localDefDocItem2.getPrice()));
-	// localDefDocItem2.setDiscountratio(InDocEditActivity.this.doc.getDiscountratio());
-	// localDefDocItem2.setDiscountprice(
-	// Utils.normalizePrice(localDefDocItem2.getPrice() *
-	// localDefDocItem2.getDiscountratio()));
-	// localDefDocItem2.setDiscountsubtotal(
-	// Utils.normalizeSubtotal(localDefDocItem2.getNum() *
-	// localDefDocItem2.getDiscountprice()));
-	// localDefDocItem2.setIsgift(localDefDocItem2.getPrice() == 0 ?
-	// true : false);
-	// localDefDocItem2.setIsdiscount(localReqStrGetGoodsPrice2.getIsdiscount());
-	// Intent localIntent = new Intent();
-	// localIntent.putExtra("docitem", localDefDocItem2);
-	// localIntent.putExtra("customerid", doc.getCustomerid());
-	// InDocEditActivity.this.startActivityForResult(
-	// localIntent.setClass(InDocEditActivity.this,
-	// InDocAddGoodAct.class), 4);
-	// }
-	// } else {
-	// RequestHelper.showError(localString1);
-	// }
-	// }
-	//
-	// };
-	// private BarcodeManager bm;
 	private Dialog_listCheckBox dialog;
 	MAlertDialog maler;
 	private Button btnGoodClass;
@@ -1054,22 +914,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	// private AccountPreference ap;
 	private Sv_docitem sv;
 	private DocContainerEntity docContainerEntity;
-	// private GoodsPriceDAO goodspricedao;
-
-	// /**
-	// * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *
-	// *
-	// */
-	//
-	// @Override
-	// public boolean onKeyDown(int keyCode, KeyEvent event) {
-	// if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-	// intenToMain();
-	// return false;
-	// } else {
-	// return super.onKeyDown(keyCode, event);
-	// }
-	// }
 
 	protected void DBupdataDocItem() {
 		try {

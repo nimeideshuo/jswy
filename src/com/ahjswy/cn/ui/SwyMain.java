@@ -613,8 +613,8 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				public void onClick(View v) {
 					// 退出软件
 					dialog_message.dismiss();
-					finish();
 					MyApplication.getInstance().exit();
+					finish();
 				}
 			});
 			return false;

@@ -2,7 +2,6 @@ package com.ahjswy.cn.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
@@ -429,7 +428,7 @@ public class DocUtils {
 	 * 
 	 * @param item
 	 */
-	public static void combinationItem(List<DefDocItemXS> item) {
+	public static void combinationItem(List<DefDocItemXS> item, List<Long> listItemDelete) {
 		int size = item.size();
 		for (int i = 0; i < item.size(); i++) {
 			DefDocItemXS items1 = item.get(i);
@@ -448,13 +447,16 @@ public class DocUtils {
 					items1.setBignum(unitDAO.getBigNum(items1.getGoodsid(), items1.getUnitid(), items1.getNum()));
 					items1.setSubtotal(items1.getNum() * items1.getPrice());
 					items1.setDiscountsubtotal(items1.getNum() * items1.getPrice() * items1.getDiscountratio());
+					if (itemxs2.getItemid() > 0) {
+						listItemDelete.add(itemxs2.getItemid());
+					}
 					item.remove(j);
 					break;
 				}
 			}
 		}
 		if (size != item.size()) {
-			combinationItem(item);
+			combinationItem(item, listItemDelete);
 		}
 	}
 

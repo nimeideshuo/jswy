@@ -45,7 +45,6 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.baoyz.swipemenulistview.SwipeMenuListView.OnMenuItemClickListener;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -59,7 +58,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -159,10 +157,9 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
 				switch (index) {
 				case 0:
-					DefDocItemXS defdocitem = listItem.get(position);
+					DefDocItemXS defdocitem = new DefDocItemXS(listItem.get(position));
 					defdocitem.setItemid(0L);
 					listItem.add(defdocitem);
-
 					handler.postDelayed(new Runnable() {
 						public void run() {
 							adapter.setData(listItem);
@@ -177,7 +174,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				case 1:
 					long l = listItem.get(position).getItemid();
 					if (l > 0L) {
-						listItemDelete.add(Long.valueOf(l));
+						listItemDelete.add(l);
 					}
 					listItem.remove(position);
 					handler.postDelayed(new Runnable() {
@@ -776,7 +773,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 						}
 						if (Utils.isCombination()) {
 							listItem.addAll(newListItem);
-							DocUtils.combinationItem(listItem);
+							DocUtils.combinationItem(listItem, listItemDelete);
 							showSuccess("同品增加成功!");
 						} else {
 							listItem.addAll(0, newListItem);
@@ -819,12 +816,12 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				int j = data.getIntExtra("position", 0);
 				DefDocItemXS localDefDocItem2 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				listItem.set(j, localDefDocItem2);
-				adapter.setData(listItem);
-				refreshUI();
 				if (Utils.isCombination()) {
-					DocUtils.combinationItem(listItem);
+					DocUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
+				adapter.setData(listItem);
+				refreshUI();
 				DBupdataDocItem();
 				break;
 			case 4:
@@ -832,7 +829,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				listItem.add(localDefDocItem4);
 				refreshUI();
 				if (Utils.isCombination()) {
-					DocUtils.combinationItem(listItem);
+					DocUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
 				adapter.setData(listItem);
@@ -850,7 +847,8 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					listItem.add(item);
 				}
 				if (Utils.isCombination()) {
-					DocUtils.combinationItem(listItem);
+					// TODO
+					DocUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
 				this.adapter.setData(this.listItem);

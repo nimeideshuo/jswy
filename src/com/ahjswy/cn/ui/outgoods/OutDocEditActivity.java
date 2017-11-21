@@ -922,7 +922,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						}
 						if (Utils.isCombination()) {
 							listItem.addAll(newListItem);
-							DocUtils.combinationItem(listItem);
+							DocUtils.combinationItem(listItem, listItemDelete);
 							showSuccess("同品增加成功!");
 						} else {
 							listItem.addAll(0, newListItem);
@@ -937,7 +937,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				DefDocItemXS localDefDocItemXS3 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				listItem.set(j, localDefDocItemXS3);
 				if (Utils.isCombination()) {
-					DocUtils.combinationItem(listItem);
+					DocUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
 				adapter.setData(listItem);
@@ -958,7 +958,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						defDocItemXS4.getNum());
 				if (Utils.isCombination()) {
 					listItem.add(defDocItemXS4);
-					DocUtils.combinationItem(listItem);
+					DocUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				} else {
 					listItem.add(0, defDocItemXS4);
@@ -984,7 +984,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				this.refreshUI();
 				bottomCount();
 				if (Utils.isCombination()) {
-					DocUtils.combinationItem(listItem);
+					DocUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
 				this.adapter.setData(this.listItem);

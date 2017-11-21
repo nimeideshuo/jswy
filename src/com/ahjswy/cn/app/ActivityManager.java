@@ -15,27 +15,27 @@ public class ActivityManager {
 	}
 
 	public Activity currentActivity() {
-		Activity localActivity = null;
-		if (!activityStack.empty()) {
-			localActivity = activityStack.lastElement();
-		}
-		return localActivity;
+		return activityStack.lastElement();
 	}
 
 	public void popActivity(Activity activity) {
 		if (activity != null && !activity.isFinishing()) {
 			activity.finish();
 			activityStack.remove(activity);
+			activity = null;
 		}
 	}
 
-	public void popAllActivityExceptOne(Class<?> paramClass) {
-		// 循环把每个 activity 杀死
-		for (int i = activityStack.size(); i > 0; i--) {
-			Activity activity = currentActivity();
-			if (activity != null) {
-				popActivity(activity);
+	public void popAllActivityExceptOne(Class<?> cls) {
+		for (int i = 0; i < activityStack.size(); i++) {
+			Activity activity = activityStack.get(i);
+			if (activity == null) {
+				continue;
 			}
+			if (activity.getClass().equals(cls)) {
+				continue;
+			}
+			popActivity(activity);
 		}
 	}
 

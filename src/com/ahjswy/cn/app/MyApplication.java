@@ -22,8 +22,9 @@ public class MyApplication extends Application {
 		super.onCreate();
 		instance = this;
 		activityManager = ActivityManager.getScreenManager();
-		 CrashHandler.getInstance().init(this);
-		 Bmob.initialize(this, "11482f9fcef5806efdf3f4a3f908048d");
+		CrashHandler.getInstance().init(this);
+		Bmob.initialize(this, "11482f9fcef5806efdf3f4a3f908048d");
+
 	}
 
 	public synchronized static MyApplication getInstance() {
@@ -78,6 +79,15 @@ public class MyApplication extends Application {
 		return Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 	}
 
+	/**
+	 * 是不是测试版本
+	 * 
+	 * @return
+	 */
+	// public boolean isTestSWY() {
+	// return true;
+	// }
+
 	// 得到本机Mac地址
 	public String getMac() {
 		// 获取wifi管理器
@@ -110,4 +120,82 @@ public class MyApplication extends Application {
 		}
 		return "";
 	}
+
+	// /**
+	// * 初始化
+	// */
+	// public void initDefault() {
+	// if (isTestSWY()) {
+	// Department depar = new Department();
+	// depar.setDid("01");
+	// depar.setDname("门店");
+	// depar.setWarehouseid("01");
+	// depar.setWarehousename("仓库");
+	// SystemState.saveObject("department", depar);
+	// copyData();
+	// }
+	// }
+	//
+	// public void copyData() {
+	// String dbPath = Environment.getDataDirectory() +
+	// "/data/com.ahjswy.cn/databases/fields.db";
+	// String shared_prefsPath = Environment.getDataDirectory() +
+	// "/data/com.ahjswy.cn/shared_prefs";
+	//
+	// File file = new File(dbPath);
+	// if (!file.exists()) {
+	// file.mkdirs();
+	// }
+	// try {
+	// InputStream dbis =
+	// MyApplication.getInstance().getAssets().open("fields.db");
+	// copyFile(dbis, dbPath);
+	// InputStream basicis =
+	// MyApplication.getInstance().getAssets().open("basic_setting.xml");
+	// copyFile(basicis, shared_prefsPath + "/basic_setting.xml");
+	// InputStream bizparameteris =
+	// MyApplication.getInstance().getAssets().open("bizparameter_info.xml");
+	// copyFile(bizparameteris, shared_prefsPath + "/bizparameter_info.xml");
+	// InputStream se_dois =
+	// MyApplication.getInstance().getAssets().open("se_do.xml");
+	// copyFile(se_dois, shared_prefsPath + "/se_do.xml");
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// public void copyFile(InputStream input, String topath) {
+	// FileOutputStream os = null;
+	// try {
+	// os = new FileOutputStream(new File(topath));
+	// int byteCount = 0;
+	// byte[] buffer = new byte[1024];
+	// while ((byteCount = input.read(buffer)) != -1) {
+	// os.write(buffer, 0, byteCount);
+	// }
+	//
+	// } catch (FileNotFoundException e) {
+	// e.printStackTrace();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// } finally {
+	// if (os != null) {
+	// try {
+	// os.close();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// if (input != null) {
+	// try {
+	// input.close();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// }
+	//
+	// }
+
 }

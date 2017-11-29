@@ -38,13 +38,13 @@ public class Dialog_ed_message extends Dialog {
 			public void run() {
 				InputMethodManager inputManager =
 
-				(InputMethodManager) ed_service.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+						(InputMethodManager) ed_service.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
 				inputManager.showSoftInput(ed_service, 0);
 			}
 		},
 
-		500);
+				500);
 	}
 
 	/*
@@ -82,7 +82,11 @@ public class Dialog_ed_message extends Dialog {
 		btn_dialg_ip_false.setText(text);
 	}
 
-	// 确认监听
+	/**
+	 * 确认监听
+	 * 
+	 * @param paramOnClickListener
+	 */
 	public void setCancelListener(View.OnClickListener paramOnClickListener) {
 		btn_dialg_ip_true.setOnClickListener(paramOnClickListener);
 	}

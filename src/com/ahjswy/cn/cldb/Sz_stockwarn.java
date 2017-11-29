@@ -1,14 +1,18 @@
 package com.ahjswy.cn.cldb;
 
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.response.RespStockwarn;
+import com.ahjswy.cn.utils.Utils;
 
 public class Sz_stockwarn extends CloudDBBase {
-	public double queryStockwarn(String warehouseid, String goodsid) {
+
+	public double queryStockNum(String warehouseid, String goodsid) {
 		StringBuilder stockwarnBuilder = new StringBuilder();
 		stockwarnBuilder.append("select a.warehouseid,a.goodsid,stocknum from sz_stockwarn a where a.warehouseid='");
 		stockwarnBuilder.append(warehouseid).append("' and ");
@@ -102,4 +106,39 @@ public class Sz_stockwarn extends CloudDBBase {
 		}
 		return null;
 	}
+
+	/**
+	 * 商品 查询成本价格
+	 * 
+	 * @param warehouseid
+	 * @param goodsid
+	 * @param unitid
+	 * @return
+	 */
+	public double queryGoodsCostprice(String warehouseid, String goodsid, String unitid) {
+		ResultSet rs = null;
+		try {
+			String sql = "{call sp_getgoodscostprice(?,?,?)}";
+			CallableStatement statement = conn.prepareCall(sql);
+			statement.setString(1, warehouseid);
+			statement.setString(2, goodsid);
+			statement.setString(3, unitid);
+			statement.execute();
+			rs = statement.getResultSet();
+			while (rs.next()) {
+				return Utils.getDouble(rs.getString(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return 0;
+	}
+
 }

@@ -35,7 +35,6 @@ public class LoginPassword extends BaseActivity implements OnPatternChangeListen
 		TextView tv_passWord_name = (TextView) findViewById(R.id.tv_passWord_name);
 		login_toast = (TextView) findViewById(R.id.login_toast);
 		ap = new AccountPreference();
-		tv_passWord_name.setText(SystemState.getUser().getName().toString());
 		lpwv = (LockPatternView) this.findViewById(R.id.mLocusPassWordView);
 		lpwv.setOnPatternChangeListener(this);
 		String passWord = ap.getValue("passWord", "");
@@ -45,14 +44,12 @@ public class LoginPassword extends BaseActivity implements OnPatternChangeListen
 			login_toast.setText("请输入密码");
 			open = false;
 		}
-	}
+		// if (MyApplication.getInstance().isTestSWY()) {
+		// tv_passWord_name.setText("管理员");
+		// } else {
+		// }
+		tv_passWord_name.setText(SystemState.getUser().getName().toString());
 
-	/*
-	 * 选择账户 登陆 待添加
-	 */
-	public void onClick(View paramView) {
-		startActivity(new Intent(this, Swy_splash.class).putExtra("isfirststart", false));
-		finish();
 	}
 
 	@Override
@@ -141,6 +138,9 @@ public class LoginPassword extends BaseActivity implements OnPatternChangeListen
 	@Override
 	protected void onStart() {
 		super.onStart();
+		// if (MyApplication.getInstance().isTestSWY()) {
+		// return;
+		// }
 		PDH.show(this, new ProgressCallBack() {
 
 			@Override

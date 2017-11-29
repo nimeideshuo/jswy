@@ -28,6 +28,7 @@ import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchHelper;
 import com.ahjswy.cn.ui.SwyMain;
 import com.ahjswy.cn.ui.inpurchase.InpurDocItemAdapter.Sum;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
@@ -187,8 +188,7 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 		localArrayList = new ArrayList<DefDocItemCG>();
 		if (goodsThinList.size() == 1) {
 			long maxTempItemId = getMaxTempItemId();
-			int num = Utils.isCombination() ? 1 : 0;
-			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), num, 0.0D, maxTempItemId + 1L);
+			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), DocUtils.getDefaultNum(), 0.0D, maxTempItemId + 1L);
 			localArrayList.add(fillItem);
 			Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
@@ -205,8 +205,8 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 					List<GoodsThin> select = dialog.getSelect();
 					long maxTempItemId = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
-						int num = Utils.isCombination() ? 1 : 0;
-						DefDocItemCG fillItem = fillItem(select.get(i), num, 0.0D, maxTempItemId += 1L);
+						DefDocItemCG fillItem = fillItem(select.get(i), DocUtils.getDefaultNum(), 0.0D,
+								maxTempItemId += 1L);
 						localArrayList.add(fillItem);
 					}
 					Intent intent = new Intent(InpurchaseEditActivity.this, InpurDocAddMoreGoodsAct.class);
@@ -381,8 +381,7 @@ public class InpurchaseEditActivity extends BaseActivity implements OnTouchListe
 			ArrayList<DefDocItemCG> localArrayList = new ArrayList<DefDocItemCG>();
 			for (int i = 0; i < localList.size(); i++) {
 				GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
-				int num = Utils.isCombination() ? 1 : 0;
-				DefDocItemCG fillItem = fillItem(localGoodsThin, num, 0.0D, 0);
+				DefDocItemCG fillItem = fillItem(localGoodsThin, DocUtils.getDefaultNum(), 0.0D, 0);
 				if (fillItem == null) {
 					continue;
 				}

@@ -4,31 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.dao.GoodsDAO;
-import com.ahjswy.cn.dao.GoodsUnitDAO;
-import com.ahjswy.cn.dao.WarehouseDAO;
 import com.ahjswy.cn.model.DefDocItem;
 import com.ahjswy.cn.model.DefDocTransfer;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.model.GoodsThin;
-import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.model.Warehouse;
 import com.ahjswy.cn.popupmenu.TransferEditMenuPopup;
-import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
-import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.MAlertDialog;
 import com.ahjswy.cn.ui.SearchHelper;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
-import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.AutoTextView;
@@ -56,6 +50,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+/**
+ * 调拨开单
+ * 
+ * @author Administrator
+ *
+ */
 public class TransferEditActivity extends BaseActivity implements OnTouchListener, ScanerBarcodeListener {
 
 	private ServiceStore serviceStore;
@@ -80,21 +80,24 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		LinearLayout linearSearch = ((LinearLayout) findViewById(R.id.lieSearch));
 		atvSearch = ((AutoTextView) findViewById(R.id.atvSearch));
 		searchHelper = new SearchHelper(this, linearSearch);
-		atvSearch.setOnItemClickListener(onItemClickListener);
+		atvSearch.setOnItemClickListener(onSearchItemClickListener);
 		btnAdd = ((Button) findViewById(R.id.btnAdd));
 		this.root.setOnTouchListener(this);
-		this.btnAdd.setOnClickListener(this.addMoreListener);
+		this.btnAdd.setOnClickListener(this.onAddMoreListener);
 		this.listItemDelete = new ArrayList<Long>();
+		docUtils = DocUtils.getInstance();
+		if (listItem == null) {
+			listItem = new ArrayList<>();
+		}
 	}
 
 	private void initListView() {
 		serviceStore = new ServiceStore();
 		root = (RelativeLayout) findViewById(R.id.root);
 		this.ishaschanged = getIntent().getBooleanExtra("ishaschanged", true);
-		doccontainer = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
-		this.doc = ((DefDocTransfer) JSONUtil.readValue(doccontainer.getDoc(), DefDocTransfer.class));
-		this.listItem = JSONUtil.str2list(doccontainer.getItem(), DefDocItem.class);
-
+		doccontainer = (DocContainerEntity<?>) getIntent().getSerializableExtra("docContainer");
+		this.doc = ((DefDocTransfer) JSONUtil.fromJson(doccontainer.getDoc(), DefDocTransfer.class));
+		this.listItem = JSONUtil.parseArray(doccontainer.getItem(), DefDocItem.class);
 		listView = ((SwipeMenuListView) findViewById(R.id.listView));
 		listView.setOnTouchListener(this);
 		adapter = new TransferItemAdapter(this);
@@ -183,12 +186,11 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 				intent.putExtra("position", position);
 				intent.putExtra("docitem", listItem.get(position));
 				startActivityForResult(intent.setClass(TransferEditActivity.this, TransferAddGoodAct.class), 3);
-
 			}
 		});
 	}
 
-	private View.OnClickListener addMoreListener = new View.OnClickListener() {
+	private View.OnClickListener onAddMoreListener = new View.OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
@@ -198,26 +200,27 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 				attributes.alpha = 1.0F;
 				getWindow().setAttributes(attributes);
 			}
+			if (listItem.size() > DocUtils.getDefaultNum()) {
+				showError("商品已经开满!");
+				return;
+			}
 			List<GoodsThin> select = searchHelper.getAdapter().getSelect();
 			if (select.isEmpty()) {
 				return;
 			}
 			atvSearch.setText("");
-			if (!"1".equals(new AccountPreference().getValue("goods_select_more"))) {
-				ArrayList<DefDocItem> localArrayList = new ArrayList<DefDocItem>();
-
-				for (int i = 0; i < select.size(); i++) {
-					GoodsThin goodsthin = (GoodsThin) select.get(i);
-					localArrayList.add(fillItem(goodsthin, 0.0D, 0.0D));
-				}
-				startActivityForResult(new Intent().setClass(TransferEditActivity.this, TransferAddMoreGoodsAct.class)
-						.putExtra("items", JSONUtil.toJSONString(localArrayList)), 2);
+			ArrayList<DefDocItem> localArrayList = new ArrayList<DefDocItem>();
+			for (int i = 0; i < select.size(); i++) {
+				GoodsThin goodsthin = (GoodsThin) select.get(i);
+				localArrayList.add(docUtils.fillItem(doc, goodsthin, DocUtils.getDefaultNum(), 0.0D));
 			}
+			startActivityForResult(new Intent().setClass(TransferEditActivity.this, TransferAddMoreGoodsAct.class)
+					.putExtra("items", JSONUtil.toJSONString(localArrayList)), 2);
 		}
 
 	};
 
-	AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+	AdapterView.OnItemClickListener onSearchItemClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -227,23 +230,15 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 
 				@Override
 				public void action() {
-					DefDocItem localObject = fillItem(goodsThin, 0.0D, 0.0D);
-					newListItem = new ArrayList<DefDocItem>();
-					newListItem.add(localObject);
-					ArrayList<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
-					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
-					localReqStrGetGoodsPrice.setType(0);
-					localReqStrGetGoodsPrice.setCustomerid(null);
-					localReqStrGetGoodsPrice.setWarehouseid(localObject.getWarehouseid());
-					localReqStrGetGoodsPrice.setGoodsid(localObject.getGoodsid());
-					localReqStrGetGoodsPrice.setUnitid(localObject.getUnitid());
-					localReqStrGetGoodsPrice.setPrice(0.0D);
-					localReqStrGetGoodsPrice.setIsdiscount(false);
-					localArrayList.add(localReqStrGetGoodsPrice);
-					String result = new ServiceGoods().gds_GetMultiGoodsPriceDB(localArrayList, doc.getInwarehouseid(),
-							true, localObject.isIsusebatch());
-					handlerGet.sendMessage(handlerGet.obtainMessage(2, result));
-
+					// SP_GetGoodsCostprice 查询商品成本价格
+					DefDocItem docitem = docUtils.fillItem(doc, goodsThin, DocUtils.getDefaultNum(), 0.0D);
+					Warehouse warehouse = docUtils.getDBOutWarehouse(doc.getInwarehouseid(), doc.getOutwarehouseid());
+					docitem.setWarehouseid(warehouse.getId());
+					docitem.setWarehousename(warehouse.getName());
+					docUtils.setDBAddItem(doc, docitem);
+					Intent intent = new Intent(TransferEditActivity.this, TransferAddGoodAct.class);
+					intent.putExtra("docitem", docitem);
+					startActivityForResult(intent, 1);
 				}
 
 			});
@@ -256,8 +251,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 	private TransferItemAdapter adapter;
 	private AutoTextView atvSearch;
 	private SearchHelper searchHelper;
-	private DocContainerEntity doccontainer;
-	private List<DefDocItem> newListItem;
+	private DocContainerEntity<?> doccontainer;
 
 	private String validateDoc() {
 		if (!TextUtils.isEmptyS(this.doc.getBuildtime())) {
@@ -308,42 +302,6 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		}
 	}
 
-	protected DefDocItem fillItem(GoodsThin goodsthin, double num, double price) {
-		GoodsUnitDAO goodsDao = new GoodsUnitDAO();
-		DefDocItem item = new DefDocItem();
-		item.setItemid(0L);
-		item.setDocid(this.doc.getDocid());
-		item.setGoodsid(goodsthin.getId());
-		item.setGoodsname(goodsthin.getName());
-		item.setBarcode(goodsthin.getBarcode());
-		item.setSpecification(goodsthin.getSpecification());
-		item.setModel(goodsthin.getModel());
-		item.setWarehouseid(this.doc.getOutwarehouseid());
-		item.setWarehousename(this.doc.getOutwarehousename());
-		GoodsUnit goodsunit = null;
-		if (Utils.DEFAULT_TransferDocUNIT == 0) {
-			goodsunit = goodsDao.queryBaseUnit(goodsthin.getId());
-		} else {
-			goodsunit = goodsDao.queryBigUnit(goodsthin.getId());
-		}
-		item.setUnitid(goodsunit.getUnitid());
-		item.setUnitname(goodsunit.getUnitname());
-		item.setNum(Utils.normalize(num, 2));
-		item.setBignum(goodsDao.getBigNum(item.getGoodsid(), item.getUnitid(), item.getNum()));
-		item.setPrice(Utils.normalizePrice(price));
-		item.setSubtotal(Utils.normalizeSubtotal(item.getNum() * item.getPrice()));
-		item.setDiscountratio(1.0D);
-		item.setDiscountprice(0.0D);
-		item.setDiscountsubtotal(0.0D);
-		item.setIsgift(false);
-		item.setCostprice(0.0D);
-		item.setRemark("");
-		item.setRversion(0L);
-		item.setIsdiscount(false);
-		item.setIsusebatch(goodsthin.isIsusebatch());
-		return item;
-	}
-
 	public void check(final boolean isPrint) {
 		String validateDoc = validateDoc();
 		if (validateDoc != null) {
@@ -360,6 +318,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 
 			@Override
 			public void onClick(MAlertDialog dialog) {
+				dialog.dismiss();
 				PDH.show(TransferEditActivity.this, new PDH.ProgressCallBack() {
 					public void action() {
 						String str = serviceStore.str_CheckDBDoc(doc, listItem, listItemDelete, isPrint);
@@ -480,10 +439,10 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 					finish();
 					return;
 				}
-				DocContainerEntity doccontainer = (DocContainerEntity) JSONUtil.fromJson(localObject,
+				DocContainerEntity<?> doccontainer = (DocContainerEntity<?>) JSONUtil.fromJson(localObject,
 						DocContainerEntity.class);
-				doc = ((DefDocTransfer) JSONUtil.readValue(doccontainer.getDoc(), DefDocTransfer.class));
-				listItem = JSONUtil.str2list(doccontainer.getItem(), DefDocItem.class);
+				doc = ((DefDocTransfer) JSONUtil.fromJson(doccontainer.getDoc(), DefDocTransfer.class));
+				listItem = JSONUtil.parseArray(doccontainer.getItem(), DefDocItem.class);
 				listItemDelete = new ArrayList<Long>();
 				switch (msg.what) {
 				case 0:
@@ -529,30 +488,16 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 				setActionBarText();
 				break;
 			case 2:
-				newListItem = JSONUtil.str2list(data.getStringExtra("items"), DefDocItem.class);
-				final ArrayList<ReqStrGetGoodsPrice> listPrice = new ArrayList<ReqStrGetGoodsPrice>();
+				List<DefDocItem> newListItem = JSONUtil.parseArray(data.getStringExtra("items"), DefDocItem.class);
 				for (int i = 0; i < newListItem.size(); i++) {
-					DefDocItem localDefDocItem = (DefDocItem) this.newListItem.get(i);
-					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
-					localReqStrGetGoodsPrice.setType(0);
-					localReqStrGetGoodsPrice.setCustomerid(null);
-					localReqStrGetGoodsPrice.setWarehouseid(localDefDocItem.getWarehouseid());
-					localReqStrGetGoodsPrice.setGoodsid(localDefDocItem.getGoodsid());
-					localReqStrGetGoodsPrice.setUnitid(localDefDocItem.getUnitid());
-					localReqStrGetGoodsPrice.setPrice(0.0D);
-					localReqStrGetGoodsPrice.setIsdiscount(false);
-					listPrice.add(localReqStrGetGoodsPrice);
+					DefDocItem docItem = newListItem.get(i);
+					docUtils.setDBAddItem(doc, docItem);
 				}
-				PDH.show(this, new ProgressCallBack() {
-
-					@Override
-					public void action() {
-						String priceDB = new ServiceGoods().gds_GetMultiGoodsPriceDB(listPrice, doc.getInwarehouseid(),
-								true, true);
-						handlerGet.sendMessage(handlerGet.obtainMessage(0, priceDB));
-					}
-				});
-
+				listItem.addAll(newListItem);
+				adapter.setData(listItem);
+				refreshUI();
+				ishaschanged = true;
+				setActionBarText();
 				break;
 			case 3:
 
@@ -569,84 +514,8 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		}
 	}
 
-	private Handler handlerGet = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			String message = msg.obj.toString();
-			if (RequestHelper.isSuccess(message)) {
-				List<ReqStrGetGoodsPrice> listPrice = JSONUtil.str2list(message, ReqStrGetGoodsPrice.class);
-				if (msg.what == 0) {
-					GoodsUnitDAO dao = new GoodsUnitDAO();
-					for (int i = 0; i < listPrice.size(); i++) {
-						DefDocItem item = newListItem.get(i);
-						ReqStrGetGoodsPrice reqPrice = listPrice.get(i);
-						if ((!item.getGoodsid().equals(reqPrice.getGoodsid()))
-								|| (!item.getUnitid().equals(reqPrice.getUnitid()))) {
-							break;
-						}
-						String warehouseid = reqPrice.getWarehouseid();
-						if ((TextUtils.isEmptyS(warehouseid)) && (!(warehouseid).equals(item.getWarehouseid()))) {
-							Warehouse warehouse = new WarehouseDAO().getWarehouse(warehouseid);
-							if (warehouse != null) {
-								item.setWarehousename(warehouse.getName());
-								item.setWarehouseid(warehouseid);
-							}
-						}
-						item.setBignum(dao.getBigNum(item.getGoodsid(), item.getUnitid(), item.getNum()));
-						item.setBatch(reqPrice.getBatch());
-						// item.setProductiondate(reqPrice.getProductiondate());
-						item.setProductiondate("");
-						item.setPrice(Utils.normalizePrice(reqPrice.getPrice()));
-						item.setSubtotal(Utils.normalizeSubtotal(item.getNum() * item.getPrice()));
-						if (item.isIsusebatch()) {
-							item.setBatch(reqPrice.getBatch());
-							item.setProductiondate(reqPrice.getProductiondate());
-
-						}
-						if (TextUtils.isEmptyS(reqPrice.getWarehouseid())) {
-							Warehouse warehouse = new WarehouseDAO().getWarehouse(reqPrice.getWarehouseid());
-							if (warehouse != null) {
-								item.setWarehouseid(reqPrice.getWarehouseid());
-								item.setWarehousename(warehouse.getName());
-							}
-						}
-						item.setIsdiscount(reqPrice.getIsdiscount());
-
-					}
-					listItem.addAll(newListItem);
-					adapter.setData(listItem);
-					refreshUI();
-					ishaschanged = true;
-					setActionBarText();
-				}
-				if (msg.what == 2) {
-					DefDocItem docItem = newListItem.get(0);
-					ReqStrGetGoodsPrice respPrice = listPrice.get(0);
-					if (TextUtils.isEmptyS(respPrice.getWarehouseid())) {
-						Warehouse warehouse = new WarehouseDAO().getWarehouse(respPrice.getWarehouseid());
-						if (warehouse != null) {
-							docItem.setWarehouseid(respPrice.getWarehouseid());
-							docItem.setWarehousename(warehouse.getName());
-						}
-					}
-					docItem.setPrice(Utils.normalizePrice(respPrice.getPrice()));
-					docItem.setSubtotal(Utils.normalizeSubtotal(docItem.getNum() * docItem.getPrice()));
-					docItem.setIsdiscount(respPrice.getIsdiscount());
-					docItem.setBatch(respPrice.getBatch());
-					// docItem.setProductiondate(respPrice.getProductiondate());
-					docItem.setProductiondate("");
-					Intent intent = new Intent(TransferEditActivity.this, TransferAddGoodAct.class);
-					intent.putExtra("docitem", docItem);
-					startActivityForResult(intent, 1);
-
-				}
-
-			} else {
-				PDH.showFail(message);
-			}
-
-		};
-	};
 	private Scaner factory;
+	private DocUtils docUtils;
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
@@ -658,51 +527,6 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		}
 		return false;
 	}
-	// TODO
-	// protected void combinationItem() {
-	// int combinationNum = listItem.size();
-	// ArrayList<DefDocItem> data = new ArrayList<DefDocItem>(listItem);
-	// ArrayList<DefDocItem> listDocItem = new ArrayList<DefDocItem>();
-	// LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-	// for (int i = data.size() - 1; i >= 0; i--) {
-	// DefDocItem items1 = data.get(i);
-	// // 没有的商品 缓存
-	// if (map.get(items1.getGoodsid()) == null) {
-	// map.put(items1.getGoodsid(), new DefDocItem(items1));
-	// data.remove(items1);
-	// // data2.remove(items1);
-	// continue;
-	// }
-	// DefDocItem itemxs2 = (DefDocItem) map.get(items1.getGoodsid());
-	// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
-	// items1.getUnitid().equals(itemxs2.getUnitid())
-	// && items1.getPrice() == itemxs2.getPrice()
-	// && items1.getDiscountratio() == itemxs2.getDiscountratio()) {
-	// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
-	// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
-	// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
-	// itemxs2.getDiscountratio());
-	// map.put(itemxs2.getGoodsid(), itemxs2);
-	// // 商品 单位id 单价 相等删除！
-	// data.remove(items1);
-	// }
-	// }
-	// Set<String> keySet = map.keySet();
-	// for (String string : keySet) {
-	// listDocItem.add((DefDocItem) map.get(string));
-	// }
-	// if ((combinationNum - listDocItem.size() - data.size()) == 0) {
-	// // 没有要合并的商品!
-	// return;
-	// }
-	// showSuccess("同品增加成功!");
-	// // 设置数据
-	// listItem.clear();
-	// listItem.addAll(listDocItem);
-	// listItem.addAll(data);
-	// adapter.setData(listItem);
-	//
-	// }
 
 	public DefDocTransfer getDoc() {
 		return doc;
@@ -711,6 +535,10 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 	@Override
 	public void setBarcode(String barcode) {
 		atvSearch.setText("");
+		if (listItem.size() > DocUtils.MAXITEM) {
+			showError("商品已经开满!");
+			return;
+		}
 		readBarcode(barcode);
 	}
 
@@ -721,22 +549,11 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 
 				@Override
 				public void action() {
-					DefDocItem localObject = fillItem(goodsThinList.get(0), 0.0D, 0.0D);
-					newListItem = new ArrayList<DefDocItem>();
-					newListItem.add(localObject);
-					ArrayList<ReqStrGetGoodsPrice> localArrayList = new ArrayList<ReqStrGetGoodsPrice>();
-					ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new ReqStrGetGoodsPrice();
-					localReqStrGetGoodsPrice.setType(0);
-					localReqStrGetGoodsPrice.setCustomerid(null);
-					localReqStrGetGoodsPrice.setWarehouseid(localObject.getWarehouseid());
-					localReqStrGetGoodsPrice.setGoodsid(localObject.getGoodsid());
-					localReqStrGetGoodsPrice.setUnitid(localObject.getUnitid());
-					localReqStrGetGoodsPrice.setPrice(0.0D);
-					localReqStrGetGoodsPrice.setIsdiscount(false);
-					localArrayList.add(localReqStrGetGoodsPrice);
-					String result = new ServiceGoods().gds_GetMultiGoodsPriceDB(localArrayList, doc.getInwarehouseid(),
-							true, localObject.isIsusebatch());
-					handlerGet.sendMessage(handlerGet.obtainMessage(2, result));
+					DefDocItem docitem = docUtils.fillItem(doc, goodsThinList.get(0), DocUtils.getDefaultNum(), 0.0D);
+					docUtils.setDBAddItem(doc, docitem);
+					Intent intent = new Intent(TransferEditActivity.this, TransferAddGoodAct.class);
+					intent.putExtra("docitem", docitem);
+					startActivityForResult(intent, 1);
 				}
 
 			});

@@ -1,5 +1,6 @@
 package com.ahjswy.cn.ui.inventory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
@@ -21,6 +22,9 @@ public class InventoryItemAdapter extends BaseAdapter {
 
 	public InventoryItemAdapter(Context context) {
 		this.context = context;
+		if (items == null) {
+			items = new ArrayList<DefDocItemPD>();
+		}
 	}
 
 	public List<DefDocItemPD> getData() {
@@ -29,24 +33,22 @@ public class InventoryItemAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		if (this.items == null) {
-			return 0;
-		}
-		return this.items.size();
+		return items == null ? 0 : this.items.size();
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public DefDocItemPD getItem(int position) {
 		return this.items.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return ((DefDocItemPD) this.items.get(position)).getItemid();
+		return items.get(position).getItemid();
 	}
 
 	public void setData(List<DefDocItemPD> items) {
-		this.items = items;
+		this.items.clear();
+		this.items.addAll(items);
 		notifyDataSetChanged();
 	}
 
@@ -57,11 +59,10 @@ public class InventoryItemAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(this.context).inflate(R.layout.item_inventory_goods, null);
 			viewGroup = new InventoryGoodsItem(convertView);
 			convertView.setTag(viewGroup);
-
 		} else {
 			viewGroup = (InventoryGoodsItem) convertView.getTag();
 		}
-		viewGroup.setValue((DefDocItemPD) this.items.get(position));
+		viewGroup.setValue(items.get(position));
 		viewGroup.tvSerialid.setText((position + 1) + "");
 		return convertView;
 	}
@@ -76,7 +77,6 @@ public class InventoryItemAdapter extends BaseAdapter {
 		public TextView tvSerialid;
 		public TextView tvStockNum;
 
-		// TODO
 		public InventoryGoodsItem(View view) {
 			this.tvSerialid = ((TextView) view.findViewById(R.id.tvSerialid));
 			this.tvName = ((TextView) view.findViewById(R.id.tvGoodsName));

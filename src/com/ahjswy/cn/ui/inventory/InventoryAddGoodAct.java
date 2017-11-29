@@ -11,6 +11,7 @@ import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPricePD;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
@@ -104,6 +105,7 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 		// "yyyy-MM-dd"));
 		this.etNum.setTag(this.etNum.getText().toString());
 		this.etNetNum.setTag(this.etNetNum.getText().toString());
+		docUtils = DocUtils.getInstance();
 	}
 
 	private GoodsUnit goodsUnit;
@@ -124,21 +126,38 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 				dialog.dismiss();
 				goodsUnit = ((GoodsUnit) localList.get(which));
 				if (!goodsUnit.getUnitid().equals(btnUnit.getTag())) {
-					PDH.show(InventoryAddGoodAct.this, new PDH.ProgressCallBack() {
-						public void action() {
-							ArrayList<ReqStrGetGoodsPricePD> localArrayList = new ArrayList<ReqStrGetGoodsPricePD>();
-							ReqStrGetGoodsPricePD rp = new ReqStrGetGoodsPricePD();
-							rp.setWarehouseid(warehouseid);
-							rp.setGoodsid(docitem.getGoodsid());
-							rp.setUnitid(goodsUnit.getUnitid());
-							rp.setStocknum(0.0D);
-							rp.setCostprice(0.0D);
-							rp.setBatch(btnBatch.getText().toString());
-							localArrayList.add(rp);
-							String localString = new ServiceGoods().gds_GetMultiGoodsPricePD(localArrayList);
-							handlerGet.sendMessage(handlerGet.obtainMessage(0, localString));
-						}
-					});
+
+					double goodscostprice = docUtils.queryGoodsCostprice(warehouseid, docitem.getGoodsid(),
+							docitem.getUnitid());
+					double sumStock = docUtils.queryPDSumStock(docitem.getGoodsid(), goodsUnit.getUnitid());
+					btnUnit.setText(goodsUnit.getUnitname());
+					btnUnit.setTag(goodsUnit.getUnitid());
+					etStockNum.setText(sumStock + "");
+					etNum.setText(etStockNum.getText());
+					etNetNum.setText("0");
+					etStockNum.setTag(goodscostprice);
+					etNum.setTag(etNum.getText());
+					etNetNum.setTag(etNetNum.getText());
+
+					// PDH.show(InventoryAddGoodAct.this, new
+					// PDH.ProgressCallBack() {
+					// public void action() {
+					// ArrayList<ReqStrGetGoodsPricePD> localArrayList = new
+					// ArrayList<ReqStrGetGoodsPricePD>();
+					// ReqStrGetGoodsPricePD rp = new ReqStrGetGoodsPricePD();
+					// rp.setWarehouseid(warehouseid);
+					// rp.setGoodsid(docitem.getGoodsid());
+					// rp.setUnitid(goodsUnit.getUnitid());
+					// rp.setStocknum(0.0D);
+					// rp.setCostprice(0.0D);
+					// rp.setBatch(btnBatch.getText().toString());
+					// localArrayList.add(rp);
+					// String localString = new
+					// ServiceGoods().gds_GetMultiGoodsPricePD(localArrayList);
+					// handlerGet.sendMessage(handlerGet.obtainMessage(0,
+					// localString));
+					// }
+					// });
 				}
 
 			}
@@ -231,6 +250,7 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 
 		};
 	};
+	private DocUtils docUtils;
 
 	@Override
 	public void onClick(View v) {

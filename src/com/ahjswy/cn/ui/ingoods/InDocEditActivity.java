@@ -76,7 +76,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	private DefDoc doc;
 	private List<DefDocPayType> listPayType;
 	private List<Long> listItemDelete;
-	private ArrayList<DefDocItemXS> listItem;
+	private List<DefDocItemXS> listItem;
 	private SearchHelper searchHelper;
 	private AutoTextView atvSearch;
 	InDocItemAdapter adapter;
@@ -117,16 +117,19 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		btnAdd.setOnClickListener(addMoreListener);
 		dialog = new Dialog_listCheckBox(InDocEditActivity.this);
 		docContainerEntity = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
-		this.doc = JSONUtil.readValue(docContainerEntity.getDoc(), DefDoc.class);
-		listItem = (ArrayList<DefDocItemXS>) JSONUtil.str2list(docContainerEntity.getItem(), DefDocItemXS.class);
-		listPayType = JSONUtil.str2list(docContainerEntity.getPaytype(), DefDocPayType.class);
+		this.doc = JSONUtil.fromJson(docContainerEntity.getDoc(), DefDoc.class);
+		if (docContainerEntity.getListitem() != null) {
+			listItem = docContainerEntity.getListitem();
+		} else {
+			listItem = JSONUtil.parseArray(docContainerEntity.getItem(), DefDocItemXS.class);
+		}
+		listPayType = JSONUtil.parseArray(docContainerEntity.getPaytype(), DefDocPayType.class);
 		if (listItem != null) {
 			adapter.setData(listItem);
 			listView.setAdapter(adapter);
 		}
 		maler = new MAlertDialog(this);
 		unitDao = new GoodsUnitDAO();
-		sv = new Sv_docitem();
 	}
 
 	private void intDate() {
@@ -167,7 +170,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 							ishaschanged = true;
 							setActionBarText();
 							sum();
-							DBupdataDocItem();
+							saveTHDoc();
 						}
 					}, 180L);
 					break;
@@ -184,7 +187,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 							ishaschanged = true;
 							setActionBarText();
 							sum();
-							DBupdataDocItem();
+							saveTHDoc();
 						}
 					}, 180L);
 					break;
@@ -213,6 +216,10 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			if (dialog != null) {
 				dialog.dismiss();
 			}
+			if (listItem.size() > DocUtils.MAXITEM) {
+				showError("商品已经开满！");
+				return;
+			}
 			readBarcode(barcode);
 		}
 	};
@@ -222,8 +229,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		final ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
 
 		if (goodsThinList.size() == 1) {
-			int num = Utils.isCombination() ? 1 : 0;
-			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), num, 0.0D);
+			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), DocUtils.getDefaultNum(), 0.0D);
 			localArrayList.add(defdocitem);
 			Intent intent = new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
@@ -238,9 +244,8 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				public void onClick(View v) {
 					dialog.dismiss();
 					List<GoodsThin> select = dialog.getSelect();
-					int num = Utils.isCombination() ? 1 : 0;
 					for (int i = 0; i < select.size(); i++) {
-						DefDocItemXS defdocitem = fillItem(select.get(i), num, 0.0D);
+						DefDocItemXS defdocitem = fillItem(select.get(i), DocUtils.getDefaultNum(), 0.0D);
 						localArrayList.add(defdocitem);
 					}
 					if (localArrayList.size() == 0) {
@@ -267,7 +272,10 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				localLayoutParams.alpha = 1.0F;
 				InDocEditActivity.this.getWindow().setAttributes(localLayoutParams);
 			}
-
+			if (listItem.size() > DocUtils.MAXITEM) {
+				showError("商品已经开满！");
+				return;
+			}
 			final GoodsThin localGoodsThin = (GoodsThin) InDocEditActivity.this.searchHelper.getAdapter().getTempGoods()
 					.get(position);
 			atvSearch.setText("");
@@ -395,10 +403,9 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			}
 			atvSearch.setText("");
 			ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
-			int num = Utils.isCombination() ? 1 : 0;
 			for (int i = 0; i < localList.size(); i++) {
 				GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
-				localArrayList.add(fillItem(localGoodsThin, num, 0.0D));
+				localArrayList.add(fillItem(localGoodsThin, DocUtils.getDefaultNum(), 0.0D));
 			}
 			startActivityForResult(new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class)
 					.putExtra("items", JSONUtil.toJSONString(localArrayList)).putExtra("doc", doc), 2);
@@ -574,7 +581,8 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 										Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 										startActivity(intent);
 										finish();
-										sv.deleteDoc(docContainerEntity.getDoctype());
+										DocUtils.deleteTHDoc();
+										// sv.deleteDoc(docContainerEntity.getDoctype());
 										return;
 									}
 									RequestHelper.showError(localString);
@@ -592,7 +600,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
-					sv.deleteDoc(docContainerEntity.getDoctype());
 				}
 			});
 			return;
@@ -603,6 +610,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	}
 
 	Handler handler = new Handler() {
+		@SuppressWarnings("unchecked")
 		public void handleMessage(android.os.Message msg) {
 			String localString = msg.obj.toString();
 			if (RequestHelper.isSuccess(localString)) {
@@ -611,14 +619,15 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
-					sv.deleteDoc(docContainerEntity.getDoctype());
+					DocUtils.deleteTHDoc();
+					// sv.deleteDoc(docContainerEntity.getDoctype());
 					return;
 				}
-				DocContainerEntity entity = (DocContainerEntity) JSONUtil.fromJson(localString,
-						DocContainerEntity.class);
-				doc = ((DefDoc) JSONUtil.readValue(entity.getDoc(), DefDoc.class));
-				listItem = (ArrayList<DefDocItemXS>) JSONUtil.str2list(entity.getItem(), DefDocItemXS.class);
-				listPayType = JSONUtil.str2list(entity.getPaytype(), DefDocPayType.class);
+				DocContainerEntity<DefDocItemXS> entity = (DocContainerEntity<DefDocItemXS>) JSONUtil
+						.fromJson(localString, DocContainerEntity.class);
+				doc = ((DefDoc) JSONUtil.fromJson(entity.getDoc(), DefDoc.class));
+				listItem = (List<DefDocItemXS>) JSONUtil.fromJson(entity.getItem(), DefDocItemXS.class);
+				listPayType = JSONUtil.parseArray(entity.getPaytype(), DefDocPayType.class);
 				listItemDelete = new ArrayList<Long>();
 				switch (msg.what) {
 				case 0:
@@ -627,14 +636,16 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					PDH.showSuccess("保存成功");
 					ishaschanged = false;
 					setActionBarText();
-					sv.deleteDoc(docContainerEntity.getDoctype());
+					DocUtils.deleteTHDoc();
+					// sv.deleteDoc(docContainerEntity.getDoctype());
 					startActivity(new Intent(InDocEditActivity.this, SwyMain.class));
 					finish();
 					return;
 				case 1:
 					if ((InDocEditActivity.this.doc.isIsavailable()) && (InDocEditActivity.this.doc.isIsposted())) {
 						PDH.showSuccess("过账成功");
-						sv.deleteDoc(docContainerEntity.getDoctype());
+						DocUtils.deleteTHDoc();
+						// sv.deleteDoc(docContainerEntity.getDoctype());
 						Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 						startActivity(intent);
 						finish();
@@ -697,52 +708,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		return localDefDocItem;
 	}
 
-	// protected void combinationItem() {
-	// int combinationNum = listItem.size();
-	// ArrayList<DefDocItemXS> data = new ArrayList<DefDocItemXS>(listItem);
-	// ArrayList<DefDocItemXS> listDocItem = new ArrayList<DefDocItemXS>();
-	// LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-	// for (int i = 0; i < data.size(); i++) {
-	// DefDocItemXS items1 = data.get(i);
-	// if (map.get(items1.getGoodsid()) == null) {
-	// map.put(items1.getGoodsid(), new DefDocItemXS(items1));
-	// continue;
-	// }
-	// DefDocItemXS itemxs2 = (DefDocItemXS) map.get(items1.getGoodsid());
-	// if (items1.getGoodsid().equals(itemxs2.getGoodsid()) &&
-	// items1.getUnitid().equals(itemxs2.getUnitid())
-	// && items1.getPrice() == itemxs2.getPrice()
-	// && items1.getDiscountratio() == itemxs2.getDiscountratio()
-	// && items1.getWarehouseid().equals(itemxs2.getWarehouseid())) {
-	// itemxs2.setNum(itemxs2.getNum() + items1.getNum());
-	// itemxs2.setBignum(unitDao.getBigNum(itemxs2.getGoodsid(),
-	// itemxs2.getUnitid(), itemxs2.getNum()));
-	// itemxs2.setSubtotal(itemxs2.getNum() * itemxs2.getPrice());
-	// itemxs2.setDiscountsubtotal(itemxs2.getNum() * itemxs2.getPrice() *
-	// itemxs2.getDiscountratio());
-	// map.put(itemxs2.getGoodsid(), itemxs2);
-	// if (items1.getItemid() != 0) {
-	// listItemDelete.add(items1.getItemid());
-	// }
-	// } else {
-	// listDocItem.add(items1);
-	// }
-	//
-	// }
-	// Set<String> keySet = map.keySet();
-	// for (String string : keySet) {
-	// listDocItem.add((DefDocItemXS) map.get(string));
-	// }
-	// if ((combinationNum - listDocItem.size()) == 0) {
-	// // 没有要合并的商品!
-	// return;
-	// }
-	// // 设置数据
-	// listItem.clear();
-	// listItem.addAll(listDocItem);
-	// showSuccess("同品增加成功!");
-	// }
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -752,11 +717,11 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				doc = (DefDoc) data.getSerializableExtra("doc");
 				ishaschanged = true;
 				setActionBarText();
-				DBupdataDocItem();
+				saveTHDoc();
 				break;
 			case 1:
 				doc = (DefDoc) data.getSerializableExtra("doc");
-				DBupdataDocItem();
+				saveTHDoc();
 				break;
 			case 2:
 				isScanerBarcode = true;
@@ -766,7 +731,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					@Override
 					public void action() {
 						ArrayList<DefDocItemXS> newListItem = (ArrayList<DefDocItemXS>) JSONUtil
-								.str2list(data.getStringExtra("items"), DefDocItemXS.class);
+								.parseArray(data.getStringExtra("items"), DefDocItemXS.class);
 						for (DefDocItemXS itemXS : newListItem) {
 							itemXS.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), itemXS));
 							setAddItem(itemXS);
@@ -822,7 +787,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				}
 				adapter.setData(listItem);
 				refreshUI();
-				DBupdataDocItem();
+				saveTHDoc();
 				break;
 			case 4:
 				DefDocItemXS localDefDocItem4 = (DefDocItemXS) data.getSerializableExtra("docitem");
@@ -834,11 +799,11 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				}
 				adapter.setData(listItem);
 				listView.setAdapter(adapter);
-				DBupdataDocItem();
+				saveTHDoc();
 				break;
 
 			case 7:
-				List<DefDocItemXS> itemXSList = JSONUtil.str2list(data.getStringExtra("selecteditem"),
+				List<DefDocItemXS> itemXSList = JSONUtil.parseArray(data.getStringExtra("selecteditem"),
 						DefDocItemXS.class);
 				for (int i = 0; i < itemXSList.size(); i++) {
 					DefDocItemXS item = new DefDocItemXS(itemXSList.get(i));
@@ -847,7 +812,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					listItem.add(item);
 				}
 				if (Utils.isCombination()) {
-					// TODO
 					DocUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
@@ -855,19 +819,19 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				listView.setAdapter(adapter);
 				refreshUI();
 				sum();
-				DBupdataDocItem();
+				saveTHDoc();
 				break;
 			case 8:
 				// 支付
 				String localString1 = data.getStringExtra("listpaytype");
 				if (TextUtils.isEmptyS(localString1)) {
-					this.listPayType = JSONUtil.str2list(localString1, DefDocPayType.class);
+					this.listPayType = JSONUtil.parseArray(localString1, DefDocPayType.class);
 					double d = data.getDoubleExtra("preference", 0.0D);
 					if (d != this.doc.getPreference()) {
 						this.doc.setPreference(d);
 					}
 				}
-				DBupdataDocItem();
+				saveTHDoc();
 				break;
 			}
 		}
@@ -883,7 +847,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				ishaschanged = true;
 				setActionBarText();
 				refreshUI();
-				DBupdataDocItem();
+				saveTHDoc();
 				isScanerBarcode = false;
 				break;
 
@@ -910,24 +874,25 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	private Button btnGoodClass;
 	private GoodsUnitDAO unitDao;
 	// private AccountPreference ap;
-	private Sv_docitem sv;
 	private DocContainerEntity docContainerEntity;
 
-	protected void DBupdataDocItem() {
+	protected void saveTHDoc() {
 		try {
 			DocContainerEntity docEntity = new DocContainerEntity();
 			// 保存到本地
 			docEntity.setDeleteinitem(docContainerEntity.getDeleteinitem());
 			docEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
 			docEntity.setDoc(JSONUtil.toJSONString(doc));
-			docEntity.setItem(JSONUtil.toJSONString(listItem));
+			// docEntity.setItem(JSONUtil.toJSONString(listItem));
+			docEntity.setListitem(listItem);
 			docEntity.setDoctype(docContainerEntity.getDoctype());
 			docEntity.setPaytype(JSONUtil.toJSONString(listPayType));
-			if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
-				sv.insetDocItem(docEntity);
-			} else {
-				sv.updataDocItem(docEntity);
-			}
+			DocUtils.saveTHData(docEntity);
+			// if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
+			// sv.insetDocItem(docEntity);
+			// } else {
+			// sv.updataDocItem(docEntity);
+			// }
 		} catch (Exception e) {
 			e.printStackTrace();
 			showError("网络链接不稳定!");

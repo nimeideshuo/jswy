@@ -64,7 +64,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		dialog = new Dialog_listCheckBox(this);
 		stockwarn = new Sz_stockwarn();
 		listview = (ListView) findViewById(R.id.lv_commodity_add);
-		items = JSONUtil.str2list(getIntent().getStringExtra("items"), DefDocItemXS.class);
+		items = JSONUtil.parseArray(getIntent().getStringExtra("items"), DefDocItemXS.class);
 		doc = (DefDocXS) getIntent().getSerializableExtra("doc");
 		adapter = new OutDocAddMoreAdapter(this);
 		adapter.setDoc(doc);
@@ -73,7 +73,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 			double sumstock = stockwarn.querySumStock(item.getGoodsid());
 			item.stocksumnum = sumstock;
 			item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
-			double stocknum = stockwarn.queryStockwarn(item.getWarehouseid(), item.getGoodsid());
+			double stocknum = stockwarn.queryStockNum(item.getWarehouseid(), item.getGoodsid());
 			item.stocknum = stocknum;
 			item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
 		}
@@ -117,8 +117,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		final Map<String, Object> goodsMap = new HashMap<String, Object>();
 		if (goodsThinList.size() == 1) {
 			long maxTempItemId = getMaxTempItemId();
-			int num = Utils.isCombination() ? 1 : 0;
-			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), num, 0.0D, maxTempItemId + 1L);
+			DefDocItemXS fillItem = fillItem(goodsThinList.get(0), DocUtils.getDefaultNum(), 0.0D, maxTempItemId + 1L);
 			goodsMap.put(fillItem.getGoodsid(), fillItem);
 			if (Utils.isCombination()) {
 				combinationItem(goodsMap);
@@ -138,8 +137,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 					long maxTempItemId = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
 						maxTempItemId += 1L;
-						int num = Utils.isCombination() ? 1 : 0;
-						DefDocItemXS fillItem = fillItem(select.get(i), num, 0.0D, maxTempItemId);
+						DefDocItemXS fillItem = fillItem(select.get(i), DocUtils.getDefaultNum(), 0.0D, maxTempItemId);
 						goodsMap.put(fillItem.getGoodsid(), fillItem);
 					}
 					if (Utils.isCombination()) {
@@ -181,7 +179,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 					double sumstock = stockwarn.querySumStock(item.getGoodsid());
 					item.stocksumnum = sumstock;
 					item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
-					double stocknum = stockwarn.queryStockwarn(item.getWarehouseid(), item.getGoodsid());
+					double stocknum = stockwarn.queryStockNum(item.getWarehouseid(), item.getGoodsid());
 					item.stocknum = stocknum;
 					item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
 					items.add(item);
@@ -204,55 +202,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		};
 	};
 
-	// String localString =
-	// serviceGoods.gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
-	// defdocitemxs.isIsusebatch());
-	// List<RespGoodsWarehouse> goodsWarehouses;
-	// if (RequestHelper.isSuccess(localString)) {
-	// goodsWarehouses = JSONUtil.str2list(localString,
-	// RespGoodsWarehouse.class);
-	// for (int j = 0; j < goodsWarehouses.size(); j++) {
-	// if
-	// (defdocitemxs.getGoodsid().equals(goodsWarehouses.get(j).getGoodsid())
-	// &&
-	// defdocitemxs.getWarehouseid().equals(goodsWarehouses.get(j).getWarehouseid()))
-	// {
-	// RespGoodsWarehouse res = goodsWarehouses.get(j);
-	// defdocitemxs.setStocknum(res);
-	// if (Utils.DEFAULT_OutDocUNIT == 0) {
-	// String stocknum = res.getStocknum() == 0 ? "0" +
-	// defdocitemxs.getUnitname()
-	// : String.valueOf(res.getStocknum()) +
-	// defdocitemxs.getUnitname();
-	// defdocitemxs.goodStock = stocknum;
-	// } else {
-	// String bigstocknum = res.getBigstocknum().length() == 0
-	// ? "0" + defdocitemxs.getUnitname() :
-	// res.getBigstocknum();
-	// defdocitemxs.goodStock = bigstocknum;
-	// }
-	// break;
-	// }
-	//
-	// }
-	// } else {
-	// showError("没有获取到库存数据!请重试!");
-	// }
-	// 查询客史价格
-	// ReqStrGetGoodsPrice goodsPrice =
-	// DocUtils.GetMultiGoodsPrice(doc.getCustomerid(),
-	// defdocitemxs);
-	// if (goodsPrice == null) {
-	// showSuccess("商品单价没有查询到!");
-	// }
-	// defdocitemxs.setPrice(goodsPrice == null ? 0 :
-	// goodsPrice.getPrice());
-	// items.add(defdocitemxs);
-	// runOnUiThread(new Runnable() {
-	// public void run() {
-	// adapter.setData(items);
-	// }
-	// });
 	@Override
 	public boolean onCreateOptionsMenu(Menu paramMenu) {
 		paramMenu.add(0, 0, 0, "单击显示菜单").setTitle("确定").setShowAsAction(1);
@@ -272,90 +221,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		}
 		return true;
 	}
-
-	// 初始化 设置 库存 单位转换
-	// protected void setInitItem() {
-	// PDH.show(this, "查询中...", new PDH.ProgressCallBack() {
-	//
-	// @Override
-	// public void action() {
-	// for(
-	//
-	// int i = 0;i<items.size();i++)
-	// {
-	// DefDocItemXS defdocitemxs = items.get(i);
-	// String localString = new
-	// ServiceGoods().gds_GetGoodsWarehouses(defdocitemxs.getGoodsid(),
-	// defdocitemxs.isIsusebatch());
-	// List<RespGoodsWarehouse> goodsWarehouses;
-	// if (RequestHelper.isSuccess(localString)) {
-	// goodsWarehouses = JSONUtil.str2list(localString,
-	// RespGoodsWarehouse.class);
-	// for (int j = 0; j < goodsWarehouses.size(); j++) {
-	// // 库存 查询
-	// if
-	// (defdocitemxs.getGoodsid().equals(goodsWarehouses.get(j).getGoodsid())
-	// &&
-	//
-	// defdocitemxs.getWarehouseid().equals(goodsWarehouses.get(j).getWarehouseid()))
-	// {
-	// RespGoodsWarehouse res = goodsWarehouses.get(j);
-	// defdocitemxs.setStocknum(res);
-	// if(Utils.DEFAULT_OutDocUNIT==0)
-	//
-	// {
-	// String stocknum = res.getStocknum() == 0 ? "0" +
-	// defdocitemxs.getUnitname()
-	// : String.valueOf(res.getStocknum()) + defdocitemxs.getUnitname();
-	// // 库存 的 设置
-	// defdocitemxs.goodStock = stocknum;
-	// }else
-	// {
-	// String bigstocknum = res.getBigstocknum().length() == 0
-	// ? "0" + defdocitemxs.getUnitname() :
-	// res.getBigstocknum();
-	// // 库存 的 设置
-	// defdocitemxs.goodStock = bigstocknum;
-	// }
-	// break;
-	// }
-	//
-	// }
-	// } else {
-	// showError("没有获取到库存数据!请重试!");
-	// }
-	// CustomerRecords historyPrice =
-	// DocUtils.getCustomerGoodsHistoryPrice(doc.getCustomerid(),
-	// defdocitemxs.getGoodsid(),
-	// defdocitemxs.getUnitid());if(historyPrice==null)
-	// {
-	// showSuccess("商品客史单价没有查询到!");
-	// }else
-	// {
-	// defdocitemxs.setPrice(historyPrice.getPrice());
-	// }
-	//
-	// // 查询商品客史价格
-	// // ReqStrGetGoodsPrice goodsPrice =
-	// // DocUtils.GetMultiGoodsPrice(doc.getCustomerid(),
-	// // defdocitemxs);
-	// // if (goodsPrice == null) {
-	// // showSuccess("商品单价没有查询到!");
-	// // }
-	// // defdocitemxs.setPrice(goodsPrice == null ? 0 :
-	// // goodsPrice.getPrice());
-	// runOnUiThread(new Runnable() {
-	// public void run() {
-	// adapter.setData(items);
-	// lv_commodity_add.setAdapter(adapter);
-	// lv_commodity_add.setItemsCanFocus(true);
-	// }
-	// });
-	// }
-	// }
-	// });
-	//
-	// }
 
 	// 保存输入的值 必须有一个 大于0 的
 	private void tv_title_start() {

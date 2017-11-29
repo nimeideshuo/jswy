@@ -10,9 +10,9 @@ import java.util.Locale;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
-import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.CustomerThin;
 import com.ahjswy.cn.model.DefDoc;
+import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.model.Warehouse;
@@ -340,7 +340,7 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 			if (RequestHelper.isSuccess(localString)) {
 				DocContainerEntity docEntity = (DocContainerEntity) JSONUtil.fromJson(localString,
 						DocContainerEntity.class);
-				doc = ((DefDoc) JSONUtil.readValue(docEntity.getDoc(), DefDoc.class));
+				doc = ((DefDoc) JSONUtil.fromJson(docEntity.getDoc(), DefDoc.class));
 				fillDoc();
 				docEntity.setDoc(JSONUtil.toJSONString(doc));
 				Intent localIntent = new Intent();
@@ -349,7 +349,6 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 				localIntent.putExtra("docContainer", docEntity);
 				startActivity(localIntent);
 				finish();
-				new Sv_docitem().insetDocItem(docEntity);
 			} else {
 				RequestHelper.showError(localString);
 			}

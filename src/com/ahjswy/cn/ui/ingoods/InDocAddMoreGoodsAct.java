@@ -15,6 +15,7 @@ import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.ui.BaseActivity;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.Utils;
@@ -48,7 +49,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 	}
 
 	private void initView() {
-		items = JSONUtil.str2list(getIntent().getStringExtra("items"), DefDocItemXS.class);
+		items = JSONUtil.parseArray(getIntent().getStringExtra("items"), DefDocItemXS.class);
 		doc = (DefDoc) getIntent().getSerializableExtra("doc");
 		listView = ((ListView) findViewById(R.id.listView));
 		adapter = new InDocAddMoreAdapter(this);
@@ -84,8 +85,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
 		final Map<String, Object> goodsMap = new HashMap<String, Object>();
 		if (goodsThinList.size() == 1) {
-			int num = Utils.isCombination() ? 1 : 0;
-			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), num, 0.0D);
+			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), DocUtils.getDefaultNum(), 0.0D);
 			if (Utils.isCombination()) {
 				goodsMap.put(defdocitem.getGoodsid(), defdocitem);
 				combinationItem(goodsMap);
@@ -106,8 +106,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 					dialog.dismiss();
 					List<GoodsThin> select = dialog.getSelect();
 					for (int i = 0; i < select.size(); i++) {
-						int num = Utils.isCombination() ? 1 : 0;
-						DefDocItemXS defdocitem = fillItem(select.get(i), num, 0.0D);
+						DefDocItemXS defdocitem = fillItem(select.get(i), DocUtils.getDefaultNum(), 0.0D);
 						if (Utils.isCombination()) {
 							goodsMap.put(defdocitem.getGoodsid(), defdocitem);
 							combinationItem(goodsMap);
@@ -143,44 +142,6 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 			items.add((DefDocItemXS) item);
 		}
 	}
-
-	// protected void addItems(Map<String, Object> goodsMap) {
-	// List<DefDocItemXS> data = adapter.getData();
-	// for (int i = 0; i < data.size(); i++) {
-	// DefDocItemXS itemXS = data.get(i);
-	// if (goodsMap.get(itemXS.getGoodsid()) != null) {
-	// itemXS.setNum(itemXS.getNum() + 1);
-	// showError("相同商品数量+1");
-	// goodsMap.remove(itemXS.getGoodsid());
-	// }
-	// }
-	// for (Object item : goodsMap.values()) {
-	// adapter.addData((DefDocItemXS) item);
-	// }
-	// }
-
-	// protected void setInitItem(DefDocItemXS item) {
-	// String localString = new
-	// ServiceGoods().gds_GetGoodsWarehouses(item.getGoodsid(),
-	// item.isIsusebatch());
-	// if (RequestHelper.isSuccess(localString)) {
-	// List<RespGoodsWarehouse> goodsWarehouses = JSONUtil.str2list(localString,
-	// RespGoodsWarehouse.class);
-	// for (int i = 0; i < goodsWarehouses.size(); i++) {
-	// if (item.getGoodsid().equals(goodsWarehouses.get(i).getGoodsid())
-	// && item.getWarehouseid().equals(goodsWarehouses.get(i).getWarehouseid()))
-	// {
-	// RespGoodsWarehouse res = goodsWarehouses.get(i);
-	// String bigstocknum = res.getBigstocknum().length() == 0 ? "0" +
-	// item.getUnitname()
-	// : res.getBigstocknum();
-	// item.goodStock = bigstocknum;
-	// }
-	// }
-	// } else {
-	// showError("没有获取到库存数据!请重试!");
-	// }
-	// }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu paramMenu) {
@@ -226,11 +187,6 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 
 	}
 
-	// Handler handler = new Handler() {
-	// public void handleMessage(android.os.Message msg) {
-	// PDH.showMessage(msg.obj.toString());
-	// };
-	// };
 	private Dialog_listCheckBox dialog;
 
 	private DefDocItemXS fillItem(GoodsThin goodsThin, double num, double price) {

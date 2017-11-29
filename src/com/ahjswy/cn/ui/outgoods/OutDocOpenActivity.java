@@ -6,8 +6,8 @@ import java.util.List;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
-import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.CustomerThin;
+import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
@@ -328,17 +328,14 @@ public class OutDocOpenActivity extends BaseActivity
 	}
 
 	private Handler handler = new Handler() {
+		@SuppressWarnings("unchecked")
 		public void handleMessage(android.os.Message msg) {
 			String localString = msg.obj.toString();
 			if (RequestHelper.isSuccess(localString)) {
-				// DocContainerEntity entity = (DocContainerEntity)
-				// JSONUtil.readValue(localString,
-				// DocContainerEntity.class);
-				DocContainerEntity entity = JSONUtil.fromJson(localString, DocContainerEntity.class);
-				doc = ((DefDocXS) JSONUtil.readValue(entity.getDoc(), DefDocXS.class));
+				DocContainerEntity<DefDocItemXS> entity = JSONUtil.fromJson(localString, DocContainerEntity.class);
+				doc = ((DefDocXS) JSONUtil.fromJson(entity.getDoc(), DefDocXS.class));
 				// 保存基本数据
 				fillDoc();
-				// doc.setShowid("销售开单");
 				entity.setDoc(JSONUtil.toJSONString(doc));
 				// TODO
 				Intent localIntent = new Intent(OutDocOpenActivity.this, OutDocEditActivity.class);
@@ -346,7 +343,6 @@ public class OutDocOpenActivity extends BaseActivity
 				localIntent.putExtra("ishaschanged", true);
 				startActivity(localIntent);
 				finish();
-				new Sv_docitem().insetDocItem(entity);
 				return;
 			} else {
 				RequestHelper.showError(localString);

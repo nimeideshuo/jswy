@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
@@ -48,6 +49,7 @@ public class Swy_splash extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.swy_splash);
 		initview();
+		// MyApplication.getInstance().initDefault();
 	}
 
 	private void initview() {
@@ -61,6 +63,43 @@ public class Swy_splash extends BaseActivity {
 		tv_Version.setText("版本:" + MyApplication.getInstance().getVersionName());
 		System.out.println("width:" + width + "   height:" + height);
 		System.out.println("id:" + MyApplication.getInstance().getAndroidId());
+		// testSWY
+		// if (MyApplication.getInstance().isTestSWY()) {
+		//
+		// Dialog_ed_message service = new Dialog_ed_message(this);
+		// service.setCancelListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// PDH.show(Swy_splash.this, "连接服务器...", new ProgressCallBack() {
+		//
+		// @Override
+		// public void action() {
+		// SystemClock.sleep(500);
+		// mHandler.postDelayed(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// startActivity(new Intent().setClass(Swy_splash.this,
+		// Jswy_logUser.class));
+		// finish();
+		// }
+		// }, 500);
+		// }
+		// });
+		// }
+		// });
+		// service.setComfirmListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// finish();
+		// }
+		// });
+		// service.show();
+		// return;
+		// }
+
 		serviceips = new Dialog_ed_message(Swy_splash.this);
 		loading.setOnClickListener(new OnClickListener() {
 
@@ -69,8 +108,6 @@ public class Swy_splash extends BaseActivity {
 				registerCheckHandler.sendEmptyMessage(1);
 			}
 		});
-		// TODO 上传错误日志
-
 		logDAO = new Exception_logDAO();
 		listexception = logDAO.queryBmobAll();
 		if (!listexception.isEmpty()) {
@@ -87,7 +124,7 @@ public class Swy_splash extends BaseActivity {
 								if (logDAO.deleteRow(objectlog.id)) {
 									MLog.d("删除" + objectlog.id);
 								}
-								// TODO 删除成功的
+								// 删除成功的
 								MLog.d("第" + i + "个数据批量添加成功：" + result.getCreatedAt() + "," + result.getObjectId() + ","
 										+ result.getUpdatedAt());
 							} else {

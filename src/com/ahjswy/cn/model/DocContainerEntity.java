@@ -1,10 +1,9 @@
 package com.ahjswy.cn.model;
 
 import java.io.Serializable;
+import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
-public class DocContainerEntity implements Serializable {
+public class DocContainerEntity<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,6 +20,15 @@ public class DocContainerEntity implements Serializable {
 	private String initem;
 
 	private String item;
+	private List<T> listitem;
+
+	public void setListitem(List<T> listitem) {
+		this.listitem = listitem;
+	}
+
+	public List<T> getListitem() {
+		return listitem;
+	}
 
 	private String paytype;
 	private int svid;
@@ -73,44 +81,36 @@ public class DocContainerEntity implements Serializable {
 		this.deleteitem = deleteitem;
 	}
 
-	@JsonIgnore
 	public void setDoc(String doc) {
 		this.doc = doc;
 	}
 
-	@JsonIgnore
 	public void setDoctype(String doctype) {
 		this.doctype = doctype;
 	}
 
-	@JsonIgnore
 	public void setInfo(String info) {
 		this.info = info;
 	}
 
-	@JsonIgnore
 	public void setInitem(String initem) {
 		this.initem = initem;
 	}
 
-	@JsonIgnore
 	public void setItem(String item) {
 		this.item = item;
 	}
 
-	@JsonIgnore
 	public void setPaytype(String paytype) {
 		this.paytype = paytype;
 	}
 
 	public String showid;
 
-	@JsonIgnore
 	public String getShowid() {
 		return showid;
 	}
 
-	@JsonIgnore
 	public void setShowid(String showid) {
 		this.showid = showid;
 	}

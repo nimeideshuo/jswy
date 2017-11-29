@@ -209,9 +209,9 @@ public class GoodsUnitDAO {
 	}
 
 	// TODO 查询商品换算比例
-	public GoodsUnit queryBigUnitRatio(String goodsId, String unitid) {
+	public GoodsUnit queryBigUnitRatio(String goodsid, String unitid) {
 		this.db = this.helper.getReadableDatabase();
-		String[] arrays = { goodsId, unitid };
+		String[] arrays = { goodsid, unitid };
 		GoodsUnit goodsunit = null;
 		Cursor cursor = this.db.rawQuery(
 				"select goodsid,unitid,unitname,isbasic,isshow,ratio from sz_goodsunit where goodsid =? and unitid=?",

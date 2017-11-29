@@ -3,6 +3,7 @@ package com.ahjswy.cn.views;
 import java.util.List;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.response.AccountSetEntity;
 import com.ahjswy.cn.service.ServiceSupport;

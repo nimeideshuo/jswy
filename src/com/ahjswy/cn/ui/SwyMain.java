@@ -7,17 +7,12 @@ import java.util.List;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
-import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
-import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.DefDocItemXS;
-import com.ahjswy.cn.model.DefDocPayType;
-import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
-import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
 import com.ahjswy.cn.ui.addgoods.AddNewGoodSAct;
@@ -34,8 +29,8 @@ import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.InfoDialog;
-import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -47,7 +42,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -56,7 +50,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.EditText;
 
 public class SwyMain extends BaseActivity implements OnClickListener, BumenCall {
 	AccountPreference ap;
@@ -105,12 +98,12 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	int startNum = 0;
 
 	// private ServiceStore serviceStore;
-	// TODO startOpenDoc
+	// startOpenDoc
 	public void startOpenDoc(View v) {
-		// TODO 测试 数据库查询
+		// 测试 数据库查询
 		// edNum = (EditText) findViewById(R.id.edNum);
 		// edTime = (EditText) findViewById(R.id.edTime);
-		time = Long.parseLong(edTime.getText().toString());
+		// time = Long.parseLong(edTime.getText().toString());
 		// serviceStore = new ServiceStore();
 		//
 		// PDH.show(this, "库存查询中..", new PDH.ProgressCallBack() {
@@ -132,66 +125,71 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		// });
 		/////////////////////////////
 
-		PDH.show(this, "开单中。。。 ", new ProgressCallBack() {
-
-			@Override
-			public void action() {
-				int num = Integer.parseInt(edNum.getText().toString());
-				for (int i = 0; i < num; i++) {
-					startNum = i;
-					handler.post(new Runnable() {
-
-						@Override
-						public void run() {
-
-							if (PDH.dialog.textView != null) {
-								PDH.dialog.textView.setText("第  " + startNum + " 次开单");
-							}
-						}
-					});
-					String localString = new ServiceStore().str_InitXSDoc("01", "01");
-					if (RequestHelper.isSuccess(localString)) {
-						openDoc(i, localString);
-					} else {
-						showError("没有获取到数据!失败!等待。。。" + localString);
-						SystemClock.sleep(5000);
-						String res = new ServiceStore().str_InitXSDoc("01", "01");
-						if (RequestHelper.isSuccess(localString)) {
-							openDoc(i, res);
-						} else {
-							showError(i + "没有获取到数据!失败!等待。。。" + res);
-							SystemClock.sleep(5000);
-						}
-
-					}
-				}
-
-			}
-		});
+		// PDH.show(this, "开单中。。。 ", new ProgressCallBack() {
+		//
+		// @Override
+		// public void action() {
+		// int num = Integer.parseInt(edNum.getText().toString());
+		// for (int i = 0; i < num; i++) {
+		// startNum = i;
+		// handler.post(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		//
+		// if (PDH.dialog.textView != null) {
+		// PDH.dialog.textView.setText("第 " + startNum + " 次开单");
+		// }
+		// }
+		// });
+		// String localString = new ServiceStore().str_InitXSDoc("01", "01");
+		// if (RequestHelper.isSuccess(localString)) {
+		// openDoc(i, localString);
+		// } else {
+		// showError("没有获取到数据!失败!等待。。。" + localString);
+		// SystemClock.sleep(5000);
+		// String res = new ServiceStore().str_InitXSDoc("01", "01");
+		// if (RequestHelper.isSuccess(localString)) {
+		// openDoc(i, res);
+		// } else {
+		// showError(i + "没有获取到数据!失败!等待。。。" + res);
+		// SystemClock.sleep(5000);
+		// }
+		//
+		// }
+		// }
+		//
+		// }
+		// });
 
 	}
 
-	protected void openDoc(int position, String localString) {
-		DocContainerEntity localDocContainerEntity = (DocContainerEntity) JSONUtil.fromJson(localString,
-				DocContainerEntity.class);
-		doc = ((DefDocXS) JSONUtil.fromJson(localDocContainerEntity.getDoc(), DefDocXS.class));
-		List<DefDocPayType> listPayType = JSONUtil.str2list(localDocContainerEntity.getPaytype(), DefDocPayType.class);
-		// List<DefDocItemXS> listItem =
-		// JSONUtil.str2list(localDocContainerEntity.getItem(),
-		// DefDocItemXS.class);
-		List<Long> listItemDelete = new ArrayList<>();
-		doc.setPromotionid(null);
-		doc.setDistributionid(null);
-		doc.setCustomerid("安康001");
-		// doc.setCustomername("东至侯结才");
-		String resFor = new ServiceStore().str_SaveXSDoc(doc, getGoodsItem(), listPayType, listItemDelete);
-		if (!RequestHelper.isSuccess(resFor)) {
-			showError("第 " + position + " 次请求错误！" + resFor);
-			SystemClock.sleep(5000);
-			return;
-		}
-		SystemClock.sleep(time);
-	}
+	// protected void openDoc(int position, String localString) {
+	// DocContainerEntity localDocContainerEntity = (DocContainerEntity)
+	// JSONUtil.fromJson(localString,
+	// DocContainerEntity.class);
+	// doc = ((DefDocXS) JSONUtil.fromJson(localDocContainerEntity.getDoc(),
+	// DefDocXS.class));
+	// List<DefDocPayType> listPayType =
+	// JSONUtil.str2list(localDocContainerEntity.getPaytype(),
+	// DefDocPayType.class);
+	// // List<DefDocItemXS> listItem =
+	// // JSONUtil.str2list(localDocContainerEntity.getItem(),
+	// // DefDocItemXS.class);
+	// List<Long> listItemDelete = new ArrayList<>();
+	// doc.setPromotionid(null);
+	// doc.setDistributionid(null);
+	// doc.setCustomerid("安康001");
+	// // doc.setCustomername("东至侯结才");
+	// String resFor = new ServiceStore().str_SaveXSDoc(doc, getGoodsItem(),
+	// listPayType, listItemDelete);
+	// if (!RequestHelper.isSuccess(resFor)) {
+	// showError("第 " + position + " 次请求错误！" + resFor);
+	// SystemClock.sleep(5000);
+	// return;
+	// }
+	// SystemClock.sleep(time);
+	// }
 
 	public List<DefDocItemXS> getGoodsItem() {
 		List<DefDocItemXS> listItem = new ArrayList<DefDocItemXS>();
@@ -277,10 +275,25 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 	}
 
 	private void initDate() {
-		sv = new Sv_docitem();
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setProgressStyle(1);
 		progressDialog.setCancelable(false);
+		// if (MyApplication.getInstance().isTestSWY()) {
+		// handlerProgress.sendMessage(handlerProgress.obtainMessage(-1, 100));
+		// new Thread() {
+		// @Override
+		// public void run() {
+		// super.run();
+		// for (int i = 0; i < 100; i++) {
+		// SystemClock.sleep(100);
+		// handlerProgress.sendEmptyMessage(i);
+		// }
+		// handlerProgress.sendEmptyMessage(-3);
+		// showSuccess("数据同步成功!");
+		// }
+		// }.start();
+		// return;
+		// }
 		department = SystemState.getDepartment();
 		if (department == null) {
 			fostStartHandler.sendEmptyMessage(0);
@@ -451,7 +464,8 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				return;
 			}
 			// TODO
-			DocContainerEntity queryDoc = sv.queryDoc("13");
+			// DocContainerEntity queryDoc = sv.queryDoc("13");
+			DocContainerEntity<?> queryDoc = (DocContainerEntity<?>) DocUtils.getXSData();
 			if (queryDoc == null) {
 				startActivity(new Intent(this, OutDocOpenActivity.class));
 			} else {
@@ -468,7 +482,8 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				return;
 			}
 			// TODO
-			DocContainerEntity entity = sv.queryDoc("14");
+			// DocContainerEntity entity = sv.queryDoc("14");
+			DocContainerEntity<?> entity = (DocContainerEntity<?>) DocUtils.getTHData();
 			if (entity == null) {
 				startActivity(new Intent(SwyMain.this, InDocOpenActivity.class));
 			} else {
@@ -583,12 +598,12 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			}
 		};
 	};
-
-	private Sv_docitem sv;
-	private EditText edTime;
-	private EditText edNum;
-	private DefDocXS doc;
-	private long time;
+	// private DefDocXS doc;
+	// private Sv_docitem sv;
+	// private EditText edTime;
+	// private EditText edNum;
+	//
+	// private long time;
 
 	/**
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *

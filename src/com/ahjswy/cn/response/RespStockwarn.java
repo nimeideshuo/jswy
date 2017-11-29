@@ -7,12 +7,14 @@ package com.ahjswy.cn.response;
  *
  */
 public class RespStockwarn {
+
 	public String warehouseid;
 	public String goodsid;
 	public double stocknum;
+
 	@Override
 	public String toString() {
 		return "RespStockwarn [warehouseid=" + warehouseid + ", goodsid=" + goodsid + ", stocknum=" + stocknum + "]";
 	}
-	
+
 }

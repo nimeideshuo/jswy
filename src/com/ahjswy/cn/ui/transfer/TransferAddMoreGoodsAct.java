@@ -24,11 +24,11 @@ public class TransferAddMoreGoodsAct extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_inventory_add_more_goods);
-		items = JSONUtil.str2list(getIntent().getStringExtra("items"), DefDocItem.class);
+		items = JSONUtil.parseArray(getIntent().getStringExtra("items"), DefDocItem.class);
 		listView = ((ListView) findViewById(R.id.listView));
 		adapter = new TransferAddMoreAdapter(this);
-		this.listView.setAdapter(this.adapter);
-		this.adapter.setData(this.items);
+		this.listView.setAdapter(adapter);
+		this.adapter.setData(items);
 	}
 
 	@Override
@@ -50,9 +50,9 @@ public class TransferAddMoreGoodsAct extends BaseActivity {
 				showError("必需至少有一条商品数量大于0");
 				return false;
 			}
-			Intent localObject = new Intent();
-			localObject.putExtra("items", JSONUtil.toJSONString(localArrayList));
-			setResult(Activity.RESULT_OK, localObject);
+			Intent intent = new Intent();
+			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
+			setResult(Activity.RESULT_OK, intent);
 			finish();
 		}
 		return super.onOptionsItemSelected(menu);

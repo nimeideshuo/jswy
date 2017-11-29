@@ -14,6 +14,7 @@ import com.ahjswy.cn.utils.TextUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,40 +55,6 @@ public class Jswy_logUser extends BaseActivity implements OnClickListener {
 		}
 	}
 
-	// @Deprecated // 2017年11月3日 废弃
-	// Handler loginHandler = new Handler() {
-	// public void handleMessage(android.os.Message msg) {
-	// switch (msg.what) {
-	// case 0:
-	// if (RequestHelper.isSuccess(msg.obj.toString())) {
-	// RespUserEntity respUserEntity = (RespUserEntity)
-	// JSONUtil.readValue(msg.obj.toString(),
-	// RespUserEntity.class);
-	// User localUser = new User();
-	// localUser.setId(respUserEntity.getId());
-	// localUser.setIsaccountmanager(respUserEntity.getIsAccountManager());
-	// localUser.setName(respUserEntity.getName());
-	// localUser.setPassword("");
-	// localUser.setOfflinepassword("");
-	// SystemState.saveObject("cu_user", localUser);
-	// SystemState.saveObject("gpsinterval",
-	// Integer.valueOf(respUserEntity.getGpsInterval()));
-	// ap.setValue("pw", "");
-	// startActivity(new Intent(Jswy_logUser.this, LoginPassword.class));
-	// finish();
-	// } else {
-	// PDH.showError(msg.obj.toString());
-	// }
-	// break;
-	// case 1:
-	// RequestHelper.showError(msg.obj.toString());
-	// break;
-	// default:
-	// break;
-	// }
-	// };
-	// };
-
 	public void startIntent() {
 		if (TextUtils.isEmpty(ed_userName.getText().toString())) {
 			PDH.showError("请输入用户名");
@@ -97,6 +64,21 @@ public class Jswy_logUser extends BaseActivity implements OnClickListener {
 			PDH.showError("请输入密码");
 			return;
 		}
+		//testSWY
+		// if(MyApplication.getInstance().isTestSWY()){
+		// PDH.show(this, "验证账号密码...", new ProgressCallBack() {
+		//
+		// @Override
+		// public void action() {
+		// SystemClock.sleep(500);
+		// startActivity(new Intent(Jswy_logUser.this, LoginPassword.class));
+		// finish();
+		// }
+		// });
+		// return;
+		// }
+		
+		
 		// 验证 user password 密码是否正确
 
 		PDH.show(this, "正在加载...", new ProgressCallBack() {
@@ -138,16 +120,6 @@ public class Jswy_logUser extends BaseActivity implements OnClickListener {
 			}
 		});
 	}
-
-	// public void intentMain() {
-	// new Handler().postDelayed(new Runnable() {
-	// @Override
-	// public void run() {
-	// startActivity(new Intent(Jswy_logUser.this, LoginPassword.class));
-	// AnimationUtil.finishActivityAnimation(Jswy_logUser.this);
-	// }
-	// }, 2000);
-	// }
 
 	/**
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *

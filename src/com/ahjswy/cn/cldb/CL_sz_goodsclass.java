@@ -1,5 +1,6 @@
 package com.ahjswy.cn.cldb;
 
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,13 +10,13 @@ import com.ahjswy.cn.cldb.bean.sz_goodsclass;
 
 public class CL_sz_goodsclass extends CloudDBBase {
 	public List<sz_goodsclass> queryAll() {
-		String sql = "SELECT id,name,pinyin,parentgoodsclassid,isavailable,remark,builderid,buildtime,modifierid,modifytime from sz_goodsclass where isavailable =1";
-		ResultSet query = executeQuery(sql);
-		if (query == null) {
-			return null;
-		}
-		List<sz_goodsclass> listGoodsClass = new ArrayList<sz_goodsclass>();
 		try {
+			List<sz_goodsclass> listGoodsClass = new ArrayList<sz_goodsclass>();
+			String sql = "SELECT id,name,pinyin,parentgoodsclassid,isavailable,remark,builderid,buildtime,modifierid,modifytime from sz_goodsclass where isavailable =1";
+			ResultSet query = executeQuery(sql);
+			if (query == null) {
+				return null;
+			}
 			while (query.next()) {
 				sz_goodsclass goodsclass = new sz_goodsclass();
 				goodsclass.id = query.getString("id");

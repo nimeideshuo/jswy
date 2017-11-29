@@ -15,11 +15,11 @@ public class Warehouse implements Serializable {
 		return this.name;
 	}
 
-	public void setId(String paramString) {
-		this.id = paramString;
+	public void setId(String id) {
+		this.id = id;
 	}
 
-	public void setName(String paramString) {
-		this.name = paramString;
+	public void setName(String name) {
+		this.name = name;
 	}
 }

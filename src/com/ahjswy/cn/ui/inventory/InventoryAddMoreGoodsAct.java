@@ -7,14 +7,13 @@ import java.util.Map;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.dao.GoodsDAO;
-import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemPD;
 import com.ahjswy.cn.model.DefDocPD;
 import com.ahjswy.cn.model.GoodsThin;
-import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.scaner.Scaner;
 import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.ui.BaseActivity;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.Utils;
@@ -34,13 +33,15 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 	private ListView listView;
 	private InventoryAddMoreAdapter adapter;
 	private Scaner scaner;
+	private DefDocPD doc;
+	private DocUtils docUtils;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_inventory_add_more_goods);
 		doc = (DefDocPD) getIntent().getSerializableExtra("doc");
-		items = JSONUtil.str2list(getIntent().getStringExtra("items"), DefDocItemPD.class);
+		items = JSONUtil.parseArray(getIntent().getStringExtra("items"), DefDocItemPD.class);
 		listView = ((ListView) findViewById(R.id.listView));
 		adapter = new InventoryAddMoreAdapter(this);
 		this.adapter.setItem(items);
@@ -48,6 +49,7 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 		scaner = Scaner.factory(this);
 		scaner.setBarcodeListener(barcodeListener);
 		dialog = new Dialog_listCheckBox(this);
+		docUtils = DocUtils.getInstance();
 	}
 
 	@Override
@@ -78,6 +80,10 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 			if (dialog != null) {
 				dialog.dismiss();
 			}
+			if (items.size() >= DocUtils.MAXITEM) {
+				showError("已经开的够多了！请确认一下");
+				return;
+			}
 			readBarcode(barcode);
 		}
 	};
@@ -89,15 +95,16 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 			showError("没有查找到商品!");
 			return;
 		}
-		if (items.size() >= 50) {
-			showError("已经开的够多了！请确认一下");
-			return;
-		}
 		final Map<String, Object> goodsMap = new HashMap<String, Object>();
 		if (goodsThinList.size() == 1) {
-			DefDocItemPD fillItem = fillItem(goodsThinList.get(0), 0.0D, 0.0D, 1);
-			goodsMap.put(fillItem.getGoodsid(), fillItem);
-			addItems(goodsMap);
+			DefDocItemPD fillItem = docUtils.fillItem(doc, goodsThinList.get(0), 0.0D, 0.0D, DocUtils.getDefaultNum());
+			if (Utils.isCombination()) {
+				goodsMap.put(fillItem.getGoodsid(), fillItem);
+				addItems(goodsMap);
+			} else {
+				items.add(fillItem);
+			}
+			adapter.setData(items);
 			adapter.notifyDataSetInvalidated();
 		} else if (goodsThinList.size() > 1) {
 			dialog.setGoods(goodsThinList);
@@ -110,10 +117,16 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 					dialog.dismiss();
 					List<GoodsThin> select = dialog.getSelect();
 					for (int i = 0; i < select.size(); i++) {
-						DefDocItemPD fillItem = fillItem(select.get(i), 0d, 0.0D, 1);
-						goodsMap.put(fillItem.getGoodsid(), fillItem);
+						DefDocItemPD fillItem = docUtils.fillItem(doc, select.get(i), 0d, 0.0D,
+								DocUtils.getDefaultNum());
+						if (Utils.isCombination()) {
+							goodsMap.put(fillItem.getGoodsid(), fillItem);
+							addItems(goodsMap);
+						} else {
+							items.add(fillItem);
+						}
 					}
-					addItems(goodsMap);
+					adapter.setData(items);
 					adapter.notifyDataSetInvalidated();
 				}
 			});
@@ -144,45 +157,6 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 		for (Object item : goodsMap.values()) {
 			items.add((DefDocItemPD) item);
 		}
-		adapter.setItem(items);
-	}
-
-	private DefDocPD doc;
-
-	public DefDocItemPD fillItem(GoodsThin goodsThin, double stocknum, double costprice, double number) {
-		GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
-		DefDocItemPD defDocItemPD = new DefDocItemPD();
-		defDocItemPD.setItemid(0L);
-		defDocItemPD.setDocid(doc.getDocid());
-		defDocItemPD.setGoodsid(goodsThin.getId());
-		defDocItemPD.setGoodsname(goodsThin.getName());
-		defDocItemPD.setBarcode(goodsThin.getBarcode());
-		defDocItemPD.setSpecification(goodsThin.getSpecification());
-		defDocItemPD.setModel(goodsThin.getModel());
-		GoodsUnit localGoodsUnit;
-		if (Utils.DEFAULT_TransferDocUNIT == 0) {
-			localGoodsUnit = goodsUnitDAO.queryBaseUnit(goodsThin.getId());
-		} else {
-			localGoodsUnit = goodsUnitDAO.queryBigUnit(goodsThin.getId());
-		}
-		defDocItemPD.setUnitid(localGoodsUnit.getUnitid());
-		defDocItemPD.setUnitname(localGoodsUnit.getUnitname());
-		defDocItemPD.setStocknum(Utils.normalize(stocknum, 2));
-		defDocItemPD.setBigstocknum(goodsUnitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(),
-				defDocItemPD.getStocknum()));
-		defDocItemPD.setNum(number);
-		defDocItemPD.setBignum(
-				goodsUnitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNum()));
-		defDocItemPD.setNetnum(Utils.normalize(defDocItemPD.getNum() - defDocItemPD.getStocknum(), 2));
-		defDocItemPD.setBignetnum(
-				goodsUnitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNetnum()));
-		defDocItemPD.setCostprice(costprice);
-		defDocItemPD.setNetamount(Utils.normalizeSubtotal(defDocItemPD.getNetnum() * defDocItemPD.getCostprice()));
-		defDocItemPD.setRemark("");
-		defDocItemPD.setRversion(0L);
-		defDocItemPD.setIsusebatch(goodsThin.isIsusebatch());
-		return defDocItemPD;
-
 	}
 
 	public void setActionBarText() {

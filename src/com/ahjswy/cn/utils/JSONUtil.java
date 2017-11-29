@@ -131,6 +131,14 @@ public class JSONUtil {
 		return null;
 	}
 
+	@Deprecated
+	/**
+	 * fromJson(String json, Class<T> classOfT)
+	 * 
+	 * @param content
+	 * @param valueType
+	 * @return
+	 */
 	public static <T> T readValue(String content, Class<T> valueType) {
 		ObjectMapper localObjectMapper = new ObjectMapper();
 		try {
@@ -182,6 +190,14 @@ public class JSONUtil {
 		return null;
 	}
 
+	@Deprecated
+	/**
+	 * parseArray(String json, Class<T> classOfT);
+	 * 
+	 * @param content
+	 * @param paramClass
+	 * @return
+	 */
 	// String json to list
 	public static <T> List<T> str2list(String content, Class<T> paramClass) {
 		ObjectMapper objectMapper = new ObjectMapper();

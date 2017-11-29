@@ -14,6 +14,7 @@ import com.ahjswy.cn.response.RespGoodsWarehouse;
 import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.outgoods.GoodsWarehouseSearchAct;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
@@ -34,7 +35,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 /**
- * 调拨开单
+ * 调拨开单详情
  * 
  * @author Administrator
  *
@@ -51,6 +52,7 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 	private int position;
 	TextView tvBarcode;
 	TextView tvSpecification;
+	private DocUtils docUtils;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,7 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 		this.btnUnit.setTag(this.docitem.getUnitid());
 		etNum.setText(docitem.getNum() == 0 ? "" : docitem.getNum() + "");
 		etRemark.setText(docitem.getRemark());
+		docUtils = DocUtils.getInstance();
 	}
 
 	@Override
@@ -140,7 +143,6 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 		}
 		if (docitem.getPrice() == 0) {
 			showError("没有查询到成本价格! 或者为0");
-			return;
 		}
 		this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
 		this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
@@ -159,8 +161,8 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 			unitSelect();
 			break;
 		case R.id.btnWarehouse:
-			startActivityForResult(new Intent().setClass(this, GoodsWarehouseSearchAct.class).putExtra("goodsid",
-					this.docitem.getGoodsid()), 6);
+			startActivityForResult(
+					new Intent(this, GoodsWarehouseSearchAct.class).putExtra("goodsid", this.docitem.getGoodsid()), 6);
 			break;
 
 		default:
@@ -183,26 +185,13 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 				dialog.dismiss();
 				goodsUnit = localList.get(which);
 				if (!goodsUnit.getUnitid().equals(btnUnit.getTag().toString())) {
-					PDH.show(TransferAddGoodAct.this, new PDH.ProgressCallBack() {
-
-						@Override
-						public void action() {
-							ArrayList<ReqStrGetGoodsPrice> localObject = new ArrayList<ReqStrGetGoodsPrice>();
-							ReqStrGetGoodsPrice reqPrice = new ReqStrGetGoodsPrice();
-							reqPrice.setType(0);
-							reqPrice.setCustomerid(null);
-							reqPrice.setWarehouseid(btnWarehouse.getTag().toString());
-							reqPrice.setGoodsid(TransferAddGoodAct.this.docitem.getGoodsid());
-							reqPrice.setUnitid(TransferAddGoodAct.this.goodsUnit.getUnitid());
-							reqPrice.setPrice(0.0D);
-							reqPrice.setIsdiscount(false);
-							localObject.add(reqPrice);
-							String goodsPrice = new ServiceGoods().gds_GetMultiGoodsPrice(localObject, false,
-									docitem.isIsusebatch());
-							handlerGet.sendMessage(handlerGet.obtainMessage(0, goodsPrice));
-						}
-
-					});
+					docitem.setUnitid(goodsUnit.getUnitid());
+					docitem.setUnitname(goodsUnit.getUnitname());
+					double goodscostprice = docUtils.queryGoodsCostprice(btnWarehouse.getTag().toString(),
+							docitem.getGoodsid(), docitem.getUnitid());
+					btnUnit.setText(goodsUnit.getUnitname());
+					btnUnit.setTag(goodsUnit.getUnitid());
+					docitem.setPrice(goodscostprice);
 				}
 
 			}
@@ -233,22 +222,6 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 			}
 		}
 	}
-
-	private Handler handlerGet = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			String message = msg.obj.toString();
-			if (RequestHelper.isSuccess(message)) {
-				ReqStrGetGoodsPrice goodsPrice = JSONUtil.str2list(message, ReqStrGetGoodsPrice.class).get(0);
-				btnUnit.setText(goodsUnit.getUnitname());
-				btnUnit.setTag(goodsUnit.getUnitid());
-				docitem.setPrice(goodsPrice.getPrice());
-			} else {
-				PDH.showFail(message);
-				docitem.setPrice(0);
-			}
-		};
-
-	};
 
 	@Override
 	public void setActionBarText() {

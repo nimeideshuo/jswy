@@ -187,10 +187,10 @@ public class TransferDocOpenActivity extends BaseActivity implements OnClickList
 			startActivityForResult(new Intent(this, DepartmentSearchAct.class), 5);
 			break;
 		case R.id.btnInWarehouse:
-			startActivityForResult(new Intent().setClass(this, WarehouseSearchAct.class), 6);
+			startActivityForResult(new Intent(this, WarehouseSearchAct.class), 6);
 			break;
 		case R.id.btnOutWarehouse:
-			startActivityForResult(new Intent().setClass(this, WarehouseSearchAct.class), 0);
+			startActivityForResult(new Intent(this, WarehouseSearchAct.class), 0);
 			break;
 
 		default:
@@ -202,9 +202,9 @@ public class TransferDocOpenActivity extends BaseActivity implements OnClickList
 		public void handleMessage(android.os.Message msg) {
 			String message = msg.obj.toString();
 			if (RequestHelper.isSuccess(message)) {
-				DocContainerEntity doccontainer = (DocContainerEntity) JSONUtil.fromJson(message,
+				DocContainerEntity<?> doccontainer = (DocContainerEntity<?>) JSONUtil.fromJson(message,
 						DocContainerEntity.class);
-				doc = ((DefDocTransfer) JSONUtil.readValue(doccontainer.getDoc(), DefDocTransfer.class));
+				doc = ((DefDocTransfer) JSONUtil.fromJson(doccontainer.getDoc(), DefDocTransfer.class));
 				fillDoc();
 				doccontainer.setDoc(JSONUtil.toJSONString(doc));
 				// TODO

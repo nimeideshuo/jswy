@@ -5,32 +5,50 @@ import java.util.List;
 
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
+import com.ahjswy.cn.cldb.Sz_stockwarn;
 import com.ahjswy.cn.dao.CustomerDAO;
 import com.ahjswy.cn.dao.CustomerFieldsaleGoodsDAO;
 import com.ahjswy.cn.dao.GoodsPriceDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
+import com.ahjswy.cn.dao.WarehouseDAO;
 import com.ahjswy.cn.model.CustomerRecords;
+import com.ahjswy.cn.model.DefDocItem;
+import com.ahjswy.cn.model.DefDocItemPD;
 import com.ahjswy.cn.model.DefDocItemXS;
+import com.ahjswy.cn.model.DefDocPD;
+import com.ahjswy.cn.model.DefDocTransfer;
+import com.ahjswy.cn.model.DefDocXS;
+import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.model.UnitidPrice;
+import com.ahjswy.cn.model.Warehouse;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespGoodsPriceEntity;
 import com.ahjswy.cn.service.ServiceGoods;
-import com.ahjswy.cn.service.ServiceStore;
 
 import android.text.TextUtils;
 
 public class DocUtils {
-	private static ServiceStore serviceStore;
 	private static GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 	private static CustomerDAO customerdao = new CustomerDAO();
 	private static GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
 	private static AccountPreference ap = new AccountPreference();
+	private static Sz_stockwarn stockwarn = new Sz_stockwarn();
+	private static FileUtils fileutils = new FileUtils();
+	private final static String XSDOC_NAME = "XSdoc.txt";
+	private static final String THDOC_NAME = "THdoc.txt";
+	public static final int MAXITEM = 400;
+	private final WarehouseDAO warehousedao = new WarehouseDAO();
+	static DocUtils docutils = null;
 
-	static {
-		if (serviceStore == null) {
-			serviceStore = new ServiceStore();
+	private DocUtils() {
+	}
+
+	public static DocUtils getInstance() {
+		if (docutils == null) {
+			docutils = new DocUtils();
 		}
+		return docutils;
 	}
 
 	public static ReqStrGetGoodsPrice GetMultiGoodsPrice(String customerid, DefDocItemXS item) {
@@ -49,7 +67,7 @@ public class DocUtils {
 		list.add(rsp);
 		String goodsPrice = new ServiceGoods().gds_GetMultiGoodsPrice(list, true, item.isIsusebatch());
 		if (RequestHelper.isSuccess(goodsPrice)) {
-			List<ReqStrGetGoodsPrice> str2list = JSONUtil.str2list(goodsPrice, ReqStrGetGoodsPrice.class);
+			List<ReqStrGetGoodsPrice> str2list = JSONUtil.parseArray(goodsPrice, ReqStrGetGoodsPrice.class);
 			return str2list.size() == 0 ? null : str2list.get(0);
 		}
 		return null;
@@ -69,45 +87,12 @@ public class DocUtils {
 		list.add(rsp);
 		String goodsPrice = new ServiceGoods().gds_GetMultiGoodsPrice(list, true, false);
 		if (com.ahjswy.cn.utils.TextUtils.isEmptyS(goodsPrice)) {
-			List<ReqStrGetGoodsPrice> str2list = JSONUtil.str2list(goodsPrice, ReqStrGetGoodsPrice.class);
+			List<ReqStrGetGoodsPrice> str2list = JSONUtil.parseArray(goodsPrice, ReqStrGetGoodsPrice.class);
 			return str2list.get(0);
 		}
 		return null;
 	}
 
-	/**
-	 * 计算 库存
-	 * 
-	 * @param res
-	 *            RespGoodsWarehouse 当前商品仓库
-	 * @param goodsUnit
-	 *            当前单位
-	 * @param unit
-	 * @return
-	 */
-	// public static String Stocknum(RespGoodsWarehouse res, GoodsUnit
-	// goodsUnit) {
-	// if (res == null || goodsUnit == null) {
-	// return "";
-	// }
-	// GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(),
-	// goodsUnit.getUnitid());
-	// GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
-	// int zs = (int) (res.getStocknum() / goodsRatio.getRatio());
-	// int xs = (int) Utils.normalizePrice(res.getStocknum() %
-	// goodsRatio.getRatio());
-	// String stocknum = "";
-	// if (zs != 0) {
-	// stocknum = stocknum + zs + goodsUnit.getUnitname();
-	// }
-	// if (xs != 0) {
-	// stocknum = stocknum + xs + queryBaseUnit.getUnitname();
-	// }
-	// if (stocknum.length() == 0) {
-	// stocknum = "0" + goodsUnit.getUnitname();
-	// }
-	// return stocknum;
-	// }
 	/**
 	 * 商品 库存单位转换
 	 * 
@@ -161,58 +146,7 @@ public class DocUtils {
 			return stockbigName + (int) num + baseBaseUnit.getUnitname();
 		}
 		return stockbigName + Utils.normalize(num * baseBaseUnit.getRatio(), 2) + baseBaseUnit.getUnitname();
-
-		// if (TextUtils.isEmpty(goodsid)) {
-		// return "";
-		// }
-		// GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsid, unitid);
-		// GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsid);
-		// int zs = (int) (stocknumber / goodsRatio.getRatio());
-		// int xs = (int) Utils.normalizePrice(stocknumber %
-		// goodsRatio.getRatio());
-		// String stocknum = "";
-		// if (zs != 0) {
-		// stocknum = stocknum + zs + unitname;
-		// }
-		// if (xs != 0) {
-		// stocknum = stocknum + xs + queryBaseUnit.getUnitname();
-		// }
-		// if (stocknum.length() == 0) {
-		// stocknum = "0" + unitname;
-		// }
-		// return stocknum;
 	}
-
-	/**
-	 * 商品 库存单位转换
-	 * 
-	 * @param stocknumber
-	 *            库存数量
-	 * @param goodsid
-	 *            商品id
-	 * @return
-	 */
-	// public static String Stocknum(double stocknumber, String goodsid) {
-	// if (TextUtils.isEmpty(goodsid)) {
-	// return "";
-	// }
-	// GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(),
-	// goodsUnit.getUnitid());
-	// GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
-	// int zs = (int) (stocknumber / goodsRatio.getRatio());
-	// int xs = (int) Utils.normalizePrice(stocknumber % goodsRatio.getRatio());
-	// String stocknum = "";
-	// if (zs != 0) {
-	// stocknum = stocknum + zs + goodsUnit.getUnitname();
-	// }
-	// if (xs != 0) {
-	// stocknum = stocknum + xs + queryBaseUnit.getUnitname();
-	// }
-	// if (stocknum.length() == 0) {
-	// stocknum = "0" + goodsUnit.getUnitname();
-	// }
-	// return stocknum;
-	// }
 
 	// 库存数量测试可用
 	public static String setItemStockUnit(int stockNum, GoodsUnit unit) {
@@ -458,6 +392,270 @@ public class DocUtils {
 		if (size != item.size()) {
 			combinationItem(item, listItemDelete);
 		}
+	}
+
+	/**
+	 * 合并相同商品
+	 * 
+	 * @param item
+	 * @param listItemDelete
+	 */
+	public static void combinationItem(List<DefDocItemPD> item, ArrayList<Long> listItemDelete) {
+		int size = item.size();
+
+		for (int i = 0; i < item.size(); i++) {
+			DefDocItemPD items1 = item.get(i);
+			for (int j = 0; j < item.size(); j++) {
+				if (i == j) {
+					continue;
+				}
+				DefDocItemPD itemxs2 = item.get(j);
+				boolean isgoodsid = items1.getGoodsid().equals(itemxs2.getGoodsid());
+				boolean isunid = items1.getUnitid().equals(itemxs2.getUnitid());
+				if (isgoodsid && isunid) {
+					itemxs2.setNum(itemxs2.getNum() + items1.getNum());
+					itemxs2.setBignum(unitDAO.getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
+					itemxs2.setNetnum(Utils.normalize(itemxs2.getNum() - itemxs2.getStocknum(), 2));
+					if (itemxs2.getItemid() > 0) {
+						listItemDelete.add(itemxs2.getItemid());
+					}
+					item.remove(j);
+					break;
+				}
+			}
+		}
+		if (size != item.size()) {
+			combinationItem(item, listItemDelete);
+		}
+
+	}
+
+	public DefDocItemPD fillItem(DefDocPD doc, GoodsThin goodsThin, double stocknum, double costprice, double number) {
+		DefDocItemPD defDocItemPD = new DefDocItemPD();
+		defDocItemPD.setItemid(0L);
+		defDocItemPD.setDocid(doc.getDocid());
+		defDocItemPD.setGoodsid(goodsThin.getId());
+		defDocItemPD.setGoodsname(goodsThin.getName());
+		defDocItemPD.setBarcode(goodsThin.getBarcode());
+		defDocItemPD.setSpecification(goodsThin.getSpecification());
+		defDocItemPD.setModel(goodsThin.getModel());
+		GoodsUnit localGoodsUnit;
+		if (Utils.DEFAULT_TransferDocUNIT == 0) {
+			localGoodsUnit = unitDAO.queryBaseUnit(goodsThin.getId());
+		} else {
+			localGoodsUnit = unitDAO.queryBigUnit(goodsThin.getId());
+		}
+		defDocItemPD.setUnitid(localGoodsUnit.getUnitid());
+		defDocItemPD.setUnitname(localGoodsUnit.getUnitname());
+		defDocItemPD.setStocknum(Utils.normalize(stocknum, 2));
+		defDocItemPD.setBigstocknum(
+				unitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getStocknum()));
+		defDocItemPD.setNum(number);
+		defDocItemPD.setBignum(
+				unitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNum()));
+		defDocItemPD.setNetnum(Utils.normalize(defDocItemPD.getNum() - defDocItemPD.getStocknum(), 2));
+		defDocItemPD.setBignetnum(
+				unitDAO.getBigNum(defDocItemPD.getGoodsid(), defDocItemPD.getUnitid(), defDocItemPD.getNetnum()));
+		defDocItemPD.setCostprice(costprice);
+		defDocItemPD.setNetamount(Utils.normalizeSubtotal(defDocItemPD.getNetnum() * defDocItemPD.getCostprice()));
+		defDocItemPD.setRemark("");
+		defDocItemPD.setRversion(0L);
+		defDocItemPD.setIsusebatch(goodsThin.isIsusebatch());
+		return defDocItemPD;
+	}
+
+	public DefDocItem fillItem(DefDocTransfer doc, GoodsThin goodsThin, double num, double price) {
+		DefDocItem item = new DefDocItem();
+		item.setItemid(0L);
+		item.setDocid(doc.getDocid());
+		item.setGoodsid(goodsThin.getId());
+		item.setGoodsname(goodsThin.getName());
+		item.setBarcode(goodsThin.getBarcode());
+		item.setSpecification(goodsThin.getSpecification());
+		item.setModel(goodsThin.getModel());
+		item.setWarehouseid(doc.getOutwarehouseid());
+		item.setWarehousename(doc.getOutwarehousename());
+		GoodsUnit goodsunit = null;
+		if (Utils.DEFAULT_TransferDocUNIT == 0) {
+			goodsunit = unitDAO.queryBaseUnit(goodsThin.getId());
+		} else {
+			goodsunit = unitDAO.queryBigUnit(goodsThin.getId());
+		}
+		item.setUnitid(goodsunit.getUnitid());
+		item.setUnitname(goodsunit.getUnitname());
+		item.setNum(Utils.normalize(num, 2));
+		item.setBignum(unitDAO.getBigNum(item.getGoodsid(), item.getUnitid(), item.getNum()));
+		item.setPrice(Utils.normalizePrice(price));
+		item.setSubtotal(Utils.normalizeSubtotal(item.getNum() * item.getPrice()));
+		item.setDiscountratio(1.0D);
+		item.setDiscountprice(0.0D);
+		item.setDiscountsubtotal(0.0D);
+		item.setIsgift(false);
+		item.setCostprice(0.0D);
+		item.setRemark("");
+		item.setRversion(0L);
+		item.setIsdiscount(false);
+		item.setIsusebatch(goodsThin.isIsusebatch());
+		return item;
+	}
+
+	public static DefDocItemXS fillItem(DefDocXS doc, GoodsThin paramGoodsThin, double num, double price,
+			long tempitemid) {
+		DefDocItemXS itemxs = new DefDocItemXS();
+		itemxs.setItemid(0L);
+		itemxs.setTempitemid(tempitemid);
+		itemxs.setDocid(doc.getDocid());
+		itemxs.setGoodsid(paramGoodsThin.getId());
+		itemxs.setGoodsname(paramGoodsThin.getName());
+		itemxs.setBarcode(paramGoodsThin.getBarcode());
+		itemxs.setSpecification(paramGoodsThin.getSpecification());
+		itemxs.setModel(paramGoodsThin.getModel());
+		itemxs.setWarehouseid(doc.getWarehouseid());
+		itemxs.setWarehousename(doc.getWarehousename());
+		GoodsUnit localGoodsUnit = null;
+		if (Utils.DEFAULT_OutDocUNIT == 0) {
+			localGoodsUnit = unitDAO.queryBaseUnit(paramGoodsThin.getId());
+		} else {
+			localGoodsUnit = unitDAO.queryBigUnit(paramGoodsThin.getId());
+		}
+		if (localGoodsUnit == null) {
+			return null;
+		}
+		itemxs.setUnitid(localGoodsUnit.getUnitid());
+		itemxs.setUnitname(localGoodsUnit.getUnitname());
+		itemxs.unit = localGoodsUnit;
+		itemxs.setNum(Utils.normalize(num, 2));
+		itemxs.setBignum(unitDAO.getBigNum(itemxs.getGoodsid(), itemxs.getUnitid(), itemxs.getNum()));
+		// 价格
+		itemxs.setPrice(Utils.normalizePrice(price));
+		// 小计
+		itemxs.setSubtotal(Utils.normalizeSubtotal(itemxs.getNum() * itemxs.getPrice()));
+		// 折扣率
+		itemxs.setDiscountratio(doc.getDiscountratio());
+		// 折扣价格
+		itemxs.setDiscountprice(Utils.normalizePrice(itemxs.getPrice() * doc.getDiscountratio()));
+		// 折扣小计
+		itemxs.setDiscountsubtotal(itemxs.getNum() * itemxs.getDiscountprice());
+		if (itemxs.getPrice() == 0.0D) {
+			itemxs.setIsgift(true);
+			itemxs.setCostprice(0.0D);
+			itemxs.setRemark("");
+			itemxs.setRversion(0L);
+			itemxs.setIsdiscount(false);
+			itemxs.setIsexhibition(false);
+			itemxs.setIspromotion(false);
+			itemxs.setParentitemid(0L);
+			itemxs.setPromotiontype(-1);
+			itemxs.setPromotiontypename(null);
+			itemxs.setOutorderdocid(0L);
+			itemxs.setOutorderdocshowid(null);
+			itemxs.setOutorderitemid(0L);
+		}
+		itemxs.setIsusebatch(paramGoodsThin.isIsusebatch());
+		return itemxs;
+	}
+
+	public void setPDAddItem(DefDocPD doc, DefDocItemPD itemPD) {
+		itemPD.setCostprice(
+				stockwarn.queryGoodsCostprice(doc.getWarehouseid(), itemPD.getGoodsid(), itemPD.getUnitid()));
+		itemPD.setStocknum(queryPDSumStock(itemPD.getGoodsid(), itemPD.getUnitid()));
+		itemPD.setBigstocknum(unitDAO.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getStocknum()));
+		itemPD.setNetnum(Utils.normalize(itemPD.getNum() - itemPD.getStocknum(), 2));
+		itemPD.setBignetnum(unitDAO.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getNetnum()));
+		itemPD.setNetamount(Utils.normalizeSubtotal(itemPD.getNetnum() * itemPD.getCostprice()));
+	}
+
+	public void setDBAddItem(DefDocTransfer doc, DefDocItem item) {
+		Warehouse warehouse = getDBOutWarehouse(doc.getInwarehouseid(), doc.getOutwarehouseid());
+		item.setWarehouseid(warehouse.getId());
+		item.setWarehousename(warehouse.getName());
+		double goodscostprice = queryGoodsCostprice(item.getWarehouseid(), item.getGoodsid(), item.getUnitid());
+		item.setPrice(goodscostprice);
+		item.setBignum(unitDAO.getBigNum(item.getGoodsid(), item.getUnitid(), item.getNum()));
+		item.setSubtotal(Utils.normalizeSubtotal(item.getNum() * item.getPrice()));
+	}
+
+	/**
+	 * 保存销售数据
+	 * 
+	 * @param t
+	 */
+	public static <T> void saveXSData(T t) {
+		fileutils.saveStorageObject(t, XSDOC_NAME);
+	}
+
+	/**
+	 * 获取销售数据
+	 * 
+	 */
+	public static <T> Object getXSData() {
+		return fileutils.getStorageEntitiesObject(XSDOC_NAME);
+	}
+
+	/**
+	 * 保存销售数据
+	 * 
+	 * @param t
+	 */
+	public static <T> void saveTHData(T t) {
+		fileutils.saveStorageObject(t, THDOC_NAME);
+	}
+
+	/**
+	 * 获取销售数据
+	 * 
+	 */
+	public static <T> Object getTHData() {
+		return fileutils.getStorageEntitiesObject(THDOC_NAME);
+	}
+
+	public static boolean deleteTHDoc() {
+		return fileutils.deleteFile(THDOC_NAME);
+	}
+
+	public static boolean deleteXSDoc() {
+		return fileutils.deleteFile(XSDOC_NAME);
+	}
+
+	public static int getDefaultNum() {
+		if (Boolean.parseBoolean(ap.getValue("iscombinationItem", "false"))) {
+			return 1;
+		}
+		return 0;
+
+	}
+
+	/**
+	 * 查询商品成本价格
+	 * 
+	 * @param warehouseid
+	 * @param goodsid
+	 * @param unitid
+	 * @return
+	 */
+	public double queryGoodsCostprice(String warehouseid, String goodsid, String unitid) {
+		return stockwarn.queryGoodsCostprice(warehouseid, goodsid, unitid);
+	}
+
+	/**
+	 * 查询调拨仓库
+	 * 
+	 * @param goodsid
+	 * @param warehouseid
+	 * @param string
+	 * @return
+	 */
+	public Warehouse getDBOutWarehouse(String inWarehouseid, String outWarehouseid) {
+		if (!TextUtils.isEmpty(outWarehouseid)) {
+			return warehousedao.getWarehouse(outWarehouseid);
+		}
+
+		return warehousedao.getDBOutWarehouse(inWarehouseid);
+	}
+
+	public double queryPDSumStock(String goodsid, String unitid) {
+		double ratio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
+		return Utils.normalizeDouble(stockwarn.querySumStock(goodsid) / ratio);
 	}
 
 }

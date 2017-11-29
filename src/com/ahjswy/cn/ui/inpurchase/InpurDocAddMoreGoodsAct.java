@@ -17,6 +17,7 @@ import com.ahjswy.cn.scaner.Scaner.ScanerBarcodeListener;
 import com.ahjswy.cn.service.ServiceStore;
 import com.ahjswy.cn.service.ServiceSupport;
 import com.ahjswy.cn.ui.BaseActivity;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.Utils;
@@ -75,8 +76,7 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 		}
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
 		if (goodsThinList.size() == 1) {
-			int num = Utils.isCombination() ? 1 : 0;
-			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), num, 0.0D, 0L);// 0
+			DefDocItemCG fillItem = fillItem(goodsThinList.get(0), DocUtils.getDefaultNum(), 0.0D, 0L);// 0
 			if (fillItem != null) {
 				Newitems.add(fillItem);
 				addItems();

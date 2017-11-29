@@ -201,7 +201,7 @@ public class OutDocAddGoodAct extends BaseActivity
 
 			@Override
 			public void action() {
-				stocknum = stockwarn.queryStockwarn(docitem.getWarehouseid(), docitem.getGoodsid());
+				stocknum = stockwarn.queryStockNum(docitem.getWarehouseid(), docitem.getGoodsid());
 				runOnUiThread(new Runnable() {
 					public void run() {
 						tvStock.setText("库存:" + DocUtils.Stocknum(stocknum, docitem.getGoodsid(), docitem.getUnitid(),
@@ -653,7 +653,7 @@ public class OutDocAddGoodAct extends BaseActivity
 				RespGoodsWarehouse warehouse = (RespGoodsWarehouse) data.getSerializableExtra("warehouse");
 				this.btnWarehouse.setTag(warehouse.getWarehouseid());
 				this.btnWarehouse.setText(warehouse.getWarehousename());
-				stocknum = stockwarn.queryStockwarn(warehouse.getWarehouseid(), docitem.getGoodsid());
+				stocknum = stockwarn.queryStockNum(warehouse.getWarehouseid(), docitem.getGoodsid());
 				tvStock.setText("库存:" + DocUtils.Stocknum(stocknum, docitem.getGoodsid(),
 						btnUnit.getTag() != null ? btnUnit.getTag().toString() : "", btnUnit.getText().toString()));
 

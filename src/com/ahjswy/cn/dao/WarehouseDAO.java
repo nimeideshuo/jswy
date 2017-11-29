@@ -39,9 +39,9 @@ public class WarehouseDAO {
 	}
 
 	// 获取仓库
-	public Warehouse getWarehouse(String paramString) {
+	public Warehouse getWarehouse(String warehouseid) {
 		this.db = this.helper.getReadableDatabase();
-		String array[] = { paramString };
+		String array[] = { warehouseid };
 		Cursor cursor = this.db.rawQuery("select id, name from sz_warehouse where id=?", array);
 		Warehouse warehouse = null;
 		try {
@@ -63,4 +63,24 @@ public class WarehouseDAO {
 		}
 		return warehouse;
 	}
+
+	public Warehouse getDBOutWarehouse(String warehouseid) {
+		this.db = this.helper.getReadableDatabase();
+		String sql = "select id,name from sz_warehouse where id !=? and istruck='0' and isavailable='1' order by id";
+		Warehouse warehouse = new Warehouse();
+		try {
+
+			Cursor cursor = db.rawQuery(sql, new String[] { warehouseid });
+			if (cursor.moveToNext()) {
+				warehouse.setId(cursor.getString(0));
+				warehouse.setName(cursor.getString(1));
+				return warehouse;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

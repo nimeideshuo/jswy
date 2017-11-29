@@ -43,7 +43,7 @@ public class InDocItemAdapter extends BaseAdapter {
 		return this.items;
 	}
 
-	public void setData(ArrayList<DefDocItemXS> items) {
+	public void setData(List<DefDocItemXS> items) {
 		this.items.clear();
 		this.items.addAll(items);
 		notifyDataSetChanged();

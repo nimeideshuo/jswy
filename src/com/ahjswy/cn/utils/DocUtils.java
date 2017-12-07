@@ -3,8 +3,6 @@ package com.ahjswy.cn.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.security.auth.callback.CallbackHandler;
-
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.bean.bmob.ExceptionLog;
@@ -29,6 +27,7 @@ import com.ahjswy.cn.model.UnitidPrice;
 import com.ahjswy.cn.model.Warehouse;
 import com.ahjswy.cn.request.ReqStrGetGoodsPrice;
 import com.ahjswy.cn.response.RespGoodsPriceEntity;
+import com.ahjswy.cn.response.RespGoodsWarehouse;
 import com.ahjswy.cn.service.ServiceGoods;
 
 import android.text.TextUtils;
@@ -43,7 +42,7 @@ public class DocUtils {
 	private final static String XSDOC_NAME = "XSdoc.txt";
 	private static final String THDOC_NAME = "THdoc.txt";
 	public static final int MAXITEM = 400;
-	private final WarehouseDAO warehousedao = new WarehouseDAO();
+	private final static WarehouseDAO warehousedao = new WarehouseDAO();
 	static DocUtils docutils = null;
 
 	private DocUtils() {
@@ -325,6 +324,14 @@ public class DocUtils {
 		}
 		// 显示价格体系查询的默认价格
 		return goodspricedao.queryBasicPrice(goodsid, Utils.DEFAULT_PRICESYSTEM + "");
+	}
+
+	// 获取仓库
+	public static Warehouse getWarehouse(String warehouseid) {
+		return warehousedao.getWarehouse(warehouseid);
+	}
+	public static GoodsUnit queryBigUnit(String goodsid){
+		return unitDAO.queryBigUnit(goodsid);
 	}
 
 	/**
@@ -663,6 +670,16 @@ public class DocUtils {
 	}
 
 	/**
+	 * 查询商品所有仓库 库存
+	 * 
+	 * @param goodsid
+	 * @return
+	 */
+	public static List<RespGoodsWarehouse> queryStockwarnAll(String goodsid) {
+		return stockwarn.queryStockwarnAll(goodsid);
+	}
+
+	/**
 	 * 错误日志本地记录
 	 * 
 	 * @param ex
@@ -678,6 +695,10 @@ public class DocUtils {
 		log.setLog(buffer.toString());
 		log.setData(data == null ? null : data.toString());
 		new Exception_logDAO().insertLog(log);
+	}
+
+	public static List<Warehouse> getAllWarehouses() {
+		return warehousedao.getAllWarehouses();
 	}
 
 }

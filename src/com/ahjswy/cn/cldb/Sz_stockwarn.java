@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ahjswy.cn.response.RespGoodsWarehouse;
 import com.ahjswy.cn.response.RespStockwarn;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.Utils;
@@ -78,7 +79,7 @@ public class Sz_stockwarn extends CloudDBBase {
 		return 0;
 	}
 
-	public List<RespStockwarn> queryStockwarnAll(String goodsid) {
+	public List<RespGoodsWarehouse> queryStockwarnAll(String goodsid) {
 		String sql = "select a.warehouseid,a.goodsid,stocknum from sz_stockwarn a where a.isavailable='1' and a.goodsid='"
 				+ goodsid + "'";
 		ResultSet query = null;
@@ -87,9 +88,9 @@ public class Sz_stockwarn extends CloudDBBase {
 			if (query == null) {
 				return null;
 			}
-			List<RespStockwarn> listStockwarn = new ArrayList<RespStockwarn>();
+			List<RespGoodsWarehouse> listStockwarn = new ArrayList<RespGoodsWarehouse>();
 			while (query.next()) {
-				RespStockwarn stockwarn = new RespStockwarn();
+				RespGoodsWarehouse stockwarn = new RespGoodsWarehouse();
 				stockwarn.warehouseid = query.getString("warehouseid");
 				stockwarn.goodsid = query.getString("goodsid");
 				stockwarn.stocknum = query.getDouble("stocknum");

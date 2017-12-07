@@ -5,36 +5,27 @@ import java.util.List;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
-import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsImageDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
-import com.ahjswy.cn.dao.WarehouseDAO;
 import com.ahjswy.cn.model.Goods;
 import com.ahjswy.cn.model.GoodsImage;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.model.Warehouse;
 import com.ahjswy.cn.response.RespGoodsPriceEntity;
 import com.ahjswy.cn.response.RespGoodsWarehouse;
-import com.ahjswy.cn.response.RespGoodsWarehouseStockEntity;
-import com.ahjswy.cn.service.ServiceGoods;
-import com.ahjswy.cn.service.ServiceSupport;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.ui.Swy_splash;
 import com.ahjswy.cn.utils.BitmapUtils;
 import com.ahjswy.cn.utils.DocUtils;
-import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
-import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.views.Dialog_message;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
@@ -78,8 +69,6 @@ public class GoodDetailAct extends BaseActivity {
 		this.tvModel = (TextView) findViewById(R.id.tvModel);
 		this.tvStockNum = (TextView) findViewById(R.id.tvStockNum);
 		dialogPrices = new Dialog_message(this);
-		warehousedao = new WarehouseDAO();
-		goodsWarehouse = new ArrayList<RespGoodsWarehouse>();
 	}
 
 	private void initData() {
@@ -90,11 +79,7 @@ public class GoodDetailAct extends BaseActivity {
 		this.tvBarcode.setText("商品条码：" + TextUtils.out(this.goods.getBarcode()));
 		this.tvSpecificaion.setText("规         格：" + TextUtils.out(this.goods.getSpecification()));
 		this.tvModel.setText("型         号：" + TextUtils.out(this.goods.getModel()));
-		if (TextUtils.isEmpty(goods.getBigstocknumber())) {
-			tvStockNum.setText("库存数量：无库存");
-		} else {
-			tvStockNum.setText("库存数量：" + goods.getBigstocknumber());
-		}
+		tvStockNum.setText("库存数量：");
 		this.viewPager = ((ViewPager) findViewById(R.id.viewPager));
 		LayoutParams params = viewPager.getLayoutParams();
 		params.height = (Swy_splash.height / 2 - 20);
@@ -112,39 +97,64 @@ public class GoodDetailAct extends BaseActivity {
 		}
 		boolean isShowPrice = getIntent().getBooleanExtra("showPrice", false);
 		if (isShowPrice) {
-			PDH.show(this, new ProgressCallBack() {
-				public void action() {
-					handlerPrice.sendMessage(
-							handlerPrice.obtainMessage(1, new ServiceSupport().sup_QueryGoodsPrice(goods.getId())));
-
-				}
-			});
+			List<RespGoodsPriceEntity> priceList = DocUtils.queryGoodsPriceList(goods.getId());
+			if (!priceList.isEmpty()) {
+				showPriceDialog(priceList);
+			} else {
+				PDH.showMessage("无价格信息");
+			}
 		}
-		PDH.show(this, new ProgressCallBack() {
+		queryGoodsStock(DocUtils.queryStockwarnAll(goods.getId()));
+	}
 
-			@Override
-			public void action() {
-				// 查找 比对 需要可用 仓库 查找库存
-				List<Warehouse> allWarehouses = warehousedao.getAllWarehouses();
-				String stocknum = new ServiceGoods().gds_GetGoodsWarehouses(goods.getId(), goods.isIsusebatch());
-				if (RequestHelper.isSuccess(stocknum)) {
-					List<RespGoodsWarehouse> respGoodsWarehouses = JSONUtil.str2list(stocknum,
-							RespGoodsWarehouse.class);
-					for (int i = 0; i < allWarehouses.size(); i++) {
-						for (int j = 0; j < respGoodsWarehouses.size(); j++) {
-							if (allWarehouses.get(i).getId().equals(respGoodsWarehouses.get(j).getWarehouseid())) {
-								goodsWarehouse.add(respGoodsWarehouses.get(j));
-								break;
-							}
-						}
+	private void queryGoodsStock(List<RespGoodsWarehouse> stockwarnAll) {
+		List<RespGoodsWarehouse> goodsWarehouse = new ArrayList<RespGoodsWarehouse>();
+		if (stockwarnAll == null || stockwarnAll.isEmpty()) {
+			return;
+		}
+		List<Warehouse> allWarehouses = DocUtils.getAllWarehouses();
+		for (int i = 0; i < allWarehouses.size(); i++) {
+			for (int j = 0; j < stockwarnAll.size(); j++) {
+				if (allWarehouses.get(i).getId().equals(stockwarnAll.get(j).getWarehouseid())) {
+					Warehouse warehouse = DocUtils.getWarehouse(stockwarnAll.get(j).warehouseid);
+					if (warehouse != null) {
+						stockwarnAll.get(j).setWarehousename(warehouse.getName());
 					}
-					handlerStock.sendMessage(handlerStock.obtainMessage(2));
-				} else {
-					showError("查询库存失败!");
+					goodsWarehouse.add(stockwarnAll.get(j));
+					break;
 				}
 			}
+		}
+		GoodsUnit bigUnit = DocUtils.queryBigUnit(goodsWarehouse.get(0).getGoodsid());
+		StringBuilder sb = new StringBuilder();
+		int stocknum = 0;
+		for (RespGoodsWarehouse warehouse : goodsWarehouse) {
+			stocknum += warehouse.getStocknum();
+			sb.append(warehouse.getWarehousename() + respSpaceStr(warehouse.getWarehousename()) + ":  "
+					+ DocUtils.Stocknum((int) warehouse.getStocknum(), bigUnit)).append("\n\n");
+		}
+		sb.append("库存数量 :  " + DocUtils.Stocknum(stocknum, bigUnit));
+		tvStockNum.setText(sb.toString());
+	}
 
-		});
+	private void showPriceDialog(List<RespGoodsPriceEntity> listGoodPrice) {
+		if (dialogPrices.isShowing()) {
+			dialogPrices.dismiss();
+		}
+		String dialogMessage = "\n";
+		for (int i = 0; i < listGoodPrice.size(); ++i) {
+			RespGoodsPriceEntity rp = listGoodPrice.get(i);
+			dialogMessage = dialogMessage + rp.getPricesystemname() + "：" + rp.getPrice() + "元/" + rp.getUnitname()
+					+ "\n";
+		}
+
+		dialogPrices.setRootPadding(10, 50, 10, 0);
+		dialogPrices.setVisibilityBottom(View.GONE);
+		dialogPrices.setGravity(Gravity.TOP);
+		dialogPrices.show();
+		dialogPrices.setTitle(goods.getName());
+		dialogPrices.setMessage(dialogMessage);
+
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,122 +172,22 @@ public class GoodDetailAct extends BaseActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menu) {
 		if (menu.getItemId() == 0) {
-			PDH.show(this, new ProgressCallBack() {
-				public void action() {
-					handlerPrice.sendMessage(
-							handlerPrice.obtainMessage(1, new ServiceSupport().sup_QueryGoodsPrice(goods.getId())));
-				}
-			});
+			List<RespGoodsPriceEntity> priceList = DocUtils.queryGoodsPriceList(goods.getId());
+			if (!priceList.isEmpty()) {
+				showPriceDialog(priceList);
+			} else {
+				PDH.showMessage("无价格信息");
+			}
 		}
-
-		// else if (menu.getItemId() == 1) {
-		// PDH.show(((Activity) this), new ProgressCallBack() {
-		//
-		// public void action() {
-		// handlerStock.sendMessage(handlerStock.obtainMessage(1,
-		// new ServiceSupport().sup_QueryGoodsWarehouseStock(goods.getId())));
-		// }
-		// });
-		// }
 
 		return super.onOptionsItemSelected(menu);
 	}
 
-	private Handler handlerPrice = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			String message = (String) msg.obj;
-			if (dialogPrices.isShowing()) {
-				dialogPrices.dismiss();
-			}
-			if (RequestHelper.isSuccess(message)) {
-				List<RespGoodsPriceEntity> listGoodPrice = JSONUtil.str2list(message, RespGoodsPriceEntity.class);
-				if (listGoodPrice.size() > 0) {
-					String dialogMessage = "\n";
-					for (int i = 0; i < listGoodPrice.size(); ++i) {
-						RespGoodsPriceEntity rp = listGoodPrice.get(i);
-						dialogMessage = dialogMessage + rp.getPricesystemname() + "：" + rp.getPrice() + "元/"
-								+ rp.getUnitname() + "\n";
-					}
-					// TextView tv = new TextView(GoodDetailAct.this);
-					// tv.setTextSize(16f);
-					// tv.setPadding(50, 0, 0, 0);
-					// dialogPrice
-					// AlertDialog.Builder dialogPrice = new
-					// AlertDialog.Builder(GoodDetailAct.this);
-					// dialogPrice.setView(tv);
-					// dialogPrice.setTitle(goods.getName());
-					// tv.setText(dialogMessage);
-					// AlertDialog create = dialogPrice.create();
-					// create.show();
-					dialogPrices.setRootPadding(10, 50, 10, 0);
-					dialogPrices.setVisibilityBottom(View.GONE);
-					dialogPrices.setGravity(Gravity.TOP);
-					dialogPrices.show();
-					dialogPrices.setTitle(goods.getName());
-					dialogPrices.setMessage(dialogMessage);
-				} else {
-					PDH.showMessage("无价格信息");
-				}
-			} else {
-				PDH.showFail(message);
-			}
-		};
-	};
-	Handler handlerStock = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			if (msg.what == 1) {
-				String message = (String) msg.obj;
-				if (RequestHelper.isSuccess(message)) {
-					List<RespGoodsWarehouseStockEntity> listStock = JSONUtil.str2list(message,
-							RespGoodsWarehouseStockEntity.class);
-					if (!listStock.isEmpty()) {
-						String dialogMessage = "\n";
-						String stockNum;
-						for (int i = 0; i < listStock.size(); ++i) {
-							RespGoodsWarehouseStockEntity resStock = listStock.get(i);
-							dialogMessage = dialogMessage + resStock.getWarehousename() + "：";
-							if (TextUtils.isEmpty(resStock.getStocknum())) {
-								stockNum = "无库存";
-							} else {
-								stockNum = resStock.getStocknum();
-							}
-							dialogMessage = dialogMessage + stockNum + "\n";
-						}
-						TextView tv = new TextView(GoodDetailAct.this);
-						tv.setTextSize(16f);
-						tv.setPadding(50, 0, 0, 0);
-						AlertDialog.Builder dialog = new AlertDialog.Builder(GoodDetailAct.this);
-						dialog.setView(((View) tv));
-						dialog.setTitle(GoodDetailAct.this.goods.getName());
-						tv.setText(dialogMessage);
-						dialog.create().show();
-					} else {
-						PDH.showMessage("无库存信息");
-					}
-				} else {
-					PDH.showFail(message);
-				}
-			}
-			if (msg.what == 2) {
-				if (goodsWarehouse.isEmpty()) {
-					return;
-				}
-				GoodsUnit bigUnit = new GoodsUnitDAO().queryBigUnit(goodsWarehouse.get(0).getGoodsid());
-				StringBuilder sb = new StringBuilder();
-				int stocknum = 0;
-				for (RespGoodsWarehouse warehouse : goodsWarehouse) {
-					stocknum += warehouse.getStocknum();
-					sb.append(warehouse.getWarehousename() + respSpaceStr(warehouse.getWarehousename()) + ":  "
-							+ DocUtils.Stocknum((int) warehouse.getStocknum(), bigUnit)).append("\n\n");
-				}
-				sb.append("库存数量 :  " + DocUtils.Stocknum(stocknum, bigUnit));
-				tvStockNum.setText(sb.toString());
-			}
-		};
-	};
-
 	// 计算需要添加的空格
 	private String respSpaceStr(String str) {
+		if (str == null || str.length() == 0) {
+			return "";
+		}
 		String spacestr = "";
 		if (str.length() < 5) {
 			for (int i = 0; i < 5 - str.length(); i++) {
@@ -288,8 +198,6 @@ public class GoodDetailAct extends BaseActivity {
 	}
 
 	private Dialog_message dialogPrices;
-	private WarehouseDAO warehousedao;
-	private List<RespGoodsWarehouse> goodsWarehouse;
 
 	class MyPagerAdapter extends PagerAdapter {
 		public Context context;

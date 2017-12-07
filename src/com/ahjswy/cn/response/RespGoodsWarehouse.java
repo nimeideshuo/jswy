@@ -7,26 +7,19 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class RespGoodsWarehouse implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@JsonProperty("batch")
-	private String batch;
+	public String batch;
 
-	@JsonProperty("bigstocknum")
-	private String bigstocknum;
+	public String bigstocknum;
 
-	@JsonProperty("goodsid")
-	private String goodsid;
+	public String goodsid;
 
-	@JsonProperty("productiondate")
-	private String productiondate;
+	public String productiondate;
 
-	@JsonProperty("stocknum")
-	private double stocknum;
+	public double stocknum;
 
-	@JsonProperty("warehouseid")
-	private String warehouseid;
+	public String warehouseid;
 
-	@JsonProperty("warehousename")
-	private String warehousename;
+	public String warehousename;
 
 	public RespGoodsWarehouse() {
 	}
@@ -97,13 +90,13 @@ public class RespGoodsWarehouse implements Serializable {
 	}
 
 	@JsonIgnore
-	public void setWarehouseid(String paramString) {
-		this.warehouseid = paramString;
+	public void setWarehouseid(String warehouseid) {
+		this.warehouseid = warehouseid;
 	}
 
 	@JsonIgnore
-	public void setWarehousename(String paramString) {
-		this.warehousename = paramString;
+	public void setWarehousename(String warehousename) {
+		this.warehousename = warehousename;
 	}
 
 	@Override

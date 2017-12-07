@@ -7,6 +7,7 @@ import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.bmob.ExceptionLog;
 import com.ahjswy.cn.dao.Exception_logDAO;
 import com.ahjswy.cn.ui.MAlertDialog;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.Utils;
 
@@ -17,14 +18,16 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 
 public class CrashHandler implements UncaughtExceptionHandler {
-	private static final CrashHandler sHandler = new CrashHandler();
-	private static final UncaughtExceptionHandler sDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
+	private static CrashHandler sHandler = null;
 	private Context context;
 	private UncaughtExceptionHandler mDefaultHandler;
 	private Exception_logDAO logdao;
 	private boolean crashing = false;
 
 	public static CrashHandler getInstance() {
+		if (sHandler == null) {
+			sHandler = new CrashHandler();
+		}
 		return sHandler;
 	}
 
@@ -72,36 +75,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			return false;
 		}
 		try {
-			StackTraceElement[] trace = ex.getStackTrace();
-			StringBuffer buffer = new StringBuffer();
-			for (StackTraceElement s : trace) {
-				buffer.append(s.toString()).append("\n");
-			}
-			MLog.d(this, buffer.toString() + "错误信息>>>" + ex.getMessage());
-			reqLog = getDefaultReqLog();
-			reqLog.message = ex.getMessage();
-			reqLog.log = buffer.toString();
-			logdao.insertLog(reqLog);
-			// reqLog.save(listener);
-			// MAlertDialog dialog = new MAlertDialog(context);
-			// dialog.setTitle("网络质量差");
-			// dialog.setMessage("是否重新打开软件?否(退出!)");
-			// dialog.setNeutralButton(new MAlertDialog.OnClickListener() {
-			//
-			// @Override
-			// public void onClick(MAlertDialog dialog) {
-			// Intent intent = new Intent(context, Object.class);
-			// context.startActivity(intent);
-			// }
-			// });
-			// dialog.setNegativeButton(new MAlertDialog.OnClickListener() {
-			//
-			// @Override
-			// public void onClick(MAlertDialog dialog) {
-			// MyApplication.getInstance().exit();
-			// }
-			// });
-			// dialog.show();
+			DocUtils.insertLog(ex, null);
 			return false;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -109,23 +83,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		}
 	}
 
-	// SaveListener<String> listener = new SaveListener<String>() {
-	//
-	// @Override
-	// public void done(String objectId, BmobException e) {
-	// if (e != null) {
-	// // 写入本地数据库
-	// logdao.insertLog(reqLog);
-	// MLog.d(this, e.getMessage());
-	// } else {
-	// // 上传云端成功
-	// MLog.d("上传成功!");
-	// }
-	// }
-	// };
-	private ExceptionLog reqLog;
-
-	public ExceptionLog getDefaultReqLog() {
+	public static ExceptionLog getDefaultReqLog() {
 		ExceptionLog log = new ExceptionLog();
 		log.userid = SystemState.getUser().getId();
 		log.username = SystemState.getUser().getName();

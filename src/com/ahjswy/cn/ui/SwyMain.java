@@ -1,6 +1,5 @@
 package com.ahjswy.cn.ui;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
-import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
@@ -29,6 +27,7 @@ import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
+import com.ahjswy.cn.utils.BmobUtils;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.PDH;
@@ -95,205 +94,10 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		ap = new AccountPreference();
 	}
 
-	int startNum = 0;
-
-	// private ServiceStore serviceStore;
-	// startOpenDoc
-	public void startOpenDoc(View v) {
-		// 测试 数据库查询
-		// edNum = (EditText) findViewById(R.id.edNum);
-		// edTime = (EditText) findViewById(R.id.edTime);
-		// time = Long.parseLong(edTime.getText().toString());
-		// serviceStore = new ServiceStore();
-		//
-		// PDH.show(this, "库存查询中..", new PDH.ProgressCallBack() {
-		//
-		// @Override
-		// public void action() {
-		// int num = Integer.parseInt(edNum.getText().toString());
-		// int time = Integer.parseInt(edTime.getText().toString());
-		// for (int i = 0; i < num; i++) {
-		// double sumStock = stockwarn.querySumStock("100106");
-		// if (sumStock == 0) {
-		// Log.d("erry", i + "错误!");
-		// } else {
-		// Log.d("ok", i + " " + sumStock);
-		// }
-		// SystemClock.sleep(time);
-		// }
-		// }
-		// });
-		/////////////////////////////
-
-		// PDH.show(this, "开单中。。。 ", new ProgressCallBack() {
-		//
-		// @Override
-		// public void action() {
-		// int num = Integer.parseInt(edNum.getText().toString());
-		// for (int i = 0; i < num; i++) {
-		// startNum = i;
-		// handler.post(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		//
-		// if (PDH.dialog.textView != null) {
-		// PDH.dialog.textView.setText("第 " + startNum + " 次开单");
-		// }
-		// }
-		// });
-		// String localString = new ServiceStore().str_InitXSDoc("01", "01");
-		// if (RequestHelper.isSuccess(localString)) {
-		// openDoc(i, localString);
-		// } else {
-		// showError("没有获取到数据!失败!等待。。。" + localString);
-		// SystemClock.sleep(5000);
-		// String res = new ServiceStore().str_InitXSDoc("01", "01");
-		// if (RequestHelper.isSuccess(localString)) {
-		// openDoc(i, res);
-		// } else {
-		// showError(i + "没有获取到数据!失败!等待。。。" + res);
-		// SystemClock.sleep(5000);
-		// }
-		//
-		// }
-		// }
-		//
-		// }
-		// });
-
-	}
-
-	// protected void openDoc(int position, String localString) {
-	// DocContainerEntity localDocContainerEntity = (DocContainerEntity)
-	// JSONUtil.fromJson(localString,
-	// DocContainerEntity.class);
-	// doc = ((DefDocXS) JSONUtil.fromJson(localDocContainerEntity.getDoc(),
-	// DefDocXS.class));
-	// List<DefDocPayType> listPayType =
-	// JSONUtil.str2list(localDocContainerEntity.getPaytype(),
-	// DefDocPayType.class);
-	// // List<DefDocItemXS> listItem =
-	// // JSONUtil.str2list(localDocContainerEntity.getItem(),
-	// // DefDocItemXS.class);
-	// List<Long> listItemDelete = new ArrayList<>();
-	// doc.setPromotionid(null);
-	// doc.setDistributionid(null);
-	// doc.setCustomerid("安康001");
-	// // doc.setCustomername("东至侯结才");
-	// String resFor = new ServiceStore().str_SaveXSDoc(doc, getGoodsItem(),
-	// listPayType, listItemDelete);
-	// if (!RequestHelper.isSuccess(resFor)) {
-	// showError("第 " + position + " 次请求错误！" + resFor);
-	// SystemClock.sleep(5000);
-	// return;
-	// }
-	// SystemClock.sleep(time);
-	// }
-
-	public List<DefDocItemXS> getGoodsItem() {
-		List<DefDocItemXS> listItem = new ArrayList<DefDocItemXS>();
-		for (int i = 0; i < 100; i++) {
-			DefDocItemXS item1 = new DefDocItemXS();
-			item1.setBarcode("199170304828");
-			item1.assistnum = 1;
-			item1.setBignum("1袋");
-			item1.setCostprice(0);
-			item1.setDiscountprice(3);
-			item1.setDiscountratio(1);
-			item1.setDiscountsubtotal(3);
-			item1.setDocid(0);
-			item1.setGoodsid("1161");
-			item1.setGoodsname("jmg");
-			item1.setIsdiscount(false);
-			item1.setIsgift(false);
-			item1.setIspromotion(false);
-			item1.setItemid(i);
-			item1.setNum(1);
-			item1.setPrice(3);
-			item1.setSubtotal(3);
-			item1.setTempitemid(1);
-			item1.setUnitid("01");
-			item1.setUnitname("袋");
-			item1.setWarehouseid("01");
-			item1.setWarehousename("亚希富环南总仓储");
-			listItem.add(item1);
-		}
-		// for (int i = 0; i < 100; i++) {
-		// DefDocItemXS item1 = new DefDocItemXS();
-		// item1.setBarcode("6948972968666");
-		// item1.assistnum = 1;
-		// item1.setBignum("1袋");
-		// item1.setCostprice(0);
-		// item1.setDiscountprice(3);
-		// item1.setDiscountratio(1);
-		// item1.setDiscountsubtotal(3);
-		// item1.setDocid(0);
-		// item1.setGoodsid("1167");
-		// item1.setGoodsname("决明子");
-		// item1.setIsdiscount(false);
-		// item1.setIsgift(false);
-		// item1.setIspromotion(false);
-		// item1.setItemid(100 + i);
-		// item1.setNum(1);
-		// item1.setPrice(3);
-		// item1.setSubtotal(3);
-		// item1.setTempitemid(1);
-		// item1.setUnitid("01");
-		// item1.setUnitname("袋");
-		// item1.setWarehouseid("01");
-		// item1.setWarehousename("亚希富环南总仓储");
-		// listItem.add(item1);
-		// }
-		// for (int i = 0; i < 100; i++) {
-		// DefDocItemXS item1 = new DefDocItemXS();
-		// item1.setBarcode("61101530346219");
-		// item1.assistnum = 0.05;
-		// item1.setBignum("1袋");
-		// item1.setCostprice(0);
-		// item1.setDiscountprice(3);
-		// item1.setDiscountratio(1);
-		// item1.setDiscountsubtotal(3);
-		// item1.setDocid(0);
-		// item1.setGoodsid("1168");
-		// item1.setGoodsname("test2");
-		// item1.setIsdiscount(false);
-		// item1.setIsgift(false);
-		// item1.setIspromotion(false);
-		// item1.setItemid(200 + i);
-		// item1.setNum(1);
-		// item1.setPrice(3);
-		// item1.setSubtotal(3);
-		// item1.setTempitemid(1);
-		// item1.setUnitid("01");
-		// item1.setUnitname("袋");
-		// item1.setWarehouseid("01");
-		// item1.setWarehousename("亚希富环南总仓储");
-		// listItem.add(item1);
-		// }
-		return listItem;
-	}
-
 	private void initDate() {
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setProgressStyle(1);
 		progressDialog.setCancelable(false);
-		// if (MyApplication.getInstance().isTestSWY()) {
-		// handlerProgress.sendMessage(handlerProgress.obtainMessage(-1, 100));
-		// new Thread() {
-		// @Override
-		// public void run() {
-		// super.run();
-		// for (int i = 0; i < 100; i++) {
-		// SystemClock.sleep(100);
-		// handlerProgress.sendEmptyMessage(i);
-		// }
-		// handlerProgress.sendEmptyMessage(-3);
-		// showSuccess("数据同步成功!");
-		// }
-		// }.start();
-		// return;
-		// }
 		department = SystemState.getDepartment();
 		if (department == null) {
 			fostStartHandler.sendEmptyMessage(0);
@@ -310,89 +114,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				});
 			}
 		}
-
 	}
-
-	public void updataImg(View v) {
-		// openViceCamera();
-		// return mCamera;
-		// startActivity(new Intent(this, CameraActivity.class));
-		// BitmapUtils bitmp = new BitmapUtils();
-		// String sd =
-		// Environment.getExternalStorageDirectory().getAbsolutePath();
-		// sd = sd + File.separator + "1.png";
-		// if (!new File(sd).exists()) {
-		// showSuccess("没找到图片");
-		// return;
-		// }
-		// Bitmap decodeFile = BitmapFactory.decodeFile(sd);
-		// ivSd.setImageBitmap(decodeFile);
-		//
-		// String imagefile = bitmp.bitmaptoString(decodeFile);
-		// // Bitmap stringtoBitmap = bitmp.stringtoBitmap(bitmaptoString);
-		// // bitmp.savePicture(stringtoBitmap, "3.jpg");
-		// ReqVstAddVisitCustomerJobImage image = new
-		// ReqVstAddVisitCustomerJobImage();
-		// image.setImagefile(imagefile);
-		// image.setImagepath("/000030001.jpg");
-		// image.setVisitjobid(7);
-		// String image2 = new ServiceVisit().vst_UploadVisitImage(image);
-		// if (RequestHelper.isSuccess(image2)) {
-		// showSuccess("上传成功!");
-		// MLog.d(">>>" + imagefile);
-		// } else {
-		// showSuccess("上传失败!" + image2);
-		// }
-		// ======================
-		// 查询商品历史均价
-		// String url = Utils.getServiceAddress("", "");
-		// LinkedHashMap<String, String> map = new LinkedHashMap<String,
-		// String>();
-		// ReqGoodDataPrice req = new ReqGoodDataPrice();
-		// req.startDataTime = "2017-9-1";
-		// req.endDataTime = "2017-9-15";
-		// req.goodsId = "00001";
-		// String object2Json = JSONUtil.toJSONString(req);
-		// map.put("parameter", object2Json);
-		// new Utils_help().getServiceInfor(url, map);
-
-	}
-
-	// Camera camera;
-
-	/**
-	 * 打开摄像头
-	 * 
-	 * @return
-	 */
-	// private boolean openViceCamera() {
-	// SurfaceView sf = (SurfaceView) findViewById(R.id.sf);
-	// SurfaceHolder holder = sf.getHolder();
-	// if (camera != null) {
-	// closeCamera();
-	// }
-	// try {
-	// Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-	// int cameraCount = Camera.getNumberOfCameras();
-	// camera = Camera.open(1);
-	// camera.lock();
-	// camera.setPreviewDisplay(holder);
-	// camera.startPreview();
-	// camera.unlock();
-	// holder.addCallback(this);
-	// return true;
-	// } catch (Exception ex) {
-	// ex.printStackTrace();
-	// closeCamera();
-	// return false;
-	// }
-	// }
-
-	// private void closeCamera() {
-	// camera.stopPreview();
-	// camera.release();
-	// camera = null;
-	// }
 
 	Handler fostStartHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
@@ -456,6 +178,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			getWindow().setAttributes(localLayoutParams);
 			return;
 		}
+		BmobUtils.getInstance().updata();
 		switch (v.getId()) {
 		// 销售
 		case R.id.ll_sale:
@@ -598,12 +321,6 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			}
 		};
 	};
-	// private DefDocXS doc;
-	// private Sv_docitem sv;
-	// private EditText edTime;
-	// private EditText edNum;
-	//
-	// private long time;
 
 	/**
 	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *

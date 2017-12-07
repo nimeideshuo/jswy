@@ -27,7 +27,8 @@ public class ActivityManager {
 	}
 
 	public void popAllActivityExceptOne(Class<?> cls) {
-		for (int i = 0; i < activityStack.size(); i++) {
+
+		for (int i = activityStack.size() - 1; i >= 0; i--) {
 			Activity activity = activityStack.get(i);
 			if (activity == null) {
 				continue;
@@ -36,7 +37,19 @@ public class ActivityManager {
 				continue;
 			}
 			popActivity(activity);
+
 		}
+
+		// for (int i = 0; i < activityStack.size(); i++) {
+		// Activity activity = activityStack.get(i);
+		// if (activity == null) {
+		// continue;
+		// }
+		// if (activity.getClass().equals(cls)) {
+		// continue;
+		// }
+		// popActivity(activity);
+		// }
 	}
 
 	public void pushActivity(Activity activity) {

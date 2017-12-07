@@ -11,7 +11,6 @@ import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
-import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.DefDoc;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocPayType;
@@ -116,12 +115,15 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		adapter.setSum(this);
 		btnAdd.setOnClickListener(addMoreListener);
 		dialog = new Dialog_listCheckBox(InDocEditActivity.this);
-		docContainerEntity = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
+		docContainerEntity = (DocContainerEntity<?>) getIntent().getSerializableExtra("docContainer");
 		this.doc = JSONUtil.fromJson(docContainerEntity.getDoc(), DefDoc.class);
 		if (docContainerEntity.getListitem() != null) {
 			listItem = docContainerEntity.getListitem();
 		} else {
 			listItem = JSONUtil.parseArray(docContainerEntity.getItem(), DefDocItemXS.class);
+		}
+		if (listItem == null) {
+			listItem = new ArrayList<>();
 		}
 		listPayType = JSONUtil.parseArray(docContainerEntity.getPaytype(), DefDocPayType.class);
 		if (listItem != null) {
@@ -130,6 +132,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		}
 		maler = new MAlertDialog(this);
 		unitDao = new GoodsUnitDAO();
+		utils = DocUtils.getInstance();
 	}
 
 	private void intDate() {
@@ -596,6 +599,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 
 				@Override
 				public void onClick(MAlertDialog dialog) {
+					DocUtils.deleteTHDoc();
 					dialog.dismiss();
 					Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
@@ -738,7 +742,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 						}
 						if (Utils.isCombination()) {
 							listItem.addAll(newListItem);
-							DocUtils.combinationItem(listItem, listItemDelete);
+							utils.combinationItem(listItem, listItemDelete);
 							showSuccess("同品增加成功!");
 						} else {
 							listItem.addAll(0, newListItem);
@@ -782,7 +786,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				DefDocItemXS localDefDocItem2 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				listItem.set(j, localDefDocItem2);
 				if (Utils.isCombination()) {
-					DocUtils.combinationItem(listItem, listItemDelete);
+					utils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
 				adapter.setData(listItem);
@@ -794,7 +798,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				listItem.add(localDefDocItem4);
 				refreshUI();
 				if (Utils.isCombination()) {
-					DocUtils.combinationItem(listItem, listItemDelete);
+					utils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
 				adapter.setData(listItem);
@@ -812,7 +816,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					listItem.add(item);
 				}
 				if (Utils.isCombination()) {
-					DocUtils.combinationItem(listItem, listItemDelete);
+					utils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
 				this.adapter.setData(this.listItem);
@@ -875,6 +879,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	private GoodsUnitDAO unitDao;
 	// private AccountPreference ap;
 	private DocContainerEntity docContainerEntity;
+	private DocUtils utils;
 
 	protected void saveTHDoc() {
 		try {

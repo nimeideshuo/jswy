@@ -61,14 +61,21 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menu) {
 		if (menu.getItemId() == 1) {
-			PDH.show(this, new PDH.ProgressCallBack() {
-				public void action() {
-					Intent intent = new Intent();
-					intent.putExtra("items", JSONUtil.toJSONString(items));
-					setResult(Activity.RESULT_OK, intent);
-					finish();
+			List<DefDocItemPD> listPD = new ArrayList<>();
+			for (int i = 0; i < items.size(); i++) {
+				if (items.get(i).getNum() > 0) {
+					listPD.add(items.get(i));
 				}
-			});
+
+			}
+			if (listPD.size() == 0) {
+				showError("请输入数量!");
+				return false;
+			}
+			Intent intent = new Intent();
+			intent.putExtra("items", JSONUtil.toJSONString(listPD));
+			setResult(Activity.RESULT_OK, intent);
+			finish();
 		}
 		return super.onOptionsItemSelected(menu);
 	}

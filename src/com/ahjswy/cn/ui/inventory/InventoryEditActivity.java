@@ -441,7 +441,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				this.listItem.add(defItem);
 				if (Utils.isCombination()) {
 					int size = listItem.size();
-					DocUtils.combinationItem(listItem, listItemDelete);
+					docUtils.combinationItem(listItem, listItemDelete);
 					if (listItem.size() < size) {
 						showSuccess("同品增加成功!");
 					}
@@ -465,7 +465,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 						if (Utils.isCombination()) {
 							listItem.addAll(newListItem);
 							int size = listItem.size();
-							DocUtils.combinationItem(listItem, listItemDelete);
+							docUtils.combinationItem(listItem, listItemDelete);
 							if (listItem.size() < size) {
 								showSuccess("同品增加成功!");
 							}
@@ -484,7 +484,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 				this.listItem.set(i, localDefDocItemPD1);
 				if (Utils.isCombination()) {
 					int size = listItem.size();
-					DocUtils.combinationItem(listItem, listItemDelete);
+					docUtils.combinationItem(listItem, listItemDelete);
 					if (listItem.size() < size) {
 						showSuccess("同品增加成功!");
 					}

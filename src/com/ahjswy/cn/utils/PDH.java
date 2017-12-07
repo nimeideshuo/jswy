@@ -45,7 +45,7 @@ public class PDH {
 				paCallBack.action();
 				PDH.handler.post(new Runnable() {
 					public void run() {
-						if (waitingDialog != null && waitingDialog.isShowing()) {
+						if (activity != null && waitingDialog != null && waitingDialog.isShowing()) {
 							waitingDialog.dismiss();
 						}
 					}
@@ -65,7 +65,7 @@ public class PDH {
 				callBack.action();
 				PDH.handler.post(new Runnable() {
 					public void run() {
-						if (dialog != null && dialog.isShowing()) {
+						if (activity != null && dialog != null && dialog.isShowing()) {
 							dialog.dismiss();
 						}
 					}

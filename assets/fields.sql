@@ -197,6 +197,7 @@ CREATE TABLE IF NOT EXISTS "exception_log" (
 "model"  TEXT(50),
 "versionname"  TEXT(50),
 "message"  TEXT(50),
+"data"  TEXT(50),
 "log"  TEXT(50),
 "datetime"  TEXT(50),
 "isupdata"  INTEGER(1)

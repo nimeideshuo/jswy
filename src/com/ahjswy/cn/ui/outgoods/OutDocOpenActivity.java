@@ -352,7 +352,7 @@ public class OutDocOpenActivity extends BaseActivity
 	};
 
 	public void intentTo() {
-		if (btnDepartment.getTag().toString().isEmpty()) {
+		if (btnDepartment.getTag() == null || btnDepartment.getTag().toString().length() == 0) {
 			PDH.showMessage("部门不能为空");
 			return;
 		}
@@ -386,17 +386,17 @@ public class OutDocOpenActivity extends BaseActivity
 	// 保存所有 信息
 	private void fillDoc() {
 		// 部门save
-		if (TextUtils.isEmptyS(this.btnDepartment.getTag().toString())) {
+		if (btnDepartment.getTag() != null && TextUtils.isEmptyS(btnDepartment.getTag().toString())) {
 			doc.setDepartmentid(btnDepartment.getTag().toString());
 			doc.setDepartmentname(btnDepartment.getText().toString());
 		}
 		// 仓库保存
-		if (btnWarehouse.getTag() != null) {
+		if (btnWarehouse.getTag() != null && TextUtils.isEmptyS(btnWarehouse.getTag().toString())) {
 			doc.setWarehouseid(btnWarehouse.getTag().toString());
 			doc.setWarehousename(btnWarehouse.getText().toString());
 		}
 		// 客户
-		if (btnCustomer.getText().toString().length() > 0) {
+		if (btnCustomer.getTag() != null && TextUtils.isEmptyS(btnCustomer.getTag().toString())) {
 			this.doc.setCustomerid(this.btnCustomer.getTag().toString());
 			this.doc.setCustomername(this.btnCustomer.getText().toString());
 		}

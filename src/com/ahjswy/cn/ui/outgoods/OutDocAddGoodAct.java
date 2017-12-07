@@ -197,7 +197,7 @@ public class OutDocAddGoodAct extends BaseActivity
 			this.etDiscountSubtotal.setFocusableInTouchMode(false);
 			this.btnUnit.setEnabled(false);
 		}
-		PDH.show(this, new ProgressCallBack() {
+		PDH.show(this, "库存查询...", new ProgressCallBack() {
 
 			@Override
 			public void action() {
@@ -213,43 +213,6 @@ public class OutDocAddGoodAct extends BaseActivity
 		});
 	}
 
-	// String stocknum = new
-	// ServiceGoods().gds_GetGoodsWarehouses(docitem.getGoodsid(),
-	// docitem.isIsusebatch());
-	// if (RequestHelper.isSuccess(stocknum)) {
-	// List<RespGoodsWarehouse> goodsWarehouses =
-	// JSONUtil.str2list(stocknum, RespGoodsWarehouse.class);
-	// for (int j = 0; j < goodsWarehouses.size(); j++) {
-	// if
-	// (docitem.getGoodsid().equals(goodsWarehouses.get(j).getGoodsid())
-	// &&
-	// docitem.getWarehouseid().equals(goodsWarehouses.get(j).getWarehouseid()))
-	// {
-	// docitem.setStocknum(goodsWarehouses.get(j));
-	// break;
-	// }
-	// }
-	// runOnUiThread(new Runnable() {
-	//
-	// @Override
-	// public void run() {
-	// // if (docitem.getStocknum() == null) {
-	// // tvStock.setText("?");
-	// // return;
-	// // }
-	// //
-	// // GoodsUnit goodsUnit = new
-	// // GoodsUnitDAO().getGoodsUnit(docitem.getGoodsid(),
-	// // docitem.getUnitid());
-	// // String stocknum =
-	// // DocUtils.Stocknum(docitem.getStocknum(),
-	// // goodsUnit);
-	// // tvStock.setText("库存:" + stocknum);
-	// }
-	// });
-	// } else {
-	// showError("库存获取失败!");
-	// }
 	@Override
 	public boolean onCreateOptionsMenu(Menu paramMenu) {
 		paramMenu.add(0, 0, 0, "单击显示菜单").setTitle("确定").setShowAsAction(1);
@@ -375,7 +338,6 @@ public class OutDocAddGoodAct extends BaseActivity
 			docitem.setUnitid(null);
 			docitem.setUnitname("");
 		}
-
 		this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
 		this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
 				this.docitem.getNum()));
@@ -478,14 +440,13 @@ public class OutDocAddGoodAct extends BaseActivity
 	}
 
 	Handler handlerGet = new Handler() {
-		@SuppressWarnings("null")
 		public void handleMessage(android.os.Message msg) {
 			String message = msg.obj.toString();
 			ReqStrGetGoodsPrice goodsprice = null;
 			if (RequestHelper.isSuccess(message)) {
 				switch (msg.what) {
 				case 0:
-					goodsprice = (ReqStrGetGoodsPrice) JSONUtil.str2list(message, ReqStrGetGoodsPrice.class).get(0);
+					goodsprice = (ReqStrGetGoodsPrice) JSONUtil.parseArray(message, ReqStrGetGoodsPrice.class).get(0);
 					double d1 = Utils.normalize(Utils.getDouble(etNum.getText().toString()).doubleValue(), 2);
 					double d2 = Utils.normalize(Utils.getDouble(etDiscountRatio.getText().toString()).doubleValue(), 2);
 					double d3 = Utils.normalizePrice(goodsprice.getPrice());
@@ -527,32 +488,8 @@ public class OutDocAddGoodAct extends BaseActivity
 
 		};
 	};
-	// private GoodsUnitDAO dao;
 
-	// private String setItemStock(RespGoodsWarehouse res, String unitname) {
-	// if (res == null) {
-	// return "";
-	// }
-	// String stocknum = "";
-	// GoodsUnit goodsRatio = dao.queryBigUnitRatio(goodsUnit.getGoodsid(),
-	// goodsUnit.getUnitid());
-	// GoodsUnit queryBaseUnit = dao.queryBaseUnit(goodsUnit.getGoodsid());
-	// int zs = (int) (res.getStocknum() / goodsRatio.getRatio());
-	// int xs = (int) Utils.normalizePrice(res.getStocknum() %
-	// goodsRatio.getRatio());
-	// if (zs != 0) {
-	// stocknum = stocknum + zs + goodsUnit.getUnitname();
-	// }
-	// if (xs != 0) {
-	// stocknum = stocknum + xs + queryBaseUnit.getUnitname();
-	// }
-	// if (stocknum.length() == 0) {
-	// stocknum = "0" + unitname;
-	// }
-	// return stocknum;
-	// }
-
-	//TODO 选择单位
+	// TODO 选择单位
 	private void unitSelect() {
 		final List<GoodsUnit> localList = new GoodsUnitDAO().queryGoodsUnits(this.docitem.getGoodsid());
 		String[] arrayOfString = new String[localList.size()];

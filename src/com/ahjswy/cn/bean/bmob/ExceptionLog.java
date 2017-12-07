@@ -18,8 +18,17 @@ public class ExceptionLog extends BmobObject {
 	public String log;
 	public String datetime;
 	public String accountset;
+	public String data;
 	public transient int id;
 	public transient boolean isupdata;
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
 
 	public String getAccountset() {
 		return accountset;

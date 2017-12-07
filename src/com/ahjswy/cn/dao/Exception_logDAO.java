@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.bean.bmob.ExceptionLog;
+import com.ahjswy.cn.utils.DocUtils;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -21,7 +22,7 @@ public class Exception_logDAO {
 	 */
 	public List<ExceptionLog> queryAll() {
 		db = helper.getReadableDatabase();
-		String sql = "select id,accountset,userid,username,deviceid,model,versionname,message,log,datetime from exception_log ";
+		String sql = "select id,accountset,userid,username,deviceid,model,versionname,message,data,log,datetime from exception_log ";
 		ArrayList<ExceptionLog> listReqLog = new ArrayList<ExceptionLog>();
 		try {
 			Cursor cursor = db.rawQuery(sql, null);
@@ -35,8 +36,9 @@ public class Exception_logDAO {
 				reqLog.model = cursor.getString(5);
 				reqLog.versionname = cursor.getString(6);
 				reqLog.message = cursor.getString(7);
-				reqLog.log = cursor.getString(8);
-				reqLog.datetime = cursor.getString(9);
+				reqLog.data = cursor.getString(8);
+				reqLog.log = cursor.getString(9);
+				reqLog.datetime = cursor.getString(10);
 				listReqLog.add(reqLog);
 			}
 			return listReqLog;
@@ -48,7 +50,7 @@ public class Exception_logDAO {
 
 	public List<BmobObject> queryBmobAll() {
 		db = helper.getReadableDatabase();
-		String sql = "select id,accountset,userid,username,deviceid,model,versionname,message,log,datetime from exception_log where isupdata=0";
+		String sql = "select id,accountset,userid,username,deviceid,model,versionname,message,data,log,datetime from exception_log where isupdata=0";
 		ArrayList<BmobObject> listReqLog = new ArrayList<BmobObject>();
 		try {
 			Cursor cursor = db.rawQuery(sql, null);
@@ -62,8 +64,9 @@ public class Exception_logDAO {
 				reqLog.model = cursor.getString(5);
 				reqLog.versionname = cursor.getString(6);
 				reqLog.message = cursor.getString(7);
-				reqLog.log = cursor.getString(8);
-				reqLog.datetime = cursor.getString(9);
+				reqLog.data = cursor.getString(8);
+				reqLog.log = cursor.getString(9);
+				reqLog.datetime = cursor.getString(10);
 				listReqLog.add(reqLog);
 			}
 			return listReqLog;
@@ -88,6 +91,7 @@ public class Exception_logDAO {
 		values.put("model", log.model);
 		values.put("versionname", log.versionname);
 		values.put("message", log.message);
+		values.put("data", log.data);
 		values.put("log", log.log);
 		values.put("datetime", log.datetime);
 		values.put("isupdata", log.isupdata == false ? 0 : 1);

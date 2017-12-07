@@ -3,11 +3,16 @@ package com.ahjswy.cn.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.callback.CallbackHandler;
+
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.RequestHelper;
+import com.ahjswy.cn.bean.bmob.ExceptionLog;
 import com.ahjswy.cn.cldb.Sz_stockwarn;
+import com.ahjswy.cn.crash.CrashHandler;
 import com.ahjswy.cn.dao.CustomerDAO;
 import com.ahjswy.cn.dao.CustomerFieldsaleGoodsDAO;
+import com.ahjswy.cn.dao.Exception_logDAO;
 import com.ahjswy.cn.dao.GoodsPriceDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.dao.WarehouseDAO;
@@ -213,7 +218,7 @@ public class DocUtils {
 	 * @param docItem
 	 * @return
 	 */
-	public static double getGoodsPrice(String customerid, DefDocItemXS docItem) {
+	public synchronized static double getGoodsPrice(String customerid, DefDocItemXS docItem) {
 		if (customerid == null || docItem == null) {
 			return 0;
 		}
@@ -362,7 +367,7 @@ public class DocUtils {
 	 * 
 	 * @param item
 	 */
-	public static void combinationItem(List<DefDocItemXS> item, List<Long> listItemDelete) {
+	public void combinationItem(List<DefDocItemXS> item, List<Long> listItemDelete) {
 		int size = item.size();
 		for (int i = 0; i < item.size(); i++) {
 			DefDocItemXS items1 = item.get(i);
@@ -499,8 +504,7 @@ public class DocUtils {
 		return item;
 	}
 
-	public static DefDocItemXS fillItem(DefDocXS doc, GoodsThin paramGoodsThin, double num, double price,
-			long tempitemid) {
+	public DefDocItemXS fillItem(DefDocXS doc, GoodsThin paramGoodsThin, double num, double price, long tempitemid) {
 		DefDocItemXS itemxs = new DefDocItemXS();
 		itemxs.setItemid(0L);
 		itemxs.setTempitemid(tempitemid);
@@ -656,6 +660,24 @@ public class DocUtils {
 	public double queryPDSumStock(String goodsid, String unitid) {
 		double ratio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
 		return Utils.normalizeDouble(stockwarn.querySumStock(goodsid) / ratio);
+	}
+
+	/**
+	 * 错误日志本地记录
+	 * 
+	 * @param ex
+	 */
+	public static void insertLog(Throwable e, Object data) {
+		StackTraceElement[] trace = e.getStackTrace();
+		StringBuffer buffer = new StringBuffer();
+		for (StackTraceElement s : trace) {
+			buffer.append(s.toString()).append("\n");
+		}
+		ExceptionLog log = CrashHandler.getDefaultReqLog();
+		log.setMessage(e.getMessage());
+		log.setLog(buffer.toString());
+		log.setData(data == null ? null : data.toString());
+		new Exception_logDAO().insertLog(log);
 	}
 
 }

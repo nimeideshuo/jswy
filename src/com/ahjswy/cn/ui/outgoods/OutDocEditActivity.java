@@ -20,7 +20,6 @@ import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.model.FieldSaleForPrint;
 import com.ahjswy.cn.model.FieldSaleItemForPrint;
 import com.ahjswy.cn.model.GoodsThin;
-import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.popupmenu.OutDocEditMenuPopup;
 import com.ahjswy.cn.print.BTPrintHelper;
 import com.ahjswy.cn.print.BTPrintHelper.PrintOverCall;
@@ -51,7 +50,6 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.baoyz.swipemenulistview.SwipeMenuListView.OnMenuItemClickListener;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -116,19 +114,22 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		bt_totalSum = (Button) findViewById(R.id.bt_totalSum);
 		btnGoodClass = (Button) findViewById(R.id.btn_goodClass);
 		ishaschanged = getIntent().getBooleanExtra("ishaschanged", true);
-		docContainerEntity = (DocContainerEntity<DefDocItemXS>) getIntent().getSerializableExtra("docContainer");
+		docContainerEntity = (DocContainerEntity<?>) getIntent().getSerializableExtra("docContainer");
 		doc = ((DefDocXS) JSONUtil.fromJson(docContainerEntity.getDoc(), DefDocXS.class));
 		if (docContainerEntity.getListitem() != null) {
-			listItem = docContainerEntity.getListitem();
+			listItem = (List<DefDocItemXS>) docContainerEntity.getListitem();
 		} else {
 			listItem = JSONUtil.parseArray(docContainerEntity.getItem(), DefDocItemXS.class);
+		}
+		if (listItem == null) {
+			listItem = new ArrayList<>();
 		}
 		listPayType = JSONUtil.parseArray(docContainerEntity.getPaytype(), DefDocPayType.class);
 		adapter = new OutDocItemAdapter(this);
 		adapter.setData(listItem);
 		listview_copy_dele.setAdapter(adapter);
 		listItemDelete = new ArrayList<Long>();
-		btnAdd.setOnClickListener(addGoodsClick);
+		btnAdd.setOnClickListener(onAddGoodsClick);
 		listview_copy_dele.setOnItemClickListener(this);
 		dialog = new Dialog_listCheckBox(this);
 		tv_Customer = (TextView) findViewById(R.id.tv_Customer);
@@ -138,14 +139,16 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		sv = new Sv_docitem();
 		unitDAO = new GoodsUnitDAO();
 		serviceStore = new ServiceStore();
+		utils = DocUtils.getInstance();
 	}
 
 	/**
 	 * 本地 sql 写入 与 更新
 	 */
 	public void saveXSDoc() {
+		DocContainerEntity<DefDocItemXS> docEntity = null;
 		try {
-			DocContainerEntity<DefDocItemXS> docEntity = new DocContainerEntity<>();
+			docEntity = new DocContainerEntity<>();
 			// 保存到本地
 			docEntity.setDeleteinitem(docContainerEntity.getDeleteinitem());
 			docEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
@@ -156,7 +159,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			docEntity.setListitem(listItem);
 			DocUtils.saveXSData(docEntity);
 
-			// if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
+			// if (sv.queryDoc(docContainerEntity.getDoctype()) == null)
+			// {
 			// sv.insetDocItem(docEntity);
 			// } else {
 			// sv.updataDocItem(docEntity);
@@ -164,7 +168,9 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		} catch (Exception e) {
 			e.printStackTrace();
 			showError("网络不稳定!");
+			DocUtils.insertLog(e, docEntity.toString());
 		}
+
 	}
 
 	/**
@@ -280,6 +286,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			if (dialog != null) {
 				dialog.dismiss();
 			}
+
 			if (listItem.size() > DocUtils.MAXITEM) {
 				showError("商品已经开满！");
 				return;
@@ -294,8 +301,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		final ArrayList<DefDocItemXS> localArrayList = new ArrayList<DefDocItemXS>();
 		if (goodsThinList.size() == 1) {
 			long l = getMaxTempItemId();
-			DefDocItemXS fillItem = DocUtils.fillItem(doc, goodsThinList.get(0), DocUtils.getDefaultNum(), 0.0D,
-					l + 1L);
+			DefDocItemXS fillItem = utils.fillItem(doc, goodsThinList.get(0), DocUtils.getDefaultNum(), 0.0D, l + 1L);
 			localArrayList.add(fillItem);
 			Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
 			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
@@ -313,8 +319,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 					long l = getMaxTempItemId();
 					for (int i = 0; i < select.size(); i++) {
 						l += 1L;
-						DefDocItemXS fillItem = DocUtils.fillItem(doc, select.get(i), DocUtils.getDefaultNum(), 0.0D,
-								l);
+						DefDocItemXS fillItem = utils.fillItem(doc, select.get(i), DocUtils.getDefaultNum(), 0.0D, l);
 						localArrayList.add(fillItem);
 					}
 					if (localArrayList.isEmpty()) {
@@ -352,7 +357,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		return l1;
 	}
 
-	View.OnClickListener addGoodsClick = new View.OnClickListener() {
+	View.OnClickListener onAddGoodsClick = new View.OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
@@ -374,12 +379,12 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			for (int i = 0; i < localList.size(); i++) {
 				GoodsThin localGoodsThin = (GoodsThin) localList.get(i);
 				l += 1L;
-				DefDocItemXS item = DocUtils.fillItem(doc, localGoodsThin, DocUtils.getDefaultNum(), 0.0D, l);
-				if (item != null) {
-					localArrayList.add(item);
-				} else {
+				DefDocItemXS item = utils.fillItem(doc, localGoodsThin, DocUtils.getDefaultNum(), 0.0D, l);
+				if (item == null) {
 					PDH.showMessage("商品有误!");
 					return;
+				} else {
+					localArrayList.add(item);
 				}
 			}
 			Intent intent = new Intent(OutDocEditActivity.this, OutDocAddMoreGoodsAct.class);
@@ -413,6 +418,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		if ((doc.isIsavailable()) && (doc.isIsposted())) {
 			return;
 		}
+
 		Intent localIntent = new Intent();
 		localIntent.putExtra("customerid", doc.getCustomerid());
 		localIntent.putExtra("positiongive", -1);
@@ -446,18 +452,17 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 				public void action() {
 					long l = getMaxTempItemId();
-					DefDocItemXS docItem = DocUtils.fillItem(doc, localGoodsThin, 0, 0.0D, l + 1L);
+					DefDocItemXS docItem = utils.fillItem(doc, localGoodsThin, DocUtils.getDefaultNum(), 0.0D, l + 1L);
 					if (docItem == null) {
 						return;
 					}
 					docItem.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), docItem));
 					setAddItem(docItem);
-					Intent localIntent = new Intent();
+					Intent localIntent = new Intent(OutDocEditActivity.this, OutDocAddGoodAct.class);
 					localIntent.putExtra("customerid", doc.getCustomerid());
 					localIntent.putExtra("position", 0);
 					localIntent.putExtra("docitem", docItem);
-					startActivityForResult(localIntent.setClass(OutDocEditActivity.this, OutDocAddGoodAct.class), 4);
-
+					startActivityForResult(localIntent, 4);
 				}
 
 			});
@@ -480,65 +485,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		String bigNum = unitDAO.getBigNum(docItem.getGoodsid(), docItem.getUnitid(), docItem.getNum());
 		docItem.setBignum(bigNum);
 	}
-
-	// DefDocItemXS fillItem(GoodsThin paramGoodsThin, double num, double price,
-	// long tempitemid) {
-	// DefDocItemXS itemxs = new DefDocItemXS();
-	// itemxs.setItemid(0L);
-	// itemxs.setTempitemid(tempitemid);
-	// itemxs.setDocid(doc.getDocid());
-	// itemxs.setGoodsid(paramGoodsThin.getId());
-	// itemxs.setGoodsname(paramGoodsThin.getName());
-	// itemxs.setBarcode(paramGoodsThin.getBarcode());
-	// itemxs.setSpecification(paramGoodsThin.getSpecification());
-	// itemxs.setModel(paramGoodsThin.getModel());
-	// itemxs.setWarehouseid(doc.getWarehouseid());
-	// itemxs.setWarehousename(doc.getWarehousename());
-	// GoodsUnit localGoodsUnit = null;
-	// if (Utils.DEFAULT_OutDocUNIT == 0) {
-	// localGoodsUnit = unitDAO.queryBaseUnit(paramGoodsThin.getId());
-	// } else {
-	// localGoodsUnit = unitDAO.queryBigUnit(paramGoodsThin.getId());
-	// }
-	// if (localGoodsUnit == null) {
-	// return null;
-	// }
-	// itemxs.setUnitid(localGoodsUnit.getUnitid());
-	// itemxs.setUnitname(localGoodsUnit.getUnitname());
-	// itemxs.unit = localGoodsUnit;
-	// itemxs.setNum(Utils.normalize(num, 2));
-	// itemxs.setBignum(unitDAO.getBigNum(itemxs.getGoodsid(),
-	// itemxs.getUnitid(), itemxs.getNum()));
-	// // 价格
-	// itemxs.setPrice(Utils.normalizePrice(price));
-	// // 小计
-	// itemxs.setSubtotal(Utils.normalizeSubtotal(itemxs.getNum() *
-	// itemxs.getPrice()));
-	// // 折扣率
-	// itemxs.setDiscountratio(this.doc.getDiscountratio());
-	// // 折扣价格
-	// itemxs.setDiscountprice(Utils.normalizePrice(itemxs.getPrice() *
-	// this.doc.getDiscountratio()));
-	// // 折扣小计
-	// itemxs.setDiscountsubtotal(itemxs.getNum() * itemxs.getDiscountprice());
-	// if (itemxs.getPrice() == 0.0D) {
-	// itemxs.setIsgift(true);
-	// itemxs.setCostprice(0.0D);
-	// itemxs.setRemark("");
-	// itemxs.setRversion(0L);
-	// itemxs.setIsdiscount(false);
-	// itemxs.setIsexhibition(false);
-	// itemxs.setIspromotion(false);
-	// itemxs.setParentitemid(0L);
-	// itemxs.setPromotiontype(-1);
-	// itemxs.setPromotiontypename(null);
-	// itemxs.setOutorderdocid(0L);
-	// itemxs.setOutorderdocshowid(null);
-	// itemxs.setOutorderitemid(0L);
-	// }
-	// itemxs.setIsusebatch(paramGoodsThin.isIsusebatch());
-	// return itemxs;
-	// }
 
 	// 过账
 	public void check(final boolean isprint) {
@@ -838,8 +784,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						PDH.showSuccess("过账成功");
 						if (DocUtils.isBluetoothPrint()) {
 							bluePrint();
+							startActivity(new Intent(OutDocEditActivity.this, SwyMain.class));
+						} else {
+							startActivity(new Intent(OutDocEditActivity.this, SwyMain.class));
+							finish();
 						}
-						startActivity(new Intent(OutDocEditActivity.this, SwyMain.class));
 						// sv.deleteDoc(docContainerEntity.getDoctype());
 						DocUtils.deleteXSDoc();
 						return;
@@ -917,7 +866,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private Scaner scaner;
 	private TextView tv_Customer;
 	private Sv_docitem sv;
-	private DocContainerEntity<DefDocItemXS> docContainerEntity;
+	private DocContainerEntity<?> docContainerEntity;
 	private GoodsUnitDAO unitDAO;
 
 	@Override
@@ -948,7 +897,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 						if (Utils.isCombination()) {
 							listItem.addAll(newListItem);
 							int size = listItem.size();
-							DocUtils.combinationItem(listItem, listItemDelete);
+							utils.combinationItem(listItem, listItemDelete);
 							if (listItem.size() < size) {
 								showSuccess("同品增加成功!");
 							}
@@ -966,7 +915,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				listItem.set(j, localDefDocItemXS3);
 				if (Utils.isCombination()) {
 					int size = listItem.size();
-					DocUtils.combinationItem(listItem, listItemDelete);
+					utils.combinationItem(listItem, listItemDelete);
 					if (listItem.size() < size) {
 						showSuccess("同品增加成功!");
 					}
@@ -984,13 +933,14 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				saveXSDoc();
 				break;
 			case 4:
+				// TODO
 				DefDocItemXS defDocItemXS4 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				defDocItemXS4.assistnum = DocUtils.getAssistnum(defDocItemXS4.getGoodsid(), defDocItemXS4.getUnitid(),
 						defDocItemXS4.getNum());
 				if (Utils.isCombination()) {
 					listItem.add(defDocItemXS4);
 					int size = listItem.size();
-					DocUtils.combinationItem(listItem, listItemDelete);
+					utils.combinationItem(listItem, listItemDelete);
 					if (listItem.size() < size) {
 						showSuccess("同品增加成功!");
 					}
@@ -1019,7 +969,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				bottomCount();
 				if (Utils.isCombination()) {
 					int size = listItem.size();
-					DocUtils.combinationItem(listItem, listItemDelete);
+					utils.combinationItem(listItem, listItemDelete);
 					if (listItem.size() < size) {
 						showSuccess("同品增加成功!");
 					}
@@ -1064,6 +1014,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			}
 		};
 	};
+	private DocUtils utils;
 
 	private void intenToMain() {
 		if (ishaschanged) {
@@ -1108,7 +1059,8 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 				@Override
 				public void onClick(MAlertDialog dialog) {
 					dialog.dismiss();
-					sv.deleteDoc(docContainerEntity.getDoctype());
+					DocUtils.deleteXSDoc();
+					// sv.deleteDoc(docContainerEntity.getDoctype());
 					Intent intent = new Intent(OutDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
@@ -1166,12 +1118,11 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 
 	@Override
 	public void setActionBarText() {
-		ActionBar localActionBar = getActionBar();
 		String showid = TextUtils.isEmpty(doc.getShowid()) ? "销售开单" : doc.getShowid();
 		if (ishaschanged) {
-			localActionBar.setTitle(showid + "*");
+			getActionBar().setTitle(showid + "*");
 		} else {
-			localActionBar.setTitle(showid);
+			getActionBar().setTitle(showid);
 		}
 	}
 

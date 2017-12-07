@@ -35,6 +35,7 @@ import com.ahjswy.cn.request.ReqStrInitDoc;
 import com.ahjswy.cn.request.ReqStrSearchDoc;
 import com.ahjswy.cn.response.DraftEntity;
 import com.ahjswy.cn.ui.out_in_goods.PrintEntity;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.HttpRequestUtils;
 import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.TextUtils;
@@ -96,19 +97,25 @@ public class ServiceStore {
 	/* 销售过账 */
 	public String str_CheckXSDoc(DefDocXS defDocXS, List<DefDocItemXS> listItem, List<DefDocPayType> paytype,
 			List<Long> deleteitem, boolean isprint) {
-		String url = Utils.getServiceAddress(this.baseAddress, "checkxsdoc");
-		DocContainerEntity docc = new DocContainerEntity();
-		defDocXS.setDoctypeid("13");
-		docc.setDoctype("13");
-		docc.setDoc(JSONUtil.toJSONString(defDocXS));
-		// docc.setItem(JSONUtil.toJSONString(listItem));
-		docc.setItem(JSONUtil.toJSONString(listItem));
-		docc.setPaytype(JSONUtil.toJSONString(paytype));
-		docc.setDeleteitem(JSONUtil.toJSONString(deleteitem));
-		map.put("proposerid", SystemState.getUser().getId());
-		map.put("parameter", JSONUtil.toJSONString(docc));
-		map.put("isprint", isprint + "");
-		return new Utils_help().getServiceInfor(url, map);
+		DocContainerEntity<DefDocItemXS> docc = new DocContainerEntity<DefDocItemXS>();
+		try {
+			String url = Utils.getServiceAddress(this.baseAddress, "checkxsdoc");
+			defDocXS.setDoctypeid("13");
+			docc.setDoctype("13");
+			docc.setDoc(JSONUtil.toJSONString(defDocXS));
+			// docc.setItem(JSONUtil.toJSONString(listItem));
+			docc.setItem(JSONUtil.toJSONString(listItem));
+			docc.setPaytype(JSONUtil.toJSONString(paytype));
+			docc.setDeleteitem(JSONUtil.toJSONString(deleteitem));
+			map.put("proposerid", SystemState.getUser().getId());
+			map.put("parameter", JSONUtil.toJSONString(docc));
+			map.put("isprint", isprint + "");
+			return new Utils_help().getServiceInfor(url, map);
+		} catch (Exception e) {
+			e.printStackTrace();
+			DocUtils.insertLog(e, docc);
+		}
+		return "";
 	}
 
 	/**
@@ -319,20 +326,26 @@ public class ServiceStore {
 		return new HttpRequestUtils().Post(url, "true");
 	}
 
-	public String str_CheckXTDoc(DefDoc paramDefDoc, List<DefDocItemXS> paramList, List<DefDocPayType> paramList1,
-			List<Long> paramList2, boolean paramBoolean) {
-		String url = Utils.getServiceAddress(this.baseAddress, "checkxtdoc");
-		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
-		localDocContainerEntity.setDoctype("14");
-		localDocContainerEntity.setDoc(JSONUtil.toJSONString(paramDefDoc));
-		// localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-		localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList1));
-		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(paramList2));
-		map.put("proposerid", SystemState.getUser().getId());
-		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
-		map.put("isprint", paramBoolean + "");
-		return new Utils_help().getServiceInfor(url, map);
+	public String str_CheckXTDoc(DefDoc paramDefDoc, List<DefDocItemXS> itemList, List<DefDocPayType> paramList1,
+			List<Long> paramList2, boolean isprint) {
+		DocContainerEntity<DefDocItemXS> entity = new DocContainerEntity<DefDocItemXS>();
+		try {
+			String url = Utils.getServiceAddress(this.baseAddress, "checkxtdoc");
+			entity.setDoctype("14");
+			entity.setDoc(JSONUtil.toJSONString(paramDefDoc));
+			// localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
+			entity.setItem(JSONUtil.toJSONString(itemList));
+			entity.setPaytype(JSONUtil.toJSONString(paramList1));
+			entity.setDeleteitem(JSONUtil.toJSONString(paramList2));
+			map.put("proposerid", SystemState.getUser().getId());
+			map.put("parameter", JSONUtil.toJSONString(entity));
+			map.put("isprint", isprint + "");
+			return new Utils_help().getServiceInfor(url, map);
+		} catch (Exception e) {
+			e.printStackTrace();
+			DocUtils.insertLog(e, entity);
+		}
+		return "";
 	}
 
 	public String str_DeleteDoc(String paramString, long paramLong) {
@@ -552,26 +565,32 @@ public class ServiceStore {
 	/* 销售单据保存 */
 	public String str_SaveXSDoc(DefDocXS defdocxs, List<DefDocItemXS> listItem, List<DefDocPayType> paramList1,
 			List<Long> listItemDelete) {
-		String url = Utils.getServiceAddress(this.baseAddress, "savexsdoc");
-		defdocxs.setIsposted(false);
-		defdocxs.setIssettleup(false);
-		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
-		localDocContainerEntity.setDoctype("13");
-		localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdocxs));
-		// localDocContainerEntity.setItem(JSONUtil.toJSONString(listItem));
-		localDocContainerEntity.setItem(JSONUtil.toJSONString(listItem));
-		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList1));
-		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
-		// 申请人id（那个人保存）
-		map.put("proposerid", SystemState.getUser().getId());
-		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
-		return new Utils_help().getServiceInfor(url, map);
+		DocContainerEntity<DefDocItemXS> localDocContainerEntity = new DocContainerEntity<DefDocItemXS>();
+		try {
+			String url = Utils.getServiceAddress(this.baseAddress, "savexsdoc");
+			defdocxs.setIsposted(false);
+			defdocxs.setIssettleup(false);
+			localDocContainerEntity.setDoctype("13");
+			localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdocxs));
+			// localDocContainerEntity.setItem(JSONUtil.toJSONString(listItem));
+			localDocContainerEntity.setItem(JSONUtil.toJSONString(listItem));
+			localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList1));
+			localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
+			// 申请人id（那个人保存）
+			map.put("proposerid", SystemState.getUser().getId());
+			map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
+			return new Utils_help().getServiceInfor(url, map);
+		} catch (Exception e) {
+			e.printStackTrace();
+			DocUtils.insertLog(e, localDocContainerEntity);
+		}
+		return "";
 	}
 
 	public String str_SaveCGDoc(DefDocCG defdoccg, List<DefDocItemCG> defdocitemcgList,
 			List<DefDocPayType> defdocpaytype, List<Long> deleteitem) {
 		String url = Utils.getServiceAddress(baseAddress, "savecgdoc");
-		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
+		DocContainerEntity<DefDocItemCG> localDocContainerEntity = new DocContainerEntity<DefDocItemCG>();
 		localDocContainerEntity.setDoctype("101");
 		localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdoccg));
 		localDocContainerEntity.setItem(JSONUtil.toJSONString(defdocitemcgList));
@@ -599,20 +618,26 @@ public class ServiceStore {
 
 	public String str_SaveXTDoc(DefDoc paramDefDoc, List<DefDocItemXS> paramList, List<DefDocPayType> paramList1,
 			List<Long> paramList2) {
-		String url = Utils.getServiceAddress(this.baseAddress, "savextdoc");
-		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
-		localDocContainerEntity.setDoctype("14");
-		localDocContainerEntity.setDoc(JSONUtil.toJSONString(paramDefDoc));
-		// localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-		localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-		localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList1));
-		localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(paramList2));
-		localDocContainerEntity.setDeleteinitem("");
-		localDocContainerEntity.setInfo("");
-		localDocContainerEntity.setInitem("");
-		map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
-		map.put("proposerid", SystemState.getUser().getId());
-		return new Utils_help().getServiceInfor(url, map);
+		DocContainerEntity<DefDocItemXS> entity = new DocContainerEntity<DefDocItemXS>();
+		try {
+			String url = Utils.getServiceAddress(this.baseAddress, "savextdoc");
+			entity.setDoctype("14");
+			entity.setDoc(JSONUtil.toJSONString(paramDefDoc));
+			// localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
+			entity.setItem(JSONUtil.toJSONString(paramList));
+			entity.setPaytype(JSONUtil.toJSONString(paramList1));
+			entity.setDeleteitem(JSONUtil.toJSONString(paramList2));
+			entity.setDeleteinitem("");
+			entity.setInfo("");
+			entity.setInitem("");
+			map.put("parameter", JSONUtil.toJSONString(entity));
+			map.put("proposerid", SystemState.getUser().getId());
+			return new Utils_help().getServiceInfor(url, map);
+		} catch (Exception e) {
+			e.printStackTrace();
+			DocUtils.insertLog(e, entity);
+		}
+		return "";
 	}
 
 	public String str_SearchDBDoc(ReqStrSearchDoc paramReqStrSearchDoc) {

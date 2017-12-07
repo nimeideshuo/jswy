@@ -54,7 +54,7 @@ public class SearchHelper implements View.OnClickListener, OnTextChangeListener 
 	private Handler searchGoodsHandler = new Handler() {
 		public void handleMessage(Message message) {
 			// 关闭进度条
-			setItemAnimShow(SearchHelper.this.SEARCH);
+			// setItemAnimShow(SearchHelper.this.SEARCH);
 			if (SearchHelper.listGoods.size() == 0) {// 没查询到不显示，查询到显示
 				PDH.showFail("未查到任何数据");
 				autoTextView.dismissDropDown();
@@ -95,7 +95,7 @@ public class SearchHelper implements View.OnClickListener, OnTextChangeListener 
 
 	private void searchGoods(final String paramString) {
 		// 查找时候 左边 进度
-		setItemAnimShow(LOADING);
+		// setItemAnimShow(LOADING);
 		new Thread() {
 			public void run() {
 				// 名字相同 Specification 有一个null 则为null
@@ -105,16 +105,18 @@ public class SearchHelper implements View.OnClickListener, OnTextChangeListener 
 		}.start();
 	}
 
-	private void setItemAnimShow(int paramInt) {
-		autoTextView.setCompoundDrawablesWithIntrinsicBounds(drawables[paramInt], null, null, null);
-		if (paramInt == this.LOADING) {
-			AnimationDrawable drawable = (AnimationDrawable) autoTextView.getCompoundDrawables()[0];
-			if (drawable != null) {
-				drawable.stop();
-				drawable.start();
-			}
-		}
-	}
+	// private void setItemAnimShow(int paramInt) {
+	// autoTextView.setCompoundDrawablesWithIntrinsicBounds(drawables[paramInt],
+	// null, null, null);
+	// if (paramInt == this.LOADING) {
+	// AnimationDrawable drawable = (AnimationDrawable)
+	// autoTextView.getCompoundDrawables()[0];
+	// if (drawable != null) {
+	// drawable.stop();
+	// drawable.start();
+	// }
+	// }
+	// }
 
 	public SearchGoodsAdpater getAdapter() {
 		return this.adapter;

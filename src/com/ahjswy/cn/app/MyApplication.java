@@ -2,6 +2,8 @@ package com.ahjswy.cn.app;
 
 import com.ahjswy.cn.crash.CrashHandler;
 import com.ahjswy.cn.ui.Swy_splash;
+import com.ahjswy.cn.utils.DocUtils;
+import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 
 import android.app.Application;

@@ -1,6 +1,5 @@
 package com.ahjswy.cn.ui.inventory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.R;
@@ -9,7 +8,6 @@ import com.ahjswy.cn.dao.GoodsUnitDAO;
 import com.ahjswy.cn.model.DefDocItemPD;
 import com.ahjswy.cn.model.GoodsUnit;
 import com.ahjswy.cn.request.ReqStrGetGoodsPricePD;
-import com.ahjswy.cn.service.ServiceGoods;
 import com.ahjswy.cn.ui.BaseActivity;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.JSONUtil;

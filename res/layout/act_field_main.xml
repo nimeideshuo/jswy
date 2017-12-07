@@ -403,28 +403,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="1.0dip"
                 android:background="@color/bg_main_divder" />
-
-            <!-- 
-
-            <EditText
-                android:id="@+id/edNum"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="开单数量"
-                android:inputType="number" />
-
-            <EditText
-                android:id="@+id/edTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="请输入开单时间(毫秒)"
-                android:inputType="number" />
-
+			<!-- 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="startOpenDoc"
-                android:text="开单" />
+                android:text="start" />
+             <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="stopOpenDoc"
+                android:text="stop" />
                  -->
         </LinearLayout>
     </ScrollView>

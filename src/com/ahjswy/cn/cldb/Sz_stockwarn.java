@@ -1,13 +1,14 @@
 package com.ahjswy.cn.cldb;
 
 import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.response.RespStockwarn;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.Utils;
 
 public class Sz_stockwarn extends CloudDBBase {
@@ -29,6 +30,7 @@ public class Sz_stockwarn extends CloudDBBase {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			DocUtils.insertLog(e, null);
 		} finally {
 			if (query != null) {
 				try {
@@ -62,6 +64,7 @@ public class Sz_stockwarn extends CloudDBBase {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			DocUtils.insertLog(e, null);
 		} finally {
 			try {
 				if (query != null) {
@@ -118,6 +121,7 @@ public class Sz_stockwarn extends CloudDBBase {
 	public double queryGoodsCostprice(String warehouseid, String goodsid, String unitid) {
 		ResultSet rs = null;
 		try {
+			Connection conn = getConnection();
 			String sql = "{call sp_getgoodscostprice(?,?,?)}";
 			CallableStatement statement = conn.prepareCall(sql);
 			statement.setString(1, warehouseid);

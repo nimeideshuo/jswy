@@ -1,13 +1,9 @@
 package com.ahjswy.cn.cldb;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.SystemState;
@@ -32,40 +28,25 @@ public class CloudDBBase {
 	final public String USERNAME = SystemState.getDBUser() == null ? "" : SystemState.getDBUser().userid;
 	// cloud databas password
 	final public String PASSWROD = SystemState.getDBUser() == null ? "" : SystemState.getDBUser().password;
-	public Connection conn;
-
-	public CloudDBBase() {
-		try {
-			MLog.d("准备连接...");
-			conn = getConnection(URL, USERNAME, PASSWROD);
-			if (conn == null) {
-				MLog.d("连接失败!");
-			} else {
-				MLog.d("连接成功");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+	private Connection conn;
 
 	public ResultSet executeQuery(String sql) {
-		if (conn == null) {
-			try {
-				conn = getConnection(URL, USERNAME, PASSWROD);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+
+		try {
+			conn = getConnection(URL, USERNAME, PASSWROD);
 			if (conn == null) {
 				return null;
 			}
-		}
-		try {
 			ResultSet result = conn.createStatement().executeQuery(sql); // 事务中读
 			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	protected Connection getConnection() throws SQLException {
+		return conn = getConnection(URL, USERNAME, PASSWROD);
 	}
 
 	public Connection getConnection(String url, String userName, String passwrod) throws SQLException {

@@ -114,4 +114,12 @@ public class DocContainerEntity<T> implements Serializable {
 	public void setShowid(String showid) {
 		this.showid = showid;
 	}
+
+	@Override
+	public String toString() {
+		return "DocContainerEntity [deleteinitem=" + deleteinitem + ", deleteitem=" + deleteitem + ", doc=" + doc
+				+ ", doctype=" + doctype + ", info=" + info + ", initem=" + initem + ", item=" + item + ", listitem="
+				+ listitem + ", paytype=" + paytype + ", svid=" + svid + ", showid=" + showid + "]";
+	}
+
 }

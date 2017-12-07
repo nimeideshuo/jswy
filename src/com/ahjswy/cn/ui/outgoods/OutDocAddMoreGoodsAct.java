@@ -68,17 +68,27 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		doc = (DefDocXS) getIntent().getSerializableExtra("doc");
 		adapter = new OutDocAddMoreAdapter(this);
 		adapter.setDoc(doc);
-		for (DefDocItemXS item : items) {
-			item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
-			double sumstock = stockwarn.querySumStock(item.getGoodsid());
-			item.stocksumnum = sumstock;
-			item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
-			double stocknum = stockwarn.queryStockNum(item.getWarehouseid(), item.getGoodsid());
-			item.stocknum = stocknum;
-			item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
-		}
-		adapter.setItem(items);
 		listview.setAdapter(adapter);
+		isScanerBarcode = true;
+		PDH.show(this, "库存查询中...", new PDH.ProgressCallBack() {
+
+			@Override
+			public void action() {
+				for (DefDocItemXS item : items) {
+					item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
+					double sumstock = stockwarn.querySumStock(item.getGoodsid());
+					item.stocksumnum = sumstock;
+					item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
+					double stocknum = stockwarn.queryStockNum(item.getWarehouseid(), item.getGoodsid());
+					item.stocknum = stocknum;
+					item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
+					handler.sendEmptyMessage(0);
+				}
+			}
+		});
+
+		// adapter.setItem(items);
+		// listview.setAdapter(adapter);
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
@@ -194,7 +204,6 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			if (msg.what == 0) {
-				System.out.println(items);
 				adapter.setItem(items);
 				adapter.notifyDataSetChanged();
 				isScanerBarcode = false;
@@ -224,21 +233,26 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 
 	// 保存输入的值 必须有一个 大于0 的
 	private void tv_title_start() {
-		List<DefDocItemXS> data = adapter.getData();
-		listDe = new ArrayList<DefDocItemXS>();
-		for (int i = 0; i < data.size(); i++) {
-			if (data.get(i).getNum() > 0.0D) {
-				listDe.add(data.get(i));
+		try {
+			List<DefDocItemXS> data = adapter.getData();
+			listDe = new ArrayList<DefDocItemXS>();
+			for (int i = 0; i < data.size(); i++) {
+				if (data.get(i).getNum() > 0.0D) {
+					listDe.add(data.get(i));
+				}
 			}
+			if (listDe.size() == 0) {
+				PDH.showError("必需至少有一条商品数量大于0");
+				return;
+			}
+			Intent intent = new Intent();
+			intent.putExtra("items", JSONUtil.toJSONString(listDe));
+			setResult(RESULT_OK, intent);
+			finish();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		if (listDe.size() == 0) {
-			PDH.showError("必需至少有一条商品数量大于0");
-			return;
-		}
-		Intent intent = new Intent();
-		intent.putExtra("items", JSONUtil.toJSONString(listDe));
-		setResult(RESULT_OK, intent);
-		finish();
+
 	}
 
 	public long getMaxTempItemId() {

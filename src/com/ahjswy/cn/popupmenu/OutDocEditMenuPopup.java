@@ -33,12 +33,12 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 	private AccountPreference ap;
 	private LinearLayout ll_BlueDevicesPrint;
 
-	public OutDocEditMenuPopup(OutDocEditActivity activity) {
+	public OutDocEditMenuPopup(OutDocEditActivity activity, DefDocXS doc) {
 		this.activity = activity;
 		root = LayoutInflater.from(activity).inflate(R.layout.popup_menu_outexchangedocedit, null);
 		setContentView(root);
 		initView();
-		doc = activity.getDoc();
+		this.doc = doc;
 		setAnimationStyle(R.style.buttom_in_out);
 		DisplayMetrics localDisplayMetrics = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);

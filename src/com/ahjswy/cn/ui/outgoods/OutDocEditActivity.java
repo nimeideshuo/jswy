@@ -429,10 +429,6 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 		startActivityForResult(localIntent.setClass(this, OutDocAddGoodAct.class), 2);
 	}
 
-	public DefDocXS getDoc() {
-		return this.doc;
-	}
-
 	private AdapterView.OnItemClickListener onItemClickListeners = new AdapterView.OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			if ((menuPopup != null) && (menuPopup.isShowing())) {
@@ -1088,7 +1084,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			break;
 		case 0:
 			if (this.menuPopup == null) {
-				this.menuPopup = new OutDocEditMenuPopup(this);
+				this.menuPopup = new OutDocEditMenuPopup(this, doc);
 			}
 			this.menuPopup.showAtLocation(listview_copy_dele, Gravity.BOTTOM, 0, 0);
 			WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();

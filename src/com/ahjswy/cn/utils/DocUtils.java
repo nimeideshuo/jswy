@@ -330,7 +330,8 @@ public class DocUtils {
 	public static Warehouse getWarehouse(String warehouseid) {
 		return warehousedao.getWarehouse(warehouseid);
 	}
-	public static GoodsUnit queryBigUnit(String goodsid){
+
+	public static GoodsUnit queryBigUnit(String goodsid) {
 		return unitDAO.queryBigUnit(goodsid);
 	}
 
@@ -697,8 +698,23 @@ public class DocUtils {
 		new Exception_logDAO().insertLog(log);
 	}
 
+	public static void insertLog(String message, String data) {
+		ExceptionLog log = CrashHandler.getDefaultReqLog();
+		log.setMessage(message);
+		log.setLog(data);
+		new Exception_logDAO().insertLog(log);
+	}
+
+	public static void insertLog(Throwable e) {
+		insertLog(e, null);
+	}
+
 	public static List<Warehouse> getAllWarehouses() {
 		return warehousedao.getAllWarehouses();
+	}
+
+	public static String getBigNum(String goodsid, String unitid, double num) {
+		return unitDAO.getBigNum(goodsid, unitid, num);
 	}
 
 }

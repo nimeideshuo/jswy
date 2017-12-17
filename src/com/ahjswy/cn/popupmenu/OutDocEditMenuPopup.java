@@ -1,7 +1,6 @@
 package com.ahjswy.cn.popupmenu;
 
 import com.ahjswy.cn.R;
-import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.model.DefDocXS;
 import com.ahjswy.cn.ui.outgoods.OutDocEditActivity;
 import com.ahjswy.cn.utils.DocUtils;
@@ -30,7 +29,6 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 	private LinearLayout btnSave;
 	// private LinearLayout btnPromotion;
 	private LinearLayout ll_SavePrint;
-	private AccountPreference ap;
 	private LinearLayout ll_BlueDevicesPrint;
 
 	public OutDocEditMenuPopup(OutDocEditActivity activity, DefDocXS doc) {
@@ -45,7 +43,7 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 		int i = localDisplayMetrics.widthPixels;
 		int j = localDisplayMetrics.heightPixels;
 		setWidth(i);
-		if ((doc.isIsavailable()) && (doc.isIsposted())) {
+		if (doc != null && (doc.isIsavailable()) && (doc.isIsposted())) {
 			setHeight(j / 11);
 			show(false);
 			return;
@@ -55,7 +53,6 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 	}
 
 	private void initView() {
-		ap = new AccountPreference();
 		btnCheck = (Button) root.findViewById(R.id.btnCheck);
 		btnCheckPrint = (LinearLayout) root.findViewById(R.id.btnCheckPrint);
 		btnCustomerHistory = (LinearLayout) root.findViewById(R.id.btnCustomerHistory);
@@ -126,7 +123,7 @@ public class OutDocEditMenuPopup extends PopupWindow implements OnClickListener 
 	}
 
 	public void show(boolean isShow) {
-		if ((doc.isIsavailable()) && (doc.isIsposted())) {
+		if (doc != null && (doc.isIsavailable()) && (doc.isIsposted())) {
 			root.findViewById(R.id.linear_top).setVisibility(View.GONE);
 			btnSave.setVisibility(View.GONE);
 			// btnDelete.setVisibility(View.GONE);

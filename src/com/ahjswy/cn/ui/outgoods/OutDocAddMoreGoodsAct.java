@@ -75,14 +75,19 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 			@Override
 			public void action() {
 				for (DefDocItemXS item : items) {
-					item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
-					double sumstock = stockwarn.querySumStock(item.getGoodsid());
-					item.stocksumnum = sumstock;
-					item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
-					double stocknum = stockwarn.queryStockNum(item.getWarehouseid(), item.getGoodsid());
-					item.stocknum = stocknum;
-					item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
-					handler.sendEmptyMessage(0);
+					try {
+						item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
+						double sumstock = stockwarn.querySumStock(item.getGoodsid());
+						item.stocksumnum = sumstock;
+						item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
+						double stocknum = stockwarn.queryStockNum(item.getWarehouseid(), item.getGoodsid());
+						item.stocknum = stocknum;
+						item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
+						handler.sendEmptyMessage(0);
+					} catch (Exception e) {
+						e.printStackTrace();
+						DocUtils.insertLog(e);
+					}
 				}
 			}
 		});
@@ -183,18 +188,24 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 
 			@Override
 			public void action() {
-				for (Object objitem : goodsMap.values()) {
-					DefDocItemXS item = (DefDocItemXS) objitem;
-					item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
-					double sumstock = stockwarn.querySumStock(item.getGoodsid());
-					item.stocksumnum = sumstock;
-					item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
-					double stocknum = stockwarn.queryStockNum(item.getWarehouseid(), item.getGoodsid());
-					item.stocknum = stocknum;
-					item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
-					items.add(item);
+				try {
+
+					for (Object objitem : goodsMap.values()) {
+						DefDocItemXS item = (DefDocItemXS) objitem;
+						item.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), item));
+						double sumstock = stockwarn.querySumStock(item.getGoodsid());
+						item.stocksumnum = sumstock;
+						item.goodSumStock = DocUtils.Stocknum(sumstock, item.unit);
+						double stocknum = stockwarn.queryStockNum(item.getWarehouseid(), item.getGoodsid());
+						item.stocknum = stocknum;
+						item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
+						items.add(item);
+					}
+					handler.sendEmptyMessage(0);
+				} catch (Exception e) {
+					e.printStackTrace();
+					DocUtils.insertLog(e);
 				}
-				handler.sendEmptyMessage(0);
 			}
 		});
 
@@ -246,7 +257,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 				return;
 			}
 			Intent intent = new Intent();
-			intent.putExtra("items", JSONUtil.toJSONString(listDe));
+			intent.putExtra("items", JSONUtil.object2Json(listDe));
 			setResult(RESULT_OK, intent);
 			finish();
 		} catch (Exception e) {

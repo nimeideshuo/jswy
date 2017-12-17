@@ -102,13 +102,13 @@ public class ServiceStore {
 			String url = Utils.getServiceAddress(this.baseAddress, "checkxsdoc");
 			defDocXS.setDoctypeid("13");
 			docc.setDoctype("13");
-			docc.setDoc(JSONUtil.toJSONString(defDocXS));
+			docc.setDoc(JSONUtil.object2Json(defDocXS));
+			docc.setItem(JSONUtil.object2Json(listItem));
 			// docc.setItem(JSONUtil.toJSONString(listItem));
-			docc.setItem(JSONUtil.toJSONString(listItem));
-			docc.setPaytype(JSONUtil.toJSONString(paytype));
-			docc.setDeleteitem(JSONUtil.toJSONString(deleteitem));
+			docc.setPaytype(JSONUtil.object2Json(paytype));
+			docc.setDeleteitem(JSONUtil.object2Json(deleteitem));
 			map.put("proposerid", SystemState.getUser().getId());
-			map.put("parameter", JSONUtil.toJSONString(docc));
+			map.put("parameter", JSONUtil.object2Json(docc));
 			map.put("isprint", isprint + "");
 			return new Utils_help().getServiceInfor(url, map);
 		} catch (Exception e) {
@@ -332,13 +332,13 @@ public class ServiceStore {
 		try {
 			String url = Utils.getServiceAddress(this.baseAddress, "checkxtdoc");
 			entity.setDoctype("14");
-			entity.setDoc(JSONUtil.toJSONString(paramDefDoc));
+			entity.setDoc(JSONUtil.object2Json(paramDefDoc));
 			// localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-			entity.setItem(JSONUtil.toJSONString(itemList));
-			entity.setPaytype(JSONUtil.toJSONString(paramList1));
-			entity.setDeleteitem(JSONUtil.toJSONString(paramList2));
+			entity.setItem(JSONUtil.object2Json(itemList));
+			entity.setPaytype(JSONUtil.object2Json(paramList1));
+			entity.setDeleteitem(JSONUtil.object2Json(paramList2));
 			map.put("proposerid", SystemState.getUser().getId());
-			map.put("parameter", JSONUtil.toJSONString(entity));
+			map.put("parameter", JSONUtil.object2Json(entity));
 			map.put("isprint", isprint + "");
 			return new Utils_help().getServiceInfor(url, map);
 		} catch (Exception e) {
@@ -571,14 +571,14 @@ public class ServiceStore {
 			defdocxs.setIsposted(false);
 			defdocxs.setIssettleup(false);
 			localDocContainerEntity.setDoctype("13");
-			localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdocxs));
+			localDocContainerEntity.setDoc(JSONUtil.object2Json(defdocxs));
+			localDocContainerEntity.setItem(JSONUtil.object2Json(listItem));
 			// localDocContainerEntity.setItem(JSONUtil.toJSONString(listItem));
-			localDocContainerEntity.setItem(JSONUtil.toJSONString(listItem));
-			localDocContainerEntity.setPaytype(JSONUtil.toJSONString(paramList1));
-			localDocContainerEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
+			localDocContainerEntity.setPaytype(JSONUtil.object2Json(paramList1));
+			localDocContainerEntity.setDeleteitem(JSONUtil.object2Json(listItemDelete));
 			// 申请人id（那个人保存）
 			map.put("proposerid", SystemState.getUser().getId());
-			map.put("parameter", JSONUtil.toJSONString(localDocContainerEntity));
+			map.put("parameter", JSONUtil.object2Json(localDocContainerEntity));
 			return new Utils_help().getServiceInfor(url, map);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -622,15 +622,15 @@ public class ServiceStore {
 		try {
 			String url = Utils.getServiceAddress(this.baseAddress, "savextdoc");
 			entity.setDoctype("14");
-			entity.setDoc(JSONUtil.toJSONString(paramDefDoc));
+			entity.setDoc(JSONUtil.object2Json(paramDefDoc));
 			// localDocContainerEntity.setItem(JSONUtil.toJSONString(paramList));
-			entity.setItem(JSONUtil.toJSONString(paramList));
-			entity.setPaytype(JSONUtil.toJSONString(paramList1));
-			entity.setDeleteitem(JSONUtil.toJSONString(paramList2));
+			entity.setItem(JSONUtil.object2Json(paramList));
+			entity.setPaytype(JSONUtil.object2Json(paramList1));
+			entity.setDeleteitem(JSONUtil.object2Json(paramList2));
 			entity.setDeleteinitem("");
 			entity.setInfo("");
 			entity.setInitem("");
-			map.put("parameter", JSONUtil.toJSONString(entity));
+			map.put("parameter", JSONUtil.object2Json(entity));
 			map.put("proposerid", SystemState.getUser().getId());
 			return new Utils_help().getServiceInfor(url, map);
 		} catch (Exception e) {

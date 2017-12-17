@@ -179,7 +179,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 					return;
 				}
 				Intent localIntent = new Intent();
-				localIntent.putExtra("items", JSONUtil.toJSONString(localArrayList));
+				localIntent.putExtra("items", JSONUtil.object2Json(localArrayList));
 				setResult(RESULT_OK, localIntent);
 				finish();
 			}

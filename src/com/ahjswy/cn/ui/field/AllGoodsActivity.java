@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.ahjswy.cn.R;
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.model.GoodsThin;
 import com.ahjswy.cn.scaner.Scaner;
@@ -116,12 +117,12 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 
 		@Override
 		public void setBarcode(String barcode) {
-			showPriceDialog(barcode);
+			readPriceDialog(barcode);
 		}
 
 	};
 
-	private void showPriceDialog(String barcode) {
+	private void readPriceDialog(String barcode) {
 		ArrayList<GoodsThin> goodsThinList = new GoodsDAO().getGoodsThinList(barcode);
 		if (goodsThinList.isEmpty()) {
 			showError("没有找到商品！");

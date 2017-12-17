@@ -13,6 +13,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Process;
 import android.provider.Settings;
+import android.util.Log;
 import cn.bmob.v3.Bmob;
 
 public class MyApplication extends Application {
@@ -82,13 +83,29 @@ public class MyApplication extends Application {
 	}
 
 	/**
-	 * 是不是测试版本
+	 * 判断可用内存是否危险
 	 * 
 	 * @return
 	 */
-	// public boolean isTestSWY() {
-	// return true;
-	// }
+	public boolean isDangerMemory() {
+		final int M = 1024 * 1024;
+		final Runtime runtime = Runtime.getRuntime();
+		Log.i("tag", "最大可用内存：" + runtime.maxMemory() / M + "M");
+		Log.i("tag", "当前可用内存：" + runtime.totalMemory() / M + "M");
+		Log.i("tag", "当前空闲内存：" + runtime.freeMemory() / M + "M");
+		Log.i("tag", "当前已使用内存：" + (runtime.totalMemory() - runtime.freeMemory()) / M + "M");
+		if ((runtime.maxMemory() / M) - (runtime.totalMemory() / M) < 20) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("最大可用内存：" + runtime.maxMemory() / M + "M").append("\n");
+			sb.append("当前可用内存：" + runtime.totalMemory() / M + "M").append("\n");
+			sb.append("当前空闲内存：" + runtime.freeMemory() / M + "M").append("\n");
+			sb.append("当前已使用内存：" + (runtime.totalMemory() - runtime.freeMemory()) / M).append("\n");
+			DocUtils.insertLog("内存不足!", sb.toString());
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	// 得到本机Mac地址
 	public String getMac() {

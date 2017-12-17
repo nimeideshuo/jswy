@@ -2,7 +2,6 @@ package com.ahjswy.cn.utils;
 
 import java.util.List;
 
-import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.bean.bmob.ExceptionLog;
 import com.ahjswy.cn.dao.Exception_logDAO;
 
@@ -14,13 +13,10 @@ import cn.bmob.v3.listener.QueryListListener;
 
 public class BmobUtils {
 	final static Exception_logDAO logDAO = new Exception_logDAO();
-	static BmobUtils bmobutils;
+	private static BmobUtils bmobutils = new BmobUtils();
 	private List<BmobObject> listexception;
 
 	public static BmobUtils getInstance() {
-		if (bmobutils == null) {
-			bmobutils = new BmobUtils();
-		}
 		return bmobutils;
 	}
 

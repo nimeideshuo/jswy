@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.response.RespGoodsWarehouse;
-import com.ahjswy.cn.response.RespStockwarn;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.Utils;
 
@@ -121,10 +120,15 @@ public class Sz_stockwarn extends CloudDBBase {
 	 */
 	public double queryGoodsCostprice(String warehouseid, String goodsid, String unitid) {
 		ResultSet rs = null;
+		CallableStatement statement = null;
+		Connection conn = null;
 		try {
-			Connection conn = getConnection();
+			conn = getConnection();
+			if (conn == null) {
+				return 0;
+			}
 			String sql = "{call sp_getgoodscostprice(?,?,?)}";
-			CallableStatement statement = conn.prepareCall(sql);
+			statement = conn.prepareCall(sql);
 			statement.setString(1, warehouseid);
 			statement.setString(2, goodsid);
 			statement.setString(3, unitid);
@@ -133,11 +137,21 @@ public class Sz_stockwarn extends CloudDBBase {
 			while (rs.next()) {
 				return Utils.getDouble(rs.getString(1));
 			}
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				rs.close();
+				if (rs != null) {
+					rs.close();
+				}
+				if (statement != null) {
+					statement.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

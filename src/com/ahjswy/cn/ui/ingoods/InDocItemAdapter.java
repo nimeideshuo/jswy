@@ -43,16 +43,9 @@ public class InDocItemAdapter extends BaseAdapter {
 		return this.items;
 	}
 
-	public void setData(List<DefDocItemXS> items) {
+	public void setData(List<DefDocItemXS> item) {
 		this.items.clear();
-		this.items.addAll(items);
-		notifyDataSetChanged();
-	}
-
-	public void addData(List<DefDocItemXS> docItem) {
-		for (int i = 0; i < docItem.size(); i++) {
-			this.items.add(docItem.get(i));
-		}
+		this.items.addAll(item);
 		notifyDataSetChanged();
 	}
 

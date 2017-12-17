@@ -179,6 +179,12 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			return;
 		}
 		BmobUtils.getInstance().updata();
+		// 判断可用内存是否不足 ,不足显示退出
+		if (MyApplication.getInstance().isDangerMemory()) {
+			showError("请退出后,重新进入!");
+			BmobUtils.getInstance().updata();
+			return;
+		}
 		switch (v.getId()) {
 		// 销售
 		case R.id.ll_sale:

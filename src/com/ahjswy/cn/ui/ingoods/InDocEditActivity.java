@@ -93,6 +93,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		sum();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void intView() {
 
 		atvSearch = ((AutoTextView) findViewById(R.id.atvSearch));
@@ -118,7 +119,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		docContainerEntity = (DocContainerEntity<?>) getIntent().getSerializableExtra("docContainer");
 		this.doc = JSONUtil.fromJson(docContainerEntity.getDoc(), DefDoc.class);
 		if (docContainerEntity.getListitem() != null) {
-			listItem = docContainerEntity.getListitem();
+			listItem = (List<DefDocItemXS>) docContainerEntity.getListitem();
 		} else {
 			listItem = JSONUtil.parseArray(docContainerEntity.getItem(), DefDocItemXS.class);
 		}
@@ -235,7 +236,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 			DefDocItemXS defdocitem = fillItem(goodsThinList.get(0), DocUtils.getDefaultNum(), 0.0D);
 			localArrayList.add(defdocitem);
 			Intent intent = new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
-			intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
+			intent.putExtra("items", JSONUtil.object2Json(localArrayList));
 			intent.putExtra("doc", doc);
 			startActivityForResult(intent, 2);
 		} else if (goodsThinList.size() > 1) {
@@ -255,7 +256,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 						return;
 					}
 					Intent intent = new Intent(InDocEditActivity.this, InDocAddMoreGoodsAct.class);
-					intent.putExtra("items", JSONUtil.toJSONString(localArrayList));
+					intent.putExtra("items", JSONUtil.object2Json(localArrayList));
 					intent.putExtra("doc", doc);
 					startActivityForResult(intent, 2);
 				}
@@ -286,13 +287,13 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 
 				@Override
 				public void action() {
-					DefDocItemXS docItem = InDocEditActivity.this.fillItem(localGoodsThin, 0.0D, 0.0D);
+					DefDocItemXS docItem = fillItem(localGoodsThin, 0.0D, 0.0D);
 					docItem.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), docItem));
 					setAddItem(docItem);
-					Intent localIntent = new Intent();
+					Intent localIntent = new Intent(InDocEditActivity.this, InDocAddGoodAct.class);
 					localIntent.putExtra("docitem", docItem);
 					localIntent.putExtra("customerid", doc.getCustomerid());
-					startActivityForResult(localIntent.setClass(InDocEditActivity.this, InDocAddGoodAct.class), 4);
+					startActivityForResult(localIntent, 4);
 				}
 			});
 		}
@@ -411,7 +412,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				localArrayList.add(fillItem(localGoodsThin, DocUtils.getDefaultNum(), 0.0D));
 			}
 			startActivityForResult(new Intent().setClass(InDocEditActivity.this, InDocAddMoreGoodsAct.class)
-					.putExtra("items", JSONUtil.toJSONString(localArrayList)).putExtra("doc", doc), 2);
+					.putExtra("items", JSONUtil.object2Json(localArrayList)).putExtra("doc", doc), 2);
 		}
 	};
 
@@ -490,7 +491,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		localIntent.putExtra("isreceive", false);
 		localIntent.putExtra("isreadonly", isreadonly);
 		localIntent.putExtra("preference", this.doc.getPreference());
-		localIntent.putExtra("listpaytype", JSONUtil.toJSONString(this.listPayType));
+		localIntent.putExtra("listpaytype", JSONUtil.object2Json(this.listPayType));
 		startActivityForResult(localIntent.setClass(this, OutDocPayAct.class), 8);
 	}
 
@@ -630,7 +631,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				DocContainerEntity<DefDocItemXS> entity = (DocContainerEntity<DefDocItemXS>) JSONUtil
 						.fromJson(localString, DocContainerEntity.class);
 				doc = ((DefDoc) JSONUtil.fromJson(entity.getDoc(), DefDoc.class));
-				listItem = (List<DefDocItemXS>) JSONUtil.fromJson(entity.getItem(), DefDocItemXS.class);
+				listItem = (List<DefDocItemXS>) JSONUtil.parseArray(entity.getItem(), DefDocItemXS.class);
 				listPayType = JSONUtil.parseArray(entity.getPaytype(), DefDocPayType.class);
 				listItemDelete = new ArrayList<Long>();
 				switch (msg.what) {
@@ -646,7 +647,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					finish();
 					return;
 				case 1:
-					if ((InDocEditActivity.this.doc.isIsavailable()) && (InDocEditActivity.this.doc.isIsposted())) {
+					if ((doc.isIsavailable()) && (doc.isIsposted())) {
 						PDH.showSuccess("过账成功");
 						DocUtils.deleteTHDoc();
 						// sv.deleteDoc(docContainerEntity.getDoctype());
@@ -734,52 +735,27 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 
 					@Override
 					public void action() {
-						ArrayList<DefDocItemXS> newListItem = (ArrayList<DefDocItemXS>) JSONUtil
-								.parseArray(data.getStringExtra("items"), DefDocItemXS.class);
-						for (DefDocItemXS itemXS : newListItem) {
-							itemXS.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), itemXS));
-							setAddItem(itemXS);
+						try {
+							ArrayList<DefDocItemXS> newListItem = (ArrayList<DefDocItemXS>) JSONUtil
+									.parseArray(data.getStringExtra("items"), DefDocItemXS.class);
+							for (DefDocItemXS itemXS : newListItem) {
+								itemXS.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), itemXS));
+								setAddItem(itemXS);
+							}
+							if (Utils.isCombination()) {
+								listItem.addAll(newListItem);
+								utils.combinationItem(listItem, listItemDelete);
+								showSuccess("同品增加成功!");
+							} else {
+								listItem.addAll(0, newListItem);
+							}
+							handlerItem.sendEmptyMessage(0);
+						} catch (Exception e) {
+							e.printStackTrace();
+							DocUtils.insertLog(e);
 						}
-						if (Utils.isCombination()) {
-							listItem.addAll(newListItem);
-							utils.combinationItem(listItem, listItemDelete);
-							showSuccess("同品增加成功!");
-						} else {
-							listItem.addAll(0, newListItem);
-						}
-						handlerItem.sendEmptyMessage(0);
 					}
 				});
-
-				// final ArrayList<ReqStrGetGoodsPrice> localArrayList = new
-				// ArrayList<ReqStrGetGoodsPrice>();
-				// for (int k = 0; k < newListItem.size(); k++) {
-				// DefDocItemXS localDefDocItem3 = (DefDocItemXS)
-				// this.newListItem.get(k);
-				// ReqStrGetGoodsPrice localReqStrGetGoodsPrice = new
-				// ReqStrGetGoodsPrice();
-				// localReqStrGetGoodsPrice.setType(2);
-				// localReqStrGetGoodsPrice.setCustomerid(this.doc.getCustomerid());
-				// localReqStrGetGoodsPrice.setWarehouseid(localDefDocItem3.getWarehouseid());
-				// localReqStrGetGoodsPrice.setGoodsid(localDefDocItem3.getGoodsid());
-				// localReqStrGetGoodsPrice.setUnitid(localDefDocItem3.getUnitid());
-				// localReqStrGetGoodsPrice.setPrice(0.0D);
-				// localReqStrGetGoodsPrice.setIsdiscount(false);
-				// localArrayList.add(localReqStrGetGoodsPrice);
-				// }
-				// PDH.show(this, new ProgressCallBack() {
-				//
-				// @Override
-				// public void action() {
-				// String localString2 = new
-				// ServiceGoods().gds_GetMultiGoodsPrice(localArrayList, true,
-				// true);
-				// handlerGet.sendMessage(handlerGet.obtainMessage(1,
-				// localString2));
-				// }
-				// });
-				// ishaschanged = true;
-				// setActionBarText();
 				break;
 			case 3:
 				int j = data.getIntExtra("position", 0);
@@ -878,20 +854,20 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	private Button btnGoodClass;
 	private GoodsUnitDAO unitDao;
 	// private AccountPreference ap;
-	private DocContainerEntity docContainerEntity;
+	private DocContainerEntity<?> docContainerEntity;
 	private DocUtils utils;
 
 	protected void saveTHDoc() {
 		try {
-			DocContainerEntity docEntity = new DocContainerEntity();
+			DocContainerEntity<DefDocItemXS> docEntity = new DocContainerEntity<DefDocItemXS>();
 			// 保存到本地
 			docEntity.setDeleteinitem(docContainerEntity.getDeleteinitem());
-			docEntity.setDeleteitem(JSONUtil.toJSONString(listItemDelete));
-			docEntity.setDoc(JSONUtil.toJSONString(doc));
+			docEntity.setDeleteitem(JSONUtil.object2Json(listItemDelete));
+			docEntity.setDoc(JSONUtil.object2Json(doc));
 			// docEntity.setItem(JSONUtil.toJSONString(listItem));
 			docEntity.setListitem(listItem);
 			docEntity.setDoctype(docContainerEntity.getDoctype());
-			docEntity.setPaytype(JSONUtil.toJSONString(listPayType));
+			docEntity.setPaytype(JSONUtil.object2Json(listPayType));
 			DocUtils.saveTHData(docEntity);
 			// if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
 			// sv.insetDocItem(docEntity);
@@ -901,6 +877,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		} catch (Exception e) {
 			e.printStackTrace();
 			showError("网络链接不稳定!");
+			DocUtils.insertLog(e);
 		}
 
 	}

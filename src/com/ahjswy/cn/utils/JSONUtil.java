@@ -1,11 +1,14 @@
 package com.ahjswy.cn.utils;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -80,22 +83,21 @@ public class JSONUtil {
 	 * @return
 	 * 
 	 */
-	// @Deprecated
-	// public static String object2Json(Object obj) {
-	// ObjectMapper localObjectMapper = new ObjectMapper();
-	// StringWriter localStringWriter = new StringWriter();
-	// try {
-	// JsonGenerator localJsonGenerator = new
-	// JsonFactory().createJsonGenerator(localStringWriter);
-	// localObjectMapper.writeValue(localJsonGenerator, obj);
-	// localJsonGenerator.close();
-	// String localString = localStringWriter.toString();
-	// return localString;
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// return null;
-	// }
+	public static String object2Json(Object obj) {
+		ObjectMapper localObjectMapper = new ObjectMapper();
+		StringWriter localStringWriter = new StringWriter();
+		try {
+			JsonGenerator localJsonGenerator = new JsonFactory().createJsonGenerator(localStringWriter);
+			localObjectMapper.writeValue(localJsonGenerator, obj);
+			localJsonGenerator.close();
+			String localString = localStringWriter.toString();
+			return localString;
+		} catch (Exception e) {
+			e.printStackTrace();
+			DocUtils.insertLog(e, obj==null?"obj is null":obj.toString());
+		}
+		return null;
+	}
 
 	// json 转 list hashMap
 	public static List<HashMap<String, String>> parse2ListMap(String paramString) {
@@ -174,6 +176,13 @@ public class JSONUtil {
 		return null;
 	}
 
+	/**
+	 * use object2Json();
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	@Deprecated
 	public static String toJSONString(Object obj) {
 		return com.alibaba.fastjson.JSONObject.toJSONString(obj);
 	}

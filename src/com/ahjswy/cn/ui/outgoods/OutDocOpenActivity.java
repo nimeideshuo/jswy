@@ -6,6 +6,7 @@ import java.util.List;
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.CustomerThin;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocXS;

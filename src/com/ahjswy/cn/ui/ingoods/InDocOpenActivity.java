@@ -338,11 +338,11 @@ public class InDocOpenActivity extends BaseActivity implements OnClickListener, 
 		public void handleMessage(android.os.Message msg) {
 			String localString = msg.obj.toString();
 			if (RequestHelper.isSuccess(localString)) {
-				DocContainerEntity docEntity = (DocContainerEntity) JSONUtil.fromJson(localString,
+				DocContainerEntity<?> docEntity = (DocContainerEntity<?>) JSONUtil.fromJson(localString,
 						DocContainerEntity.class);
 				doc = ((DefDoc) JSONUtil.fromJson(docEntity.getDoc(), DefDoc.class));
 				fillDoc();
-				docEntity.setDoc(JSONUtil.toJSONString(doc));
+				docEntity.setDoc(JSONUtil.object2Json(doc));
 				Intent localIntent = new Intent();
 				// TODO
 				localIntent.setClass(InDocOpenActivity.this, InDocEditActivity.class);

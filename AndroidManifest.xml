@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ahjswy.cn"
     android:versionCode="1"
-    android:versionName="6.3.6" >
+    android:versionName="6.3.7" >
 
     <uses-sdk
         android:minSdkVersion="16"

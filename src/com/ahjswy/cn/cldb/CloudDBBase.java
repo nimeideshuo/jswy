@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.MLog;
 
 public class CloudDBBase {
@@ -41,12 +42,14 @@ public class CloudDBBase {
 			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			DocUtils.insertLog(e);
 		}
 		return null;
 	}
 
 	protected Connection getConnection() throws SQLException {
-		return conn = getConnection(URL, USERNAME, PASSWROD);
+		conn = getConnection(URL, USERNAME, PASSWROD);
+		return conn;
 	}
 
 	public Connection getConnection(String url, String userName, String passwrod) throws SQLException {

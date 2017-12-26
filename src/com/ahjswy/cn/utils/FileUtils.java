@@ -47,9 +47,16 @@ public class FileUtils {
 		ObjectOutputStream objectOutputStream = null;
 		try {
 			File file = new File(filePath, fileName);
-			fileOutputStream = new FileOutputStream(file.toString()); // 新建一个内容为空的文件
+			if (file.exists()) {
+				file.delete();
+			}else{
+//				file.mkdir();
+			}
+			file.createNewFile();
+			fileOutputStream = new FileOutputStream(file.getAbsoluteFile()); // 新建一个内容为空的文件
 			objectOutputStream = new ObjectOutputStream(fileOutputStream);
 			objectOutputStream.writeObject(obj);
+			objectOutputStream.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

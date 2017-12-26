@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ahjswy.cn"
     android:versionCode="1"
-    android:versionName="6.3.7" >
+    android:versionName="6.3.8" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -63,7 +63,6 @@
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme" >
         <uses-library android:name="android.test.runner" />
-
         <activity
             android:name="com.ahjswy.cn.ui.Swy_splash"
             android:screenOrientation="portrait"

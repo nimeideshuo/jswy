@@ -82,49 +82,6 @@ public class DefDocItemXS implements Serializable {
 	// ======
 	public boolean isExist;
 
-	public void DefDocItemXS2(DefDocItemXS item) {
-		this.barcode = item.barcode;
-		this.batch = item.batch;
-		this.bignum = item.batch;
-		this.buildbegintime = item.batch;
-		this.buildendtime = item.batch;
-		this.costprice = item.costprice;
-		this.discountprice = item.discountprice;
-		this.discountratio = item.discountratio;
-		this.discountsubtotal = item.discountsubtotal;
-		this.docid = item.docid;
-		this.goodsid = item.goodsid;
-		this.goodsname = item.goodsname;
-		// this.goodStock = item.batch;
-		this.isdiscount = item.isdiscount;
-		this.isexhibition = item.isexhibition;
-		this.isExist = item.isExist;
-		this.isgift = item.isgift;
-		this.ispromotion = item.ispromotion;
-		this.isusebatch = item.isusebatch;
-		this.itemid = item.itemid;
-		this.model = item.model;
-		this.num = item.num;
-		this.outorderdocid = item.outorderdocid;
-		this.outorderdocshowid = item.outorderdocshowid;
-		this.outorderitemid = item.outorderitemid;
-		this.parentitemid = item.parentitemid;
-		this.warehousename = item.warehousename;
-		this.warehouseid = item.warehouseid;
-		this.unitname = item.unitname;
-		this.unitid = item.unitid;
-		this.tempitemid = item.tempitemid;
-		this.subtotal = item.subtotal;
-		this.stocknum = item.stocknum;
-		this.specification = item.specification;
-		this.productiondate = item.productiondate;
-		this.price = item.price;
-		this.promotiontype = item.promotiontype;
-		this.promotiontypename = item.promotiontypename;
-		this.remark = item.remark;
-
-	}
-
 	public String getBuildbegintime() {
 		return buildbegintime;
 	}

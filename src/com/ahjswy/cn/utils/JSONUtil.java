@@ -133,14 +133,8 @@ public class JSONUtil {
 		return null;
 	}
 
-	@Deprecated
-	/**
-	 * fromJson(String json, Class<T> classOfT)
-	 * 
-	 * @param content
-	 * @param valueType
-	 * @return
-	 */
+	
+	
 	public static <T> T readValue(String content, Class<T> valueType) {
 		ObjectMapper localObjectMapper = new ObjectMapper();
 		try {
@@ -151,7 +145,14 @@ public class JSONUtil {
 		}
 		return null;
 	}
-
+	/**
+	 * readValue(String json, Class<T> classOfT)
+	 * 
+	 * @param content
+	 * @param valueType
+	 * @return
+	 */
+	@Deprecated
 	public static <T> T fromJson(String json, Class<T> classOfT) {
 		if (!TextUtils.isEmptyS(json) || classOfT == null) {
 			return null;
@@ -199,7 +200,6 @@ public class JSONUtil {
 		return null;
 	}
 
-	@Deprecated
 	/**
 	 * parseArray(String json, Class<T> classOfT);
 	 * 

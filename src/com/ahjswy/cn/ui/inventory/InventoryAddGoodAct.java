@@ -127,7 +127,8 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 
 					double goodscostprice = docUtils.queryGoodsCostprice(warehouseid, docitem.getGoodsid(),
 							docitem.getUnitid());
-					double sumStock = docUtils.queryPDSumStock(docitem.getGoodsid(), goodsUnit.getUnitid());
+					double sumStock = docUtils.queryPDSumStock(docitem.getGoodsid(), goodsUnit.getUnitid(),
+							warehouseid);
 					btnUnit.setText(goodsUnit.getUnitname());
 					btnUnit.setTag(goodsUnit.getUnitid());
 					etStockNum.setText(sumStock + "");
@@ -289,7 +290,7 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 							.setText(new StringBuilder(String.valueOf(Utils.normalize(
 									v0 + Utils.normalize(
 											Utils.getDouble(this.etStockNum.getText().toString()).doubleValue(), 2),
-									2))).toString());
+							2))).toString());
 					this.etNetNum.setTag(this.etNetNum.getText().toString());
 					this.etNum.setTag(this.etNum.getText());
 				}

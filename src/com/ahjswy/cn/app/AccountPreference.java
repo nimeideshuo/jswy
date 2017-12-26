@@ -59,7 +59,7 @@ public class AccountPreference {
 	}
 
 	public boolean setValue(String value, Object obj) {
-		String str = JSONUtil.toJSONString(obj);
+		String str = JSONUtil.object2Json(obj);
 		return this.setPreferences.edit().putString(value, str).commit();
 	}
 

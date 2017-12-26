@@ -496,9 +496,10 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			InfoDialog.showError(this, "空单不能过账");
 			return;
 		}
-		for (DefDocItemXS item : listItem) {
-			item.assistnum = DocUtils.getAssistnum(item.getGoodsid(), item.getUnitid(), item.getNum());
-		}
+		// for (DefDocItemXS item : listItem) {
+		// item.assistnum = DocUtils.getAssistnum(item.getGoodsid(),
+		// item.getUnitid(), item.getNum());
+		// }
 		final Dialog_message dialog = new Dialog_message(this);
 		dialog.show();
 		dialog.setTitle("提示");
@@ -565,11 +566,12 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			return;
 		}
 		// TODO 等待PC 写 本地删除
-		for (DefDocItemXS item : listItem) {
-			if (item.assistnum == 0) {
-				item.assistnum = DocUtils.getAssistnum(item.getGoodsid(), item.getUnitid(), item.getNum());
-			}
-		}
+		// for (DefDocItemXS item : listItem) {
+		// if (item.assistnum == 0) {
+		// item.assistnum = DocUtils.getAssistnum(item.getGoodsid(),
+		// item.getUnitid(), item.getNum());
+		// }
+		// }
 
 		PDH.show(this, new PDH.ProgressCallBack() {
 			public void action() {

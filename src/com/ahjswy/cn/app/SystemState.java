@@ -54,8 +54,8 @@ public class SystemState {
 		return ((Department) getObject("department", Department.class));
 	}
 
-	public static <T> T getObject(String paramString, Class<T> paramClass) {
-		return JSONUtil.readValue(basic_setting.getString(paramString, ""), paramClass);
+	public static <T> T getObject(String key, Class<T> defValue) {
+		return JSONUtil.readValue(basic_setting.getString(key, ""), defValue);
 	}
 
 	// 获取 user 用户
@@ -75,7 +75,7 @@ public class SystemState {
 
 	public static boolean saveObject(String key, Object value) {
 		SharedPreferences.Editor localEditor = basic_setting.edit();
-		localEditor.putString(key, JSONUtil.toJSONString(value));
+		localEditor.putString(key, JSONUtil.object2Json(value));
 		return localEditor.commit();
 	}
 }

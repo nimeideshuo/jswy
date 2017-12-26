@@ -24,7 +24,7 @@ public class Sz_stockwarn extends CloudDBBase {
 			if (query == null) {
 				return 0;
 			}
-
+//			System.out.println("查询到的库存>>"+query.getDouble(0));
 			while (query.next()) {
 				return Double.parseDouble(query.getString("stocknum"));
 			}

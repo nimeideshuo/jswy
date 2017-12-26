@@ -13,10 +13,10 @@ public class RequestHelper {
 
 	public static RequestHelper get() {
 		try {
-			if (helper == null)
+			if (helper == null) {
 				helper = new RequestHelper();
-			RequestHelper localRequestHelper = helper;
-			return localRequestHelper;
+			}
+			return helper;
 		} finally {
 		}
 	}
@@ -62,6 +62,13 @@ public class RequestHelper {
 			return;
 		}
 		PDH.showFail(RESNET_ERRAY_MESSAGE[RANDOM.nextInt(3)] + "\n" + str);
+	}
+	/**
+	 * 返回错误信息
+	 * @return
+	 */
+	public static String getErrayMessage() {
+		return RESNET_ERRAY_MESSAGE[RANDOM.nextInt(3)];
 	}
 
 	// 验证 IP 是否正确

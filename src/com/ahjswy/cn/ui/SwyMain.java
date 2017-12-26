@@ -7,6 +7,7 @@ import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
+import com.ahjswy.cn.bean.bmob.bo_swy_user;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
@@ -28,11 +29,14 @@ import com.ahjswy.cn.ui.outgoods.SaleRecordActivity;
 import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.BmobUtils;
+import com.ahjswy.cn.utils.BmobUtils.BmobListener;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.InfoDialog;
+import com.ahjswy.cn.utils.JSONUtil;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
+import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.UpdateUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.Dialog_message;
@@ -49,6 +53,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class SwyMain extends BaseActivity implements OnClickListener, BumenCall {
 	AccountPreference ap;
@@ -62,6 +67,39 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		setContentView(R.layout.act_field_main);
 		initView();
 		initDate();
+	}
+
+	class OBlistener implements BmobListener {
+
+		@Override
+		public <T> void result(T object) {
+			bo_swy_user swyUser = (bo_swy_user) object;
+			switch (swyUser.state) {
+			case 1:
+				// TODO
+				if (TextUtils.isEmptyS(swyUser.message)) {
+					PDH.showFail(swyUser.message);
+					ap.setValue("bo_swy_user", swyUser);
+					return;
+				}
+				break;
+			case 2:
+				if (TextUtils.isEmptyS(swyUser.message)) {
+					PDH.showFail(swyUser.message);
+					ap.setValue("bo_swy_user", swyUser);
+					return;
+				}
+				break;
+			case 3:
+				MyApplication.getInstance().exit();
+				break;
+
+			default:
+				break;
+			}
+
+		}
+
 	}
 
 	private void initView() {
@@ -92,6 +130,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			}
 		});
 		ap = new AccountPreference();
+		BmobUtils.getInstance().queryUser(bo_swy_user.factory(), new OBlistener());
 	}
 
 	private void initDate() {
@@ -178,10 +217,20 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			getWindow().setAttributes(localLayoutParams);
 			return;
 		}
+		bo_swy_user user = JSONUtil.readValue(ap.getValue("bo_swy_user", "0"), bo_swy_user.class);
+		if (user != null) {
+			if (user.getState() == 2) {
+				Toast.makeText(this, user.getMessage(), 0).show();
+				return;
+			}
+			if (user.getState() == 1) {
+				Toast.makeText(this, user.getMessage(), 0).show();
+			}
+		}
 		BmobUtils.getInstance().updata();
 		// 判断可用内存是否不足 ,不足显示退出
 		if (MyApplication.getInstance().isDangerMemory()) {
-			showError("请退出后,重新进入!");
+			showError("内存不足,请退出后,重新进入!");
 			BmobUtils.getInstance().updata();
 			return;
 		}

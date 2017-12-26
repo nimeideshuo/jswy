@@ -22,7 +22,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -70,206 +69,194 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		this.doc = doc;
 	}
 
-	int selectPosition = -1;
+	// int selectPosition = -1;
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		// Item item = null;
-		// if (convertView == null) {
+		Item item = null;
+		if (convertView == null) {
+			convertView = LayoutInflater.from(context).inflate(R.layout.act_out_doc_add_moreadapter_item, null);
+			item = new Item(convertView);
+			convertView.setTag(item);
+		} else {
+			item = (Item) convertView.getTag();
+		}
+		item.setValue(getItem(position));
+		item.tv_dicPrice.setTag(Integer.valueOf(position));
+		item.etNum.setTag(Integer.valueOf(position));
+		item.btnUnit.setTag(Integer.valueOf(position));
+		item.etNum.addTextChangedListener(new NumWatcher(item));
+		item.btnUnit.setOnClickListener(unitOnClickListener);
+		return convertView;
+		// // 商品 name
 		// convertView =
 		// LayoutInflater.from(context).inflate(R.layout.act_out_doc_add_moreadapter_item,
 		// null);
-		// item = new Item(convertView);
-		// convertView.setTag(item);
-		// } else {
-		// item = (Item) convertView.getTag();
+		// TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
+		// // 二维码
+		// TextView tv_specification = (TextView)
+		// convertView.findViewById(R.id.tv_specification);
+		// // 数量
+		// final EditText etNum = (EditText)
+		// convertView.findViewById(R.id.etNum);
+		// // 单位
+		// Button btnUnit = (Button) convertView.findViewById(R.id.btnUnit);
+		// // 本次库存
+		// final TextView tv_Bfci = (TextView)
+		// convertView.findViewById(R.id.tv_Bfci);
+		// final TextView tv_dicPrice = (TextView)
+		// convertView.findViewById(R.id.tv_dicPrice);
+		// final TextView tvSumStock = (TextView)
+		// convertView.findViewById(R.id.tvSumStock);
+		// final DefDocItemXS itemXS = listItems.get(position);
+		// // 显示上次 采购
+		// tvName.setText(itemXS.getGoodsname());
+		// tv_specification.setText(itemXS.getSpecification() == null ? "" :
+		// "规格:" + itemXS.getSpecification());
+		// btnUnit.setText(itemXS.getUnitname());
+		// tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
+		// tv_dicPrice.setOnClickListener(priceOnClick);
+		// tv_dicPrice.setTag(Integer.valueOf(position));
+		// tv_Bfci.setText("当前库:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" :
+		// itemXS.goodStock));
+		// tvSumStock.setText("总库存:" + (TextUtils.isEmpty(itemXS.goodSumStock) ?
+		// "?" : itemXS.goodSumStock));
+		// etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
+		// etNum.setTag(Integer.valueOf(position));
+		// btnUnit.setTag(Integer.valueOf(position));
+		// etNum.setFocusable(true);
+		// etNum.setFilterTouchesWhenObscured(true);
+		// if (selectPosition == position) {
+		// etNum.requestFocus();
 		// }
-		// item.setValue(getItem(position));
-		// item.tv_dicPrice.setTag(Integer.valueOf(position));
-		// item.etNum.setTag(Integer.valueOf(position));
-		// item.btnUnit.setTag(Integer.valueOf(position));
-		// item.etNum.addTextChangedListener(new NumWatcher(item));
-		// item.btnUnit.setOnClickListener(unitOnClickListener);
+		// etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
+		//
+		// @Override
+		// public void onFocusChange(View v, boolean hasFocus) {
+		// selectPosition = position;
+		// }
+		// });
+		// etNum.addTextChangedListener(new TextWatcher() {
+		// @Override
+		// public void onTextChanged(CharSequence s, int start, int before, int
+		// count) {
+		// }
+		//
+		// @Override
+		// public void beforeTextChanged(CharSequence s, int start, int count,
+		// int after) {
+		// }
+		//
+		// @Override
+		// public void afterTextChanged(Editable s) {
+		// int i = ((Integer) etNum.getTag()).intValue();
+		// listItems.get(i).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(),
+		// 2));
+		// }
+		// });
+		// btnUnit.setOnClickListener(new OnClickListener() {
+		// @Override
+		// public void onClick(final View v) {
+		// GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
+		// final List<GoodsUnit> listGoodsunit =
+		// goodsUnitDAO.queryGoodsUnits(itemXS.getGoodsid());
+		// final String[] arrayOfString = new String[listGoodsunit.size()];
+		// for (int i = 0; i < arrayOfString.length; i++) {
+		// arrayOfString[i] = (listGoodsunit.get(i)).getUnitname();
+		// }
+		// AlertDialog.Builder localBuilder = new AlertDialog.Builder(context);
+		// localBuilder.setTitle("单位选择");
+		// localBuilder.setItems(arrayOfString, new
+		// DialogInterface.OnClickListener() {
+		// public void onClick(DialogInterface dialoginterface, int items) {
+		// // 设置单位
+		// ((TextView) v).setText(arrayOfString[items].toString());
+		// GoodsUnit goodsUnit = listGoodsunit.get(items);
+		// // 设置 选择单位
+		// itemXS.setUnitid(goodsUnit.getUnitid());
+		// itemXS.setUnitname(goodsUnit.getUnitname());
+		// // 设置当前库存
+		// String stocknum = DocUtils.Stocknum(itemXS.stocknum, goodsUnit);
+		// String stocksumnum = DocUtils.Stocknum(itemXS.stocksumnum,
+		// goodsUnit);
+		// itemXS.goodStock = stocknum;
+		// itemXS.goodSumStock = stocksumnum;
+		// itemXS.unit = goodsUnit;
+		// tv_Bfci.setText("库存:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" :
+		// itemXS.goodStock));
+		// tvSumStock
+		// .setText("总库存:" + (TextUtils.isEmpty(itemXS.goodSumStock) ? "?" :
+		// itemXS.goodSumStock));
+		// itemXS.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), itemXS));
+		// tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
+		// }
+		// });
+		// localBuilder.create().show();
+		// }
+		// });
 		// return convertView;
-		// // 商品 name
-		convertView = LayoutInflater.from(context).inflate(R.layout.act_out_doc_add_moreadapter_item, null);
-		TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
-		// 二维码
-		TextView tv_specification = (TextView) convertView.findViewById(R.id.tv_specification);
-		// 数量
-		final EditText etNum = (EditText) convertView.findViewById(R.id.etNum);
-		// 单位
-		Button btnUnit = (Button) convertView.findViewById(R.id.btnUnit);
-		// 本次库存
-		final TextView tv_Bfci = (TextView) convertView.findViewById(R.id.tv_Bfci);
-		final TextView tv_dicPrice = (TextView) convertView.findViewById(R.id.tv_dicPrice);
-		final TextView tvSumStock = (TextView) convertView.findViewById(R.id.tvSumStock);
-		final DefDocItemXS itemXS = listItems.get(position);
-		// 显示上次 采购
-		tvName.setText(itemXS.getGoodsname());
-		tv_specification.setText(itemXS.getSpecification() == null ? "" : "规格:" + itemXS.getSpecification());
-		btnUnit.setText(itemXS.getUnitname());
-		tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
-		tv_dicPrice.setOnClickListener(priceOnClick);
-		tv_dicPrice.setTag(Integer.valueOf(position));
-		tv_Bfci.setText("当前库:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" : itemXS.goodStock));
-		tvSumStock.setText("总库存:" + (TextUtils.isEmpty(itemXS.goodSumStock) ? "?" : itemXS.goodSumStock));
-		etNum.setText(itemXS.getNum() == 0 ? "" : itemXS.getNum() + "");
-		etNum.setTag(Integer.valueOf(position));
-		btnUnit.setTag(Integer.valueOf(position));
-		etNum.setFocusable(true);
-		etNum.setFilterTouchesWhenObscured(true);
-		if (selectPosition == position) {
-			etNum.requestFocus();
-		}
-		etNum.setOnFocusChangeListener(new OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				selectPosition = position;
-			}
-		});
-		etNum.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				int i = ((Integer) etNum.getTag()).intValue();
-				listItems.get(i).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
-			}
-		});
-		btnUnit.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(final View v) {
-				GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
-				final List<GoodsUnit> listGoodsunit = goodsUnitDAO.queryGoodsUnits(itemXS.getGoodsid());
-				final String[] arrayOfString = new String[listGoodsunit.size()];
-				for (int i = 0; i < arrayOfString.length; i++) {
-					arrayOfString[i] = (listGoodsunit.get(i)).getUnitname();
-				}
-				AlertDialog.Builder localBuilder = new AlertDialog.Builder(context);
-				localBuilder.setTitle("单位选择");
-				localBuilder.setItems(arrayOfString, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialoginterface, int items) {
-						// 设置单位
-						((TextView) v).setText(arrayOfString[items].toString());
-						GoodsUnit goodsUnit = listGoodsunit.get(items);
-						// 设置 选择单位
-						itemXS.setUnitid(goodsUnit.getUnitid());
-						itemXS.setUnitname(goodsUnit.getUnitname());
-						// 设置当前库存
-						String stocknum = DocUtils.Stocknum(itemXS.stocknum, goodsUnit);
-						String stocksumnum = DocUtils.Stocknum(itemXS.stocksumnum, goodsUnit);
-						itemXS.goodStock = stocknum;
-						itemXS.goodSumStock = stocksumnum;
-						itemXS.unit = goodsUnit;
-						tv_Bfci.setText("库存:" + (TextUtils.isEmpty(itemXS.goodStock) ? "?" : itemXS.goodStock));
-						tvSumStock
-								.setText("总库存:" + (TextUtils.isEmpty(itemXS.goodSumStock) ? "?" : itemXS.goodSumStock));
-						itemXS.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), itemXS));
-						tv_dicPrice.setText("单价:" + itemXS.getPrice() + "元");
-						// PDH.show(context, new PDH.ProgressCallBack() {
-						//
-						// @Override
-						// public void action() {
-						// // 查询商品价格
-						// final ReqStrGetGoodsPrice goodsPrice =
-						// DocUtils.GetMultiGoodsPrice(doc.getCustomerid(),
-						// itemXS);
-						// if (goodsPrice == null) {
-						// return;
-						// }
-						// context.runOnUiThread(new Runnable() {
-						//
-						// @Override
-						// public void run() {
-						// itemXS.setPrice(goodsPrice.getPrice());
-						// tv_dicPrice.setText("单价:" + goodsPrice.getPrice() +
-						// "元");
-						// }
-						// });
-						// }
-						// });
-					}
-				});
-				localBuilder.create().show();
-			}
-		});
-		return convertView;
 	}
 
-	// public class Item {
-	// private TextView tvName;
-	// private TextView tv_specification;
-	// private EditText etNum;
-	// private Button btnUnit;
-	// private TextView tv_Bfci;
-	// private TextView tv_dicPrice;
-	// private TextView tvSumStock;
-	//
-	// Item(View v) {
-	// tvName = (TextView) v.findViewById(R.id.tvName);
-	// tv_specification = (TextView) v.findViewById(R.id.tv_specification);
-	// etNum = (EditText) v.findViewById(R.id.etNum);
-	// btnUnit = (Button) v.findViewById(R.id.btnUnit);
-	// tv_Bfci = (TextView) v.findViewById(R.id.tv_Bfci);
-	// tv_dicPrice = (TextView) v.findViewById(R.id.tv_dicPrice);
-	// tvSumStock = (TextView) v.findViewById(R.id.tvSumStock);
-	// }
-	//
-	// public void setValue(DefDocItemXS item) {
-	// tvName.setText(item.getGoodsname());
-	// tv_specification.setText(item.getSpecification() == null ? "" : "规格:" +
-	// item.getSpecification());
-	// btnUnit.setText(item.getUnitname());
-	// tv_dicPrice.setText("单价:" + item.getPrice() + "元");
-	// tv_dicPrice.setOnClickListener(priceOnClick);
-	// tv_Bfci.setText("当前库:" + (TextUtils.isEmpty(item.goodStock) ? "?" :
-	// item.goodStock));
-	// tvSumStock.setText("总库存:" + (TextUtils.isEmpty(item.goodSumStock) ? "?" :
-	// item.goodSumStock));
-	// etNum.setText(item.getNum() == 0 ? "" : item.getNum() + "");
-	// }
-	//
-	// }
+	public class Item {
+		private TextView tvName;
+		private TextView tv_specification;
+		private EditText etNum;
+		private Button btnUnit;
+		private TextView tv_Bfci;
+		private TextView tv_dicPrice;
+		private TextView tvSumStock;
 
-	// private class NumWatcher implements TextWatcher {
-	// Item item;
-	//
-	// public NumWatcher(Item item) {
-	// this.item = item;
-	// }
-	//
-	// @Override
-	// public void beforeTextChanged(CharSequence s, int start, int count, int
-	// after) {
-	//
-	// }
-	//
-	// @Override
-	// public void onTextChanged(CharSequence s, int start, int before, int
-	// count) {
-	//
-	// }
-	//
-	// @Override
-	// public void afterTextChanged(Editable s) {
-	// int position = ((Integer) item.etNum.getTag()).intValue();
-	// try {
-	// listItems.get(position).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(),
-	// 2));
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// }
+		Item(View v) {
+			tvName = (TextView) v.findViewById(R.id.tvName);
+			tv_specification = (TextView) v.findViewById(R.id.tv_specification);
+			etNum = (EditText) v.findViewById(R.id.etNum);
+			btnUnit = (Button) v.findViewById(R.id.btnUnit);
+			tv_Bfci = (TextView) v.findViewById(R.id.tv_Bfci);
+			tv_dicPrice = (TextView) v.findViewById(R.id.tv_dicPrice);
+			tvSumStock = (TextView) v.findViewById(R.id.tvSumStock);
+		}
+
+		public void setValue(DefDocItemXS item) {
+			tvName.setText(item.getGoodsname());
+			tv_specification.setText(item.getSpecification() == null ? "" : "规格:" + item.getSpecification());
+			btnUnit.setText(item.getUnitname());
+			tv_dicPrice.setText("单价:" + item.getPrice() + "元");
+			tv_dicPrice.setOnClickListener(priceOnClick);
+			tv_Bfci.setText("当前库:" + (TextUtils.isEmpty(item.goodStock) ? "?" : item.goodStock));
+			tvSumStock.setText("总库存:" + (TextUtils.isEmpty(item.goodSumStock) ? "?" : item.goodSumStock));
+			etNum.setText(item.getNum() == 0 ? "" : item.getNum() + "");
+		}
+
+	}
+
+	private class NumWatcher implements TextWatcher {
+		Item item;
+
+		public NumWatcher(Item item) {
+			this.item = item;
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			int position = ((Integer) item.etNum.getTag()).intValue();
+			try {
+				listItems.get(position).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
 
 	OnClickListener priceOnClick = new View.OnClickListener() {
 
@@ -303,43 +290,41 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 			builder.show();
 		}
 	};
-	// View.OnClickListener unitOnClickListener = new View.OnClickListener() {
-	//
-	// @Override
-	// public void onClick(final View v) {
-	// int position = ((Integer) v.getTag()).intValue();
-	// GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
-	// final DefDocItemXS itemXS = listItems.get(position);
-	// final List<GoodsUnit> listGoodsunit =
-	// goodsUnitDAO.queryGoodsUnits(itemXS.getGoodsid());
-	// final String[] arrayOfString = new String[listGoodsunit.size()];
-	// for (int i = 0; i < arrayOfString.length; i++) {
-	// arrayOfString[i] = (listGoodsunit.get(i)).getUnitname();
-	// }
-	// AlertDialog.Builder localBuilder = new AlertDialog.Builder(context);
-	// localBuilder.setTitle("单位选择");
-	// localBuilder.setItems(arrayOfString, new
-	// DialogInterface.OnClickListener() {
-	//
-	// @Override
-	// public void onClick(DialogInterface dialog, int which) {
-	// ((TextView) v).setText(arrayOfString[which].toString());
-	// GoodsUnit goodsUnit = listGoodsunit.get(which);
-	// // 设置 选择单位
-	// itemXS.setUnitid(goodsUnit.getUnitid());
-	// itemXS.setUnitname(goodsUnit.getUnitname());
-	// // 设置当前库存
-	// String stocknum = DocUtils.Stocknum(itemXS.stocknum, goodsUnit);
-	// String stocksumnum = DocUtils.Stocknum(itemXS.stocksumnum, goodsUnit);
-	// itemXS.goodStock = stocknum;
-	// itemXS.goodSumStock = stocksumnum;
-	// itemXS.unit = goodsUnit;
-	// itemXS.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), itemXS));
-	// notifyDataSetChanged();
-	// }
-	// });
-	// localBuilder.create().show();
-	// }
-	//
-	// };
+	View.OnClickListener unitOnClickListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(final View v) {
+			int position = ((Integer) v.getTag()).intValue();
+			GoodsUnitDAO goodsUnitDAO = new GoodsUnitDAO();
+			final DefDocItemXS itemXS = listItems.get(position);
+			final List<GoodsUnit> listGoodsunit = goodsUnitDAO.queryGoodsUnits(itemXS.getGoodsid());
+			final String[] arrayOfString = new String[listGoodsunit.size()];
+			for (int i = 0; i < arrayOfString.length; i++) {
+				arrayOfString[i] = (listGoodsunit.get(i)).getUnitname();
+			}
+			AlertDialog.Builder localBuilder = new AlertDialog.Builder(context);
+			localBuilder.setTitle("单位选择");
+			localBuilder.setItems(arrayOfString, new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					((TextView) v).setText(arrayOfString[which].toString());
+					GoodsUnit goodsUnit = listGoodsunit.get(which);
+					// 设置 选择单位
+					itemXS.setUnitid(goodsUnit.getUnitid());
+					itemXS.setUnitname(goodsUnit.getUnitname());
+					// 设置当前库存
+					String stocknum = DocUtils.Stocknum(itemXS.stocknum, goodsUnit);
+					String stocksumnum = DocUtils.Stocknum(itemXS.stocksumnum, goodsUnit);
+					itemXS.goodStock = stocknum;
+					itemXS.goodSumStock = stocksumnum;
+					itemXS.unit = goodsUnit;
+					itemXS.setPrice(DocUtils.getGoodsPrice(doc.getCustomerid(), itemXS));
+					notifyDataSetChanged();
+				}
+			});
+			localBuilder.create().show();
+		}
+
+	};
 }

@@ -1,7 +1,5 @@
 package com.ahjswy.cn.bean.bmob;
 
-import com.ahjswy.cn.app.SystemState;
-
 import cn.bmob.v3.BmobObject;
 
 public class ExceptionLog extends BmobObject {

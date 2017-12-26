@@ -570,7 +570,7 @@ public class DocUtils {
 	public void setPDAddItem(DefDocPD doc, DefDocItemPD itemPD) {
 		itemPD.setCostprice(
 				stockwarn.queryGoodsCostprice(doc.getWarehouseid(), itemPD.getGoodsid(), itemPD.getUnitid()));
-		itemPD.setStocknum(queryPDSumStock(itemPD.getGoodsid(), itemPD.getUnitid()));
+		itemPD.setStocknum(queryPDSumStock(itemPD.getGoodsid(), itemPD.getUnitid(), doc.getWarehouseid()));
 		itemPD.setBigstocknum(unitDAO.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getStocknum()));
 		itemPD.setNetnum(Utils.normalize(itemPD.getNum() - itemPD.getStocknum(), 2));
 		itemPD.setBignetnum(unitDAO.getBigNum(itemPD.getGoodsid(), itemPD.getUnitid(), itemPD.getNetnum()));
@@ -665,9 +665,9 @@ public class DocUtils {
 		return warehousedao.getDBOutWarehouse(inWarehouseid);
 	}
 
-	public double queryPDSumStock(String goodsid, String unitid) {
+	public double queryPDSumStock(String goodsid, String unitid, String warehouseid) {
 		double ratio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
-		return Utils.normalizeDouble(stockwarn.querySumStock(goodsid) / ratio);
+		return Utils.normalizeDouble(stockwarn.queryStockNum(warehouseid,goodsid) / ratio);
 	}
 
 	/**

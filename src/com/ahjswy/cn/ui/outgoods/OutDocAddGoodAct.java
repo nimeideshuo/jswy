@@ -68,28 +68,28 @@ public class OutDocAddGoodAct extends BaseActivity
 	// 折后小计
 	private EditText etDiscountSubtotal;
 	// 陈列品
-	private CheckBox cbExhibition;
+	// private CheckBox cbExhibition;
 	// 备注
 	private EditText etRemark;
 	// 搭赠 赠品
-	private Button btnGoodsGive;
+	// private Button btnGoodsGive;
 	// 搭赠 仓库
-	private Button btnWarehouseGive;
+	// private Button btnWarehouseGive;
 	// 搭赠批次
-	private Button btnProBatch;
+	// private Button btnProBatch;
 	// 搭赠时间
-	private Button btnProDate;
+	// private Button btnProDate;
 	// 搭赠单位
-	private Button btnUnitGive;
+	// private Button btnUnitGive;
 	// 搭赠数量
 	// private EditText etNumGive;
 	// // 搭赠备注
 	// private EditText etRemarkGive;
 	// 搭赠 listview
-	private LinearLayout ll_PrmomotionGoods;
+	// private LinearLayout ll_PrmomotionGoods;
 	private int position;
 	private int positiongive;
-	private Button btnPromotionProDate;
+//	private Button btnPromotionProDate;
 	// private TextView tvSaleCue;
 	private String customerid;
 	private DefDocItemXS docitemgive;
@@ -114,38 +114,39 @@ public class OutDocAddGoodAct extends BaseActivity
 		// 批次
 		btnBatch = (Button) findViewById(R.id.btnBatch);
 		// 日期
-		btnProDate = (Button) findViewById(R.id.btnProDate);
+		// btnProDate = (Button) findViewById(R.id.btnProDate);
 		etNum = (EditText) findViewById(R.id.etNum);
 		etPrice = (EditText) findViewById(R.id.etPrice);
 		etSubtotal = (EditText) findViewById(R.id.etSubtotal);
 		etDiscountRatio = (EditText) findViewById(R.id.etDiscountRatio);
 		etDiscountPrice = (EditText) findViewById(R.id.etDiscountPrice);
 		etDiscountSubtotal = (EditText) findViewById(R.id.etDiscountSubtotal);
-		cbExhibition = (CheckBox) findViewById(R.id.cbExhibition);
+		// cbExhibition = (CheckBox) findViewById(R.id.cbExhibition);
 		etRemark = (EditText) findViewById(R.id.etRemark);
-		ll_PrmomotionGoods = (LinearLayout) findViewById(R.id.ll_PrmomotionGoods);
+		// ll_PrmomotionGoods = (LinearLayout)
+		// findViewById(R.id.ll_PrmomotionGoods);
 		// 搭赠
-		btnWarehouseGive = (Button) findViewById(R.id.btnWarehouseGive);
-		btnGoodsGive = (Button) findViewById(R.id.btnGoodsGive);
+		// btnWarehouseGive = (Button) findViewById(R.id.btnWarehouseGive);
+		// btnGoodsGive = (Button) findViewById(R.id.btnGoodsGive);
 		// 搭赠批次
-		btnProBatch = (Button) findViewById(R.id.btnProBatch);
+		// btnProBatch = (Button) findViewById(R.id.btnProBatch);
 		// 搭赠日期
-		btnPromotionProDate = (Button) findViewById(R.id.btnPromotionProDate);
-		btnUnitGive = (Button) findViewById(R.id.btnUnitGive);
+//		btnPromotionProDate = (Button) findViewById(R.id.btnPromotionProDate);
+		// btnUnitGive = (Button) findViewById(R.id.btnUnitGive);
 		// dao = new GoodsUnitDAO();
 
 		// title 监听
 		btnWarehouse.setOnClickListener(this);
 		btnBatch.setOnClickListener(this);
-		btnProDate.setOnClickListener(this);
+		// btnProDate.setOnClickListener(this);
 		btnUnit.setOnClickListener(this);
-		cbExhibition.setOnCheckedChangeListener(this);
+		// cbExhibition.setOnCheckedChangeListener(this);
 		// 搭赠
-		btnWarehouseGive.setOnClickListener(this);
-		btnGoodsGive.setOnClickListener(this);
-		btnProBatch.setOnClickListener(this);
-		btnPromotionProDate.setOnClickListener(this);
-		btnUnitGive.setOnClickListener(this);
+		// btnWarehouseGive.setOnClickListener(this);
+		// btnGoodsGive.setOnClickListener(this);
+		// btnProBatch.setOnClickListener(this);
+//		btnPromotionProDate.setOnClickListener(this);
+		// btnUnitGive.setOnClickListener(this);
 		stockwarn = new Sz_stockwarn();
 	}
 
@@ -170,9 +171,9 @@ public class OutDocAddGoodAct extends BaseActivity
 		etRemark.setText(docitem.getRemark());
 		this.btnUnit.setOnClickListener(this);
 		this.btnWarehouse.setOnClickListener(this);
-		this.btnGoodsGive.setOnClickListener(this);
-		this.btnWarehouseGive.setOnClickListener(this);
-		this.btnUnitGive.setOnClickListener(this);
+		// this.btnGoodsGive.setOnClickListener(this);
+		// this.btnWarehouseGive.setOnClickListener(this);
+		// this.btnUnitGive.setOnClickListener(this);
 		this.etNum.setOnFocusChangeListener(this);
 		this.etPrice.setOnFocusChangeListener(this);
 		this.etSubtotal.setOnFocusChangeListener(this);
@@ -264,16 +265,18 @@ public class OutDocAddGoodAct extends BaseActivity
 			// GoodsSearchAct.class), 0);
 			break;
 		// 搭赠批次
-		case R.id.btnProBatch:
-			startActivityForResult(new Intent().setClass(this, GoodsBatchSearchAct.class)
-					.putExtra("goodsid", this.btnGoodsGive.getTag().toString())
-					.putExtra("warehouseid", this.btnWarehouseGive.getTag().toString()), 3);
-			break;
+		// case R.id.btnProBatch:
+		// startActivityForResult(new Intent().setClass(this,
+		// GoodsBatchSearchAct.class)
+		// .putExtra("goodsid", this.btnGoodsGive.getTag().toString())
+		// .putExtra("warehouseid",
+		// this.btnWarehouseGive.getTag().toString()), 3);
+		// break;
 		// 搭赠单位
 		case R.id.btnUnitGive:
-			if (this.btnGoodsGive.getTag() != null) {
-				unitGiveSelect(btnGoodsGive.getTag().toString());
-			}
+			// if (this.btnGoodsGive.getTag() != null) {
+			// unitGiveSelect(btnGoodsGive.getTag().toString());
+			// }
 			break;
 		}
 	}
@@ -341,14 +344,15 @@ public class OutDocAddGoodAct extends BaseActivity
 		this.docitem.setNum(Utils.normalize(Utils.getDouble(this.etNum.getText().toString()).doubleValue(), 2));
 		this.docitem.setBignum(new GoodsUnitDAO().getBigNum(this.docitem.getGoodsid(), this.docitem.getUnitid(),
 				this.docitem.getNum()));
-		this.docitem.setIsexhibition(this.cbExhibition.isChecked());
+		// this.docitem.setIsexhibition(this.cbExhibition.isChecked());
 		this.docitem.setDiscountratio(
 				Utils.normalize(Utils.getDouble(this.etDiscountRatio.getText().toString()).doubleValue(), 2));
-		if (this.docitem.isIsusebatch()) {
-			// 批次 日期
-			this.docitem.setBatch(this.btnBatch.getText().toString());
-			this.docitem.setProductiondate(this.btnProDate.getText() + " 00:00:00");
-		}
+		// if (this.docitem.isIsusebatch()) {
+		// // 批次 日期
+		// this.docitem.setBatch(this.btnBatch.getText().toString());
+		// this.docitem.setProductiondate(this.btnProDate.getText() + "
+		// 00:00:00");
+		// }
 		this.docitem.setPrice(Utils.normalizePrice(Utils.getDouble(this.etPrice.getText().toString()).doubleValue()));
 		this.docitem.setSubtotal(
 				Utils.normalizeSubtotal(Utils.getDouble(this.etSubtotal.getText().toString()).doubleValue()));
@@ -461,22 +465,27 @@ public class OutDocAddGoodAct extends BaseActivity
 					etDiscountSubtotal.setTag(etDiscountSubtotal.getText());
 					break;
 				case 1:
-					if (!TextUtils.isEmptyS(goodsprice.getWarehouseid())) {
-						btnWarehouseGive
-								.setText(new WarehouseDAO().getWarehouse(goodsprice.getWarehouseid()).getName());
-						btnWarehouseGive.setTag(goodsprice.getWarehouseid());
-						btnProBatch.setText(goodsprice.getBatch());
-						try {
-							btnPromotionProDate.setText(Utils.formatDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-									.parse(goodsprice.getProductiondate()).getTime(), "yyyy-MM-dd"));
-						} catch (Exception localException) {
-							localException.printStackTrace();
-						}
-					} else {
-						btnWarehouseGive.setText(null);
-						btnWarehouseGive.setTag(null);
-						PDH.showFail(message);
-					}
+					// if (!TextUtils.isEmptyS(goodsprice.getWarehouseid())) {
+					// btnWarehouseGive
+					// .setText(new
+					// WarehouseDAO().getWarehouse(goodsprice.getWarehouseid()).getName());
+					// btnWarehouseGive.setTag(goodsprice.getWarehouseid());
+					// btnProBatch.setText(goodsprice.getBatch());
+					// try {
+					// btnPromotionProDate
+					// .setText(
+					// Utils.formatDate(
+					// new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					// .parse(goodsprice.getProductiondate()).getTime(),
+					// "yyyy-MM-dd"));
+					// } catch (Exception localException) {
+					// localException.printStackTrace();
+					// }
+					// } else {
+					// btnWarehouseGive.setText(null);
+					// btnWarehouseGive.setTag(null);
+					// PDH.showFail(message);
+					// }
 					break;
 				case 2:
 
@@ -556,34 +565,42 @@ public class OutDocAddGoodAct extends BaseActivity
 				// this.btnWarehouseGive.setText(paramIntent.getStringExtra("warehousename"));
 				break;
 			case 2:
-				// 批次
-				RespGoodsBatchEntity localRespGoodsBatchEntity2 = (RespGoodsBatchEntity) data
-						.getSerializableExtra("goodsbatch");
-				this.btnWarehouse.setTag(localRespGoodsBatchEntity2.getWarehouseId());
-				this.btnWarehouse.setText(localRespGoodsBatchEntity2.getWarehouseName());
-				this.btnBatch.setText(localRespGoodsBatchEntity2.getBatch());
-				try {
-					this.btnProDate.setText(Utils.formatDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-							.parse(localRespGoodsBatchEntity2.getProductiondate()).getTime(), "yyyy-MM-dd"));
-				} catch (ParseException e1) {
-					btnProDate.setText("");
-					e1.printStackTrace();
-				}
+				// // 批次
+				// RespGoodsBatchEntity localRespGoodsBatchEntity2 =
+				// (RespGoodsBatchEntity) data
+				// .getSerializableExtra("goodsbatch");
+				// this.btnWarehouse.setTag(localRespGoodsBatchEntity2.getWarehouseId());
+				// this.btnWarehouse.setText(localRespGoodsBatchEntity2.getWarehouseName());
+				// this.btnBatch.setText(localRespGoodsBatchEntity2.getBatch());
+				// try {
+				// this.btnProDate
+				// .setText(Utils.formatDate(
+				// new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+				// .parse(localRespGoodsBatchEntity2.getProductiondate()).getTime(),
+				// "yyyy-MM-dd"));
+				// } catch (ParseException e1) {
+				// btnProDate.setText("");
+				// e1.printStackTrace();
+				// }
 				break;
 
 			case 3:
-				RespGoodsBatchEntity localRespGoodsBatchEntity1 = (RespGoodsBatchEntity) data
-						.getSerializableExtra("goodsbatch");
-				this.btnWarehouseGive.setTag(localRespGoodsBatchEntity1.getWarehouseId());
-				this.btnWarehouseGive.setText(localRespGoodsBatchEntity1.getWarehouseName());
-				this.btnProBatch.setText(localRespGoodsBatchEntity1.getBatch());
-				try {
-					this.btnPromotionProDate.setText(Utils.formatDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-							.parse(localRespGoodsBatchEntity1.getProductiondate()).getTime(), "yyyy-MM-dd"));
-				} catch (ParseException e1) {
-					btnPromotionProDate.setText("");
-					e1.printStackTrace();
-				}
+				// RespGoodsBatchEntity localRespGoodsBatchEntity1 =
+				// (RespGoodsBatchEntity) data
+				// .getSerializableExtra("goodsbatch");
+				// this.btnWarehouseGive.setTag(localRespGoodsBatchEntity1.getWarehouseId());
+				// this.btnWarehouseGive.setText(localRespGoodsBatchEntity1.getWarehouseName());
+				// this.btnProBatch.setText(localRespGoodsBatchEntity1.getBatch());
+				// try {
+				// this.btnPromotionProDate
+				// .setText(Utils.formatDate(
+				// new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+				// .parse(localRespGoodsBatchEntity1.getProductiondate()).getTime(),
+				// "yyyy-MM-dd"));
+				// } catch (ParseException e1) {
+				// btnPromotionProDate.setText("");
+				// e1.printStackTrace();
+				// }
 				break;
 			case 6:
 				// 仓库
@@ -603,18 +620,22 @@ public class OutDocAddGoodAct extends BaseActivity
 				// "yyyy-MM-dd"));
 				break;
 			case 7:
-				RespGoodsWarehouse localRespGoodsWarehouse1 = (RespGoodsWarehouse) data
-						.getSerializableExtra("warehouse");
-				this.btnWarehouseGive.setTag(localRespGoodsWarehouse1.getWarehouseid());
-				this.btnWarehouseGive.setText(localRespGoodsWarehouse1.getWarehousename());
-				this.btnProBatch.setText(localRespGoodsWarehouse1.getBatch());
-				try {
-					this.btnPromotionProDate.setText(Utils.formatDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-							.parse(localRespGoodsWarehouse1.getProductiondate()).getTime(), "yyyy-MM-dd"));
-				} catch (ParseException e) {
-					btnPromotionProDate.setText("");
-					e.printStackTrace();
-				}
+				// RespGoodsWarehouse localRespGoodsWarehouse1 =
+				// (RespGoodsWarehouse) data
+				// .getSerializableExtra("warehouse");
+				// this.btnWarehouseGive.setTag(localRespGoodsWarehouse1.getWarehouseid());
+				// this.btnWarehouseGive.setText(localRespGoodsWarehouse1.getWarehousename());
+				// this.btnProBatch.setText(localRespGoodsWarehouse1.getBatch());
+				// try {
+				// this.btnPromotionProDate
+				// .setText(Utils.formatDate(
+				// new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+				// .parse(localRespGoodsWarehouse1.getProductiondate()).getTime(),
+				// "yyyy-MM-dd"));
+				// } catch (ParseException e) {
+				// btnPromotionProDate.setText("");
+				// e.printStackTrace();
+				// }
 				break;
 			default:
 				break;
@@ -660,7 +681,7 @@ public class OutDocAddGoodAct extends BaseActivity
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		if (isChecked) {
-			this.ll_PrmomotionGoods.setVisibility(8);
+			// this.ll_PrmomotionGoods.setVisibility(8);
 			setUseAble(false);
 			this.etPrice.setText("0.00");
 			this.etDiscountRatio.setText("1.00");
@@ -674,7 +695,7 @@ public class OutDocAddGoodAct extends BaseActivity
 			this.etDiscountSubtotal.setTag(this.etDiscountSubtotal.getText());
 			return;
 		}
-		this.ll_PrmomotionGoods.setVisibility(0);
+		// this.ll_PrmomotionGoods.setVisibility(0);
 		setUseAble(true);
 	}
 

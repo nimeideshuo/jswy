@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.DefDocItemDD;
 import com.ahjswy.cn.bean.Def_Doc;
@@ -374,7 +375,14 @@ public class ServiceStore {
 		String url = Utils.getServiceAddress(this.baseAddress, "getcustomerhistory");
 		map.put("customerid", paramString);
 		map.put("accountset", SystemState.getAccountSet().getName());
-		return new Utils_help().getServiceInfor(url, map);
+		try {
+			return new Utils_help().getServiceInfor(url, map);
+		} catch (Exception e) {
+			e.printStackTrace();
+			DocUtils.insertLog(e, "str_GetCustomerHistory");
+		}
+		return RequestHelper.getErrayMessage();
+
 	}
 
 	public String str_GetDBDocDetail(long paramLong) {

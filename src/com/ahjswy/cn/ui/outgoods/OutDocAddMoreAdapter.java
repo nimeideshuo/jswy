@@ -63,16 +63,20 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		this.listItems.addAll(listItems);
 	}
 
+	public void addItem(DefDocItemXS item) {
+		listItems.add(item);
+	}
+
 	public DefDocXS doc;
 
 	public void setDoc(DefDocXS doc) {
 		this.doc = doc;
 	}
 
-	// int selectPosition = -1;
+//	int selectPosition = -1;
 
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
+	public View getView( int position, View convertView, ViewGroup parent) {
 		Item item = null;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.act_out_doc_add_moreadapter_item, null);
@@ -81,12 +85,12 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		} else {
 			item = (Item) convertView.getTag();
 		}
-		item.setValue(getItem(position));
 		item.tv_dicPrice.setTag(Integer.valueOf(position));
 		item.etNum.setTag(Integer.valueOf(position));
 		item.btnUnit.setTag(Integer.valueOf(position));
 		item.etNum.addTextChangedListener(new NumWatcher(item));
 		item.btnUnit.setOnClickListener(unitOnClickListener);
+		item.setValue(getItem(position));
 		return convertView;
 		// // 商品 name
 		// convertView =
@@ -249,11 +253,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		@Override
 		public void afterTextChanged(Editable s) {
 			int position = ((Integer) item.etNum.getTag()).intValue();
-			try {
-				listItems.get(position).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			listItems.get(position).setNum(Utils.normalize(Utils.getDouble(s.toString()).doubleValue(), 2));
 		}
 
 	}

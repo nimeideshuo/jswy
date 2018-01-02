@@ -14,6 +14,8 @@ import com.ahjswy.cn.bean.bmob.ExceptionLog;
 import com.ahjswy.cn.dao.Exception_logDAO;
 import com.ahjswy.cn.model.User;
 import com.ahjswy.cn.service.ServiceSystem;
+import com.ahjswy.cn.ui.outgoods.OutDocAddMoreGoodsAct;
+import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.utils.BmobUtils;
 import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
@@ -52,7 +54,6 @@ public class Swy_splash extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.swy_splash);
 		initview();
-		// MyApplication.getInstance().initDefault();
 	}
 
 	private void initview() {

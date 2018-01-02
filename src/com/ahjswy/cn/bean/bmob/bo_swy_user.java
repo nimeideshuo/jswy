@@ -29,8 +29,8 @@ public class bo_swy_user extends BmobObject implements Serializable {
 	public String code;
 	public String database;
 	public String accountset;
-	public Integer sleep;
-	public Integer state;// 0 默认 1, 警告，2 停止,3 退出
+	public int sleep;
+	public int state;// 0 默认 1, 警告，2 停止,3 退出
 	public String message;
 	public String memory;
 	
@@ -48,17 +48,32 @@ public class bo_swy_user extends BmobObject implements Serializable {
 
 	public static bo_swy_user factory() {
 		bo_swy_user swyUser = new bo_swy_user();
-		swyUser.accountset = SystemState.getAccountSet().getDatabase();
+//		swyUser.accountset = SystemState.getAccountSet().getDatabase();
+//		swyUser.deviceid = MyApplication.getInstance().getAndroidId();
+//		swyUser.userName = SystemState.getUser().getName();
+//		swyUser.code = MyApplication.getInstance().getUniqueCode();
+//		swyUser.versionname = MyApplication.getInstance().getVersionName();
+//		swyUser.userid = SystemState.getDBUser().userid;
+//		swyUser.registerDate = Utils.getData();
+//		swyUser.message = "";
+//		swyUser.state = 0;
+//		swyUser.memory = "20";
+//		swyUser.database = SystemState.getAccountSet().getDatabase();
+//		swyUser.registerDate = Utils.getData();
+		
+		
+		swyUser.accountset = "swy";
 		swyUser.deviceid = MyApplication.getInstance().getAndroidId();
-		swyUser.userName = SystemState.getUser().getName();
+		swyUser.userName = "xiaowang";
 		swyUser.code = MyApplication.getInstance().getUniqueCode();
 		swyUser.versionname = MyApplication.getInstance().getVersionName();
-		swyUser.userid = SystemState.getDBUser().userid;
+		swyUser.userid = "001";
 		swyUser.registerDate = Utils.getData();
-		swyUser.message = "";
-		swyUser.state = 0;
-		swyUser.memory = "20";
-		swyUser.database = SystemState.getAccountSet().getDatabase();
+		swyUser.message = "message";
+//		swyUser.state = 0;
+//		swyUser.sleep = 0;
+		swyUser.memory = "5";
+		swyUser.database = "shujuku";
 		swyUser.registerDate = Utils.getData();
 		return swyUser;
 	}

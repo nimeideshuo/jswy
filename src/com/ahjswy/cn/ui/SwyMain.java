@@ -33,6 +33,7 @@ import com.ahjswy.cn.utils.BmobUtils.BmobListener;
 import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
+import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -45,6 +46,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -73,6 +75,9 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 
 		@Override
 		public <T> void result(T object) {
+			// if (!(object instanceof bo_swy_user)) {
+			// return;
+			// }
 			bo_swy_user swyUser = (bo_swy_user) object;
 			switch (swyUser.state) {
 			case 1:
@@ -219,13 +224,17 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		}
 		bo_swy_user user = JSONUtil.readValue(ap.getValue("bo_swy_user", "0"), bo_swy_user.class);
 		if (user != null) {
+			if (user.getState() == 1) {
+				Toast.makeText(this, user.getMessage(), 0).show();
+			}
+			if (user.getSleep().intValue() > 0) {
+				SystemClock.sleep(user.getSleep().intValue());
+			}
 			if (user.getState() == 2) {
 				Toast.makeText(this, user.getMessage(), 0).show();
 				return;
 			}
-			if (user.getState() == 1) {
-				Toast.makeText(this, user.getMessage(), 0).show();
-			}
+
 		}
 		BmobUtils.getInstance().updata();
 		// 判断可用内存是否不足 ,不足显示退出

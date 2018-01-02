@@ -1,12 +1,15 @@
 package com.ahjswy.cn.ui.outgoods;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
-import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.CustomerThin;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocXS;
@@ -28,6 +31,7 @@ import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
 import com.ahjswy.cn.views.EditTextWithDel;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +42,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 public class OutDocOpenActivity extends BaseActivity
@@ -57,9 +62,9 @@ public class OutDocOpenActivity extends BaseActivity
 	private EditText etTruckNumber;
 	// 整单折扣
 	private EditTextWithDel etDiscountRatio;
-	// 交货日期
-	private Button btnSettleTime;
 	// 结算日期
+	private Button btnSettleTime;
+	// 交货日期
 	private Button btnDeliveryTime;
 	// 备注
 	private EditText etRemark;
@@ -71,6 +76,7 @@ public class OutDocOpenActivity extends BaseActivity
 	private EditText etCustomerAddress;
 	private DefDocXS doc;
 	private boolean isReadOnly = false;
+	private Calendar calendar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +101,11 @@ public class OutDocOpenActivity extends BaseActivity
 		cbDistribution = (CheckBox) findViewById(R.id.cbDistribution);
 		etCustomerAddress = (EditText) findViewById(R.id.etCustomerAddress);
 		etMobile.clearFocus();
+		calendar = Calendar.getInstance();
 	}
 
 	private void initdate() {
+
 		this.doc = ((DefDocXS) getIntent().getSerializableExtra("doc"));
 		this.isReadOnly = this.doc == null || !this.doc.isIsavailable() || !this.doc.isIsposted() ? false : true;
 		if (this.doc != null) {
@@ -259,14 +267,15 @@ public class OutDocOpenActivity extends BaseActivity
 			startActivityForResult(new Intent().setClass(this, CustomerSearchAct.class), 4);
 			break;
 		case R.id.btnSettleTime:
+
 			DateTimePickDialogUtil dateTimePicKDialog = new DateTimePickDialogUtil(this, GetTime.getDateTime(),
 					R.id.btnSettleTime, this);
-			dateTimePicKDialog.dateTimePicKDialog(btnDeliveryTime);
+			dateTimePicKDialog.dateTimePicKDialog(btnSettleTime);
 			break;
 		case R.id.btnDeliveryTime:
 			DateTimePickDialogUtil jiesuan_riqi = new DateTimePickDialogUtil(this, GetTime.getDateTime(),
 					R.id.btnDeliveryTime, this);
-			jiesuan_riqi.dateTimePicKDialog(btnSettleTime);
+			jiesuan_riqi.dateTimePicKDialog(btnDeliveryTime);
 			break;
 		case R.id.etCustomerAddress:
 			System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
@@ -289,6 +298,34 @@ public class OutDocOpenActivity extends BaseActivity
 		}
 	}
 
+	View.OnClickListener dateClickListener = new View.OnClickListener() {
+		private DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+			@Override
+			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+				calendar.set(1, year);
+				calendar.set(2, monthOfYear);
+				calendar.set(5, dayOfMonth);
+				SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+				btn.setText(localSimpleDateFormat.format(calendar.getTime()));
+				btn.setTag(localSimpleDateFormat.format(calendar.getTime()));
+			}
+		};
+		private Button btn;
+
+		@Override
+		public void onClick(View v) {
+			btn = (Button) v;
+			try {
+				calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).parse((String) btn.getText()));
+				new DatePickerDialog(OutDocOpenActivity.this, listener, calendar.get(1), calendar.get(2),
+						calendar.get(5)).show();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+		}
+	};
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -306,11 +343,16 @@ public class OutDocOpenActivity extends BaseActivity
 				String promotionname = localCustomerThin.getPromotionname();
 				etCustomerAddress.setText("");
 				if (TextUtils.isEmptyS(promotionname)) {
-					this.btnPromotion.setText(localCustomerThin.getPromotionname());
+					btnPromotion.setText(localCustomerThin.getPromotionname());
 					btnPromotion.setTag(localCustomerThin.getPromotionid());
+				} else {
+					btnPromotion.setText("");
+					btnPromotion.setTag(null);
 				}
 				if (TextUtils.isEmptyS(localCustomerThin.getContactmoblie())) {
 					etMobile.setText(localCustomerThin.getContactmoblie());
+				} else {
+					etMobile.setText("");
 				}
 				break;
 			case 5:

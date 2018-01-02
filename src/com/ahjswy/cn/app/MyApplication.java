@@ -93,7 +93,7 @@ public class MyApplication extends Application {
 	 */
 	public boolean isDangerMemory() {
 		bo_swy_user user = JSONUtil.readValue(ap.getValue("bo_swy_user", "0"), bo_swy_user.class);
-		int maxMemory = user == null ? 20 : Integer.parseInt(user.getMemory());
+		int maxMemory = user == null ? 5 : Integer.parseInt(user.getMemory());
 		final int M = 1024 * 1024;
 		final Runtime runtime = Runtime.getRuntime();
 		Log.i("tag", "最大可用内存：" + runtime.maxMemory() / M + "M");

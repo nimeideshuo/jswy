@@ -49,7 +49,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	private Scaner scaner;
 	private GoodsUnitDAO dao;
 	boolean isScanerBarcode = false;
-
+	double num=0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

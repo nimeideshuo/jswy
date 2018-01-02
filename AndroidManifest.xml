@@ -63,6 +63,7 @@
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme" >
         <uses-library android:name="android.test.runner" />
+        <!--Swy_s  OutDocAddMoreGoodsAct -->
         <activity
             android:name="com.ahjswy.cn.ui.Swy_splash"
             android:screenOrientation="portrait"

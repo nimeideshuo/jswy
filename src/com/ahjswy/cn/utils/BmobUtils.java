@@ -37,7 +37,7 @@ public class BmobUtils {
 			@Override
 			public void done(List<BatchResult> o, BmobException e) {
 				if (e == null) {
-					if(o.size()==0){
+					if (o.size() == 0) {
 						return;
 					}
 					for (int i = 0; i < o.size(); i++) {
@@ -75,17 +75,16 @@ public class BmobUtils {
 			public void done(BmobQueryResult<bo_swy_user> arg0, BmobException e) {
 				if (e == null) {
 					if (listener != null) {
-						if(arg0.getResults().size()==0){
-							return;
+						if (arg0.getResults().size() == 0) {
+							bo_swy_user boSwyUser = bo_swy_user.factory();
+							boSwyUser.registerDate = Utils.getData();
+							boSwyUser.save();
 						}
 						listener.result(arg0.getResults().get(0));
 					}
 					MLog.d("查询成功" + arg0.getResults().get(0).toString());
 				} else {
 					MLog.d("查询失败 ");
-					 bo_swy_user boSwyUser = bo_swy_user.factory();
-					boSwyUser.registerDate = Utils.getData();
-					boSwyUser.save();
 					MLog.d(e.getMessage());
 				}
 			}

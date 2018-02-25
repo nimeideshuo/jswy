@@ -328,6 +328,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	protected void onPause() {
 		super.onPause();
 		scaner.removeListener();
+		scaner=null;
 	}
 
 	public DefDoc getDoc() {
@@ -419,7 +420,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	@Override
 	protected void onResume() {
 		super.onResume();
-		scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 	}
 
@@ -743,9 +744,12 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 								setAddItem(itemXS);
 							}
 							if (Utils.isCombination()) {
+								int size = listItem.size();
 								listItem.addAll(newListItem);
 								utils.combinationItem(listItem, listItemDelete);
-								showSuccess("同品增加成功!");
+								if (listItem.size() < size) {
+									showSuccess("同品增加成功!");
+								}
 							} else {
 								listItem.addAll(0, newListItem);
 							}
@@ -762,8 +766,12 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				DefDocItemXS localDefDocItem2 = (DefDocItemXS) data.getSerializableExtra("docitem");
 				listItem.set(j, localDefDocItem2);
 				if (Utils.isCombination()) {
+					int size = listItem.size();
 					utils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
+					if (listItem.size() < size) {
+						showSuccess("同品增加成功!");
+					}
 				}
 				adapter.setData(listItem);
 				refreshUI();

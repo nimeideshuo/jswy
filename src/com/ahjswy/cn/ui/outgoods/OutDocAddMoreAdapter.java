@@ -13,9 +13,8 @@ import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
-
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,10 +28,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class OutDocAddMoreAdapter extends BaseAdapter {
-	private Activity context;
+	private Context context;
 	private List<DefDocItemXS> listItems;
 
-	public OutDocAddMoreAdapter(Activity context) {
+	public OutDocAddMoreAdapter(Context context) {
 		this.context = context;
 		if (this.listItems == null) {
 			this.listItems = new ArrayList<DefDocItemXS>();

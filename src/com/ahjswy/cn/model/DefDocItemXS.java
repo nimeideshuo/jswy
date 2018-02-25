@@ -70,7 +70,7 @@ public class DefDocItemXS implements Serializable {
 	// 仓库名称
 	private String warehousename;
 	// 辅助计件单位
-	public double assistnum;
+//	public double assistnum;
 	// private RespGoodsWarehouse stocknum;
 	public double stocknum;
 	public double stocksumnum;

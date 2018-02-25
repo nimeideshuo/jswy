@@ -57,7 +57,7 @@ public class bo_swy_user extends BmobObject implements Serializable {
 		swyUser.registerDate = Utils.getData();
 		swyUser.message = "";
 		swyUser.state = 0;
-		swyUser.memory = "20";
+		swyUser.memory = "1";
 		swyUser.database = SystemState.getAccountSet().getDatabase();
 		swyUser.registerDate = Utils.getData();
 		

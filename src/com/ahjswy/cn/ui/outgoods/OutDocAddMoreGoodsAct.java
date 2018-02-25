@@ -55,7 +55,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_out_doc_add_moregoods);
 		intView();
-		scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 	}
 
@@ -66,7 +66,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		listview = (ListView) findViewById(R.id.lv_commodity_add);
 		items = JSONUtil.parseArray(getIntent().getStringExtra("items"), DefDocItemXS.class);
 		doc = (DefDocXS) getIntent().getSerializableExtra("doc");
-		adapter = new OutDocAddMoreAdapter(this);
+		adapter = new OutDocAddMoreAdapter(getApplicationContext());
 		adapter.setDoc(doc);
 		listview.setAdapter(adapter);
 		isScanerBarcode = true;
@@ -120,6 +120,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		super.onPause();
 		if (scaner != null) {
 			scaner.removeListener();
+			scaner=null;
 		}
 	}
 

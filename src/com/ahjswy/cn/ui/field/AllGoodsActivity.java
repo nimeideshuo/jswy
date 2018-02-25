@@ -108,10 +108,14 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 			}
 		};
 		atvSearch.setOnTextChangeListener(changeListener);
-		Scaner scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 		// dialogPrice = new AlertDialog.Builder(AllGoodsActivity.this);
 	}
+	protected void onDestroy() {
+		scaner.removeListener();
+		scaner=null;
+	};
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {
 
@@ -171,6 +175,7 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 		};
 	};
 	// private AlertDialog.Builder dialogPrice;
+	private Scaner scaner;
 
 	private void refresh() {
 		MLog.d("refresh:" + listGoodsThin.toString());

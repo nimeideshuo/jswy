@@ -179,7 +179,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 	@Override
 	protected void onResume() {
 		super.onResume();
-		scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(readBarcode);
 	}
 

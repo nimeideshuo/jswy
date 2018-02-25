@@ -53,7 +53,7 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 		setContentView(R.layout.act_out_doc_add_moregoods);
 		intView();
 		initData();
-		scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 	}
 
@@ -187,6 +187,7 @@ public class OutInDocAddMoreGoodsAct extends BaseActivity {
 	protected void onPause() {
 		super.onPause();
 		scaner.removeListener();
+		scaner=null;
 	}
 
 	private DefDocItemDD fillItem(GoodsThin localGoodsThin, double num, double price, long l) {

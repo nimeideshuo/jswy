@@ -44,7 +44,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_indoc_add_more_goods);
 		initView();
-		scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 	}
 
@@ -68,6 +68,7 @@ public class InDocAddMoreGoodsAct extends BaseActivity {
 	protected void onPause() {
 		super.onPause();
 		scaner.removeListener();
+		scaner=null;
 	}
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {

@@ -259,7 +259,7 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	@Override
 	protected void onResume() {
 		super.onResume();
-		scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 	}
 
@@ -470,13 +470,14 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 	private void setAddItem(DefDocItemXS docItem) {
 
 		// 辅助计件单位
-		docItem.assistnum = DocUtils.getAssistnum(docItem.getGoodsid(), docItem.getUnitid(), docItem.getNum());
+		// docItem.assistnum = DocUtils.getAssistnum(docItem.getGoodsid(),
+		// docItem.getUnitid(), docItem.getNum());
 		// 折后小计
 		docItem.setSubtotal(Utils.normalizeSubtotal(docItem.getNum() * docItem.getPrice()));
 		// 折扣
 		docItem.setDiscountratio(doc.getDiscountratio());
 		// 是否赠送
-		docItem.setIsgift(docItem.getPrice() == 0.0D ? true : false);
+		docItem.setIsgift(docItem.getPrice() == 0.0D);
 		docItem.setDiscountprice(Utils.normalizePrice(docItem.getPrice() * docItem.getDiscountratio()));
 		docItem.setDiscountsubtotal(Utils.normalizeSubtotal(docItem.getNum() * docItem.getDiscountprice()));
 		String bigNum = DocUtils.getBigNum(docItem.getGoodsid(), docItem.getUnitid(), docItem.getNum());
@@ -939,8 +940,10 @@ public class OutDocEditActivity extends BaseActivity implements OnItemClickListe
 			case 4:
 				// TODO
 				DefDocItemXS defDocItemXS4 = (DefDocItemXS) data.getSerializableExtra("docitem");
-				defDocItemXS4.assistnum = DocUtils.getAssistnum(defDocItemXS4.getGoodsid(), defDocItemXS4.getUnitid(),
-						defDocItemXS4.getNum());
+				// defDocItemXS4.assistnum =
+				// DocUtils.getAssistnum(defDocItemXS4.getGoodsid(),
+				// defDocItemXS4.getUnitid(),
+				// defDocItemXS4.getNum());
 				if (Utils.isCombination()) {
 					listItem.add(defDocItemXS4);
 					int size = listItem.size();

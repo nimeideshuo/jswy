@@ -43,7 +43,7 @@ public class InpurDocAddMoreGoodsAct extends BaseActivity {
 		super.onCreate(paramBundle);
 		setContentView(R.layout.act_out_doc_add_moregoods);
 		intView();
-		scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 	}
 

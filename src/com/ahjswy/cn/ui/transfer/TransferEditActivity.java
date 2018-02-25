@@ -72,7 +72,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		initListView();
 		initView();
 		refreshUI();
-		factory = Scaner.factory(this);
+		factory = Scaner.factory(getApplicationContext());
 		factory.setBarcodeListener(this);
 	}
 
@@ -566,6 +566,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 	protected void onDestroy() {
 		super.onDestroy();
 		factory.removeListener();
+		factory=null;
 	}
 
 	@Override

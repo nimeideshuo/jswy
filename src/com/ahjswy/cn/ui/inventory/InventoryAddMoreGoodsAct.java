@@ -46,7 +46,7 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 		adapter = new InventoryAddMoreAdapter(this);
 		this.adapter.setItem(items);
 		this.listView.setAdapter(this.adapter);
-		scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 		dialog = new Dialog_listCheckBox(this);
 		docUtils = DocUtils.getInstance();
@@ -147,6 +147,7 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 	protected void onPause() {
 		super.onPause();
 		scaner.removeListener();
+		scaner=null;
 	}
 
 	private void addItems(Map<String, Object> goodsMap) {

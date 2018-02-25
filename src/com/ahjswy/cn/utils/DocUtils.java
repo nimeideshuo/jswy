@@ -41,7 +41,7 @@ public class DocUtils {
 	private static FileUtils fileutils = new FileUtils();
 	private final static String XSDOC_NAME = "XSdoc.txt";
 	private static final String THDOC_NAME = "THdoc.txt";
-	public static final int MAXITEM = 400;
+	public static final int MAXITEM = 100;
 	private final static WarehouseDAO warehousedao = new WarehouseDAO();
 	static DocUtils docutils = null;
 
@@ -355,11 +355,11 @@ public class DocUtils {
 	 *            商品数量
 	 * @return
 	 */
-	public static double getAssistnum(String goodsid, String unitid, double num) {
-		double unitRatio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
-		double bigUnitRatio = unitDAO.getBigUnitRatio(goodsid);
-		return Utils.normalize((num * unitRatio) / bigUnitRatio, 4);
-	}
+//	public static double getAssistnum(String goodsid, String unitid, double num) {
+//		double unitRatio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
+//		double bigUnitRatio = unitDAO.getBigUnitRatio(goodsid);
+//		return Utils.normalize((num * unitRatio) / bigUnitRatio, 4);
+//	}
 
 	/**
 	 * 蓝牙开关是否打开

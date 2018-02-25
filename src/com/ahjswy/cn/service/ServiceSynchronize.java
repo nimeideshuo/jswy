@@ -54,7 +54,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.parse2ListMap(infor);
@@ -69,7 +69,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.parse2ListMap(infor);
@@ -84,7 +84,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor))
 			return JSONUtil.parse2ListMap(infor);
@@ -98,7 +98,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.parse2ListMap(infor);
@@ -113,7 +113,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(pageindex);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor))
 			return JSONUtil.parse2ListMap(infor);
@@ -131,7 +131,7 @@ public class ServiceSynchronize {
 		queryRecords.setPageSize(pagesize);
 		queryRecords.setRVersion(rversion);
 		queryRecords.setPageIndex(pageindex);
-		map.put("parameter", JSONUtil.toJSONString(queryRecords));
+		map.put("parameter", JSONUtil.object2Json(queryRecords));
 		String serviceInfor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(serviceInfor))
 			return JSONUtil.parse2ListMap(serviceInfor);
@@ -150,7 +150,7 @@ public class ServiceSynchronize {
 		queryRecords.setPageSize(pagesize);
 		queryRecords.setRVersion(rversion);
 		queryRecords.setPageIndex(pageindex);
-		map.put("parameter", JSONUtil.toJSONString(queryRecords));
+		map.put("parameter", JSONUtil.object2Json(queryRecords));
 		String serviceInfor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(serviceInfor))
 			return JSONUtil.parse2ListMap(serviceInfor);
@@ -161,7 +161,7 @@ public class ServiceSynchronize {
 		String url = Utils.getServiceAddress(this.baseAddress, "querygoodsimage");
 		ReqCommonPara localReqCommonPara = new ReqCommonPara();
 		localReqCommonPara.setStringValue(paramString);
-		map.put("parameter", JSONUtil.toJSONString(localReqCommonPara));
+		map.put("parameter", JSONUtil.object2Json(localReqCommonPara));
 		return new Utils_help().getServiceInfor(url, map);
 	}
 
@@ -171,7 +171,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.parse2ListMap(infor);
@@ -185,7 +185,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor))
 			return JSONUtil.parse2ListMap(infor);
@@ -198,7 +198,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.parse2ListMap(infor);
@@ -213,7 +213,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor))
 			return JSONUtil.parse2ListMap(infor);
@@ -226,7 +226,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor))
 			return JSONUtil.parse2ListMap(infor);
@@ -256,7 +256,7 @@ public class ServiceSynchronize {
 		localArrayList.add(new ReqSynUpdateInfo("sz_goodsimage", 0L));
 		localArrayList.add(new ReqSynUpdateInfo("rversion", rversion));
 		localArrayList.add(new ReqSynUpdateInfo("pagesize", pagesize));
-		map.put("parameter", JSONUtil.toJSONString(localArrayList));
+		map.put("parameter", JSONUtil.object2Json(localArrayList));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.str2list(infor, ReqSynUpdateInfo.class);
@@ -270,7 +270,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(paramInt);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(this.rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.parse2ListMap(infor);
@@ -284,7 +284,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(pageindex);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.parse2ListMap(infor);
@@ -298,7 +298,7 @@ public class ServiceSynchronize {
 		localReqSynQueryRecords.setPageIndex(pageindex);
 		localReqSynQueryRecords.setPageSize(pagesize);
 		localReqSynQueryRecords.setRVersion(rversion);
-		map.put("parameter", JSONUtil.toJSONString(localReqSynQueryRecords));
+		map.put("parameter", JSONUtil.object2Json(localReqSynQueryRecords));
 		String infor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(infor)) {
 			return JSONUtil.parse2ListMap(infor);
@@ -313,7 +313,7 @@ public class ServiceSynchronize {
 		// recordsByID.setId(customerid);
 		recordsByID.setPageIndex(pageindex);
 		recordsByID.setPageSize(pagesize);
-		map.put("parameter", JSONUtil.toJSONString(recordsByID));
+		map.put("parameter", JSONUtil.object2Json(recordsByID));
 		String serviceInfor = new Utils_help().getServiceInfor(url, map);
 		if (RequestHelper.isSuccess(serviceInfor))
 			return JSONUtil.parse2ListMap(serviceInfor);
@@ -334,10 +334,14 @@ public class ServiceSynchronize {
 		recordsByID.setPageIndex(pageindex);
 		recordsByID.setPageSize(pagesize);
 		recordsByID.setRVersion(rversion);
-		map.put("parameter", JSONUtil.toJSONString(recordsByID));
-		String serviceInfor = new Utils_help().getServiceInfor(url, map);
-		if (RequestHelper.isSuccess(serviceInfor))
-			return JSONUtil.parse2ListMap(serviceInfor);
+		try {
+			map.put("parameter", JSONUtil.object2Json(recordsByID));
+			String serviceInfor = new Utils_help().getServiceInfor(url, map);
+			if (RequestHelper.isSuccess(serviceInfor))
+				return JSONUtil.parse2ListMap(serviceInfor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

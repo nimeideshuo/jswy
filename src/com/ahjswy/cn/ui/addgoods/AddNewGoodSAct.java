@@ -92,7 +92,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 		setContentView(R.layout.act_addnewgoodst);
 		initView();
 		initUnit1();
-		factory = Scaner.factory(this);
+		factory = Scaner.factory(getApplicationContext());
 		factory.setBarcodeListener(this);
 	}
 
@@ -608,6 +608,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 	protected void onDestroy() {
 		super.onDestroy();
 		factory.removeListener();
+		factory=null;
 	}
 
 	@Override

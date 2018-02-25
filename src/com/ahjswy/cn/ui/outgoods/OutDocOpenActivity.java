@@ -447,6 +447,9 @@ public class OutDocOpenActivity extends BaseActivity
 		if (!btnPromotion.getText().toString().isEmpty()) {
 			this.doc.setPromotionid(this.btnPromotion.getTag().toString());
 			this.doc.setPromotionname(this.btnPromotion.getText().toString());
+		} else {
+			this.doc.setPromotionid(null);
+			this.doc.setPromotionname("");
 		}
 		this.doc.setMobile("" + etMobile.getText().toString());
 		this.doc.setTrucknumber("" + etTruckNumber.getText().toString());
@@ -503,28 +506,6 @@ public class OutDocOpenActivity extends BaseActivity
 			}
 		});
 	}
-
-	/**
-	 * * 监听Back键按下事件,方法2: * 注意: * 返回值表示:是否能完全处理该事件 * 在此处返回false,所以会继续传播该事件. *
-	 * 
-	 */
-	// @Override
-	// public boolean onKeyDown(int keyCode, KeyEvent event) {
-	// if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-	// if (doc != null) {
-	// Intent intent = new Intent();
-	// intent.putExtra("doc", this.doc);
-	// setResult(3, intent);
-	// finish();
-	// return true;
-	// }
-	// startActivity(new Intent(this, SwyMain.class));
-	// finish();
-	// return true;
-	// } else {
-	// return super.onKeyDown(keyCode, event);
-	// }
-	// }
 
 	@Override
 	public void dateTime(int id, String time) {

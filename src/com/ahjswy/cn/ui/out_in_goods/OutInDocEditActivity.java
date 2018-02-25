@@ -270,7 +270,7 @@ public class OutInDocEditActivity extends BaseActivity implements OnTouchListene
 	@Override
 	protected void onResume() {
 		super.onResume();
-		scaner = Scaner.factory(this);
+		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 	}
 

@@ -139,7 +139,13 @@ public class Utils {
 		if (douStr.length() == 0) {
 			return Double.valueOf(0.0D);
 		}
-		return Double.parseDouble(douStr);
+		try {
+			return Double.parseDouble(douStr);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0.0;
+		}
+		
 	}
 
 	public static Long getEndTime() {

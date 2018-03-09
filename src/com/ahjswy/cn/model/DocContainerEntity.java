@@ -3,7 +3,7 @@ package com.ahjswy.cn.model;
 import java.io.Serializable;
 import java.util.List;
 
-public class DocContainerEntity<T> implements Serializable {
+public class DocContainerEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,15 +20,15 @@ public class DocContainerEntity<T> implements Serializable {
 	private String initem;
 
 	private String item;
-	private List<T> listitem;
-
-	public void setListitem(List<T> listitem) {
-		this.listitem = listitem;
-	}
-
-	public List<T> getListitem() {
-		return listitem;
-	}
+//	private List<T> listitem;
+//
+//	public void setListitem(List<T> listitem) {
+//		this.listitem = listitem;
+//	}
+//
+//	public List<T> getListitem() {
+//		return listitem;
+//	}
 
 	private String paytype;
 	private int svid;
@@ -118,8 +118,7 @@ public class DocContainerEntity<T> implements Serializable {
 	@Override
 	public String toString() {
 		return "DocContainerEntity [deleteinitem=" + deleteinitem + ", deleteitem=" + deleteitem + ", doc=" + doc
-				+ ", doctype=" + doctype + ", info=" + info + ", initem=" + initem + ", item=" + item + ", listitem="
-				+ listitem + ", paytype=" + paytype + ", svid=" + svid + ", showid=" + showid + "]";
+				+ ", doctype=" + doctype + ", info=" + info + ", initem=" + initem + ", item=" + item +  ", paytype=" + paytype + ", svid=" + svid + ", showid=" + showid + "]";
 	}
 
 }

@@ -115,6 +115,7 @@ public class AllGoodsActivity extends BaseActivity implements OnItemClickListene
 	protected void onDestroy() {
 		scaner.removeListener();
 		scaner=null;
+		super.onDestroy();
 	};
 
 	ScanerBarcodeListener barcodeListener = new ScanerBarcodeListener() {

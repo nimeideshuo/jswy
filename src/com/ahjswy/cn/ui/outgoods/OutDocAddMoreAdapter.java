@@ -13,6 +13,7 @@ import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.Utils;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -72,10 +73,10 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 		this.doc = doc;
 	}
 
-//	int selectPosition = -1;
+	// int selectPosition = -1;
 
 	@Override
-	public View getView( int position, View convertView, ViewGroup parent) {
+	public View getView(int position, View convertView, ViewGroup parent) {
 		Item item = null;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.act_out_doc_add_moreadapter_item, null);
@@ -227,7 +228,7 @@ public class OutDocAddMoreAdapter extends BaseAdapter {
 			tv_dicPrice.setOnClickListener(priceOnClick);
 			tv_Bfci.setText("当前库:" + (TextUtils.isEmpty(item.goodStock) ? "?" : item.goodStock));
 			tvSumStock.setText("总库存:" + (TextUtils.isEmpty(item.goodSumStock) ? "?" : item.goodSumStock));
-			etNum.setText(item.getNum() == 0 ? "" : item.getNum() + "");
+			etNum.setText(item.getNum() == 0 ? "" : Utils.cleanZero(item.getNum()));
 		}
 
 	}

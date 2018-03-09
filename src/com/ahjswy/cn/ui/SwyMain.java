@@ -8,10 +8,12 @@ import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.bmob.bo_swy_user;
+import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
+import com.ahjswy.cn.response.RespBo_swy_user;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
 import com.ahjswy.cn.ui.addgoods.AddNewGoodSAct;
@@ -30,10 +32,8 @@ import com.ahjswy.cn.ui.transfer.TransferDocOpenActivity;
 import com.ahjswy.cn.ui.transfer.TransferRecordActivity;
 import com.ahjswy.cn.utils.BmobUtils;
 import com.ahjswy.cn.utils.BmobUtils.BmobListener;
-import com.ahjswy.cn.utils.DocUtils;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.JSONUtil;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
@@ -69,42 +69,6 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		setContentView(R.layout.act_field_main);
 		initView();
 		initDate();
-	}
-
-	class OBlistener implements BmobListener {
-
-		@Override
-		public <T> void result(T object) {
-			// if (!(object instanceof bo_swy_user)) {
-			// return;
-			// }
-			bo_swy_user swyUser = (bo_swy_user) object;
-			switch (swyUser.state) {
-			case 1:
-				// TODO
-				if (TextUtils.isEmptyS(swyUser.message)) {
-					PDH.showFail(swyUser.message);
-					ap.setValue("bo_swy_user", swyUser);
-					return;
-				}
-				break;
-			case 2:
-				if (TextUtils.isEmptyS(swyUser.message)) {
-					PDH.showFail(swyUser.message);
-					ap.setValue("bo_swy_user", swyUser);
-					return;
-				}
-				break;
-			case 3:
-				MyApplication.getInstance().exit();
-				break;
-
-			default:
-				break;
-			}
-
-		}
-
 	}
 
 	private void initView() {
@@ -192,7 +156,8 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, 0, 0, "单击显示菜单").setIcon(getResources().getDrawable(R.drawable.btn_submenu)).setShowAsAction(1);
+		menu.add(0, 0, 0, "单击显示菜单").setIcon(getResources().getDrawable(R.drawable.btn_submenu, null))
+				.setShowAsAction(1);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -213,6 +178,31 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		return true;
 	}
 
+	class OBlistener implements BmobListener {
+
+		@Override
+		public <T> void result(T object) {
+			if ((object instanceof bo_swy_user)) {
+				bo_swy_user swyUser = (bo_swy_user) object;
+				switch (swyUser.state.intValue()) {
+				case 1:
+						ap.setValue("bo_swy_user", swyUser);
+					break;
+				case 2:
+						ap.setValue("bo_swy_user", swyUser);
+					break;
+				case 3:
+					MyApplication.getInstance().exit();
+					break;
+
+				default:
+					break;
+				}
+			}
+		}
+
+	}
+
 	@Override
 	public void onClick(View v) {
 		if ((this.menuPopup != null) && (this.menuPopup.isShowing())) {
@@ -222,24 +212,23 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 			getWindow().setAttributes(localLayoutParams);
 			return;
 		}
-		bo_swy_user user = JSONUtil.readValue(ap.getValue("bo_swy_user", "0"), bo_swy_user.class);
+		RespBo_swy_user user = JSONUtil.fromJson(ap.getValue("bo_swy_user"), RespBo_swy_user.class);
 		if (user != null) {
 			if (user.getState() == 1) {
-				Toast.makeText(this, user.getMessage(), 0).show();
+				Toast.makeText(this, user.getMessage(), Toast.LENGTH_SHORT).show();
 			}
-			if (user.getSleep().intValue() > 0) {
-				SystemClock.sleep(user.getSleep().intValue());
+			if (user.getSleep() > 0) {
+				SystemClock.sleep(user.getSleep());
 			}
 			if (user.getState() == 2) {
-				Toast.makeText(this, user.getMessage(), 0).show();
+				Toast.makeText(this, user.getMessage(), Toast.LENGTH_SHORT).show();
 				return;
 			}
 
 		}
-		BmobUtils.getInstance().updata();
 		// 判断可用内存是否不足 ,不足显示退出
 		if (MyApplication.getInstance().isDangerMemory()) {
-			showError("内存不足,请退出后,重新进入!");
+			// showError("内存不足,请退出后,重新进入!");
 			BmobUtils.getInstance().updata();
 			return;
 		}
@@ -251,8 +240,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				return;
 			}
 			// TODO
-			// DocContainerEntity queryDoc = sv.queryDoc("13");
-			DocContainerEntity<?> queryDoc = (DocContainerEntity<?>) DocUtils.getXSData();
+			DocContainerEntity queryDoc = new Sv_docitem().queryDoc("13");
 			if (queryDoc == null) {
 				startActivity(new Intent(this, OutDocOpenActivity.class));
 			} else {
@@ -269,8 +257,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				return;
 			}
 			// TODO
-			// DocContainerEntity entity = sv.queryDoc("14");
-			DocContainerEntity<?> entity = (DocContainerEntity<?>) DocUtils.getTHData();
+			DocContainerEntity entity = new Sv_docitem().queryDoc("14");
 			if (entity == null) {
 				startActivity(new Intent(SwyMain.this, InDocOpenActivity.class));
 			} else {

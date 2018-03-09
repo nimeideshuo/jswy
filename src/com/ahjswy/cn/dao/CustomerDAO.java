@@ -66,15 +66,21 @@ public class CustomerDAO {
 	public boolean isUseCustomerprice(String customerid) {
 		this.db = this.helper.getReadableDatabase();
 		String sql = "select isusecustomerprice from cu_customer where id=? ";
+		Cursor cursor =null;
 		try {
-			Cursor cursor = db.rawQuery(sql, new String[] { customerid });
+			 cursor = db.rawQuery(sql, new String[] { customerid });
 			if (cursor.moveToNext()) {
 				return cursor.getInt(0) == 0 ? false : true;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			if (cursor != null)
+				cursor.close();
+			if (this.db != null)
+				this.db.close();
 		}
-
+		
 		return false;
 	}
 
@@ -118,9 +124,10 @@ public class CustomerDAO {
 	public CustomerThin queryCustomerId(String customerid) {
 
 		this.db = this.helper.getReadableDatabase();
+		Cursor cursor =null;
 		try {
 
-			Cursor cursor = this.db.rawQuery(
+			 cursor = this.db.rawQuery(
 					"select id, name, pinyin, contactmoblie, address, settleterm, discountratio, promotionid, promotionname, pricesystemid from cu_customer where id=? ",
 					new String[] { customerid });
 			if (cursor.moveToNext()) {
@@ -139,6 +146,11 @@ public class CustomerDAO {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			if (cursor != null)
+				cursor.close();
+			if (this.db != null)
+				this.db.close();
 		}
 		return null;
 	}
@@ -154,8 +166,9 @@ public class CustomerDAO {
 			return null;
 		}
 		this.db = this.helper.getReadableDatabase();
+		Cursor cursor=null;
 		try {
-			Cursor cursor = this.db.rawQuery(
+			 cursor = this.db.rawQuery(
 					"select  a.pricesystemid   from cu_customer a where id is not null and id=? ",
 					new String[] { customerid });
 			if (cursor.moveToNext()) {
@@ -163,6 +176,11 @@ public class CustomerDAO {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			if (cursor != null)
+				cursor.close();
+			if (this.db != null)
+				this.db.close();
 		}
 		return null;
 	}

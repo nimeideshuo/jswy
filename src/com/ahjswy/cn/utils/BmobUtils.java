@@ -6,6 +6,7 @@ import com.ahjswy.cn.bean.bmob.ExceptionLog;
 import com.ahjswy.cn.bean.bmob.bo_swy_user;
 import com.ahjswy.cn.dao.Exception_logDAO;
 
+import android.util.Log;
 import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
@@ -79,13 +80,17 @@ public class BmobUtils {
 							bo_swy_user boSwyUser = bo_swy_user.factory();
 							boSwyUser.registerDate = Utils.getData();
 							boSwyUser.save();
+						} else {
+							MLog.d(JSONUtil.object2Json(arg0.getResults().get(0)));
+							listener.result(arg0.getResults().get(0));
 						}
-						listener.result(arg0.getResults().get(0));
+
 					}
 					MLog.d("查询成功" + arg0.getResults().get(0).toString());
 				} else {
 					MLog.d("查询失败 ");
 					MLog.d(e.getMessage());
+
 				}
 			}
 		});

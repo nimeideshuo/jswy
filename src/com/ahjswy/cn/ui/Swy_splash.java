@@ -53,7 +53,7 @@ public class Swy_splash extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.swy_splash);
-//		initview();
+		initview();
 	}
 
 	private void initview() {

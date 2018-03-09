@@ -33,27 +33,16 @@ import com.ahjswy.cn.service.ServiceGoods;
 import android.text.TextUtils;
 
 public class DocUtils {
-	private static GoodsUnitDAO unitDAO = new GoodsUnitDAO();
-	private static CustomerDAO customerdao = new CustomerDAO();
-	private static GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
-	private static AccountPreference ap = new AccountPreference();
-	private static Sz_stockwarn stockwarn = new Sz_stockwarn();
-	private static FileUtils fileutils = new FileUtils();
-	private final static String XSDOC_NAME = "XSdoc.txt";
-	private static final String THDOC_NAME = "THdoc.txt";
+//	private static GoodsUnitDAO unitDAO = new GoodsUnitDAO();
+//	private static CustomerDAO customerdao = new CustomerDAO();
+//	private static GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
+//	private static AccountPreference ap = new AccountPreference();
+//	private static Sz_stockwarn stockwarn = new Sz_stockwarn();
+//	private static FileUtils fileutils = new FileUtils();
+//	private final static String XSDOC_NAME = "XSdoc.txt";
+//	private static final String THDOC_NAME = "THdoc.txt";
 	public static final int MAXITEM = 100;
-	private final static WarehouseDAO warehousedao = new WarehouseDAO();
-	static DocUtils docutils = null;
-
-	private DocUtils() {
-	}
-
-	public static DocUtils getInstance() {
-		if (docutils == null) {
-			docutils = new DocUtils();
-		}
-		return docutils;
-	}
+//	private final static WarehouseDAO warehousedao = new WarehouseDAO();
 
 	public static ReqStrGetGoodsPrice GetMultiGoodsPrice(String customerid, DefDocItemXS item) {
 		if (item == null) {
@@ -107,6 +96,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public static String Stocknum(double stocknumber, GoodsUnit goodsUnit) {
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		String stockbigName = null;
 		if (goodsUnit == null) {
 			return "";
@@ -130,6 +120,7 @@ public class DocUtils {
 	}
 
 	public static String Stocknum(double stocknumber, String goodsid, String unitid, String unitname) {
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		String stockbigName = null;
 		if (TextUtils.isEmpty(goodsid) || TextUtils.isEmpty(unitid) || TextUtils.isEmpty(unitname)) {
 			return "";
@@ -157,6 +148,7 @@ public class DocUtils {
 		if (unit == null) {
 			return "";
 		}
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		String stocknum = "";
 		GoodsUnit goodsRatio = unitDAO.queryBigUnitRatio(unit.getGoodsid(), unit.getUnitid());
 		GoodsUnit queryBaseUnit = unitDAO.queryBaseUnit(unit.getGoodsid());
@@ -221,6 +213,8 @@ public class DocUtils {
 		if (customerid == null || docItem == null) {
 			return 0;
 		}
+		CustomerDAO customerdao = new CustomerDAO();
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		double ratio = unitDAO.getGoodsUnitRatio(docItem.getGoodsid(), docItem.getUnitid());
 		if (customerdao.isUseCustomerprice(customerid)) {
 			CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, docItem.getGoodsid());
@@ -230,6 +224,7 @@ public class DocUtils {
 				return Utils.normalize(historyPrice.getPrice() / historyratio * ratio, 2);
 			}
 		}
+		GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
 		// 客户价格体系 中的设置
 		String pricesystemid = customerdao.queryPricesystemid(customerid);
 		if (!TextUtils.isEmpty(pricesystemid)) {
@@ -262,6 +257,8 @@ public class DocUtils {
 	 */
 	public static double getGoodsPrice(String customerid, String goodsid, String unitid) {
 		CustomerRecords historyPrice = getCustomerGoodsHistoryPrice(customerid, goodsid);
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
+		CustomerDAO customerdao = new CustomerDAO();
 		double ratio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
 		if (customerdao.isUseCustomerprice(customerid)) {
 			// 是否使用客户客史单价
@@ -271,6 +268,8 @@ public class DocUtils {
 				// 除以 自身比例 * 与 要换算的比例
 			}
 		}
+		GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
+
 		// 使用客户价格体系
 		String pricesystemid = customerdao.queryPricesystemid(customerid);
 		if (!TextUtils.isEmpty(pricesystemid)) {// 查询客户 价格体系 比对 基本单位的价格，计件单位 比例*
@@ -300,6 +299,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public static double getGoodsBasicPrice(DefDocItemXS docItem) {
+		GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
 		double basicPrice = goodspricedao.queryBasicPrice(docItem.getGoodsid(), docItem.getUnitid(),
 				Utils.DEFAULT_PRICESYSTEM + "");
 		if (basicPrice != 0) {
@@ -318,6 +318,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public static double getGoodsBasicPrice(String goodsid, String unitid) {
+		GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
 		double basicPrice = goodspricedao.queryBasicPrice(goodsid, unitid, Utils.DEFAULT_PRICESYSTEM + "");
 		if (basicPrice != 0) {
 			return basicPrice;
@@ -328,11 +329,12 @@ public class DocUtils {
 
 	// 获取仓库
 	public static Warehouse getWarehouse(String warehouseid) {
+		WarehouseDAO warehousedao = new WarehouseDAO();
 		return warehousedao.getWarehouse(warehouseid);
 	}
 
 	public static GoodsUnit queryBigUnit(String goodsid) {
-		return unitDAO.queryBigUnit(goodsid);
+		return new GoodsUnitDAO().queryBigUnit(goodsid);
 	}
 
 	/**
@@ -342,6 +344,8 @@ public class DocUtils {
 	 * @return
 	 */
 	public static List<RespGoodsPriceEntity> queryGoodsPriceList(String goodsid) {
+		GoodsPriceDAO goodspricedao = new GoodsPriceDAO();
+
 		return goodspricedao.queryPriceList(goodsid);
 	}
 
@@ -367,7 +371,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public static boolean isBluetoothPrint() {
-		return Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow", "false"));
+		return Boolean.parseBoolean(new AccountPreference().getValue("bluetoothPrintIsShow", "false"));
 	}
 
 	/**
@@ -391,7 +395,7 @@ public class DocUtils {
 				boolean isWarehouseid = items1.getWarehouseid().equals(itemxs2.getWarehouseid());
 				if (isgoodsid && isunid && isprice && isratio && isWarehouseid) {
 					items1.setNum(items1.getNum() + itemxs2.getNum());
-					items1.setBignum(unitDAO.getBigNum(items1.getGoodsid(), items1.getUnitid(), items1.getNum()));
+					items1.setBignum(new GoodsUnitDAO().getBigNum(items1.getGoodsid(), items1.getUnitid(), items1.getNum()));
 					items1.setSubtotal(items1.getNum() * items1.getPrice());
 					items1.setDiscountsubtotal(items1.getNum() * items1.getPrice() * items1.getDiscountratio());
 					if (itemxs2.getItemid() > 0) {
@@ -427,7 +431,7 @@ public class DocUtils {
 				boolean isunid = items1.getUnitid().equals(itemxs2.getUnitid());
 				if (isgoodsid && isunid) {
 					itemxs2.setNum(itemxs2.getNum() + items1.getNum());
-					itemxs2.setBignum(unitDAO.getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
+					itemxs2.setBignum(new GoodsUnitDAO().getBigNum(itemxs2.getGoodsid(), itemxs2.getUnitid(), itemxs2.getNum()));
 					itemxs2.setNetnum(Utils.normalize(itemxs2.getNum() - itemxs2.getStocknum(), 2));
 					if (itemxs2.getItemid() > 0) {
 						listItemDelete.add(itemxs2.getItemid());
@@ -444,6 +448,7 @@ public class DocUtils {
 	}
 
 	public DefDocItemPD fillItem(DefDocPD doc, GoodsThin goodsThin, double stocknum, double costprice, double number) {
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		DefDocItemPD defDocItemPD = new DefDocItemPD();
 		defDocItemPD.setItemid(0L);
 		defDocItemPD.setDocid(doc.getDocid());
@@ -478,6 +483,7 @@ public class DocUtils {
 	}
 
 	public DefDocItem fillItem(DefDocTransfer doc, GoodsThin goodsThin, double num, double price) {
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		DefDocItem item = new DefDocItem();
 		item.setItemid(0L);
 		item.setDocid(doc.getDocid());
@@ -513,6 +519,7 @@ public class DocUtils {
 	}
 
 	public DefDocItemXS fillItem(DefDocXS doc, GoodsThin paramGoodsThin, double num, double price, long tempitemid) {
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		DefDocItemXS itemxs = new DefDocItemXS();
 		itemxs.setItemid(0L);
 		itemxs.setTempitemid(tempitemid);
@@ -568,6 +575,8 @@ public class DocUtils {
 	}
 
 	public void setPDAddItem(DefDocPD doc, DefDocItemPD itemPD) {
+		Sz_stockwarn stockwarn = new Sz_stockwarn();
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		itemPD.setCostprice(
 				stockwarn.queryGoodsCostprice(doc.getWarehouseid(), itemPD.getGoodsid(), itemPD.getUnitid()));
 		itemPD.setStocknum(queryPDSumStock(itemPD.getGoodsid(), itemPD.getUnitid(), doc.getWarehouseid()));
@@ -578,6 +587,7 @@ public class DocUtils {
 	}
 
 	public void setDBAddItem(DefDocTransfer doc, DefDocItem item) {
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		Warehouse warehouse = getDBOutWarehouse(doc.getInwarehouseid(), doc.getOutwarehouseid());
 		item.setWarehouseid(warehouse.getId());
 		item.setWarehousename(warehouse.getName());
@@ -592,45 +602,45 @@ public class DocUtils {
 	 * 
 	 * @param t
 	 */
-	public static <T> void saveXSData(T t) {
-		fileutils.saveStorageObject(t, XSDOC_NAME);
-	}
+//	public static <T> void saveXSData(T t) {
+//		fileutils.saveStorageObject(t, XSDOC_NAME);
+//	}
 
 	/**
 	 * 获取销售数据
 	 * 
 	 */
-	public static <T> Object getXSData() {
-		return fileutils.getStorageEntitiesObject(XSDOC_NAME);
-	}
+//	public static <T> Object getXSData() {
+//		return fileutils.getStorageEntitiesObject(XSDOC_NAME);
+//	}
 
 	/**
 	 * 保存销售数据
 	 * 
 	 * @param t
 	 */
-	public static <T> void saveTHData(T t) {
-		fileutils.saveStorageObject(t, THDOC_NAME);
-	}
+//	public static <T> void saveTHData(T t) {
+//		fileutils.saveStorageObject(t, THDOC_NAME);
+//	}
 
 	/**
 	 * 获取销售数据
 	 * 
 	 */
-	public static <T> Object getTHData() {
-		return fileutils.getStorageEntitiesObject(THDOC_NAME);
-	}
+//	public static <T> Object getTHData() {
+//		return fileutils.getStorageEntitiesObject(THDOC_NAME);
+//	}
 
-	public static boolean deleteTHDoc() {
-		return fileutils.deleteFile(THDOC_NAME);
-	}
+//	public static boolean deleteTHDoc() {
+//		return fileutils.deleteFile(THDOC_NAME);
+//	}
 
-	public static boolean deleteXSDoc() {
-		return fileutils.deleteFile(XSDOC_NAME);
-	}
+//	public static boolean deleteXSDoc() {
+//		return fileutils.deleteFile(XSDOC_NAME);
+//	}
 
 	public static int getDefaultNum() {
-		if (Boolean.parseBoolean(ap.getValue("iscombinationItem", "false"))) {
+		if (Boolean.parseBoolean(new AccountPreference().getValue("iscombinationItem", "false"))) {
 			return 1;
 		}
 		return 0;
@@ -646,6 +656,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public double queryGoodsCostprice(String warehouseid, String goodsid, String unitid) {
+		Sz_stockwarn stockwarn = new Sz_stockwarn();
 		return stockwarn.queryGoodsCostprice(warehouseid, goodsid, unitid);
 	}
 
@@ -658,6 +669,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public Warehouse getDBOutWarehouse(String inWarehouseid, String outWarehouseid) {
+		WarehouseDAO warehousedao = new WarehouseDAO();
 		if (!TextUtils.isEmpty(outWarehouseid)) {
 			return warehousedao.getWarehouse(outWarehouseid);
 		}
@@ -666,6 +678,8 @@ public class DocUtils {
 	}
 
 	public double queryPDSumStock(String goodsid, String unitid, String warehouseid) {
+		Sz_stockwarn stockwarn = new Sz_stockwarn();
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		double ratio = unitDAO.getGoodsUnitRatio(goodsid, unitid);
 		return Utils.normalizeDouble(stockwarn.queryStockNum(warehouseid,goodsid) / ratio);
 	}
@@ -677,6 +691,7 @@ public class DocUtils {
 	 * @return
 	 */
 	public static List<RespGoodsWarehouse> queryStockwarnAll(String goodsid) {
+		Sz_stockwarn stockwarn = new Sz_stockwarn();
 		return stockwarn.queryStockwarnAll(goodsid);
 	}
 
@@ -710,10 +725,12 @@ public class DocUtils {
 	}
 
 	public static List<Warehouse> getAllWarehouses() {
+		WarehouseDAO warehousedao = new WarehouseDAO();
 		return warehousedao.getAllWarehouses();
 	}
 
 	public static String getBigNum(String goodsid, String unitid, double num) {
+		GoodsUnitDAO unitDAO = new GoodsUnitDAO();
 		return unitDAO.getBigNum(goodsid, unitid, num);
 	}
 

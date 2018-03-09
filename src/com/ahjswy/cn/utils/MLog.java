@@ -16,6 +16,7 @@ public class MLog {
 		devices.put("Al00", "f8945dd90ddf6393");
 		devices.put("BlueStacks", "f3abcf1effec8b17");
 		devices.put("MX5020", "86bf794d381818a2");
+		devices.put("hw8", "92e1c0a93a5d75d7");
 		isPrint = IsDevices(devices);
 	}
 

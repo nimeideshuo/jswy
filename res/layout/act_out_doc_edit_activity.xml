@@ -74,7 +74,7 @@
             android:id="@+id/tv_Customer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/linNumber"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="3dp"
             android:textColor="@color/red" />
 
@@ -87,7 +87,8 @@
             android:orientation="horizontal"
             android:paddingLeft="2.0dip"
             android:paddingRight="2.0dip"
-            android:paddingTop="1.0dip" >
+            android:paddingTop="1.0dip"
+            android:visibility="gone" >
 
             <Button
                 android:id="@+id/btn_goodClass"

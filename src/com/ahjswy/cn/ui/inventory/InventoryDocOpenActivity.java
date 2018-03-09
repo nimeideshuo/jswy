@@ -171,11 +171,10 @@ public class InventoryDocOpenActivity extends BaseActivity implements OnClickLis
 		public void handleMessage(android.os.Message msg) {
 			String str = msg.obj.toString();
 			if (RequestHelper.isSuccess(str)) {
-				DocContainerEntity<?> docent = (DocContainerEntity<?>) JSONUtil.fromJson(str, DocContainerEntity.class);
+				DocContainerEntity docent = (DocContainerEntity) JSONUtil.fromJson(str, DocContainerEntity.class);
 				doc = ((DefDocPD) JSONUtil.fromJson(docent.getDoc(), DefDocPD.class));
 				fillDoc();
 				docent.setDoc(JSONUtil.toJSONString(doc));
-				// TODO
 				Intent localIntent = new Intent();
 				localIntent.setClass(InventoryDocOpenActivity.this, InventoryEditActivity.class);
 				localIntent.putExtra("docContainer", docent);

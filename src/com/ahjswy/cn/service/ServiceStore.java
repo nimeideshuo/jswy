@@ -98,7 +98,7 @@ public class ServiceStore {
 	/* 销售过账 */
 	public String str_CheckXSDoc(DefDocXS defDocXS, List<DefDocItemXS> listItem, List<DefDocPayType> paytype,
 			List<Long> deleteitem, boolean isprint) {
-		DocContainerEntity<DefDocItemXS> docc = new DocContainerEntity<DefDocItemXS>();
+		DocContainerEntity docc = new DocContainerEntity();
 		try {
 			String url = Utils.getServiceAddress(this.baseAddress, "checkxsdoc");
 			defDocXS.setDoctypeid("13");
@@ -329,7 +329,7 @@ public class ServiceStore {
 
 	public String str_CheckXTDoc(DefDoc paramDefDoc, List<DefDocItemXS> itemList, List<DefDocPayType> paramList1,
 			List<Long> paramList2, boolean isprint) {
-		DocContainerEntity<DefDocItemXS> entity = new DocContainerEntity<DefDocItemXS>();
+		DocContainerEntity entity = new DocContainerEntity();
 		try {
 			String url = Utils.getServiceAddress(this.baseAddress, "checkxtdoc");
 			entity.setDoctype("14");
@@ -573,7 +573,7 @@ public class ServiceStore {
 	/* 销售单据保存 */
 	public String str_SaveXSDoc(DefDocXS defdocxs, List<DefDocItemXS> listItem, List<DefDocPayType> paramList1,
 			List<Long> listItemDelete) {
-		DocContainerEntity<DefDocItemXS> localDocContainerEntity = new DocContainerEntity<DefDocItemXS>();
+		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		try {
 			String url = Utils.getServiceAddress(this.baseAddress, "savexsdoc");
 			defdocxs.setIsposted(false);
@@ -598,7 +598,7 @@ public class ServiceStore {
 	public String str_SaveCGDoc(DefDocCG defdoccg, List<DefDocItemCG> defdocitemcgList,
 			List<DefDocPayType> defdocpaytype, List<Long> deleteitem) {
 		String url = Utils.getServiceAddress(baseAddress, "savecgdoc");
-		DocContainerEntity<DefDocItemCG> localDocContainerEntity = new DocContainerEntity<DefDocItemCG>();
+		DocContainerEntity localDocContainerEntity = new DocContainerEntity();
 		localDocContainerEntity.setDoctype("101");
 		localDocContainerEntity.setDoc(JSONUtil.toJSONString(defdoccg));
 		localDocContainerEntity.setItem(JSONUtil.toJSONString(defdocitemcgList));
@@ -626,7 +626,7 @@ public class ServiceStore {
 
 	public String str_SaveXTDoc(DefDoc paramDefDoc, List<DefDocItemXS> paramList, List<DefDocPayType> paramList1,
 			List<Long> paramList2) {
-		DocContainerEntity<DefDocItemXS> entity = new DocContainerEntity<DefDocItemXS>();
+		DocContainerEntity entity = new DocContainerEntity();
 		try {
 			String url = Utils.getServiceAddress(this.baseAddress, "savextdoc");
 			entity.setDoctype("14");

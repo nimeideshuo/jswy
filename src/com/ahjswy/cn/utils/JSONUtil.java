@@ -94,7 +94,7 @@ public class JSONUtil {
 			return localString;
 		} catch (Exception e) {
 			e.printStackTrace();
-			DocUtils.insertLog(e, obj==null?"obj is null":obj.toString());
+			DocUtils.insertLog(e, obj == null ? "obj is null" : obj.toString());
 		}
 		return null;
 	}
@@ -133,8 +133,6 @@ public class JSONUtil {
 		return null;
 	}
 
-	
-	
 	public static <T> T readValue(String content, Class<T> valueType) {
 		ObjectMapper localObjectMapper = new ObjectMapper();
 		try {
@@ -145,6 +143,7 @@ public class JSONUtil {
 		}
 		return null;
 	}
+
 	/**
 	 * readValue(String json, Class<T> classOfT)
 	 * 
@@ -152,7 +151,7 @@ public class JSONUtil {
 	 * @param valueType
 	 * @return
 	 */
-	@Deprecated
+
 	public static <T> T fromJson(String json, Class<T> classOfT) {
 		if (!TextUtils.isEmptyS(json) || classOfT == null) {
 			return null;

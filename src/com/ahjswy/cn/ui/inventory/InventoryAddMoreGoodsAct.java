@@ -49,7 +49,7 @@ public class InventoryAddMoreGoodsAct extends BaseActivity {
 		scaner = Scaner.factory(getApplicationContext());
 		scaner.setBarcodeListener(barcodeListener);
 		dialog = new Dialog_listCheckBox(this);
-		docUtils = DocUtils.getInstance();
+		docUtils = new DocUtils();
 	}
 
 	@Override

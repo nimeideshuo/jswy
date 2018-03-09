@@ -35,6 +35,7 @@ public class Utils {
 	public static String strCancelWarehouse;
 	static AccountPreference ap = new AccountPreference();
 	public static int DEFAULT_PRICESYSTEM;
+
 	static {
 		RECEIVE_DEC_NUM = 2;
 		DEFAULT_OutDocUNIT = 0;
@@ -56,6 +57,10 @@ public class Utils {
 			return split[0];
 		}
 		return null;
+	}
+
+	public static String cleanZero(double douStr) {
+		return douStr % 1 == 0 ? cutLastZero("" + douStr) : "" + douStr;
 	}
 
 	public static int dp2px(Context paramContext, int paramInt) {
@@ -145,7 +150,7 @@ public class Utils {
 			e.printStackTrace();
 			return 0.0;
 		}
-		
+
 	}
 
 	public static Long getEndTime() {

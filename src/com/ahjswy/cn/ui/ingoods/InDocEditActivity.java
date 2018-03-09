@@ -11,6 +11,7 @@ import com.ahjswy.cn.app.RequestHelper;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.dao.GoodsDAO;
 import com.ahjswy.cn.dao.GoodsUnitDAO;
+import com.ahjswy.cn.dao.Sv_docitem;
 import com.ahjswy.cn.model.DefDoc;
 import com.ahjswy.cn.model.DefDocItemXS;
 import com.ahjswy.cn.model.DefDocPayType;
@@ -82,7 +83,14 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	private InDocEditMenuPopup menuPopup;
 	Scaner scaner;
 	boolean isScanerBarcode = false;
-
+	private Dialog_listCheckBox dialog;
+	MAlertDialog maler;
+	private Button btnGoodClass;
+	private GoodsUnitDAO unitDao;
+	// private AccountPreference ap;
+	private DocContainerEntity docContainerEntity;
+	private DocUtils mUtils;
+	private Sv_docitem mSaveDocItemDB;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -93,7 +101,6 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		sum();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void intView() {
 
 		atvSearch = ((AutoTextView) findViewById(R.id.atvSearch));
@@ -116,15 +123,12 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		adapter.setSum(this);
 		btnAdd.setOnClickListener(addMoreListener);
 		dialog = new Dialog_listCheckBox(InDocEditActivity.this);
-		docContainerEntity = (DocContainerEntity<?>) getIntent().getSerializableExtra("docContainer");
+		docContainerEntity = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
 		this.doc = JSONUtil.fromJson(docContainerEntity.getDoc(), DefDoc.class);
-		if (docContainerEntity.getListitem() != null) {
-			listItem = (List<DefDocItemXS>) docContainerEntity.getListitem();
+		if (TextUtils.isEmpty(docContainerEntity.getItem())) {
+			listItem = new ArrayList<>();
 		} else {
 			listItem = JSONUtil.parseArray(docContainerEntity.getItem(), DefDocItemXS.class);
-		}
-		if (listItem == null) {
-			listItem = new ArrayList<>();
 		}
 		listPayType = JSONUtil.parseArray(docContainerEntity.getPaytype(), DefDocPayType.class);
 		if (listItem != null) {
@@ -133,7 +137,8 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		}
 		maler = new MAlertDialog(this);
 		unitDao = new GoodsUnitDAO();
-		utils = DocUtils.getInstance();
+		mUtils = new DocUtils();
+		mSaveDocItemDB = new Sv_docitem();
 	}
 
 	private void intDate() {
@@ -328,7 +333,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 	protected void onPause() {
 		super.onPause();
 		scaner.removeListener();
-		scaner=null;
+		scaner = null;
 	}
 
 	public DefDoc getDoc() {
@@ -586,7 +591,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 										Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 										startActivity(intent);
 										finish();
-										DocUtils.deleteTHDoc();
+										// DocUtils.deleteTHDoc();
 										// sv.deleteDoc(docContainerEntity.getDoctype());
 										return;
 									}
@@ -601,7 +606,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 
 				@Override
 				public void onClick(MAlertDialog dialog) {
-					DocUtils.deleteTHDoc();
+					// DocUtils.deleteTHDoc();
 					dialog.dismiss();
 					Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
@@ -625,12 +630,12 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 					startActivity(intent);
 					finish();
-					DocUtils.deleteTHDoc();
+					// DocUtils.deleteTHDoc();
 					// sv.deleteDoc(docContainerEntity.getDoctype());
 					return;
 				}
-				DocContainerEntity<DefDocItemXS> entity = (DocContainerEntity<DefDocItemXS>) JSONUtil
-						.fromJson(localString, DocContainerEntity.class);
+				DocContainerEntity entity = (DocContainerEntity) JSONUtil.fromJson(localString,
+						DocContainerEntity.class);
 				doc = ((DefDoc) JSONUtil.fromJson(entity.getDoc(), DefDoc.class));
 				listItem = (List<DefDocItemXS>) JSONUtil.parseArray(entity.getItem(), DefDocItemXS.class);
 				listPayType = JSONUtil.parseArray(entity.getPaytype(), DefDocPayType.class);
@@ -642,7 +647,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					PDH.showSuccess("保存成功");
 					ishaschanged = false;
 					setActionBarText();
-					DocUtils.deleteTHDoc();
+					// DocUtils.deleteTHDoc();
 					// sv.deleteDoc(docContainerEntity.getDoctype());
 					startActivity(new Intent(InDocEditActivity.this, SwyMain.class));
 					finish();
@@ -650,7 +655,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				case 1:
 					if ((doc.isIsavailable()) && (doc.isIsposted())) {
 						PDH.showSuccess("过账成功");
-						DocUtils.deleteTHDoc();
+						// DocUtils.deleteTHDoc();
 						// sv.deleteDoc(docContainerEntity.getDoctype());
 						Intent intent = new Intent(InDocEditActivity.this, SwyMain.class);
 						startActivity(intent);
@@ -746,7 +751,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 							if (Utils.isCombination()) {
 								int size = listItem.size();
 								listItem.addAll(newListItem);
-								utils.combinationItem(listItem, listItemDelete);
+								mUtils.combinationItem(listItem, listItemDelete);
 								if (listItem.size() < size) {
 									showSuccess("同品增加成功!");
 								}
@@ -767,7 +772,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				listItem.set(j, localDefDocItem2);
 				if (Utils.isCombination()) {
 					int size = listItem.size();
-					utils.combinationItem(listItem, listItemDelete);
+					mUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 					if (listItem.size() < size) {
 						showSuccess("同品增加成功!");
@@ -782,7 +787,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 				listItem.add(localDefDocItem4);
 				refreshUI();
 				if (Utils.isCombination()) {
-					utils.combinationItem(listItem, listItemDelete);
+					mUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
 				adapter.setData(listItem);
@@ -800,7 +805,7 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 					listItem.add(item);
 				}
 				if (Utils.isCombination()) {
-					utils.combinationItem(listItem, listItemDelete);
+					mUtils.combinationItem(listItem, listItemDelete);
 					showSuccess("同品增加成功!");
 				}
 				this.adapter.setData(this.listItem);
@@ -857,31 +862,22 @@ public class InDocEditActivity extends BaseActivity implements OnItemClickListen
 		docItem.setBignum(bigNum);
 	}
 
-	private Dialog_listCheckBox dialog;
-	MAlertDialog maler;
-	private Button btnGoodClass;
-	private GoodsUnitDAO unitDao;
-	// private AccountPreference ap;
-	private DocContainerEntity<?> docContainerEntity;
-	private DocUtils utils;
 
 	protected void saveTHDoc() {
 		try {
-			DocContainerEntity<DefDocItemXS> docEntity = new DocContainerEntity<DefDocItemXS>();
+			DocContainerEntity docEntity = new DocContainerEntity();
 			// 保存到本地
 			docEntity.setDeleteinitem(docContainerEntity.getDeleteinitem());
 			docEntity.setDeleteitem(JSONUtil.object2Json(listItemDelete));
 			docEntity.setDoc(JSONUtil.object2Json(doc));
-			// docEntity.setItem(JSONUtil.toJSONString(listItem));
-			docEntity.setListitem(listItem);
+			docEntity.setItem(JSONUtil.toJSONString(listItem));
 			docEntity.setDoctype(docContainerEntity.getDoctype());
 			docEntity.setPaytype(JSONUtil.object2Json(listPayType));
-			DocUtils.saveTHData(docEntity);
-			// if (sv.queryDoc(docContainerEntity.getDoctype()) == null) {
-			// sv.insetDocItem(docEntity);
-			// } else {
-			// sv.updataDocItem(docEntity);
-			// }
+			if (mSaveDocItemDB.queryDoc(docContainerEntity.getDoctype()) == null) {
+				mSaveDocItemDB.insetDocItem(docEntity);
+			} else {
+				mSaveDocItemDB.updataDocItem(docEntity);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			showError("网络链接不稳定!");

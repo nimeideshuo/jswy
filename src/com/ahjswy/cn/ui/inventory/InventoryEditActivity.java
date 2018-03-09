@@ -69,7 +69,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 	private ServiceStore serviceStore;
 	private boolean ishaschanged;
 	private SearchHelper searchHelper;
-	private DocContainerEntity<?> docContainer;
+	private DocContainerEntity docContainer;
 	DefDocPD doc;
 	List<DefDocItemPD> listItem;
 	private ArrayList<Long> listItemDelete;
@@ -98,7 +98,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 		atvSearch.setOnItemClickListener(onSearchonItemClickListener);
 		// fileDao = new FieldSaleItemDAO();
 		// fileDao.deleteAll();
-		docUtils = DocUtils.getInstance();
+		docUtils = new DocUtils();
 	}
 
 	private void initListView() {
@@ -255,7 +255,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 					finish();
 					return;
 				}
-				DocContainerEntity<?> localObject = (DocContainerEntity<?>) JSONUtil.fromJson(message,
+				DocContainerEntity localObject = (DocContainerEntity) JSONUtil.fromJson(message,
 						DocContainerEntity.class);
 				doc = ((DefDocPD) JSONUtil.fromJson(localObject.getDoc(), DefDocPD.class));
 				listItem = JSONUtil.parseArray(localObject.getItem(), DefDocItemPD.class);
@@ -287,7 +287,7 @@ public class InventoryEditActivity extends BaseActivity implements OnTouchListen
 	};
 
 	private void initData() {
-		docContainer = (DocContainerEntity<?>) getIntent().getSerializableExtra("docContainer");
+		docContainer = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
 		doc = ((DefDocPD) JSONUtil.fromJson(docContainer.getDoc(), DefDocPD.class));
 		listItem = JSONUtil.parseArray(docContainer.getItem(), DefDocItemPD.class);
 		ishaschanged = getIntent().getBooleanExtra("ishaschanged", true);

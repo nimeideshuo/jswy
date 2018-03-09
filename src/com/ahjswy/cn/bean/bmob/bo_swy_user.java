@@ -1,10 +1,12 @@
 package com.ahjswy.cn.bean.bmob;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.utils.Utils;
+import com.google.gson.annotations.Expose;
 
 import cn.bmob.v3.BmobObject;
 
@@ -20,20 +22,60 @@ public class bo_swy_user extends BmobObject implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public String userid;
-	public String userName;
-	public String versionname;
-	public String deviceid;
-	public String registerDate;
+	public String accountset;
 	public String code;
 	public String database;
-	public String accountset;
-	public int sleep;
-	public int state;// 0 默认 1, 警告，2 停止,3 退出
-	public String message;
+	public String deviceid;
 	public String memory;
-	
+	public String message;
+	public String registerDate;
+
+	public Integer sleep;
+	public Integer state;// 0 默认 1, 警告，2 停止,3 退出
+	public String userName;
+
+	public String userid;
+	public String versionname;
+
+	public void setSleep(Integer sleep) {
+		this.sleep = sleep;
+	}
+
+	public Integer getSleep() {
+		return sleep;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
+
+	public Number getState() {
+		return state;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setVersionname(String versionname) {
+		this.versionname = versionname;
+	}
+
+	public String getVersionname() {
+		return versionname;
+	}
 
 	public String getMemory() {
 		return memory;
@@ -48,66 +90,32 @@ public class bo_swy_user extends BmobObject implements Serializable {
 
 	public static bo_swy_user factory() {
 		bo_swy_user swyUser = new bo_swy_user();
-		swyUser.accountset = SystemState.getAccountSet().getDatabase();
-		swyUser.deviceid = MyApplication.getInstance().getAndroidId();
-		swyUser.userName = SystemState.getUser().getName();
-		swyUser.code = MyApplication.getInstance().getUniqueCode();
-		swyUser.versionname = MyApplication.getInstance().getVersionName();
-		swyUser.userid = SystemState.getDBUser().userid;
+		// swyUser.accountset = SystemState.getAccountSet().getDatabase();
+		// swyUser.deviceid = MyApplication.getInstance().getAndroidId();
+		// swyUser.userName = SystemState.getUser().getName();
+		// swyUser.code = MyApplication.getInstance().getUniqueCode();
+		// swyUser.versionname = MyApplication.getInstance().getVersionName();
+		// swyUser.userid = SystemState.getDBUser().userid;
+		// // 数据库
+		// swyUser.database = SystemState.getAccountSet().getDatabase();
+		// 提交的时间
 		swyUser.registerDate = Utils.getData();
+		// 默认提交的消息
 		swyUser.message = "";
+		// 默认的状态
 		swyUser.state = 0;
+		// 默认使用的内存
 		swyUser.memory = "1";
-		swyUser.database = SystemState.getAccountSet().getDatabase();
-		swyUser.registerDate = Utils.getData();
-		
-		
-//		swyUser.accountset = "swy";
-//		swyUser.deviceid = MyApplication.getInstance().getAndroidId();
-//		swyUser.userName = "xiaowang";
-//		swyUser.code = MyApplication.getInstance().getUniqueCode();
-//		swyUser.versionname = MyApplication.getInstance().getVersionName();
-//		swyUser.userid = "001";
-//		swyUser.registerDate = Utils.getData();
-//		swyUser.message = "message";
-////		swyUser.state = 0;
-////		swyUser.sleep = 0;
-//		swyUser.memory = "5";
-//		swyUser.database = "shujuku";
-//		swyUser.registerDate = Utils.getData();
+
+		swyUser.accountset = "accountset";
+		swyUser.deviceid = "deviceid";
+		swyUser.userName = "userName";
+		swyUser.code = "code";
+		swyUser.versionname = "versionname";
+		swyUser.userid = "userid";
+		swyUser.database = "database";
+
 		return swyUser;
-	}
-
-	public Integer getState() {
-		return state;
-	}
-
-	public void setState(Integer state) {
-		this.state = state;
-	}
-
-	public String getUserid() {
-		return userid;
-	}
-
-	public void setUserid(String userid) {
-		this.userid = userid;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getVersionname() {
-		return versionname;
-	}
-
-	public void setVersionname(String versionname) {
-		this.versionname = versionname;
 	}
 
 	public String getDeviceid() {
@@ -150,14 +158,6 @@ public class bo_swy_user extends BmobObject implements Serializable {
 		this.accountset = accountset;
 	}
 
-	public Integer getSleep() {
-		return sleep;
-	}
-
-	public void setSleep(Integer sleep) {
-		this.sleep = sleep;
-	}
-
 	public String getMessage() {
 		return message;
 	}
@@ -168,9 +168,10 @@ public class bo_swy_user extends BmobObject implements Serializable {
 
 	@Override
 	public String toString() {
-		return "bo_swy_user [userid=" + userid + ", userName=" + userName + ", versionname=" + versionname
-				+ ", deviceid=" + deviceid + ", registerDate=" + registerDate + ", code=" + code + ", database="
-				+ database + ", accountset=" + accountset + ", sleep=" + sleep + ", state=" + state + ", message="
-				+ message + "]";
+		return "bo_swy_user [accountset=" + accountset + ", code=" + code + ", database=" + database + ", deviceid="
+				+ deviceid + ", memory=" + memory + ", message=" + message + ", registerDate=" + registerDate
+				+ ", sleep=" + sleep + ", state=" + state + ", userName=" + userName + ", userid=" + userid
+				+ ", versionname=" + versionname + "]";
 	}
+
 }

@@ -89,7 +89,7 @@ public class TransferAddGoodAct extends BaseActivity implements OnClickListener 
 		this.btnUnit.setTag(this.docitem.getUnitid());
 		etNum.setText(docitem.getNum() == 0 ? "" : docitem.getNum() + "");
 		etRemark.setText(docitem.getRemark());
-		docUtils = DocUtils.getInstance();
+		docUtils =new DocUtils();
 	}
 
 	@Override

@@ -64,7 +64,12 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 	private DefDocTransfer doc;
 	private List<DefDocItem> listItem;
 	private List<Long> listItemDelete;
-
+	boolean ishaschanged;
+	private SwipeMenuListView listView;
+	private TransferItemAdapter adapter;
+	private AutoTextView atvSearch;
+	private SearchHelper searchHelper;
+	private DocContainerEntity doccontainer;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,7 +90,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		this.root.setOnTouchListener(this);
 		this.btnAdd.setOnClickListener(this.onAddMoreListener);
 		this.listItemDelete = new ArrayList<Long>();
-		docUtils = DocUtils.getInstance();
+		docUtils = new DocUtils();
 		if (listItem == null) {
 			listItem = new ArrayList<>();
 		}
@@ -95,7 +100,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		serviceStore = new ServiceStore();
 		root = (RelativeLayout) findViewById(R.id.root);
 		this.ishaschanged = getIntent().getBooleanExtra("ishaschanged", true);
-		doccontainer = (DocContainerEntity<?>) getIntent().getSerializableExtra("docContainer");
+		doccontainer = (DocContainerEntity) getIntent().getSerializableExtra("docContainer");
 		this.doc = ((DefDocTransfer) JSONUtil.fromJson(doccontainer.getDoc(), DefDocTransfer.class));
 		this.listItem = JSONUtil.parseArray(doccontainer.getItem(), DefDocItem.class);
 		listView = ((SwipeMenuListView) findViewById(R.id.listView));
@@ -246,12 +251,6 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 		}
 
 	};
-	boolean ishaschanged;
-	private SwipeMenuListView listView;
-	private TransferItemAdapter adapter;
-	private AutoTextView atvSearch;
-	private SearchHelper searchHelper;
-	private DocContainerEntity<?> doccontainer;
 
 	private String validateDoc() {
 		if (!TextUtils.isEmptyS(this.doc.getBuildtime())) {
@@ -439,7 +438,7 @@ public class TransferEditActivity extends BaseActivity implements OnTouchListene
 					finish();
 					return;
 				}
-				DocContainerEntity<?> doccontainer = (DocContainerEntity<?>) JSONUtil.fromJson(localObject,
+				DocContainerEntity doccontainer = (DocContainerEntity) JSONUtil.fromJson(localObject,
 						DocContainerEntity.class);
 				doc = ((DefDocTransfer) JSONUtil.fromJson(doccontainer.getDoc(), DefDocTransfer.class));
 				listItem = JSONUtil.parseArray(doccontainer.getItem(), DefDocItem.class);

@@ -5,13 +5,16 @@ import com.ahjswy.cn.model.DocContainerEntity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
+/**
+ * 本地存储开单单据  销售单
+ * @author Administrator
+ *
+ */
 public class Sv_docitem {
 	private DBOpenHelper helper = new DBOpenHelper();
-	private SQLiteDatabase db;
 
 	public DocContainerEntity queryDoc(String doctype) {
-		this.db = this.helper.getWritableDatabase();
+		SQLiteDatabase db = this.helper.getWritableDatabase();
 		String sql = "select svid,showid,deleteinitem,deleteitem,doc,item,doctype,paytype from sv_docitem where doctype = ?";
 		try {
 			Cursor cursor = db.rawQuery(sql, new String[] { doctype });
@@ -30,11 +33,12 @@ public class Sv_docitem {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		db.close();
 		return null;
 	}
 
 	public String getLastShowId(String doctype) {
-		this.db = this.helper.getWritableDatabase();
+		SQLiteDatabase db = this.helper.getWritableDatabase();
 		String sql = "select showid from sv_docitem where doctype=? ";
 		try {
 			Cursor cursor = db.rawQuery(sql, null);
@@ -44,11 +48,15 @@ public class Sv_docitem {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		db.close();
 		return "001";
 	}
 
-	public String insetDocItem(DocContainerEntity docEntity) {
-		this.db = this.helper.getWritableDatabase();
+	public synchronized String insetDocItem(DocContainerEntity docEntity) {
+		SQLiteDatabase db = this.helper.getWritableDatabase();
+		String svId=null;
+		db.beginTransaction();
+		try {
 		ContentValues values = new ContentValues();
 		values.put("showid", docEntity.getShowid());
 		values.put("deleteinitem", docEntity.getDeleteinitem());
@@ -58,24 +66,42 @@ public class Sv_docitem {
 		values.put("doctype", docEntity.getDoctype());
 		values.put("paytype", docEntity.getPaytype());
 		db.insert("sv_docitem", null, values);
-		String svId = getLastShowId(docEntity.getDoctype());
+		db.setTransactionSuccessful();
+//		 svId = getLastShowId(docEntity.getDoctype());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			db.endTransaction();
+			db.close();
+		}
 		return svId;
 	}
 
-	public void updataDocItem(DocContainerEntity docEntity) {
-		this.db = this.helper.getWritableDatabase();
-		ContentValues values = new ContentValues();
-		values.put("deleteinitem", docEntity.getDeleteinitem());
-		values.put("deleteitem", docEntity.getDeleteitem());
-		values.put("doc", docEntity.getDoc());
-		values.put("item", docEntity.getItem());
-		values.put("doctype", docEntity.getDoctype());
-		values.put("paytype", docEntity.getPaytype());
-		db.update("sv_docitem", values, "doctype = ?", new String[] { docEntity.getDoctype() });
+	public synchronized void updataDocItem(DocContainerEntity docEntity) {
+		SQLiteDatabase db = this.helper.getWritableDatabase();
+		db.beginTransaction();
+		try {
+			ContentValues values = new ContentValues();
+			values.put("deleteinitem", docEntity.getDeleteinitem());
+			values.put("deleteitem", docEntity.getDeleteitem());
+			values.put("doc", docEntity.getDoc());
+			values.put("item", docEntity.getItem());
+			values.put("doctype", docEntity.getDoctype());
+			values.put("paytype", docEntity.getPaytype());
+			db.update("sv_docitem", values, "doctype = ?", new String[] { docEntity.getDoctype() });
+			db.setTransactionSuccessful();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			db.endTransaction();
+			db.close();
+		}
+		
 	}
 
 	public void deleteDoc(String doctype) {
-		this.db = this.helper.getWritableDatabase();
+		SQLiteDatabase db = this.helper.getWritableDatabase();
 		db.delete("sv_docitem", "doctype=?", new String[] { doctype });
+		db.close();
 	}
 }

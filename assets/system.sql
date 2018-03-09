@@ -20,3 +20,19 @@ CREATE TABLE IF NOT EXISTS "user" (
 "warehouseid" TEXT(50),  
 PRIMARY KEY ("id")
 );
+
+CREATE TABLE IF NOT EXISTS "bo_swy_user" (
+"userid" TEXT(50)  NOT NULL,
+"userName"  TEXT(50),
+"versionname" TEXT(50),
+"deviceid"  TEXT(50),
+"registerDate" TEXT(50),  
+"code" TEXT(50),  
+"database" TEXT(50),  
+"accountset" TEXT(50),  
+"sleep" INT(50),  
+"state" INT(50),  
+"message" TEXT(50),  
+"memory" TEXT(50)  
+);
+

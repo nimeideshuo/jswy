@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ahjswy.cn.bean.bmob.ExceptionLog;
-import com.ahjswy.cn.utils.DocUtils;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -13,7 +12,6 @@ import cn.bmob.v3.BmobObject;
 
 public class Exception_logDAO {
 	private DBOpenHelper helper = new DBOpenHelper();
-	private SQLiteDatabase db;
 
 	/**
 	 * 查询所有
@@ -21,7 +19,7 @@ public class Exception_logDAO {
 	 * @return
 	 */
 	public List<ExceptionLog> queryAll() {
-		db = helper.getReadableDatabase();
+		SQLiteDatabase db = helper.getReadableDatabase();
 		String sql = "select id,accountset,userid,username,deviceid,model,versionname,message,data,log,datetime from exception_log ";
 		ArrayList<ExceptionLog> listReqLog = new ArrayList<ExceptionLog>();
 		try {
@@ -45,11 +43,12 @@ public class Exception_logDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		db.close();
 		return listReqLog;
 	}
 
 	public List<BmobObject> queryBmobAll() {
-		db = helper.getReadableDatabase();
+		SQLiteDatabase db = helper.getReadableDatabase();
 		String sql = "select id,accountset,userid,username,deviceid,model,versionname,message,data,log,datetime from exception_log where isupdata=0";
 		ArrayList<BmobObject> listReqLog = new ArrayList<BmobObject>();
 		try {
@@ -73,6 +72,7 @@ public class Exception_logDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		db.close();
 		return listReqLog;
 	}
 
@@ -81,8 +81,9 @@ public class Exception_logDAO {
 	 * 
 	 * @return
 	 */
-	public boolean insertLog(ExceptionLog log) {
-		db = helper.getWritableDatabase();
+	public synchronized boolean insertLog(ExceptionLog log) {
+		SQLiteDatabase db = helper.getWritableDatabase();
+		db.beginTransaction();
 		ContentValues values = new ContentValues();
 		values.put("userid", log.userid);
 		values.put("accountset", log.accountset);
@@ -97,10 +98,15 @@ public class Exception_logDAO {
 		values.put("isupdata", log.isupdata == false ? 0 : 1);
 		try {
 			long insert = db.insert("exception_log", null, values);
+			db.setTransactionSuccessful();
 			return insert == -1 ? false : true;
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.endTransaction();
+			db.close();
 		}
+
 		return false;
 
 	}
@@ -112,7 +118,7 @@ public class Exception_logDAO {
 	 * @return
 	 */
 	public boolean deleteIsupdata(boolean isupdata) {
-		db = helper.getWritableDatabase();
+		SQLiteDatabase db = helper.getWritableDatabase();
 		String sql = "delete from exception_log where isupdata=" + (isupdata == false ? 0 : 1);
 		try {
 			db.execSQL(sql);
@@ -120,11 +126,12 @@ public class Exception_logDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		db.close();
 		return false;
 	}
 
 	public boolean deleteRow(int row) {
-		db = helper.getWritableDatabase();
+		SQLiteDatabase db = helper.getWritableDatabase();
 		String sql = "delete from exception_log where id=" + row;
 		try {
 			db.execSQL(sql);
@@ -132,6 +139,7 @@ public class Exception_logDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		db.close();
 		return false;
 	}
 }

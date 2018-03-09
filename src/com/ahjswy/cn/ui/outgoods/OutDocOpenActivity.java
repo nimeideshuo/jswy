@@ -375,7 +375,7 @@ public class OutDocOpenActivity extends BaseActivity
 		public void handleMessage(android.os.Message msg) {
 			String localString = msg.obj.toString();
 			if (RequestHelper.isSuccess(localString)) {
-				DocContainerEntity<DefDocItemXS> entity = JSONUtil.fromJson(localString, DocContainerEntity.class);
+				DocContainerEntity entity = JSONUtil.fromJson(localString, DocContainerEntity.class);
 				doc = ((DefDocXS) JSONUtil.fromJson(entity.getDoc(), DefDocXS.class));
 				// 保存基本数据
 				fillDoc();

@@ -103,7 +103,7 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 		// "yyyy-MM-dd"));
 		this.etNum.setTag(this.etNum.getText().toString());
 		this.etNetNum.setTag(this.etNetNum.getText().toString());
-		docUtils = DocUtils.getInstance();
+		mDocUtils = new DocUtils();
 	}
 
 	private GoodsUnit goodsUnit;
@@ -125,9 +125,9 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 				goodsUnit = ((GoodsUnit) localList.get(which));
 				if (!goodsUnit.getUnitid().equals(btnUnit.getTag())) {
 
-					double goodscostprice = docUtils.queryGoodsCostprice(warehouseid, docitem.getGoodsid(),
+					double goodscostprice = mDocUtils.queryGoodsCostprice(warehouseid, docitem.getGoodsid(),
 							docitem.getUnitid());
-					double sumStock = docUtils.queryPDSumStock(docitem.getGoodsid(), goodsUnit.getUnitid(),
+					double sumStock = mDocUtils.queryPDSumStock(docitem.getGoodsid(), goodsUnit.getUnitid(),
 							warehouseid);
 					btnUnit.setText(goodsUnit.getUnitname());
 					btnUnit.setTag(goodsUnit.getUnitid());
@@ -249,7 +249,7 @@ public class InventoryAddGoodAct extends BaseActivity implements OnClickListener
 
 		};
 	};
-	private DocUtils docUtils;
+	private DocUtils mDocUtils;
 
 	@Override
 	public void onClick(View v) {

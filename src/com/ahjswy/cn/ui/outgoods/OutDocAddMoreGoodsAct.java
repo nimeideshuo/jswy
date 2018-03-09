@@ -49,7 +49,8 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 	private Scaner scaner;
 	private GoodsUnitDAO dao;
 	boolean isScanerBarcode = false;
-	double num=0;
+	double num = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,7 +67,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		listview = (ListView) findViewById(R.id.lv_commodity_add);
 		items = JSONUtil.parseArray(getIntent().getStringExtra("items"), DefDocItemXS.class);
 		doc = (DefDocXS) getIntent().getSerializableExtra("doc");
-		adapter = new OutDocAddMoreAdapter(getApplicationContext());
+		adapter = new OutDocAddMoreAdapter(this);
 		adapter.setDoc(doc);
 		listview.setAdapter(adapter);
 		isScanerBarcode = true;
@@ -83,12 +84,12 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 						double stocknum = stockwarn.queryStockNum(item.getWarehouseid(), item.getGoodsid());
 						item.stocknum = stocknum;
 						item.goodStock = DocUtils.Stocknum(stocknum, item.unit);
-						handler.sendEmptyMessage(0);
 					} catch (Exception e) {
 						e.printStackTrace();
 						DocUtils.insertLog(e);
 					}
 				}
+				handler.sendEmptyMessage(0);
 			}
 		});
 
@@ -120,7 +121,7 @@ public class OutDocAddMoreGoodsAct extends BaseActivity {
 		super.onPause();
 		if (scaner != null) {
 			scaner.removeListener();
-			scaner=null;
+			scaner = null;
 		}
 	}
 

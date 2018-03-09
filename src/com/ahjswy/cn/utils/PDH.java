@@ -5,6 +5,7 @@ import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.ui.LoadingDialog;
 import com.ahjswy.cn.ui.WaitingDialog;
 
+import android.R.transition;
 import android.app.Activity;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -27,49 +28,58 @@ public class PDH {
 	private static ImageView toastImage;
 	private static TextView toastText;
 	private static View toastView;
-	public static LoadingDialog dialog;
-	private static WaitingDialog waitingDialog;
 
 	private static String getText(int paramInt) {
 		return MyApplication.getInstance().getResources().getString(paramInt);
 	}
 
 	public static void show(final Activity activity, final ProgressCallBack paCallBack) {
-		if (waitingDialog != null && waitingDialog.isShowing()) {
-			waitingDialog.dismiss();
-		}
-		waitingDialog = new WaitingDialog(activity);
+		// if (waitingDialog != null && waitingDialog.isShowing()) {
+		// waitingDialog.dismiss();
+		// }
+		final WaitingDialog waitingDialog = new WaitingDialog(activity);
 		waitingDialog.show();
 		new Thread() {
 			public void run() {
-				paCallBack.action();
-				PDH.handler.post(new Runnable() {
-					public void run() {
-						if (activity != null && waitingDialog != null && waitingDialog.isShowing()) {
-							waitingDialog.dismiss();
+				try {
+					paCallBack.action();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					PDH.handler.post(new Runnable() {
+						public void run() {
+							if (activity != null && waitingDialog != null && waitingDialog.isShowing()) {
+								waitingDialog.dismiss();
+							}
 						}
-					}
-				});
+					});
+				}
 			}
 		}.start();
 	}
 
 	public static void show(final Activity activity, final String text, final ProgressCallBack callBack) {
-		if (dialog != null && dialog.isShowing()) {
-			dialog.dismiss();
-		}
-		dialog = new LoadingDialog(activity);
+		// if (dialog != null && dialog.isShowing()) {
+		// dialog.dismiss();
+		// }
+		final LoadingDialog dialog = new LoadingDialog(activity);
 		dialog.show(text);
 		new Thread() {
 			public void run() {
-				callBack.action();
-				PDH.handler.post(new Runnable() {
-					public void run() {
-						if (activity != null && dialog != null && dialog.isShowing()) {
-							dialog.dismiss();
+
+				try {
+					callBack.action();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					PDH.handler.post(new Runnable() {
+						public void run() {
+							if (activity != null && dialog != null && dialog.isShowing()) {
+								dialog.dismiss();
+							}
 						}
-					}
-				});
+					});
+				}
 			}
 		}.start();
 	}

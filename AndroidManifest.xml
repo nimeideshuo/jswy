@@ -65,7 +65,7 @@
         <uses-library android:name="android.test.runner" />
         <!--Swy_s  OutDocAddMoreGoodsAct -->
         <activity
-            android:name="com.ahjswy.cn.ui.Swy_splash"
+            android:name="com.ahjswy.cn.ui.SwyMain"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
 
@@ -76,11 +76,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
+       <!--  <activity
             android:name="com.ahjswy.cn.ui.SwyMain"
             android:icon="@drawable/logo"
             android:screenOrientation="portrait" >
-        </activity>
+        </activity> -->
         <activity
             android:name="com.ahjswy.cn.app.Main_Setting"
             android:screenOrientation="portrait" >

@@ -202,7 +202,7 @@ public class TransferDocOpenActivity extends BaseActivity implements OnClickList
 		public void handleMessage(android.os.Message msg) {
 			String message = msg.obj.toString();
 			if (RequestHelper.isSuccess(message)) {
-				DocContainerEntity<?> doccontainer = (DocContainerEntity<?>) JSONUtil.fromJson(message,
+				DocContainerEntity doccontainer = (DocContainerEntity) JSONUtil.fromJson(message,
 						DocContainerEntity.class);
 				doc = ((DefDocTransfer) JSONUtil.fromJson(doccontainer.getDoc(), DefDocTransfer.class));
 				fillDoc();

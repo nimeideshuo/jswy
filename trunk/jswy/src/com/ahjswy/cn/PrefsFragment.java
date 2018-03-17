@@ -9,6 +9,7 @@ import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.dao.BaseDao;
 import com.ahjswy.cn.dao.DepartmentDAO;
 import com.ahjswy.cn.dao.WarehouseDAO;
+import com.ahjswy.cn.model.DefDocPayType;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.Warehouse;
 import com.ahjswy.cn.print.BTPrintHelper;
@@ -18,8 +19,11 @@ import com.ahjswy.cn.print.BTdeviceListAct;
 import com.ahjswy.cn.print.PrintData;
 import com.ahjswy.cn.print.PrintMode;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
+import com.ahjswy.cn.service.ServicePayType;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.AboutActivity;
+import com.ahjswy.cn.ui.SwyMain;
+import com.ahjswy.cn.ui.inpurchase.InpurchaseOpenActivity;
 import com.ahjswy.cn.utils.InfoDialog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
@@ -27,6 +31,7 @@ import com.ahjswy.cn.utils.SwyUtils;
 import com.ahjswy.cn.utils.TextUtils;
 import com.ahjswy.cn.utils.UpdateUtils;
 import com.ahjswy.cn.utils.Utils;
+import com.ahjswy.cn.views.Dialog_ed_message;
 import com.ahjswy.cn.views.Dialog_message;
 
 import android.app.Activity;
@@ -40,8 +45,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 public class PrefsFragment extends PreferenceFragment {
 	private AccountPreference ap;
@@ -80,6 +87,7 @@ public class PrefsFragment extends PreferenceFragment {
 		getMyPreference(R.string.item_order).setOnPreferenceClickListener(this.preferenceClickListener);
 		getMyPreference(R.string.goods_select_more_add).setOnPreferenceClickListener(this.preferenceClickListener);
 		getMyPreference(R.string.instruckment).setOnPreferenceClickListener(this.preferenceClickListener);
+		getMyPreference(R.string.service_port).setOnPreferenceClickListener(this.preferenceClickListener);
 		// 打印机
 		getMyPreference(R.string.default_printer).setOnPreferenceClickListener(this.preferenceClickListener);
 		getMyPreference(R.string.printer_model).setOnPreferenceClickListener(this.preferenceClickListener);
@@ -190,7 +198,10 @@ public class PrefsFragment extends PreferenceFragment {
 		String isShow = Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow")) == true ? "显示" : "不显示";
 		getMyPreference(R.string.bluetoothPrintIsShow)
 
-				.setSummary(TextUtils.setTextStyle(getResources().getString(R.string.bluetoothPrint_on_off), isShow));
+		.setSummary(TextUtils.setTextStyle(getResources().getString(R.string.bluetoothPrint_on_off), isShow));
+
+		getMyPreference(R.string.service_port)
+				.setSummary(TextUtils.setTextStyle("端口设置:", ap.getCGServerIp().isEmpty() ? "未设置" : "已设置"));
 	}
 
 	public Preference getMyPreference(int id) {
@@ -241,13 +252,16 @@ public class PrefsFragment extends PreferenceFragment {
 				goodsSelectMore();
 				return false;
 			}
+			if (preference.getKey().equals(getString(R.string.service_port))) {
+				serviceProt();
+				return false;
+			}
 			if (preference.getKey().equals(getString(R.string.combinationItem))) {
 				ap.setValue("iscombinationItem", !Boolean.parseBoolean(ap.getValue("iscombinationItem")));
 				String isShow = Boolean.parseBoolean(ap.getValue("iscombinationItem")) == true ? "开启" : "关闭";
 				getMyPreference(R.string.combinationItem)
 
-						.setSummary(TextUtils.setTextStyle(getResources().getString(R.string.combinationItem_on_off),
-								isShow));
+				.setSummary(TextUtils.setTextStyle(getResources().getString(R.string.combinationItem_on_off), isShow));
 				return false;
 			}
 			// 是否显示蓝牙打印
@@ -256,8 +270,7 @@ public class PrefsFragment extends PreferenceFragment {
 				String isShow = Boolean.parseBoolean(ap.getValue("bluetoothPrintIsShow")) == true ? "显示" : "不显示";
 				getMyPreference(R.string.bluetoothPrintIsShow)
 
-						.setSummary(TextUtils.setTextStyle(getResources().getString(R.string.bluetoothPrint_on_off),
-								isShow));
+				.setSummary(TextUtils.setTextStyle(getResources().getString(R.string.bluetoothPrint_on_off), isShow));
 				return false;
 			}
 			if (preference.getKey().equals(getString(R.string.default_printer))) {
@@ -318,6 +331,53 @@ public class PrefsFragment extends PreferenceFragment {
 			}
 		});
 		builder.show();
+	}
+
+	private void serviceProt() {
+
+		final Dialog_ed_message serviceCGIp = new Dialog_ed_message(getActivity());
+		serviceCGIp.setTitleMessage("请输入采购服务器端口");
+		serviceCGIp.setEdtext(ap.getCGServerIp());
+		// 设置只能输入小数
+		serviceCGIp.ed_service.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		serviceCGIp.setCancelListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (serviceCGIp.getEdtext().isEmpty()) {
+					Toast.makeText(getActivity(), "请输入采购服务器端口", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				PDH.show(getActivity(), "连接中...", new ProgressCallBack() {
+
+					@Override
+					public void action() {
+						List<DefDocPayType> payTypes = ServicePayType.PayTypes(serviceCGIp.getEdtext(), 0, 0);
+						if (payTypes != null) {
+							serviceCGIp.dismiss();
+							PDH.showSuccess("设置成功!");
+							// 保存采购端口
+							ap.setCGServerIp(serviceCGIp.getEdtext());
+							getMyPreference(R.string.service_port).setSummary(TextUtils.setTextStyle("端口设置:", "已设置"));
+
+						} else {
+							Toast.makeText(getActivity(), "连接失败!", Toast.LENGTH_SHORT).show();
+
+						}
+					}
+				});
+
+			}
+		});
+		serviceCGIp.setComfirmListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				serviceCGIp.dismiss();
+			}
+		});
+		serviceCGIp.show();
+
 	}
 
 	protected void printsetting() {
@@ -552,8 +612,8 @@ public class PrefsFragment extends PreferenceFragment {
 					SystemState.saveObject("department", listDepartments.get(departmentposition));
 					getMyPreference(R.string.work_department)
 
-							.setSummary(TextUtils.setTextStyle(workDepartmentTitle,
-									listDepartments.get(departmentposition).getDname()));
+					.setSummary(TextUtils.setTextStyle(workDepartmentTitle,
+							listDepartments.get(departmentposition).getDname()));
 				}
 			}
 		});

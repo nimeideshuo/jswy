@@ -420,6 +420,7 @@ public class AddNewGoodSAct extends BaseActivity implements OnClickListener, Sca
 
 		}
 		submitGood();
+		
 
 	}
 

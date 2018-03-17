@@ -35,6 +35,14 @@ public class AccountPreference {
 		return getValue("ip");
 	}
 
+	public String getCGServerIp() {
+		return getValue("cgip");
+	}
+
+	public void setCGServerIp(String cgip) {
+		setValue("cgip", cgip);
+	}
+
 	public <T> T getValue(String value, Class<T> obj) {
 		return JSONUtil.readValue(this.setPreferences.getString(value, ""), obj);
 	}

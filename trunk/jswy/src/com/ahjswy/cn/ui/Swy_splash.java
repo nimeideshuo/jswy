@@ -1,23 +1,14 @@
 package com.ahjswy.cn.ui;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.List;
-
 import com.ahjswy.cn.R;
 import com.ahjswy.cn.app.AccountPreference;
 import com.ahjswy.cn.app.Jswy_logUser;
 import com.ahjswy.cn.app.LoginPassword;
 import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
-import com.ahjswy.cn.bean.bmob.ExceptionLog;
-import com.ahjswy.cn.dao.Exception_logDAO;
 import com.ahjswy.cn.model.User;
 import com.ahjswy.cn.service.ServiceSystem;
-import com.ahjswy.cn.ui.outgoods.OutDocAddMoreGoodsAct;
-import com.ahjswy.cn.ui.outgoods.OutDocOpenActivity;
 import com.ahjswy.cn.utils.BmobUtils;
-import com.ahjswy.cn.utils.MLog;
 import com.ahjswy.cn.utils.PDH;
 import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.views.Dialog_ed_message;
@@ -28,17 +19,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import cn.bmob.v3.BmobBatch;
-import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.datatype.BatchResult;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.QueryListListener;
 
 public class Swy_splash extends BaseActivity {
 	private Dialog_ed_message serviceips;
@@ -68,7 +53,7 @@ public class Swy_splash extends BaseActivity {
 		System.out.println("width:" + width + "   height:" + height);
 		System.out.println("id:" + MyApplication.getInstance().getAndroidId());
 
-		serviceips = new Dialog_ed_message(Swy_splash.this);
+		serviceips = new Dialog_ed_message(this);
 		loading.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -145,6 +130,14 @@ public class Swy_splash extends BaseActivity {
 							PDH.showFail("请输入服务器IP地址");
 							return;
 						}
+						// if
+						// (serviceips.ed_cg_service.getText().toString().isEmpty())
+						// {
+						// PDH.showFail("请输入采购服务器IP地址");
+						// return;
+						// }
+						// serviceips.setCGEdtext(text);
+
 						serviceips.dismiss();
 						// 验证IP地址 是否正确
 						PDH.show(Swy_splash.this, "正在连接...", new ProgressCallBack() {

@@ -67,6 +67,7 @@
     <string name="bluetoothPrintIsShow">bluetoothPrintIsShow</string>
     <string name="combinationItem">combinationItem</string>
     <string name="printer_model">printer_model</string>
+    <string name="service_port">port</string>
     <string name="print_mode">print_mode</string>
     <string name="clearlastzero">clearlastzero</string>
     <string name="minustuihuo">minustuihuo</string>

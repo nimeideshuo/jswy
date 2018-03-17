@@ -45,6 +45,10 @@
             android:summary="商品合并：默认不合并"
             android:title="商品合并开关:" >
         </CheckBoxPreference>
+        <Preference
+            android:key="@string/service_port"
+            android:summary="端口设置"
+            android:title="端口设置:" />
     </PreferenceCategory>
     <PreferenceCategory android:title="打印设置" >
         <CheckBoxPreference

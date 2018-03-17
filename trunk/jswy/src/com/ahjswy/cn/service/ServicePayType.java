@@ -57,4 +57,39 @@ public class ServicePayType {
 		return null;
 	}
 
+	/**
+	 * 获取所有支付方式, 0,0代表不分页
+	 */
+	public static List<DefDocPayType> PayTypes(String ip, int length, int index) {
+		QueryEntity entity = new QueryEntity();
+		entity.setIndex(index);
+		entity.setLength(length);
+		List<DefDocPayType> payTypelist = null;
+		if (payTypelist == null) {
+			payTypelist = new ArrayList<DefDocPayType>();
+		}
+		String payType = new HttpRequestUtils().PostIp(ip, baseAddress, JSONUtil.toJSONString(entity));
+		try {
+			if (TextUtils.isEmpty(payType)) {
+				return null;
+			}
+			JSONObject object = new JSONObject(payType);
+			String jsonData = object.getString("Json");
+			JSONObject datas = new JSONObject(jsonData);
+			String PayTypeData = datas.getString("Data");
+			JSONArray array = new JSONArray(PayTypeData);
+			for (int i = 0; i < array.length(); i++) {
+				DefDocPayType payType2 = new DefDocPayType();
+				JSONObject jsonObject = array.getJSONObject(i);
+				payType2.setItemid(Long.parseLong(jsonObject.getString("id")));
+				payType2.setPaytypename(jsonObject.getString("name"));
+				payTypelist.add(payType2);
+			}
+			return payTypelist;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

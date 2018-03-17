@@ -22,16 +22,23 @@ public class Service {
 	 * get 获取 IP 地址
 	 */
 	public static String getIpUrl(String serviceIP) {
-		// http://192.168.1.181:9682/system/checkregister  44519
-//		return "http://" + serviceIP + ":44519/";
-		//因为 net 版本 修改 端口变动 现在去掉 默认端口 用户自己设置
-		return "http://" + serviceIP+"/";
+		// http://192.168.1.181:9682/system/checkregister 44519
+		// return "http://" + serviceIP + ":44519/";
+		// 因为 net 版本 修改 端口变动 现在去掉 默认端口 用户自己设置
+		return "http://" + serviceIP + "/";
 
 	}
 
 	private static AccountPreference ap = new AccountPreference();
-	// public static String getUrl() {
-	// return "http://" + ap.getServerIp() + ":90/";
+
+	// /**
+	// * 拼接端口
+	// *
+	// * @param serviceIP
+	// * @return
+	// */
+	// public static String getCGUrl(String port) {
+	// return "http://" + ap.getServerIp() + ":" + port + "/";
 	// }
 
 }

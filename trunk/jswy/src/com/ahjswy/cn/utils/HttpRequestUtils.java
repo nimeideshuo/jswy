@@ -133,11 +133,13 @@ public class HttpRequestUtils {
 	public String Post(String url, String json) {
 		mUrl = url;
 		mJson = json;
-		url = "http://" + ap.getServerIp() + ":3721/" + url;
+		url = "http://" + ap.getCGServerIp() + "/" + url;
 		PrintWriter out = null;
 		String result = "";
 		BufferedReader br = null;
 		try {
+			MLog.d(">>>do post url :" + url + "->params:" + json);
+
 			URL realUrl = new URL(url);
 			URLConnection conn = realUrl.openConnection();
 			conn.setRequestProperty("Accept", "application/json");
@@ -151,7 +153,6 @@ public class HttpRequestUtils {
 			out = new PrintWriter(conn.getOutputStream());
 			// 发送请求参数
 			out.print(json);
-			MLog.d(">>>do post url :" + url + "->params:" + json);
 			out.flush();
 			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line;
@@ -166,6 +167,53 @@ public class HttpRequestUtils {
 				SystemClock.sleep(300);
 				return Post(mUrl, mJson);
 			}
+			e.printStackTrace();
+		} finally {
+			try {
+				if (out != null) {
+					out.close();
+				}
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
+	public String PostIp(String ip, String urls, String json) {
+		String url = "http://" + ip + "/" + urls;
+		PrintWriter out = null;
+		String result = "";
+		BufferedReader br = null;
+		try {
+			MLog.d(">>>do post url :" + url + "->params:" + json);
+
+			URL realUrl = new URL(url);
+			URLConnection conn = realUrl.openConnection();
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty("User-Agent", "Mozilla/4.5");
+			// conn.setConnectTimeout(5000);
+			// conn.setReadTimeout(5000);
+			// 发送POST请求必须设置如下两行
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			out = new PrintWriter(conn.getOutputStream());
+			// 发送请求参数
+			out.print(json);
+			out.flush();
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String line;
+			while ((line = br.readLine()) != null) {
+				result += line;
+			}
+			MLog.d(">>>do post res :" + result.toString());
+		} catch (IOException e) {
+			System.out.println("发送 POST 请求出现异常！" + e);
 			e.printStackTrace();
 		} finally {
 			try {

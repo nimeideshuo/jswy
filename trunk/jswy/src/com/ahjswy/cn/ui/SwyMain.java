@@ -9,11 +9,13 @@ import com.ahjswy.cn.app.MyApplication;
 import com.ahjswy.cn.app.SystemState;
 import com.ahjswy.cn.bean.bmob.bo_swy_user;
 import com.ahjswy.cn.dao.Sv_docitem;
+import com.ahjswy.cn.model.DefDocPayType;
 import com.ahjswy.cn.model.Department;
 import com.ahjswy.cn.model.DocContainerEntity;
 import com.ahjswy.cn.popupmenu.MainMenuPopup;
 import com.ahjswy.cn.request.ReqSynUpdateInfo;
 import com.ahjswy.cn.response.RespBo_swy_user;
+import com.ahjswy.cn.service.ServicePayType;
 import com.ahjswy.cn.service.ServiceSynchronize;
 import com.ahjswy.cn.ui.Main_set_bumen.BumenCall;
 import com.ahjswy.cn.ui.addgoods.AddNewGoodSAct;
@@ -39,13 +41,16 @@ import com.ahjswy.cn.utils.PDH.ProgressCallBack;
 import com.ahjswy.cn.utils.SwyUtils;
 import com.ahjswy.cn.utils.UpdateUtils;
 import com.ahjswy.cn.utils.Utils;
+import com.ahjswy.cn.views.Dialog_ed_message;
 import com.ahjswy.cn.views.Dialog_message;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -154,8 +159,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, 0, 0, "单击显示菜单").setIcon(getResources().getDrawable(R.drawable.btn_submenu, null))
-				.setShowAsAction(1);
+		menu.add(0, 0, 0, "单击显示菜单").setIcon(getResources().getDrawable(R.drawable.btn_submenu)).setShowAsAction(1);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -175,7 +179,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -193,7 +197,7 @@ public class SwyMain extends BaseActivity implements OnClickListener, BumenCall 
 				case 0:
 				case 1:
 				case 2:
-						ap.setValue("bo_swy_user", swyUser);
+					ap.setValue("bo_swy_user", swyUser);
 					break;
 				case 3:
 					MyApplication.getInstance().exit();
